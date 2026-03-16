@@ -25,9 +25,6 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ---------------------------
-   BODY PARSER
----------------------------- */
 app.use(
   express.json({
     verify: (req, res, buf) => {
@@ -35,12 +32,8 @@ app.use(
     },
   })
 );
-
 app.use(express.urlencoded({ extended: true }));
 
-/* ---------------------------
-   ROUTES
----------------------------- */
 app.get("/", (req, res) => {
   res.status(200).send("Foundation Bot Running 🚀");
 });
@@ -53,13 +46,14 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.get("/version", (req, res) => {
+  res.status(200).send("server version: case-management-v1");
+});
+
 app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook endpoint is ready ✅");
 });
 
-/* ---------------------------
-   VERIFY SIGNATURE
----------------------------- */
 function verifySignature(req) {
   if (!CHANNEL_SECRET) {
     console.warn("⚠️ CHANNEL_SECRET not set, skipping signature verification");
@@ -77,9 +71,6 @@ function verifySignature(req) {
   return hash === signature;
 }
 
-/* ---------------------------
-   LINE API
----------------------------- */
 async function callLineReplyApi(replyToken, messages) {
   const response = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
@@ -87,14 +78,10 @@ async function callLineReplyApi(replyToken, messages) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
     },
-    body: JSON.stringify({
-      replyToken,
-      messages,
-    }),
+    body: JSON.stringify({ replyToken, messages }),
   });
 
   const resultText = await response.text();
-
   console.log("LINE reply status:", response.status);
   console.log("LINE reply body:", resultText);
 
@@ -112,14 +99,10 @@ async function callLinePushApi(to, messages) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
     },
-    body: JSON.stringify({
-      to,
-      messages,
-    }),
+    body: JSON.stringify({ to, messages }),
   });
 
   const resultText = await response.text();
-
   console.log("LINE push status:", response.status);
   console.log("LINE push body:", resultText);
 
@@ -155,17 +138,9 @@ async function pushTeamNotification(text) {
     return;
   }
 
-  await callLinePushApi(TEAM_GROUP_ID, [
-    {
-      type: "text",
-      text,
-    },
-  ]);
+  await callLinePushApi(TEAM_GROUP_ID, [{ type: "text", text }]);
 }
 
-/* ---------------------------
-   FLEX CARD
----------------------------- */
 function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
   return {
     type: "bubble",
@@ -298,42 +273,100 @@ const mainMenuText = {
   type: "text",
   text:
     "เมนูหลักพร้อมใช้งานครับ 🙏\n\n" +
-    "พิมพ์คำสั่งได้เลย เช่น\n" +
+    "สำหรับผู้ใช้งานทั่วไป:\n" +
     "- บริจาค\n" +
-    "- ดูโครงการ\n" +
-    "- ติดต่อเจ้าหน้าที่\n" +
     "- ขอความช่วยเหลือ\n" +
-    "- เกี่ยวกับมูลนิธิ",
+    "- เกี่ยวกับมูลนิธิ\n\n" +
+    "สำหรับทีมงาน:\n" +
+    "- ดูเคสใหม่\n" +
+    "- ดูเคสด่วน\n" +
+    "- เคสวันนี้\n" +
+    "- รับเคส CASE-YYYYMMDD-0001\n" +
+    "- ปิดเคส CASE-YYYYMMDD-0001\n" +
+    "- เปลี่ยนสถานะ CASE-YYYYMMDD-0001 in_progress",
 };
 
-/* ---------------------------
-   SUPABASE SAVE
----------------------------- */
+function getDateKey() {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  return `${yyyy}${mm}${dd}`;
+}
+
+async function generateCaseCode() {
+  const dateKey = getDateKey();
+  const prefix = `CASE-${dateKey}-`;
+
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("case_code")
+    .ilike("case_code", `${prefix}%`)
+    .order("case_code", { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.error("GENERATE CASE CODE ERROR:", error);
+    throw error;
+  }
+
+  let nextNumber = 1;
+
+  if (data && data.length > 0 && data[0].case_code) {
+    const lastCode = data[0].case_code;
+    const lastSeq = parseInt(lastCode.split("-")[2], 10);
+    if (!Number.isNaN(lastSeq)) {
+      nextNumber = lastSeq + 1;
+    }
+  }
+
+  return `${prefix}${String(nextNumber).padStart(4, "0")}`;
+}
+
 async function saveHelpRequest(userId, text) {
   const full_name = text.match(/ชื่อ:\s*(.*)/)?.[1]?.trim() || "";
   const location = text.match(/พื้นที่:\s*(.*)/)?.[1]?.trim() || "";
   const problem = text.match(/รายละเอียด:\s*(.*)/)?.[1]?.trim() || "";
   const phone = text.match(/เบอร์:\s*(.*)/)?.[1]?.trim() || "";
 
+  const lowerText = text.toLowerCase();
+  let priority = "normal";
+
+  if (
+    lowerText.includes("ด่วน") ||
+    lowerText.includes("ฉุกเฉิน") ||
+    lowerText.includes("ไม่มีอาหาร") ||
+    lowerText.includes("ไม่มีที่อยู่")
+  ) {
+    priority = "urgent";
+  }
+
+  const case_code = await generateCaseCode();
+
   console.log("SAVE HELP REQUEST:", {
+    case_code,
     line_user_id: userId || "",
     full_name,
     location,
     problem,
     phone,
     status: "new",
+    priority,
   });
 
   const { data, error } = await supabase
     .from("help_requests")
     .insert([
       {
+        case_code,
         line_user_id: userId || "",
         full_name,
         phone,
         location,
         problem,
         status: "new",
+        priority,
+        notify_status: "pending",
       },
     ])
     .select()
@@ -348,15 +381,116 @@ async function saveHelpRequest(userId, text) {
   return data;
 }
 
-/* ---------------------------
-   TEST TEAM NOTIFY
----------------------------- */
+async function getNewCases(limit = 10) {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("status", "new")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function getUrgentCases(limit = 10) {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("priority", "urgent")
+    .in("status", ["new", "in_progress"])
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function getTodayCases(limit = 20) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .gte("created_at", start.toISOString())
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return data || [];
+}
+
+async function assignCase(caseCode, staffName = "ทีมงาน") {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .update({
+      status: "in_progress",
+      assigned_to: staffName,
+      assigned_at: new Date().toISOString(),
+    })
+    .eq("case_code", caseCode)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+async function closeCase(caseCode, staffName = "ทีมงาน") {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .update({
+      status: "done",
+      assigned_to: staffName,
+      closed_at: new Date().toISOString(),
+    })
+    .eq("case_code", caseCode)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+async function changeCaseStatus(caseCode, newStatus) {
+  const allowed = ["new", "in_progress", "done", "cancelled"];
+  if (!allowed.includes(newStatus)) {
+    throw new Error("Invalid status");
+  }
+
+  const payload = { status: newStatus };
+
+  if (newStatus === "done") {
+    payload.closed_at = new Date().toISOString();
+  }
+
+  const { data, error } = await supabase
+    .from("help_requests")
+    .update(payload)
+    .eq("case_code", caseCode)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+function formatCaseLine(item) {
+  return (
+    `${item.case_code || "-"}\n` +
+    `ชื่อ: ${item.full_name || "-"}\n` +
+    `พื้นที่: ${item.location || "-"}\n` +
+    `โทร: ${item.phone || "-"}\n` +
+    `สถานะ: ${item.status || "-"}\n` +
+    `ระดับ: ${item.priority || "normal"}`
+  );
+}
+
 app.get("/test-team-notify", async (req, res) => {
   try {
     if (!TEAM_GROUP_ID) {
-      return res
-        .status(400)
-        .send("TEAM_GROUP_ID is not set yet");
+      return res.status(400).send("TEAM_GROUP_ID is not set yet");
     }
 
     await pushTeamNotification("🔔 ทดสอบแจ้งเตือนทีมงานจากระบบมูลนิธิ สำเร็จแล้ว");
@@ -367,9 +501,6 @@ app.get("/test-team-notify", async (req, res) => {
   }
 });
 
-/* ---------------------------
-   WEBHOOK
----------------------------- */
 app.post("/webhook", async (req, res) => {
   try {
     if (!verifySignature(req)) {
@@ -397,6 +528,166 @@ app.post("/webhook", async (req, res) => {
 
       console.log("User text:", text);
 
+      if (text === "ดูเคสใหม่") {
+        try {
+          const cases = await getNewCases(10);
+
+          if (!cases.length) {
+            await safeReply(replyToken, [
+              { type: "text", text: "ตอนนี้ยังไม่มีเคสใหม่ครับ" },
+            ]);
+            continue;
+          }
+
+          const msg =
+            "📋 เคสใหม่ล่าสุด\n\n" +
+            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
+
+          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
+        } catch (err) {
+          console.error("GET NEW CASES ERROR:", err);
+          await safeReply(replyToken, [
+            { type: "text", text: "ดึงเคสใหม่ไม่สำเร็จครับ" },
+          ]);
+        }
+        continue;
+      }
+
+      if (text === "ดูเคสด่วน") {
+        try {
+          const cases = await getUrgentCases(10);
+
+          if (!cases.length) {
+            await safeReply(replyToken, [
+              { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" },
+            ]);
+            continue;
+          }
+
+          const msg =
+            "🚨 เคสด่วน\n\n" +
+            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
+
+          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
+        } catch (err) {
+          console.error("GET URGENT CASES ERROR:", err);
+          await safeReply(replyToken, [
+            { type: "text", text: "ดึงเคสด่วนไม่สำเร็จครับ" },
+          ]);
+        }
+        continue;
+      }
+
+      if (text === "เคสวันนี้") {
+        try {
+          const cases = await getTodayCases(20);
+
+          if (!cases.length) {
+            await safeReply(replyToken, [
+              { type: "text", text: "วันนี้ยังไม่มีเคสเข้าระบบครับ" },
+            ]);
+            continue;
+          }
+
+          const msg =
+            "🗓️ เคสวันนี้\n\n" +
+            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
+
+          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
+        } catch (err) {
+          console.error("GET TODAY CASES ERROR:", err);
+          await safeReply(replyToken, [
+            { type: "text", text: "ดึงเคสวันนี้ไม่สำเร็จครับ" },
+          ]);
+        }
+        continue;
+      }
+
+      if (text.startsWith("รับเคส ")) {
+        try {
+          const caseCode = text.replace("รับเคส ", "").trim();
+          const updated = await assignCase(caseCode, "ทีมงาน");
+
+          await safeReply(replyToken, [
+            {
+              type: "text",
+              text:
+                "✅ รับเคสเรียบร้อยแล้ว\n\n" +
+                `เลขเคส: ${updated.case_code}\n` +
+                `สถานะ: ${updated.status}\n` +
+                `ผู้รับเคส: ${updated.assigned_to || "-"}`,
+            },
+          ]);
+        } catch (err) {
+          console.error("ASSIGN CASE ERROR:", err);
+          await safeReply(replyToken, [
+            { type: "text", text: "รับเคสไม่สำเร็จ กรุณาตรวจเลขเคสอีกครั้ง" },
+          ]);
+        }
+        continue;
+      }
+
+      if (text.startsWith("ปิดเคส ")) {
+        try {
+          const caseCode = text.replace("ปิดเคส ", "").trim();
+          const updated = await closeCase(caseCode, "ทีมงาน");
+
+          await safeReply(replyToken, [
+            {
+              type: "text",
+              text:
+                "✅ ปิดเคสเรียบร้อยแล้ว\n\n" +
+                `เลขเคส: ${updated.case_code}\n` +
+                `สถานะ: ${updated.status}`,
+            },
+          ]);
+        } catch (err) {
+          console.error("CLOSE CASE ERROR:", err);
+          await safeReply(replyToken, [
+            { type: "text", text: "ปิดเคสไม่สำเร็จ กรุณาตรวจเลขเคสอีกครั้ง" },
+          ]);
+        }
+        continue;
+      }
+
+      if (text.startsWith("เปลี่ยนสถานะ ")) {
+        try {
+          const parts = text.split(" ");
+          if (parts.length < 3) {
+            await safeReply(replyToken, [
+              {
+                type: "text",
+                text: "รูปแบบคำสั่ง: เปลี่ยนสถานะ CASE-YYYYMMDD-0001 in_progress",
+              },
+            ]);
+            continue;
+          }
+
+          const caseCode = parts[1].trim();
+          const newStatus = parts[2].trim();
+          const updated = await changeCaseStatus(caseCode, newStatus);
+
+          await safeReply(replyToken, [
+            {
+              type: "text",
+              text:
+                "🔄 เปลี่ยนสถานะสำเร็จ\n\n" +
+                `เลขเคส: ${updated.case_code}\n` +
+                `สถานะใหม่: ${updated.status}`,
+            },
+          ]);
+        } catch (err) {
+          console.error("CHANGE STATUS ERROR:", err);
+          await safeReply(replyToken, [
+            {
+              type: "text",
+              text: "เปลี่ยนสถานะไม่สำเร็จ\nสถานะที่ใช้ได้: new, in_progress, done, cancelled",
+            },
+          ]);
+        }
+        continue;
+      }
+
       if (
         text.includes("ชื่อ:") &&
         text.includes("พื้นที่:") &&
@@ -410,22 +701,41 @@ app.post("/webhook", async (req, res) => {
             {
               type: "text",
               text:
-                "ทีมงานได้รับข้อมูลแล้วครับ 🙏\nเราจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด",
+                "ทีมงานได้รับข้อมูลแล้วครับ 🙏\n" +
+                `เลขเคสของคุณคือ ${insertedCase.case_code}\n` +
+                "เราจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด",
             },
           ]);
 
           const notifyText =
             "🔔 มีเคสใหม่เข้าระบบ\n\n" +
+            `เลขเคส: ${insertedCase.case_code || "-"}\n` +
             `ชื่อ: ${insertedCase.full_name || "-"}\n` +
             `โทร: ${insertedCase.phone || "-"}\n` +
             `พื้นที่: ${insertedCase.location || "-"}\n` +
             `รายละเอียด: ${insertedCase.problem || "-"}\n` +
-            `สถานะ: ${insertedCase.status || "new"}`;
+            `สถานะ: ${insertedCase.status || "new"}\n` +
+            `ระดับ: ${insertedCase.priority || "normal"}`;
 
           try {
             await pushTeamNotification(notifyText);
+
+            await supabase
+              .from("help_requests")
+              .update({
+                notify_status: "sent",
+                notified_at: new Date().toISOString(),
+              })
+              .eq("id", insertedCase.id);
           } catch (notifyError) {
             console.error("TEAM NOTIFICATION FAILED:", notifyError.message);
+
+            await supabase
+              .from("help_requests")
+              .update({
+                notify_status: "failed",
+              })
+              .eq("id", insertedCase.id);
           }
         } catch (err) {
           console.error("SAVE HELP REQUEST FAILED:", err);
@@ -437,7 +747,6 @@ app.post("/webhook", async (req, res) => {
             },
           ]);
         }
-
         continue;
       }
 
@@ -496,7 +805,11 @@ app.post("/webhook", async (req, res) => {
           type: "text",
           text:
             "พิมพ์คำว่า 'บริจาค' เพื่อดูการ์ดโครงการช่วยเหลือแบบเลื่อนดูได้ ❤️\n" +
-            "หรือพิมพ์ 'ขอความช่วยเหลือ' เพื่อส่งข้อมูลเคสครับ",
+            "หรือพิมพ์ 'ขอความช่วยเหลือ' เพื่อส่งข้อมูลเคสครับ\n\n" +
+            "ทีมงานสามารถใช้คำสั่ง:\n" +
+            "- ดูเคสใหม่\n" +
+            "- ดูเคสด่วน\n" +
+            "- เคสวันนี้",
         },
       ]);
     }
@@ -508,9 +821,6 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-/* ---------------------------
-   START SERVER
----------------------------- */
 app.listen(PORT, () => {
   console.log("✅ Server started on port " + PORT);
 });

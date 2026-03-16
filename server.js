@@ -1,58 +1,64 @@
 require("dotenv").config();
 
-const crypto = require("crypto");
 const express = require("express");
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const crypto = require("crypto");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
-const BASE_URL = process.env.BASE_URL || "";
 
 if (!CHANNEL_ACCESS_TOKEN) {
   console.error("Missing CHANNEL_ACCESS_TOKEN in environment variables");
   process.exit(1);
 }
 
+/**
+ * เก็บ raw body ไว้สำหรับ verify ลายเซ็น LINE
+ */
 app.use(
   express.json({
-    verify: (req, _res, buf) => {
+    verify: (req, res, buf) => {
       req.rawBody = buf;
     },
   })
 );
 
-function verifyLineSignature(req) {
-  if (!CHANNEL_SECRET) return true; // allow deploy even if secret not set yet
+app.use(express.urlencoded({ extended: true }));
 
-  const signature = req.headers["x-line-signature"];
+app.get("/", (req, res) => {
+  res.status(200).send("Foundation Bot Running 🚀");
+});
+
+app.get("/webhook", (req, res) => {
+  res.status(200).send("Webhook endpoint is ready ✅");
+});
+
+/**
+ * ตรวจลายเซ็นจาก LINE
+ * ถ้าไม่มี CHANNEL_SECRET จะข้ามการตรวจ
+ */
+function verifySignature(req) {
+  if (!CHANNEL_SECRET) {
+    console.warn("CHANNEL_SECRET not set, skipping signature verification");
+    return true;
+  }
+
+  const signature = req.get("x-line-signature");
   if (!signature || !req.rawBody) return false;
 
-  const digest = crypto
+  const hash = crypto
     .createHmac("SHA256", CHANNEL_SECRET)
     .update(req.rawBody)
     .digest("base64");
 
-  try {
-    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
-  } catch {
-    return false;
-  }
+  return hash === signature;
 }
 
-app.get("/", (_req, res) => {
-  res.status(200).send("Foundation Bot Running 🚀");
-});
-
-app.get("/health", (_req, res) => {
-  res.status(200).json({ ok: true, service: "foundation-bot" });
-});
-
-app.get("/webhook", (_req, res) => {
-  res.status(200).send("Webhook endpoint is ready. LINE will call this endpoint with POST.");
-});
-
+/**
+ * เรียก LINE Reply API
+ */
 async function callLineReplyApi(replyToken, messages) {
   const response = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
@@ -60,23 +66,34 @@ async function callLineReplyApi(replyToken, messages) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
     },
-    body: JSON.stringify({ replyToken, messages }),
+    body: JSON.stringify({
+      replyToken,
+      messages,
+    }),
   });
 
-  const text = await response.text();
+  const resultText = await response.text();
+
   console.log("LINE reply status:", response.status);
-  console.log("LINE reply body:", text);
+  console.log("LINE reply body:", resultText);
 
   if (!response.ok) {
-    throw new Error(`LINE reply failed: ${response.status} ${text}`);
+    throw new Error(`LINE reply failed: ${response.status} ${resultText}`);
   }
+
+  return resultText;
 }
 
-async function safeReply(replyToken, primaryMessages, fallbackMessages) {
+/**
+ * reply แบบปลอดภัย
+ * ถ้า Flex พัง จะ fallback เป็น text
+ */
+async function safeReply(replyToken, messages, fallbackMessages = null) {
   try {
-    await callLineReplyApi(replyToken, primaryMessages);
+    await callLineReplyApi(replyToken, messages);
   } catch (error) {
     console.error("Primary reply failed:", error.message);
+
     if (fallbackMessages) {
       try {
         await callLineReplyApi(replyToken, fallbackMessages);
@@ -90,136 +107,234 @@ async function safeReply(replyToken, primaryMessages, fallbackMessages) {
   }
 }
 
-function projectLinksMessage() {
+/**
+ * สร้าง bubble card
+ */
+function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
   return {
-    type: "text",
-    text:
-      "โครงการช่วยเหลือของมูลนิธิ\n\n" +
-      "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
-      "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
-      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
-      "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
-    quickReply: {
-      items: [
+    type: "bubble",
+    hero: {
+      type: "image",
+      url: imageUrl,
+      size: "full",
+      aspectRatio: "1:1",
+      aspectMode: "cover",
+      action: {
+        type: "uri",
+        uri: projectUrl,
+      },
+    },
+    body: {
+      type: "box",
+      layout: "vertical",
+      spacing: "sm",
+      contents: [
         {
-          type: "action",
-          action: { type: "message", label: "เมนูหลัก", text: "กลับสู่เมนูหลัก" },
+          type: "text",
+          text: title,
+          weight: "bold",
+          size: "lg",
+          wrap: true,
         },
         {
-          type: "action",
-          action: { type: "message", label: "ติดต่อเจ้าหน้าที่", text: "ติดต่อเจ้าหน้าที่" },
+          type: "text",
+          text: subtitle,
+          size: "sm",
+          color: "#666666",
+          wrap: true,
         },
       ],
+    },
+    footer: {
+      type: "box",
+      layout: "vertical",
+      spacing: "sm",
+      contents: [
+        {
+          type: "button",
+          style: "primary",
+          height: "sm",
+          action: {
+            type: "uri",
+            label: "ดูโครงการ",
+            uri: projectUrl,
+          },
+        },
+      ],
+      flex: 0,
     },
   };
 }
 
-function moreProjectLinksMessage() {
-  return {
+/**
+ * Flex Carousel 7 โครงการ
+ */
+const donationFlex = {
+  type: "flex",
+  altText: "โครงการช่วยเหลือของมูลนิธิ",
+  contents: {
+    type: "carousel",
+    contents: [
+      createProjectBubble(
+        "ซากาตเพื่อผู้ยากไร้",
+        "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
+        "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
+      ),
+      createProjectBubble(
+        "การศึกษา",
+        "สนับสนุนอนาคตของเด็ก ๆ",
+        "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
+      ),
+      createProjectBubble(
+        "ที่อยู่อาศัย",
+        "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
+        "https://img5.pic.in.th/file/secure-sv1/KCK3.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
+      ),
+      createProjectBubble(
+        "ภัยพิบัติ",
+        "ช่วยเหลือผู้ประสบเหตุเร่งด่วน",
+        "https://img5.pic.in.th/file/secure-sv1/KCK4.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
+      ),
+      createProjectBubble(
+        "มัสยิด",
+        "ร่วมสร้างศาสนสถานเพื่อชุมชน",
+        "https://img2.pic.in.th/KCK54af3446f47283561.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
+      ),
+      createProjectBubble(
+        "เด็กกำพร้า",
+        "ส่งต่อโอกาสและอนาคตที่ดี",
+        "https://img5.pic.in.th/file/secure-sv1/KCK6.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
+      ),
+      createProjectBubble(
+        "มูลนิธิ",
+        "สนับสนุนภารกิจช่วยเหลือสังคม",
+        "https://img5.pic.in.th/file/secure-sv1/KCK7.png",
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
+      ),
+    ],
+  },
+};
+
+/**
+ * fallback กรณี Flex ไม่ผ่าน
+ */
+const donationFallbackText = [
+  {
+    type: "text",
+    text:
+      "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
+      "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
+      "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
+      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
+      "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
+  },
+  {
     type: "text",
     text:
       "โครงการเพิ่มเติม\n\n" +
       "5) มัสยิด\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid\n\n" +
       "6) เด็กกำพร้า\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan\n\n" +
       "7) มูลนิธิ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation",
-  };
-}
+  },
+];
 
-function mainMenuMessage() {
-  return {
-    type: "text",
-    text:
-      "เมนูหลักพร้อมใช้งานครับ 🙏\n\nเลือกพิมพ์คำสั่งได้เลย:\n- บริจาค\n- ดูโครงการ\n- ติดต่อเจ้าหน้าที่\n- ขอความช่วยเหลือ\n- เกี่ยวกับมูลนิธิ",
-    quickReply: {
-      items: [
-        {
-          type: "action",
-          action: { type: "message", label: "บริจาค", text: "บริจาค" },
-        },
-        {
-          type: "action",
-          action: { type: "message", label: "ดูโครงการ", text: "ดูโครงการ" },
-        },
-        {
-          type: "action",
-          action: { type: "message", label: "ขอความช่วยเหลือ", text: "ขอความช่วยเหลือ" },
-        },
-      ],
-    },
-  };
-}
-
-function normalizeText(text) {
-  return String(text || "").trim().toLowerCase();
-}
+/**
+ * เมนูหลัก
+ */
+const mainMenuText = {
+  type: "text",
+  text:
+    "เมนูหลักพร้อมใช้งานครับ 🙏\n\n" +
+    "พิมพ์คำสั่งได้เลย เช่น\n" +
+    "- บริจาค\n" +
+    "- ดูโครงการ\n" +
+    "- ติดต่อเจ้าหน้าที่\n" +
+    "- ขอความช่วยเหลือ\n" +
+    "- เกี่ยวกับมูลนิธิ",
+};
 
 app.post("/webhook", async (req, res) => {
   try {
-    if (!verifyLineSignature(req)) {
+    if (!verifySignature(req)) {
       console.error("Invalid LINE signature");
-      return res.sendStatus(401);
+      return res.status(401).send("Invalid signature");
     }
 
     console.log("=== WEBHOOK IN ===");
     console.log(JSON.stringify(req.body, null, 2));
 
-    const events = Array.isArray(req.body.events) ? req.body.events : [];
+    const events = req.body.events || [];
 
     for (const event of events) {
       if (event.type !== "message") continue;
-      if (!event.replyToken || !event.message || event.message.type !== "text") continue;
+      if (!event.message || event.message.type !== "text") continue;
 
-      const text = normalizeText(event.message.text);
+      const replyToken = event.replyToken;
+      const text = event.message.text.trim();
+
       console.log("User text:", text);
 
       if (["บริจาค", "ซากาต", "ช่วยเหลือ", "ดูโครงการ"].includes(text)) {
-        await safeReply(
-          event.replyToken,
-          [projectLinksMessage(), moreProjectLinksMessage()],
-          [{ type: "text", text: "ระบบตอบกลับได้แล้วครับ ✅ กรุณาพิมพ์ 'ดูโครงการ' อีกครั้ง" }]
-        );
+        await safeReply(replyToken, [donationFlex], donationFallbackText);
         continue;
       }
 
-      if (text === "กลับสู่เมนูหลัก" || text === "เมนูหลัก") {
-        await safeReply(event.replyToken, [mainMenuMessage()]);
+      if (text === "กลับสู่เมนูหลัก") {
+        await safeReply(replyToken, [mainMenuText]);
         continue;
       }
 
       if (text === "ติดต่อเจ้าหน้าที่") {
-        await safeReply(event.replyToken, [
+        await safeReply(replyToken, [
           {
             type: "text",
-            text: "หากต้องการติดต่อเจ้าหน้าที่ กรุณาส่งชื่อ เบอร์โทร และรายละเอียดที่ต้องการติดต่อเข้ามาได้เลยครับ 🙏",
+            text:
+              "หากต้องการติดต่อเจ้าหน้าที่ กรุณาส่งข้อมูลดังนี้ครับ 🙏\n" +
+              "- ชื่อ\n" +
+              "- เบอร์โทร\n" +
+              "- รายละเอียดที่ต้องการติดต่อ",
           },
         ]);
         continue;
       }
 
       if (text === "ขอความช่วยเหลือ") {
-        await safeReply(event.replyToken, [
+        await safeReply(replyToken, [
           {
             type: "text",
-            text: "กรุณาส่งข้อมูลดังนี้\n- ชื่อผู้ขอความช่วยเหลือ\n- พื้นที่ที่อยู่\n- รายละเอียดปัญหา\n- เบอร์ติดต่อกลับ",
+            text:
+              "กรุณาส่งข้อมูลดังนี้\n" +
+              "- ชื่อผู้ขอความช่วยเหลือ\n" +
+              "- พื้นที่ที่อยู่\n" +
+              "- รายละเอียดปัญหา\n" +
+              "- เบอร์ติดต่อกลับ",
           },
         ]);
         continue;
       }
 
       if (text === "เกี่ยวกับมูลนิธิ") {
-        await safeReply(event.replyToken, [
+        await safeReply(replyToken, [
           {
             type: "text",
-            text: "มูลนิธิของเราดำเนินงานเพื่อช่วยเหลือผู้ยากไร้ สนับสนุนเคสเร่งด่วน และสร้างโอกาสให้ผู้ขาดแคลนในสังคม ❤️",
+            text:
+              "มูลนิธิของเราดำเนินงานเพื่อช่วยเหลือผู้ยากไร้ สนับสนุนเคสเร่งด่วน และสร้างโอกาสให้ผู้ขาดแคลนในสังคม ❤️",
           },
         ]);
         continue;
       }
 
-      await safeReply(event.replyToken, [
+      await safeReply(replyToken, [
         {
           type: "text",
-          text: "พิมพ์คำว่า 'บริจาค' หรือ 'ดูโครงการ' เพื่อดูโครงการช่วยเหลือครับ ❤️",
+          text:
+            "พิมพ์คำว่า 'บริจาค' เพื่อดูการ์ดโครงการช่วยเหลือแบบเลื่อนดูได้ ❤️",
         },
       ]);
     }
@@ -232,6 +347,5 @@ app.post("/webhook", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-  if (BASE_URL) console.log(`Configured BASE_URL: ${BASE_URL}`);
+  console.log("Server started on port " + PORT);
 });

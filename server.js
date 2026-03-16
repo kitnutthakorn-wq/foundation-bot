@@ -11,6 +11,7 @@ const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID || "";
 
 if (!CHANNEL_ACCESS_TOKEN) {
   console.error("❌ Missing CHANNEL_ACCESS_TOKEN in environment variables");
@@ -104,6 +105,31 @@ async function callLineReplyApi(replyToken, messages) {
   return resultText;
 }
 
+async function callLinePushApi(to, messages) {
+  const response = await fetch("https://api.line.me/v2/bot/message/push", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+    },
+    body: JSON.stringify({
+      to,
+      messages,
+    }),
+  });
+
+  const resultText = await response.text();
+
+  console.log("LINE push status:", response.status);
+  console.log("LINE push body:", resultText);
+
+  if (!response.ok) {
+    throw new Error(`LINE push failed: ${response.status} ${resultText}`);
+  }
+
+  return resultText;
+}
+
 async function safeReply(replyToken, messages, fallbackMessages = null) {
   try {
     await callLineReplyApi(replyToken, messages);
@@ -121,6 +147,20 @@ async function safeReply(replyToken, messages, fallbackMessages = null) {
       throw error;
     }
   }
+}
+
+async function pushTeamNotification(text) {
+  if (!TEAM_GROUP_ID) {
+    console.warn("⚠️ TEAM_GROUP_ID is not set yet, skipping team notification");
+    return;
+  }
+
+  await callLinePushApi(TEAM_GROUP_ID, [
+    {
+      type: "text",
+      text,
+    },
+  ]);
 }
 
 /* ---------------------------
@@ -284,16 +324,20 @@ async function saveHelpRequest(userId, text) {
     status: "new",
   });
 
-  const { data, error } = await supabase.from("help_requests").insert([
-    {
-      line_user_id: userId || "",
-      full_name,
-      phone,
-      location,
-      problem,
-      status: "new",
-    },
-  ]).select();
+  const { data, error } = await supabase
+    .from("help_requests")
+    .insert([
+      {
+        line_user_id: userId || "",
+        full_name,
+        phone,
+        location,
+        problem,
+        status: "new",
+      },
+    ])
+    .select()
+    .single();
 
   if (error) {
     console.error("SUPABASE ERROR:", error);
@@ -301,7 +345,27 @@ async function saveHelpRequest(userId, text) {
   }
 
   console.log("SUPABASE INSERT OK:", data);
+  return data;
 }
+
+/* ---------------------------
+   TEST TEAM NOTIFY
+---------------------------- */
+app.get("/test-team-notify", async (req, res) => {
+  try {
+    if (!TEAM_GROUP_ID) {
+      return res
+        .status(400)
+        .send("TEAM_GROUP_ID is not set yet");
+    }
+
+    await pushTeamNotification("🔔 ทดสอบแจ้งเตือนทีมงานจากระบบมูลนิธิ สำเร็จแล้ว");
+    return res.status(200).send("OK: team notification sent");
+  } catch (error) {
+    console.error("TEST TEAM NOTIFY ERROR:", error);
+    return res.status(500).send("ERROR: " + error.message);
+  }
+});
 
 /* ---------------------------
    WEBHOOK
@@ -319,6 +383,12 @@ app.post("/webhook", async (req, res) => {
     const events = req.body.events || [];
 
     for (const event of events) {
+      console.log("EVENT =", JSON.stringify(event, null, 2));
+
+      if (event.source && event.source.type === "group") {
+        console.log("GROUP ID =", event.source.groupId);
+      }
+
       if (event.type !== "message") continue;
       if (!event.message || event.message.type !== "text") continue;
 
@@ -334,7 +404,7 @@ app.post("/webhook", async (req, res) => {
         text.includes("เบอร์:")
       ) {
         try {
-          await saveHelpRequest(event.source?.userId, text);
+          const insertedCase = await saveHelpRequest(event.source?.userId, text);
 
           await safeReply(replyToken, [
             {
@@ -343,6 +413,20 @@ app.post("/webhook", async (req, res) => {
                 "ทีมงานได้รับข้อมูลแล้วครับ 🙏\nเราจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด",
             },
           ]);
+
+          const notifyText =
+            "🔔 มีเคสใหม่เข้าระบบ\n\n" +
+            `ชื่อ: ${insertedCase.full_name || "-"}\n` +
+            `โทร: ${insertedCase.phone || "-"}\n` +
+            `พื้นที่: ${insertedCase.location || "-"}\n` +
+            `รายละเอียด: ${insertedCase.problem || "-"}\n` +
+            `สถานะ: ${insertedCase.status || "new"}`;
+
+          try {
+            await pushTeamNotification(notifyText);
+          } catch (notifyError) {
+            console.error("TEAM NOTIFICATION FAILED:", notifyError.message);
+          }
         } catch (err) {
           console.error("SAVE HELP REQUEST FAILED:", err);
 

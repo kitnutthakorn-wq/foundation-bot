@@ -43,10 +43,6 @@ app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook endpoint is ready ✅");
 });
 
-app.get("/webhook", (req, res) => {
-  res.status(200).send("Webhook endpoint is ready ✅");
-});
-
 /**
  * ตรวจลายเซ็นจาก LINE
  * ถ้าไม่มี CHANNEL_SECRET จะข้ามการตรวจ

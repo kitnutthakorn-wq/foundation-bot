@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const crypto = require("crypto");
+const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,14 +10,20 @@ const PORT = process.env.PORT || 3000;
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
 
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 if (!CHANNEL_ACCESS_TOKEN) {
-  console.error("Missing CHANNEL_ACCESS_TOKEN in environment variables");
+  console.error("Missing CHANNEL_ACCESS_TOKEN");
   process.exit(1);
 }
 
-/**
- * เก็บ raw body ไว้สำหรับ verify ลายเซ็น LINE
- */
+/* ---------------------------
+   BODY PARSER
+----------------------------*/
+
 app.use(
   express.json({
     verify: (req, res, buf) => {
@@ -27,12 +34,16 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 
+/* ---------------------------
+   ROUTES
+----------------------------*/
+
 app.get("/", (req, res) => {
-  res.status(200).send("Foundation Bot Running 🚀");
+  res.send("Foundation Bot Running 🚀");
 });
 
 app.get("/health", (req, res) => {
-  res.status(200).json({
+  res.json({
     ok: true,
     service: "foundation-line-bot",
     time: new Date().toISOString(),
@@ -40,20 +51,18 @@ app.get("/health", (req, res) => {
 });
 
 app.get("/webhook", (req, res) => {
-  res.status(200).send("Webhook endpoint is ready ✅");
+  res.send("Webhook ready");
 });
 
-/**
- * ตรวจลายเซ็นจาก LINE
- * ถ้าไม่มี CHANNEL_SECRET จะข้ามการตรวจ
- */
+/* ---------------------------
+   VERIFY SIGNATURE
+----------------------------*/
+
 function verifySignature(req) {
-  if (!CHANNEL_SECRET) {
-    console.warn("CHANNEL_SECRET not set, skipping signature verification");
-    return true;
-  }
+  if (!CHANNEL_SECRET) return true;
 
   const signature = req.get("x-line-signature");
+
   if (!signature || !req.rawBody) return false;
 
   const hash = crypto
@@ -64,9 +73,10 @@ function verifySignature(req) {
   return hash === signature;
 }
 
-/**
- * เรียก LINE Reply API
- */
+/* ---------------------------
+   LINE API
+----------------------------*/
+
 async function callLineReplyApi(replyToken, messages) {
   const response = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
@@ -80,62 +90,49 @@ async function callLineReplyApi(replyToken, messages) {
     }),
   });
 
-  const resultText = await response.text();
+  const text = await response.text();
 
-  console.log("LINE reply status:", response.status);
-  console.log("LINE reply body:", resultText);
+  console.log("LINE status:", response.status);
+  console.log("LINE body:", text);
 
   if (!response.ok) {
-    throw new Error(`LINE reply failed: ${response.status} ${resultText}`);
+    throw new Error(text);
   }
-
-  return resultText;
 }
 
-/**
- * reply แบบปลอดภัย
- * ถ้า Flex พัง จะ fallback เป็น text
- */
-async function safeReply(replyToken, messages, fallbackMessages = null) {
+async function safeReply(replyToken, messages, fallback = null) {
   try {
     await callLineReplyApi(replyToken, messages);
-  } catch (error) {
-    console.error("Primary reply failed:", error.message);
+  } catch (err) {
+    console.error("Primary reply failed:", err);
 
-    if (fallbackMessages) {
-      try {
-        await callLineReplyApi(replyToken, fallbackMessages);
-      } catch (fallbackError) {
-        console.error("Fallback reply failed:", fallbackError.message);
-        throw fallbackError;
-      }
-    } else {
-      throw error;
+    if (fallback) {
+      await callLineReplyApi(replyToken, fallback);
     }
   }
 }
 
-/**
- * สร้าง bubble card
- */
-function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
+/* ---------------------------
+   FLEX CARD
+----------------------------*/
+
+function createProjectBubble(title, subtitle, image, url) {
   return {
     type: "bubble",
     hero: {
       type: "image",
-      url: imageUrl,
+      url: image,
       size: "full",
       aspectRatio: "1:1",
       aspectMode: "cover",
       action: {
         type: "uri",
-        uri: projectUrl,
+        uri: url,
       },
     },
     body: {
       type: "box",
       layout: "vertical",
-      spacing: "sm",
       contents: [
         {
           type: "text",
@@ -156,159 +153,105 @@ function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
     footer: {
       type: "box",
       layout: "vertical",
-      spacing: "sm",
       contents: [
         {
           type: "button",
           style: "primary",
-          height: "sm",
           action: {
             type: "uri",
             label: "ดูโครงการ",
-            uri: projectUrl,
+            uri: url,
           },
         },
       ],
-      flex: 0,
     },
   };
 }
 
-/**
- * Flex Carousel 7 โครงการ
- */
 const donationFlex = {
   type: "flex",
-  altText: "โครงการช่วยเหลือของมูลนิธิ",
+  altText: "โครงการช่วยเหลือ",
   contents: {
     type: "carousel",
     contents: [
       createProjectBubble(
         "ซากาตเพื่อผู้ยากไร้",
-        "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
+        "ร่วมช่วยเหลือผู้ขาดแคลน",
         "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
       ),
       createProjectBubble(
         "การศึกษา",
-        "สนับสนุนอนาคตของเด็ก ๆ",
+        "สนับสนุนเด็กด้อยโอกาส",
         "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
       ),
       createProjectBubble(
-        "ที่อยู่อาศัย",
-        "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
-        "https://img5.pic.in.th/file/secure-sv1/KCK3.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
-      ),
-      createProjectBubble(
         "ภัยพิบัติ",
-        "ช่วยเหลือผู้ประสบเหตุเร่งด่วน",
+        "ช่วยเหลือผู้ประสบภัย",
         "https://img5.pic.in.th/file/secure-sv1/KCK4.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
-      ),
-      createProjectBubble(
-        "มัสยิด",
-        "ร่วมสร้างศาสนสถานเพื่อชุมชน",
-        "https://img2.pic.in.th/KCK54af3446f47283561.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
-      ),
-      createProjectBubble(
-        "เด็กกำพร้า",
-        "ส่งต่อโอกาสและอนาคตที่ดี",
-        "https://img5.pic.in.th/file/secure-sv1/KCK6.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
-      ),
-      createProjectBubble(
-        "มูลนิธิ",
-        "สนับสนุนภารกิจช่วยเหลือสังคม",
-        "https://img5.pic.in.th/file/secure-sv1/KCK7.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
       ),
     ],
   },
 };
 
-/**
- * fallback กรณี Flex ไม่ผ่าน
- */
-const donationFallbackText = [
+const donationFallback = [
   {
     type: "text",
     text:
-      "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
-      "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
-      "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
-      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
-      "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
-  },
-  {
-    type: "text",
-    text:
-      "โครงการเพิ่มเติม\n\n" +
-      "5) มัสยิด\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid\n\n" +
-      "6) เด็กกำพร้า\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan\n\n" +
-      "7) มูลนิธิ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation",
+      "ดูโครงการช่วยเหลือได้ที่\nhttps://preeminent-otter-b3610c.netlify.app/projects.html",
   },
 ];
 
-/**
- * เมนูหลัก
- */
-const mainMenuText = {
-  type: "text",
-  text:
-    "เมนูหลักพร้อมใช้งานครับ 🙏\n\n" +
-    "พิมพ์คำสั่งได้เลย เช่น\n" +
-    "- บริจาค\n" +
-    "- ดูโครงการ\n" +
-    "- ติดต่อเจ้าหน้าที่\n" +
-    "- ขอความช่วยเหลือ\n" +
-    "- เกี่ยวกับมูลนิธิ",
-};
+/* ---------------------------
+   SAVE HELP REQUEST
+----------------------------*/
+
+async function saveHelpRequest(userId, text) {
+  const name = text.match(/ชื่อ:(.*)/)?.[1]?.trim() || "";
+  const location = text.match(/พื้นที่:(.*)/)?.[1]?.trim() || "";
+  const problem = text.match(/รายละเอียด:(.*)/)?.[1]?.trim() || "";
+  const phone = text.match(/เบอร์:(.*)/)?.[1]?.trim() || "";
+
+  const { error } = await supabase.from("help_requests").insert([
+    {
+      line_user_id: userId,
+      name,
+      location,
+      problem,
+      phone,
+    },
+  ]);
+
+  if (error) {
+    console.log("SUPABASE ERROR:", error);
+  }
+}
+
+/* ---------------------------
+   WEBHOOK
+----------------------------*/
 
 app.post("/webhook", async (req, res) => {
   try {
     if (!verifySignature(req)) {
-      console.error("Invalid LINE signature");
       return res.status(401).send("Invalid signature");
     }
-
-    console.log("=== WEBHOOK IN ===");
-    console.log(JSON.stringify(req.body, null, 2));
 
     const events = req.body.events || [];
 
     for (const event of events) {
       if (event.type !== "message") continue;
-      if (!event.message || event.message.type !== "text") continue;
+      if (event.message.type !== "text") continue;
 
-      const replyToken = event.replyToken;
       const text = event.message.text.trim();
+      const replyToken = event.replyToken;
 
-      console.log("User text:", text);
+      console.log("USER:", text);
 
-      if (["บริจาค", "ซากาต", "ช่วยเหลือ", "ดูโครงการ"].includes(text)) {
-        await safeReply(replyToken, [donationFlex], donationFallbackText);
-        continue;
-      }
-
-      if (text === "กลับสู่เมนูหลัก") {
-        await safeReply(replyToken, [mainMenuText]);
-        continue;
-      }
-
-      if (text === "ติดต่อเจ้าหน้าที่") {
-        await safeReply(replyToken, [
-          {
-            type: "text",
-            text:
-              "หากต้องการติดต่อเจ้าหน้าที่ กรุณาส่งข้อมูลดังนี้ครับ 🙏\n" +
-              "- ชื่อ\n" +
-              "- เบอร์โทร\n" +
-              "- รายละเอียดที่ต้องการติดต่อ",
-          },
-        ]);
+      if (text === "บริจาค") {
+        await safeReply(replyToken, [donationFlex], donationFallback);
         continue;
       }
 
@@ -317,24 +260,23 @@ app.post("/webhook", async (req, res) => {
           {
             type: "text",
             text:
-              "กรุณาส่งข้อมูลดังนี้\n" +
-              "- ชื่อผู้ขอความช่วยเหลือ\n" +
-              "- พื้นที่ที่อยู่\n" +
-              "- รายละเอียดปัญหา\n" +
-              "- เบอร์ติดต่อกลับ",
+              "กรุณาส่งข้อมูลดังนี้\n\nชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:",
           },
         ]);
         continue;
       }
 
-      if (text === "เกี่ยวกับมูลนิธิ") {
+      if (text.includes("ชื่อ:") && text.includes("พื้นที่:")) {
+        await saveHelpRequest(event.source.userId, text);
+
         await safeReply(replyToken, [
           {
             type: "text",
             text:
-              "มูลนิธิของเราดำเนินงานเพื่อช่วยเหลือผู้ยากไร้ สนับสนุนเคสเร่งด่วน และสร้างโอกาสให้ผู้ขาดแคลนในสังคม ❤️",
+              "ทีมงานได้รับข้อมูลแล้วครับ 🙏\nเราจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด",
           },
         ]);
+
         continue;
       }
 
@@ -342,18 +284,22 @@ app.post("/webhook", async (req, res) => {
         {
           type: "text",
           text:
-            "พิมพ์คำว่า 'บริจาค' เพื่อดูการ์ดโครงการช่วยเหลือแบบเลื่อนดูได้ ❤️",
+            "พิมพ์ 'บริจาค' เพื่อดูโครงการ\nหรือพิมพ์ 'ขอความช่วยเหลือ'",
         },
       ]);
     }
 
-    return res.sendStatus(200);
+    res.sendStatus(200);
   } catch (err) {
-    console.error("WEBHOOK ERROR:", err);
-    return res.sendStatus(200);
+    console.error(err);
+    res.sendStatus(200);
   }
 });
 
+/* ---------------------------
+   START SERVER
+----------------------------*/
+
 app.listen(PORT, () => {
-  console.log("Server started on port " + PORT);
+  console.log("Server running on port " + PORT);
 });

@@ -293,7 +293,7 @@ async function saveHelpRequest(userId, text) {
       problem,
       status: "new",
     },
-  ]);
+  ]).select();
 
   if (error) {
     console.error("SUPABASE ERROR:", error);

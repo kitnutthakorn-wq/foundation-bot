@@ -1,826 +1,939 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const express = require("express");
-const crypto = require("crypto");
-const { createClient } = require("@supabase/supabase-js");
+const express = require('express');
+const axios = require('axios');
+const crypto = require('crypto');
+const cron = require('node-cron');
+const { Pool } = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+/* =========================
+   CONFIG
+========================= */
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
-const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
-const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID || "";
+const CHANNEL_SECRET = process.env.CHANNEL_SECRET;
+const LINE_GROUP_ID = process.env.LINE_GROUP_ID || '';
+const BASE_URL = process.env.BASE_URL || '';
 
-if (!CHANNEL_ACCESS_TOKEN) {
-  console.error("❌ Missing CHANNEL_ACCESS_TOKEN in environment variables");
-  process.exit(1);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL?.includes('localhost')
+    ? false
+    : { rejectUnauthorized: false }
+});
+
+function parseIds(str = '') {
+  return str
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error("❌ Missing SUPABASE_URL or SUPABASE_KEY in environment variables");
-  process.exit(1);
-}
+const ADMIN_USER_IDS = parseIds(process.env.ADMIN_USER_IDS);
+const STAFF_USER_IDS = parseIds(process.env.STAFF_USER_IDS);
+const VIEWER_USER_IDS = parseIds(process.env.VIEWER_USER_IDS);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+/* =========================
+   EXPRESS RAW BODY FOR LINE SIGNATURE
+========================= */
+app.use('/webhook', express.raw({ type: '*/*' }));
+app.use(express.json());
 
-app.use(
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
-    },
-  })
-);
-app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.status(200).send("Foundation Bot Running 🚀");
-});
-
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    ok: true,
-    service: "foundation-line-bot",
-    time: new Date().toISOString(),
-  });
-});
-
-app.get("/version", (req, res) => {
-  res.status(200).send("server version: case-management-v1");
-});
-
-app.get("/webhook", (req, res) => {
-  res.status(200).send("Webhook endpoint is ready ✅");
-});
-
-function verifySignature(req) {
-  if (!CHANNEL_SECRET) {
-    console.warn("⚠️ CHANNEL_SECRET not set, skipping signature verification");
-    return true;
-  }
-
-  const signature = req.get("x-line-signature");
-  if (!signature || !req.rawBody) return false;
-
+/* =========================
+   HELPERS
+========================= */
+function verifyLineSignature(rawBody, signature) {
+  if (!CHANNEL_SECRET) return false;
   const hash = crypto
-    .createHmac("SHA256", CHANNEL_SECRET)
-    .update(req.rawBody)
-    .digest("base64");
-
+    .createHmac('SHA256', CHANNEL_SECRET)
+    .update(rawBody)
+    .digest('base64');
   return hash === signature;
 }
 
-async function callLineReplyApi(replyToken, messages) {
-  const response = await fetch("https://api.line.me/v2/bot/message/reply", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
-    },
-    body: JSON.stringify({ replyToken, messages }),
-  });
-
-  const resultText = await response.text();
-  console.log("LINE reply status:", response.status);
-  console.log("LINE reply body:", resultText);
-
-  if (!response.ok) {
-    throw new Error(`LINE reply failed: ${response.status} ${resultText}`);
-  }
-
-  return resultText;
+function getUserRole(userId) {
+  if (ADMIN_USER_IDS.includes(userId)) return 'admin';
+  if (STAFF_USER_IDS.includes(userId)) return 'staff';
+  if (VIEWER_USER_IDS.includes(userId)) return 'viewer';
+  return 'guest';
 }
 
-async function callLinePushApi(to, messages) {
-  const response = await fetch("https://api.line.me/v2/bot/message/push", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
-    },
-    body: JSON.stringify({ to, messages }),
-  });
-
-  const resultText = await response.text();
-  console.log("LINE push status:", response.status);
-  console.log("LINE push body:", resultText);
-
-  if (!response.ok) {
-    throw new Error(`LINE push failed: ${response.status} ${resultText}`);
-  }
-
-  return resultText;
+function hasPermission(userId, allowedRoles = []) {
+  return allowedRoles.includes(getUserRole(userId));
 }
 
-async function safeReply(replyToken, messages, fallbackMessages = null) {
-  try {
-    await callLineReplyApi(replyToken, messages);
-  } catch (error) {
-    console.error("Primary reply failed:", error.message);
-
-    if (fallbackMessages) {
-      try {
-        await callLineReplyApi(replyToken, fallbackMessages);
-      } catch (fallbackError) {
-        console.error("Fallback reply failed:", fallbackError.message);
-        throw fallbackError;
-      }
-    } else {
-      throw error;
-    }
-  }
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
-async function pushTeamNotification(text) {
-  if (!TEAM_GROUP_ID) {
-    console.warn("⚠️ TEAM_GROUP_ID is not set yet, skipping team notification");
-    return;
-  }
-
-  await callLinePushApi(TEAM_GROUP_ID, [{ type: "text", text }]);
+function pad(n) {
+  return String(n).padStart(2, '0');
 }
 
-function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
-  return {
-    type: "bubble",
-    hero: {
-      type: "image",
-      url: imageUrl,
-      size: "full",
-      aspectRatio: "1:1",
-      aspectMode: "cover",
-      action: {
-        type: "uri",
-        uri: projectUrl,
-      },
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      spacing: "sm",
-      contents: [
-        {
-          type: "text",
-          text: title,
-          weight: "bold",
-          size: "lg",
-          wrap: true,
-        },
-        {
-          type: "text",
-          text: subtitle,
-          size: "sm",
-          color: "#666666",
-          wrap: true,
-        },
-      ],
-    },
-    footer: {
-      type: "box",
-      layout: "vertical",
-      spacing: "sm",
-      contents: [
-        {
-          type: "button",
-          style: "primary",
-          height: "sm",
-          action: {
-            type: "uri",
-            label: "ดูโครงการ",
-            uri: projectUrl,
-          },
-        },
-      ],
-      flex: 0,
-    },
-  };
+function formatThaiDate(dateValue) {
+  if (!dateValue) return '-';
+  const d = new Date(dateValue);
+  if (isNaN(d.getTime())) return '-';
+
+  const dd = pad(d.getDate());
+  const mm = pad(d.getMonth() + 1);
+  const yyyy = d.getFullYear();
+  const hh = pad(d.getHours());
+  const mi = pad(d.getMinutes());
+
+  return `${dd}/${mm}/${yyyy} ${hh}:${mi}`;
 }
 
-const donationFlex = {
-  type: "flex",
-  altText: "โครงการช่วยเหลือของมูลนิธิ",
-  contents: {
-    type: "carousel",
-    contents: [
-      createProjectBubble(
-        "ซากาตเพื่อผู้ยากไร้",
-        "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
-        "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
-      ),
-      createProjectBubble(
-        "การศึกษา",
-        "สนับสนุนอนาคตของเด็ก ๆ",
-        "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
-      ),
-      createProjectBubble(
-        "ที่อยู่อาศัย",
-        "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
-        "https://img5.pic.in.th/file/secure-sv1/KCK3.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
-      ),
-      createProjectBubble(
-        "ภัยพิบัติ",
-        "ช่วยเหลือผู้ประสบเหตุเร่งด่วน",
-        "https://img5.pic.in.th/file/secure-sv1/KCK4.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
-      ),
-      createProjectBubble(
-        "อาสาพามัยยิดกลับบ้าน",
-        "ร่วมสร้างความดีพาร่างผู้เสียชีวิตกลับภูมิลำเนา",
-        "https://img2.pic.in.th/KCK54af3446f47283561.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
-      ),
-      createProjectBubble(
-        "เด็กกำพร้า",
-        "ส่งต่อโอกาสและอนาคตที่ดี",
-        "https://img5.pic.in.th/file/secure-sv1/KCK6.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
-      ),
-      createProjectBubble(
-        "มูลนิธิคนช่วยฅน",
-        "สนับสนุนภารกิจช่วยเหลือสังคม",
-        "https://img5.pic.in.th/file/secure-sv1/KCK7.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
-      ),
-    ],
-  },
-};
-
-const donationFallbackText = [
-  {
-    type: "text",
-    text:
-      "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
-      "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
-      "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
-      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
-      "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
-  },
-  {
-    type: "text",
-    text:
-      "โครงการเพิ่มเติม\n\n" +
-      "5) มัสยิด\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid\n\n" +
-      "6) เด็กกำพร้า\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan\n\n" +
-      "7) มูลนิธิ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation",
-  },
-];
-
-const mainMenuText = {
-  type: "text",
-  text:
-    "เมนูหลักพร้อมใช้งานครับ 🙏\n\n" +
-    "สำหรับผู้ใช้งานทั่วไป:\n" +
-    "- บริจาค\n" +
-    "- ขอความช่วยเหลือ\n" +
-    "- เกี่ยวกับมูลนิธิ\n\n" +
-    "สำหรับทีมงาน:\n" +
-    "- ดูเคสใหม่\n" +
-    "- ดูเคสด่วน\n" +
-    "- เคสวันนี้\n" +
-    "- รับเคส CASE-YYYYMMDD-0001\n" +
-    "- ปิดเคส CASE-YYYYMMDD-0001\n" +
-    "- เปลี่ยนสถานะ CASE-YYYYMMDD-0001 in_progress",
-};
-
-function getDateKey() {
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
-  return `${yyyy}${mm}${dd}`;
+function getDateKeyBangkok(date = new Date()) {
+  const bangkok = new Date(
+    date.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' })
+  );
+  const y = bangkok.getFullYear();
+  const m = pad(bangkok.getMonth() + 1);
+  const d = pad(bangkok.getDate());
+  return `${y}${m}${d}`;
 }
 
-async function generateCaseCode() {
-  const dateKey = getDateKey();
+async function generateCaseId() {
+  const dateKey = getDateKeyBangkok();
   const prefix = `CASE-${dateKey}-`;
 
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("case_code")
-    .ilike("case_code", `${prefix}%`)
-    .order("case_code", { ascending: false })
-    .limit(1);
+  const result = await pool.query(
+    `
+    SELECT case_id
+    FROM cases
+    WHERE case_id LIKE $1
+    ORDER BY case_id DESC
+    LIMIT 1
+    `,
+    [`${prefix}%`]
+  );
 
-  if (error) {
-    console.error("GENERATE CASE CODE ERROR:", error);
-    throw error;
+  let seq = 1;
+  if (result.rows.length > 0) {
+    const lastId = result.rows[0].case_id || '';
+    const lastSeq = parseInt(lastId.split('-').pop(), 10);
+    if (!Number.isNaN(lastSeq)) seq = lastSeq + 1;
   }
 
-  let nextNumber = 1;
-
-  if (data && data.length > 0 && data[0].case_code) {
-    const lastCode = data[0].case_code;
-    const lastSeq = parseInt(lastCode.split("-")[2], 10);
-    if (!Number.isNaN(lastSeq)) {
-      nextNumber = lastSeq + 1;
-    }
-  }
-
-  return `${prefix}${String(nextNumber).padStart(4, "0")}`;
+  return `${prefix}${String(seq).padStart(3, '0')}`;
 }
 
-async function saveHelpRequest(userId, text) {
-  const full_name = text.match(/ชื่อ:\s*(.*)/)?.[1]?.trim() || "";
-  const location = text.match(/พื้นที่:\s*(.*)/)?.[1]?.trim() || "";
-  const problem = text.match(/รายละเอียด:\s*(.*)/)?.[1]?.trim() || "";
-  const phone = text.match(/เบอร์:\s*(.*)/)?.[1]?.trim() || "";
-
-  const lowerText = text.toLowerCase();
-  let priority = "normal";
-
-  if (
-    lowerText.includes("ด่วน") ||
-    lowerText.includes("ฉุกเฉิน") ||
-    lowerText.includes("ไม่มีอาหาร") ||
-    lowerText.includes("ไม่มีที่อยู่")
-  ) {
-    priority = "urgent";
+async function replyText(replyToken, text) {
+  if (!replyToken || !CHANNEL_ACCESS_TOKEN) return;
+  try {
+    await axios.post(
+      'https://api.line.me/v2/bot/message/reply',
+      {
+        replyToken,
+        messages: [{ type: 'text', text: text.slice(0, 5000) }]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  } catch (err) {
+    console.error('replyText error:', err.response?.data || err.message);
   }
+}
 
-  const case_code = await generateCaseCode();
+async function pushText(to, text) {
+  if (!to || !CHANNEL_ACCESS_TOKEN) return;
+  try {
+    await axios.post(
+      'https://api.line.me/v2/bot/message/push',
+      {
+        to,
+        messages: [{ type: 'text', text: text.slice(0, 5000) }]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  } catch (err) {
+    console.error('pushText error:', err.response?.data || err.message);
+  }
+}
 
-  console.log("SAVE HELP REQUEST:", {
-    case_code,
-    line_user_id: userId || "",
-    full_name,
-    location,
-    problem,
-    phone,
-    status: "new",
-    priority,
+async function getLineProfile(userId) {
+  if (!userId || !CHANNEL_ACCESS_TOKEN) return null;
+  try {
+    const res = await axios.get(`https://api.line.me/v2/bot/profile/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`
+      }
+    });
+    return res.data;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function writeCaseLog({
+  caseId,
+  action,
+  actorUserId = null,
+  actorName = null,
+  note = null
+}) {
+  try {
+    await pool.query(
+      `
+      INSERT INTO case_logs (case_id, action, actor_user_id, actor_name, note)
+      VALUES ($1, $2, $3, $4, $5)
+      `,
+      [caseId, action, actorUserId, actorName, note]
+    );
+  } catch (err) {
+    console.error('writeCaseLog error:', err.message);
+  }
+}
+
+function normalizeStatus(text = '') {
+  const t = text.trim().toLowerCase();
+
+  if (['ใหม่', 'new'].includes(t)) return 'ใหม่';
+  if (['ด่วน', 'urgent'].includes(t)) return 'ด่วน';
+  if (
+    ['กำลังดำเนินการ', 'ดำเนินการ', 'inprogress', 'in progress', 'processing'].includes(t)
+  ) return 'กำลังดำเนินการ';
+  if (['รอข้อมูล', 'pending'].includes(t)) return 'รอข้อมูล';
+  if (['ปิดเคส', 'ปิด', 'closed', 'done'].includes(t)) return 'ปิดเคส';
+
+  return text.trim();
+}
+
+function normalizePriority(text = '') {
+  const t = text.trim().toLowerCase();
+
+  if (['ด่วน', 'urgent', 'high'].includes(t)) return 'ด่วน';
+  if (['ปกติ', 'normal', 'medium'].includes(t)) return 'ปกติ';
+  if (['ต่ำ', 'low'].includes(t)) return 'ต่ำ';
+
+  return text.trim() || 'ปกติ';
+}
+
+/* =========================
+   DB INIT
+========================= */
+async function initDatabase() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS cases (
+      id SERIAL PRIMARY KEY,
+      case_id VARCHAR(50) UNIQUE NOT NULL,
+      full_name VARCHAR(255),
+      phone VARCHAR(100),
+      province VARCHAR(255),
+      help_type VARCHAR(255),
+      description TEXT,
+      status VARCHAR(100) DEFAULT 'ใหม่',
+      priority VARCHAR(100) DEFAULT 'ปกติ',
+      assigned_to VARCHAR(255),
+      assigned_user_id VARCHAR(100),
+      source VARCHAR(100) DEFAULT 'system',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      closed_at TIMESTAMP NULL
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS case_logs (
+      id SERIAL PRIMARY KEY,
+      case_id VARCHAR(50) NOT NULL,
+      action VARCHAR(100) NOT NULL,
+      actor_user_id VARCHAR(100),
+      actor_name VARCHAR(255),
+      note TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_cases_case_id ON cases(case_id);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_cases_priority ON cases(priority);
+  `);
+
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_cases_created_at ON cases(created_at);
+  `);
+
+  console.log('✅ Database initialized');
+}
+
+/* =========================
+   CASE FUNCTIONS
+========================= */
+async function createCase(data = {}) {
+  const caseId = await generateCaseId();
+
+  const fullName = data.full_name?.trim() || data.name?.trim() || '';
+  const phone = data.phone?.trim() || '';
+  const province = data.province?.trim() || '';
+  const helpType = data.help_type?.trim() || '';
+  const description = data.description?.trim() || '';
+  const priority = normalizePriority(data.priority || 'ปกติ');
+  const source = data.source?.trim() || 'api';
+  const status = normalizeStatus(data.status || (priority === 'ด่วน' ? 'ด่วน' : 'ใหม่'));
+
+  await pool.query(
+    `
+    INSERT INTO cases
+    (case_id, full_name, phone, province, help_type, description, status, priority, source, created_at, updated_at)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW())
+    `,
+    [caseId, fullName, phone, province, helpType, description, status, priority, source]
+  );
+
+  await writeCaseLog({
+    caseId,
+    action: 'create_case',
+    note: `สร้างเคสใหม่จาก ${source}`
   });
 
-  const { data, error } = await supabase
-    .from("help_requests")
-    .insert([
-      {
-        case_code,
-        line_user_id: userId || "",
-        full_name,
-        phone,
-        location,
-        problem,
-        status: "new",
-        priority,
-        notify_status: "pending",
-      },
-    ])
-    .select()
-    .single();
+  return caseId;
+}
 
-  if (error) {
-    console.error("SUPABASE ERROR:", error);
-    throw error;
+async function getCaseByCaseId(caseId) {
+  const result = await pool.query(
+    `SELECT * FROM cases WHERE case_id = $1 LIMIT 1`,
+    [caseId]
+  );
+  return result.rows[0] || null;
+}
+
+async function assignCase(caseId, actorUserId, actorName) {
+  const existing = await getCaseByCaseId(caseId);
+  if (!existing) return { ok: false, message: `ไม่พบเคส ${caseId}` };
+
+  if (existing.status === 'ปิดเคส') {
+    return { ok: false, message: `เคส ${caseId} ถูกปิดไปแล้ว` };
   }
 
-  console.log("SUPABASE INSERT OK:", data);
-  return data;
+  await pool.query(
+    `
+    UPDATE cases
+    SET assigned_to = $1,
+        assigned_user_id = $2,
+        status = 'กำลังดำเนินการ',
+        updated_at = NOW()
+    WHERE case_id = $3
+    `,
+    [actorName || actorUserId, actorUserId, caseId]
+  );
+
+  await writeCaseLog({
+    caseId,
+    action: 'assign_case',
+    actorUserId,
+    actorName,
+    note: 'รับเคส'
+  });
+
+  return { ok: true, message: `รับเคส ${caseId} เรียบร้อยแล้ว` };
 }
 
-async function getNewCases(limit = 10) {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("status", "new")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+async function closeCase(caseId, actorUserId, actorName) {
+  const existing = await getCaseByCaseId(caseId);
+  if (!existing) return { ok: false, message: `ไม่พบเคส ${caseId}` };
 
-  if (error) throw error;
-  return data || [];
-}
-
-async function getUrgentCases(limit = 10) {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("priority", "urgent")
-    .in("status", ["new", "in_progress"])
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) throw error;
-  return data || [];
-}
-
-async function getTodayCases(limit = 20) {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .gte("created_at", start.toISOString())
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) throw error;
-  return data || [];
-}
-
-async function assignCase(caseCode, staffName = "ทีมงาน") {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .update({
-      status: "in_progress",
-      assigned_to: staffName,
-      assigned_at: new Date().toISOString(),
-    })
-    .eq("case_code", caseCode)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-async function closeCase(caseCode, staffName = "ทีมงาน") {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .update({
-      status: "done",
-      assigned_to: staffName,
-      closed_at: new Date().toISOString(),
-    })
-    .eq("case_code", caseCode)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-async function changeCaseStatus(caseCode, newStatus) {
-  const allowed = ["new", "in_progress", "done", "cancelled"];
-  if (!allowed.includes(newStatus)) {
-    throw new Error("Invalid status");
+  if (existing.status === 'ปิดเคส') {
+    return { ok: false, message: `เคส ${caseId} ปิดอยู่แล้ว` };
   }
 
-  const payload = { status: newStatus };
+  await pool.query(
+    `
+    UPDATE cases
+    SET status = 'ปิดเคส',
+        closed_at = NOW(),
+        updated_at = NOW()
+    WHERE case_id = $1
+    `,
+    [caseId]
+  );
 
-  if (newStatus === "done") {
-    payload.closed_at = new Date().toISOString();
-  }
+  await writeCaseLog({
+    caseId,
+    action: 'close_case',
+    actorUserId,
+    actorName,
+    note: 'ปิดเคส'
+  });
 
-  const { data, error } = await supabase
-    .from("help_requests")
-    .update(payload)
-    .eq("case_code", caseCode)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+  return { ok: true, message: `ปิดเคส ${caseId} เรียบร้อยแล้ว` };
 }
 
-function formatCaseLine(item) {
-  return (
-    `${item.case_code || "-"}\n` +
-    `ชื่อ: ${item.full_name || "-"}\n` +
-    `พื้นที่: ${item.location || "-"}\n` +
-    `โทร: ${item.phone || "-"}\n` +
-    `สถานะ: ${item.status || "-"}\n` +
-    `ระดับ: ${item.priority || "normal"}`
+async function changeCaseStatus(caseId, newStatus, actorUserId, actorName) {
+  const existing = await getCaseByCaseId(caseId);
+  if (!existing) return { ok: false, message: `ไม่พบเคส ${caseId}` };
+
+  const status = normalizeStatus(newStatus);
+  const closedAt = status === 'ปิดเคส' ? 'NOW()' : 'NULL';
+
+  await pool.query(
+    `
+    UPDATE cases
+    SET status = $1,
+        closed_at = ${closedAt},
+        updated_at = NOW()
+    WHERE case_id = $2
+    `,
+    [status, caseId]
+  );
+
+  await writeCaseLog({
+    caseId,
+    action: 'change_status',
+    actorUserId,
+    actorName,
+    note: `เปลี่ยนสถานะเป็น ${status}`
+  });
+
+  return { ok: true, message: `เปลี่ยนสถานะ ${caseId} เป็น "${status}" เรียบร้อยแล้ว` };
+}
+
+function renderCaseDetails(c) {
+  return [
+    `เลขเคส: ${c.case_id}`,
+    `ชื่อ: ${c.full_name || '-'}`,
+    `เบอร์: ${c.phone || '-'}`,
+    `จังหวัด: ${c.province || '-'}`,
+    `ประเภท: ${c.help_type || '-'}`,
+    `สถานะ: ${c.status || '-'}`,
+    `ความเร่งด่วน: ${c.priority || '-'}`,
+    `ผู้รับผิดชอบ: ${c.assigned_to || '-'}`,
+    `วันที่สร้าง: ${formatThaiDate(c.created_at)}`,
+    `อัปเดตล่าสุด: ${formatThaiDate(c.updated_at)}`,
+    '',
+    'รายละเอียด:',
+    c.description || '-'
+  ].join('\n');
+}
+
+function renderCaseList(title, rows = []) {
+  if (!rows.length) return `${title}\nไม่พบรายการ`;
+
+  const lines = [title];
+  rows.forEach((c, idx) => {
+    lines.push(
+      `${idx + 1}. ${c.case_id} | ${c.help_type || '-'} | ${c.status || '-'} | ${c.priority || '-'}`
+    );
+  });
+
+  lines.push('');
+  lines.push('พิมพ์: ดูเคส CASE-YYYYMMDD-001');
+  return lines.join('\n');
+}
+
+async function getDailySummaryText() {
+  const dateRes = await pool.query(`
+    SELECT TO_CHAR((NOW() AT TIME ZONE 'Asia/Bangkok'), 'DD/MM/YYYY') AS thai_date
+  `);
+  const thaiDate = dateRes.rows[0]?.thai_date || '-';
+
+  const todayNewRes = await pool.query(`
+    SELECT COUNT(*)::int AS count
+    FROM cases
+    WHERE DATE(created_at AT TIME ZONE 'Asia/Bangkok') = DATE(NOW() AT TIME ZONE 'Asia/Bangkok')
+  `);
+
+  const inProgressRes = await pool.query(`
+    SELECT COUNT(*)::int AS count
+    FROM cases
+    WHERE status = 'กำลังดำเนินการ'
+  `);
+
+  const closedTodayRes = await pool.query(`
+    SELECT COUNT(*)::int AS count
+    FROM cases
+    WHERE status = 'ปิดเคส'
+      AND DATE(updated_at AT TIME ZONE 'Asia/Bangkok') = DATE(NOW() AT TIME ZONE 'Asia/Bangkok')
+  `);
+
+  const urgentTodayRes = await pool.query(`
+    SELECT COUNT(*)::int AS count
+    FROM cases
+    WHERE priority = 'ด่วน'
+      AND DATE(created_at AT TIME ZONE 'Asia/Bangkok') = DATE(NOW() AT TIME ZONE 'Asia/Bangkok')
+  `);
+
+  const totalRes = await pool.query(`
+    SELECT COUNT(*)::int AS count
+    FROM cases
+  `);
+
+  const latestRes = await pool.query(`
+    SELECT case_id, help_type, status
+    FROM cases
+    ORDER BY created_at DESC
+    LIMIT 5
+  `);
+
+  const lines = [
+    '📊 รายงานประจำวัน',
+    `วันที่ ${thaiDate}`,
+    '',
+    `เคสใหม่วันนี้: ${todayNewRes.rows[0]?.count || 0}`,
+    `กำลังดำเนินการ: ${inProgressRes.rows[0]?.count || 0}`,
+    `ปิดเคสวันนี้: ${closedTodayRes.rows[0]?.count || 0}`,
+    `เคสด่วนวันนี้: ${urgentTodayRes.rows[0]?.count || 0}`,
+    `เคสสะสมทั้งหมด: ${totalRes.rows[0]?.count || 0}`,
+    '',
+    '5 เคสล่าสุด'
+  ];
+
+  if (!latestRes.rows.length) {
+    lines.push('- ยังไม่มีข้อมูล');
+  } else {
+    latestRes.rows.forEach((r) => {
+      lines.push(`- ${r.case_id} | ${r.help_type || '-'} | ${r.status || '-'}`);
+    });
+  }
+
+  return lines.join('\n');
+}
+
+async function sendDailySummaryToGroup() {
+  if (!LINE_GROUP_ID) {
+    console.log('ℹ️ LINE_GROUP_ID not set, skip daily summary push');
+    return;
+  }
+  const text = await getDailySummaryText();
+  await pushText(LINE_GROUP_ID, text);
+}
+
+/* =========================
+   LINE COMMAND HANDLER
+========================= */
+async function handleTextMessage(event) {
+  const replyToken = event.replyToken;
+  const text = (event.message?.text || '').trim();
+  const userId = event.source?.userId || '';
+  const role = getUserRole(userId);
+  const profile = await getLineProfile(userId);
+  const displayName = profile?.displayName || 'ทีมงาน';
+
+  // help
+  if (['เมนูทีมงาน', 'help', 'ช่วยเหลือทีมงาน'].includes(text.toLowerCase()) || text === 'เมนูทีมงาน') {
+    const msg = [
+      `สิทธิ์ของคุณ: ${role}`,
+      '',
+      'คำสั่งที่ใช้ได้:',
+      '- ดูเคสใหม่',
+      '- ดูเคสด่วน',
+      '- ดูเคสวันนี้',
+      '- ดูเคส CASE-20260316-001',
+      '- รายงานวันนี้',
+      '',
+      'สำหรับ staff/admin:',
+      '- รับเคส CASE-20260316-001',
+      '- เปลี่ยนสถานะ CASE-20260316-001 กำลังดำเนินการ',
+      '',
+      'สำหรับ admin:',
+      '- ปิดเคส CASE-20260316-001'
+    ].join('\n');
+
+    return replyText(replyToken, msg);
+  }
+
+  // ดูเคสใหม่
+  if (text === 'ดูเคสใหม่') {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const result = await pool.query(`
+      SELECT case_id, help_type, status, priority
+      FROM cases
+      WHERE status IN ('ใหม่', 'ด่วน')
+      ORDER BY created_at DESC
+      LIMIT 10
+    `);
+
+    return replyText(replyToken, renderCaseList('🆕 เคสใหม่ล่าสุด', result.rows));
+  }
+
+  // ดูเคสด่วน
+  if (text === 'ดูเคสด่วน') {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const result = await pool.query(`
+      SELECT case_id, help_type, status, priority
+      FROM cases
+      WHERE priority = 'ด่วน' AND status <> 'ปิดเคส'
+      ORDER BY created_at DESC
+      LIMIT 10
+    `);
+
+    return replyText(replyToken, renderCaseList('🚨 เคสด่วน', result.rows));
+  }
+
+  // ดูเคสวันนี้
+  if (text === 'ดูเคสวันนี้') {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const result = await pool.query(`
+      SELECT case_id, help_type, status, priority
+      FROM cases
+      WHERE DATE(created_at AT TIME ZONE 'Asia/Bangkok') = DATE(NOW() AT TIME ZONE 'Asia/Bangkok')
+      ORDER BY created_at DESC
+      LIMIT 20
+    `);
+
+    return replyText(replyToken, renderCaseList('📅 เคสวันนี้', result.rows));
+  }
+
+  // รายงานวันนี้ / สรุปรายวัน
+  if (['รายงานวันนี้', 'สรุปรายวัน', 'รายงานเคสวันนี้'].includes(text)) {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const summary = await getDailySummaryText();
+    return replyText(replyToken, summary);
+  }
+
+  // ดูเคส CASE-...
+  if (text.startsWith('ดูเคส ')) {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const caseId = text.replace(/^ดูเคส\s+/i, '').trim();
+    const c = await getCaseByCaseId(caseId);
+
+    if (!c) {
+      return replyText(replyToken, `ไม่พบเคส ${caseId}`);
+    }
+
+    return replyText(replyToken, renderCaseDetails(c));
+  }
+
+  // รายละเอียดเคส CASE-...
+  if (text.startsWith('รายละเอียดเคส ')) {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const caseId = text.replace(/^รายละเอียดเคส\s+/i, '').trim();
+    const c = await getCaseByCaseId(caseId);
+
+    if (!c) {
+      return replyText(replyToken, `ไม่พบเคส ${caseId}`);
+    }
+
+    return replyText(replyToken, renderCaseDetails(c));
+  }
+
+  // รับเคส CASE-...
+  if (text.startsWith('รับเคส ')) {
+    if (!hasPermission(userId, ['admin', 'staff'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะ staff / admin');
+    }
+
+    const caseId = text.replace(/^รับเคส\s+/i, '').trim();
+    const result = await assignCase(caseId, userId, displayName);
+    return replyText(replyToken, result.message);
+  }
+
+  // ปิดเคส CASE-...
+  if (text.startsWith('ปิดเคส ')) {
+    if (!hasPermission(userId, ['admin'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะ admin');
+    }
+
+    const caseId = text.replace(/^ปิดเคส\s+/i, '').trim();
+    const result = await closeCase(caseId, userId, displayName);
+    return replyText(replyToken, result.message);
+  }
+
+  // เปลี่ยนสถานะ CASE-... สถานะ...
+  if (text.startsWith('เปลี่ยนสถานะ ')) {
+    if (!hasPermission(userId, ['admin', 'staff'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะ staff / admin');
+    }
+
+    const match = text.match(/^เปลี่ยนสถานะ\s+(\S+)\s+(.+)$/i);
+    if (!match) {
+      return replyText(replyToken, 'รูปแบบคำสั่งไม่ถูกต้อง\nตัวอย่าง: เปลี่ยนสถานะ CASE-20260316-001 กำลังดำเนินการ');
+    }
+
+    const caseId = match[1].trim();
+    const newStatus = match[2].trim();
+    const result = await changeCaseStatus(caseId, newStatus, userId, displayName);
+    return replyText(replyToken, result.message);
+  }
+
+  // ถ้าพิมพ์เลขเคสมาเลย
+  if (/^CASE-\d{8}-\d{3}$/i.test(text)) {
+    if (!hasPermission(userId, ['admin', 'staff', 'viewer'])) {
+      return replyText(replyToken, 'ขออภัยครับ คำสั่งนี้ใช้ได้เฉพาะทีมงานที่ได้รับสิทธิ์');
+    }
+
+    const c = await getCaseByCaseId(text.toUpperCase());
+    if (!c) return replyText(replyToken, `ไม่พบเคส ${text}`);
+    return replyText(replyToken, renderCaseDetails(c));
+  }
+
+  return replyText(
+    replyToken,
+    'รับข้อความแล้วครับ\nพิมพ์ "เมนูทีมงาน" เพื่อดูคำสั่งที่รองรับ'
   );
 }
 
-app.get("/test-team-notify", async (req, res) => {
+/* =========================
+   LINE WEBHOOK
+========================= */
+app.post('/webhook', async (req, res) => {
   try {
-    if (!TEAM_GROUP_ID) {
-      return res.status(400).send("TEAM_GROUP_ID is not set yet");
+    const signature = req.headers['x-line-signature'];
+    const rawBody = req.body;
+
+    if (!verifyLineSignature(rawBody, signature)) {
+      return res.status(401).send('Invalid signature');
     }
 
-    await pushTeamNotification("🔔 ทดสอบแจ้งเตือนทีมงานจากระบบมูลนิธิ สำเร็จแล้ว");
-    return res.status(200).send("OK: team notification sent");
-  } catch (error) {
-    console.error("TEST TEAM NOTIFY ERROR:", error);
-    return res.status(500).send("ERROR: " + error.message);
-  }
-});
+    const bodyText = rawBody.toString('utf8');
+    const body = JSON.parse(bodyText);
 
-app.post("/webhook", async (req, res) => {
-  try {
-    if (!verifySignature(req)) {
-      console.error("❌ Invalid LINE signature");
-      return res.status(401).send("Invalid signature");
+    res.status(200).send('OK');
+
+    for (const event of body.events || []) {
+      try {
+        if (event.type === 'message' && event.message?.type === 'text') {
+          await handleTextMessage(event);
+        }
+      } catch (err) {
+        console.error('Event handling error:', err);
+      }
     }
-
-    console.log("=== WEBHOOK IN ===");
-    console.log(JSON.stringify(req.body, null, 2));
-
-    const events = req.body.events || [];
-
-    for (const event of events) {
-      console.log("EVENT =", JSON.stringify(event, null, 2));
-
-      if (event.source && event.source.type === "group") {
-        console.log("GROUP ID =", event.source.groupId);
-      }
-
-      if (event.type !== "message") continue;
-      if (!event.message || event.message.type !== "text") continue;
-
-      const replyToken = event.replyToken;
-      const text = event.message.text.trim();
-
-      console.log("User text:", text);
-
-      if (text === "ดูเคสใหม่") {
-        try {
-          const cases = await getNewCases(10);
-
-          if (!cases.length) {
-            await safeReply(replyToken, [
-              { type: "text", text: "ตอนนี้ยังไม่มีเคสใหม่ครับ" },
-            ]);
-            continue;
-          }
-
-          const msg =
-            "📋 เคสใหม่ล่าสุด\n\n" +
-            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
-
-          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
-        } catch (err) {
-          console.error("GET NEW CASES ERROR:", err);
-          await safeReply(replyToken, [
-            { type: "text", text: "ดึงเคสใหม่ไม่สำเร็จครับ" },
-          ]);
-        }
-        continue;
-      }
-
-      if (text === "ดูเคสด่วน") {
-        try {
-          const cases = await getUrgentCases(10);
-
-          if (!cases.length) {
-            await safeReply(replyToken, [
-              { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" },
-            ]);
-            continue;
-          }
-
-          const msg =
-            "🚨 เคสด่วน\n\n" +
-            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
-
-          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
-        } catch (err) {
-          console.error("GET URGENT CASES ERROR:", err);
-          await safeReply(replyToken, [
-            { type: "text", text: "ดึงเคสด่วนไม่สำเร็จครับ" },
-          ]);
-        }
-        continue;
-      }
-
-      if (text === "เคสวันนี้") {
-        try {
-          const cases = await getTodayCases(20);
-
-          if (!cases.length) {
-            await safeReply(replyToken, [
-              { type: "text", text: "วันนี้ยังไม่มีเคสเข้าระบบครับ" },
-            ]);
-            continue;
-          }
-
-          const msg =
-            "🗓️ เคสวันนี้\n\n" +
-            cases.map((item, index) => `${index + 1}.\n${formatCaseLine(item)}`).join("\n\n");
-
-          await safeReply(replyToken, [{ type: "text", text: msg.slice(0, 4900) }]);
-        } catch (err) {
-          console.error("GET TODAY CASES ERROR:", err);
-          await safeReply(replyToken, [
-            { type: "text", text: "ดึงเคสวันนี้ไม่สำเร็จครับ" },
-          ]);
-        }
-        continue;
-      }
-
-      if (text.startsWith("รับเคส ")) {
-        try {
-          const caseCode = text.replace("รับเคส ", "").trim();
-          const updated = await assignCase(caseCode, "ทีมงาน");
-
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text:
-                "✅ รับเคสเรียบร้อยแล้ว\n\n" +
-                `เลขเคส: ${updated.case_code}\n` +
-                `สถานะ: ${updated.status}\n` +
-                `ผู้รับเคส: ${updated.assigned_to || "-"}`,
-            },
-          ]);
-        } catch (err) {
-          console.error("ASSIGN CASE ERROR:", err);
-          await safeReply(replyToken, [
-            { type: "text", text: "รับเคสไม่สำเร็จ กรุณาตรวจเลขเคสอีกครั้ง" },
-          ]);
-        }
-        continue;
-      }
-
-      if (text.startsWith("ปิดเคส ")) {
-        try {
-          const caseCode = text.replace("ปิดเคส ", "").trim();
-          const updated = await closeCase(caseCode, "ทีมงาน");
-
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text:
-                "✅ ปิดเคสเรียบร้อยแล้ว\n\n" +
-                `เลขเคส: ${updated.case_code}\n` +
-                `สถานะ: ${updated.status}`,
-            },
-          ]);
-        } catch (err) {
-          console.error("CLOSE CASE ERROR:", err);
-          await safeReply(replyToken, [
-            { type: "text", text: "ปิดเคสไม่สำเร็จ กรุณาตรวจเลขเคสอีกครั้ง" },
-          ]);
-        }
-        continue;
-      }
-
-      if (text.startsWith("เปลี่ยนสถานะ ")) {
-        try {
-          const parts = text.split(" ");
-          if (parts.length < 3) {
-            await safeReply(replyToken, [
-              {
-                type: "text",
-                text: "รูปแบบคำสั่ง: เปลี่ยนสถานะ CASE-YYYYMMDD-0001 in_progress",
-              },
-            ]);
-            continue;
-          }
-
-          const caseCode = parts[1].trim();
-          const newStatus = parts[2].trim();
-          const updated = await changeCaseStatus(caseCode, newStatus);
-
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text:
-                "🔄 เปลี่ยนสถานะสำเร็จ\n\n" +
-                `เลขเคส: ${updated.case_code}\n` +
-                `สถานะใหม่: ${updated.status}`,
-            },
-          ]);
-        } catch (err) {
-          console.error("CHANGE STATUS ERROR:", err);
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text: "เปลี่ยนสถานะไม่สำเร็จ\nสถานะที่ใช้ได้: new, in_progress, done, cancelled",
-            },
-          ]);
-        }
-        continue;
-      }
-
-      if (
-        text.includes("ชื่อ:") &&
-        text.includes("พื้นที่:") &&
-        text.includes("รายละเอียด:") &&
-        text.includes("เบอร์:")
-      ) {
-        try {
-          const insertedCase = await saveHelpRequest(event.source?.userId, text);
-
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text:
-                "ทีมงานได้รับข้อมูลแล้วครับ 🙏\n" +
-                `เลขเคสของคุณคือ ${insertedCase.case_code}\n` +
-                "เราจะตรวจสอบและติดต่อกลับโดยเร็วที่สุด",
-            },
-          ]);
-
-          const notifyText =
-            "🔔 มีเคสใหม่เข้าระบบ\n\n" +
-            `เลขเคส: ${insertedCase.case_code || "-"}\n` +
-            `ชื่อ: ${insertedCase.full_name || "-"}\n` +
-            `โทร: ${insertedCase.phone || "-"}\n` +
-            `พื้นที่: ${insertedCase.location || "-"}\n` +
-            `รายละเอียด: ${insertedCase.problem || "-"}\n` +
-            `สถานะ: ${insertedCase.status || "new"}\n` +
-            `ระดับ: ${insertedCase.priority || "normal"}`;
-
-          try {
-            await pushTeamNotification(notifyText);
-
-            await supabase
-              .from("help_requests")
-              .update({
-                notify_status: "sent",
-                notified_at: new Date().toISOString(),
-              })
-              .eq("id", insertedCase.id);
-          } catch (notifyError) {
-            console.error("TEAM NOTIFICATION FAILED:", notifyError.message);
-
-            await supabase
-              .from("help_requests")
-              .update({
-                notify_status: "failed",
-              })
-              .eq("id", insertedCase.id);
-          }
-        } catch (err) {
-          console.error("SAVE HELP REQUEST FAILED:", err);
-
-          await safeReply(replyToken, [
-            {
-              type: "text",
-              text: "บันทึกข้อมูลไม่สำเร็จครับ กรุณาลองใหม่อีกครั้ง",
-            },
-          ]);
-        }
-        continue;
-      }
-
-      if (["บริจาค", "ซากาต", "ช่วยเหลือ", "ดูโครงการ"].includes(text)) {
-        await safeReply(replyToken, [donationFlex], donationFallbackText);
-        continue;
-      }
-
-      if (text === "กลับสู่เมนูหลัก") {
-        await safeReply(replyToken, [mainMenuText]);
-        continue;
-      }
-
-      if (text === "ติดต่อเจ้าหน้าที่") {
-        await safeReply(replyToken, [
-          {
-            type: "text",
-            text:
-              "หากต้องการติดต่อเจ้าหน้าที่ กรุณาส่งข้อมูลดังนี้ครับ 🙏\n" +
-              "- ชื่อ\n" +
-              "- เบอร์โทร\n" +
-              "- รายละเอียดที่ต้องการติดต่อ",
-          },
-        ]);
-        continue;
-      }
-
-      if (text === "ขอความช่วยเหลือ") {
-        await safeReply(replyToken, [
-          {
-            type: "text",
-            text:
-              "กรุณาส่งข้อมูลดังนี้\n" +
-              "ชื่อ:\n" +
-              "พื้นที่:\n" +
-              "รายละเอียด:\n" +
-              "เบอร์:",
-          },
-        ]);
-        continue;
-      }
-
-      if (text === "เกี่ยวกับมูลนิธิ") {
-        await safeReply(replyToken, [
-          {
-            type: "text",
-            text:
-              "มูลนิธิของเราดำเนินงานเพื่อช่วยเหลือผู้ยากไร้ สนับสนุนเคสเร่งด่วน และสร้างโอกาสให้ผู้ขาดแคลนในสังคม ❤️",
-          },
-        ]);
-        continue;
-      }
-
-      await safeReply(replyToken, [
-        {
-          type: "text",
-          text:
-            "พิมพ์คำว่า 'บริจาค' เพื่อดูการ์ดโครงการช่วยเหลือแบบเลื่อนดูได้ ❤️\n" +
-            "หรือพิมพ์ 'ขอความช่วยเหลือ' เพื่อส่งข้อมูลเคสครับ\n\n" +
-            "ทีมงานสามารถใช้คำสั่ง:\n" +
-            "- ดูเคสใหม่\n" +
-            "- ดูเคสด่วน\n" +
-            "- เคสวันนี้",
-        },
-      ]);
-    }
-
-    return res.sendStatus(200);
   } catch (err) {
-    console.error("WEBHOOK ERROR:", err);
-    return res.sendStatus(200);
+    console.error('Webhook error:', err);
+    return res.status(500).send('Webhook error');
   }
 });
 
-app.listen(PORT, () => {
-  console.log("✅ Server started on port " + PORT);
+/* =========================
+   PUBLIC API: CREATE CASE
+========================= */
+app.post('/api/cases', async (req, res) => {
+  try {
+    const {
+      full_name,
+      phone,
+      province,
+      help_type,
+      description,
+      priority,
+      source
+    } = req.body || {};
+
+    if (!full_name && !phone && !description) {
+      return res.status(400).json({
+        ok: false,
+        message: 'กรุณาส่งข้อมูลอย่างน้อย full_name หรือ phone หรือ description'
+      });
+    }
+
+    const caseId = await createCase({
+      full_name,
+      phone,
+      province,
+      help_type,
+      description,
+      priority,
+      source: source || 'web_form'
+    });
+
+    return res.json({
+      ok: true,
+      case_id: caseId,
+      message: 'สร้างเคสเรียบร้อย'
+    });
+  } catch (err) {
+    console.error('/api/cases error:', err);
+    return res.status(500).json({
+      ok: false,
+      message: 'สร้างเคสไม่สำเร็จ'
+    });
+  }
 });
+
+/* =========================
+   DASHBOARD API (พื้นฐาน)
+========================= */
+app.get('/api/dashboard/summary', async (req, res) => {
+  try {
+    const todayNewRes = await pool.query(`
+      SELECT COUNT(*)::int AS count
+      FROM cases
+      WHERE DATE(created_at AT TIME ZONE 'Asia/Bangkok') = DATE(NOW() AT TIME ZONE 'Asia/Bangkok')
+    `);
+
+    const inProgressRes = await pool.query(`
+      SELECT COUNT(*)::int AS count
+      FROM cases
+      WHERE status = 'กำลังดำเนินการ'
+    `);
+
+    const urgentOpenRes = await pool.query(`
+      SELECT COUNT(*)::int AS count
+      FROM cases
+      WHERE priority = 'ด่วน' AND status <> 'ปิดเคส'
+    `);
+
+    const closedThisMonthRes = await pool.query(`
+      SELECT COUNT(*)::int AS count
+      FROM cases
+      WHERE status = 'ปิดเคส'
+        AND DATE_TRUNC('month', updated_at AT TIME ZONE 'Asia/Bangkok')
+            = DATE_TRUNC('month', NOW() AT TIME ZONE 'Asia/Bangkok')
+    `);
+
+    res.json({
+      ok: true,
+      today_new: todayNewRes.rows[0]?.count || 0,
+      in_progress: inProgressRes.rows[0]?.count || 0,
+      urgent_open: urgentOpenRes.rows[0]?.count || 0,
+      closed_this_month: closedThisMonthRes.rows[0]?.count || 0
+    });
+  } catch (err) {
+    console.error('/api/dashboard/summary error:', err);
+    res.status(500).json({ ok: false, message: 'โหลด summary ไม่สำเร็จ' });
+  }
+});
+
+app.get('/api/dashboard/recent-cases', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT case_id, full_name, phone, province, help_type, status, priority, assigned_to, created_at
+      FROM cases
+      ORDER BY created_at DESC
+      LIMIT 20
+    `);
+
+    res.json({ ok: true, items: result.rows });
+  } catch (err) {
+    console.error('/api/dashboard/recent-cases error:', err);
+    res.status(500).json({ ok: false, message: 'โหลด recent cases ไม่สำเร็จ' });
+  }
+});
+
+app.get('/api/dashboard/daily-chart', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        TO_CHAR((created_at AT TIME ZONE 'Asia/Bangkok')::date, 'YYYY-MM-DD') AS day,
+        COUNT(*)::int AS total
+      FROM cases
+      WHERE (created_at AT TIME ZONE 'Asia/Bangkok')::date >= ((NOW() AT TIME ZONE 'Asia/Bangkok')::date - INTERVAL '6 days')
+      GROUP BY 1
+      ORDER BY 1 ASC
+    `);
+
+    res.json({ ok: true, items: result.rows });
+  } catch (err) {
+    console.error('/api/dashboard/daily-chart error:', err);
+    res.status(500).json({ ok: false, message: 'โหลด daily chart ไม่สำเร็จ' });
+  }
+});
+
+app.get('/api/dashboard/type-chart', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT help_type, COUNT(*)::int AS total
+      FROM cases
+      GROUP BY help_type
+      ORDER BY total DESC
+      LIMIT 10
+    `);
+
+    res.json({ ok: true, items: result.rows });
+  } catch (err) {
+    console.error('/api/dashboard/type-chart error:', err);
+    res.status(500).json({ ok: false, message: 'โหลด type chart ไม่สำเร็จ' });
+  }
+});
+
+/* =========================
+   HEALTH / HOME
+========================= */
+app.get('/', (req, res) => {
+  res.send(`
+    <h2>Foundation Case System Running</h2>
+    <p>Webhook: <code>/webhook</code></p>
+    <p>Create case API: <code>POST /api/cases</code></p>
+    <p>Dashboard summary: <code>/api/dashboard/summary</code></p>
+  `);
+});
+
+app.get('/health', async (req, res) => {
+  try {
+    const db = await pool.query('SELECT NOW()');
+    return res.json({
+      ok: true,
+      app: 'running',
+      db_time: db.rows[0]?.now || null
+    });
+  } catch (err) {
+    return res.status(500).json({
+      ok: false,
+      message: err.message
+    });
+  }
+});
+
+/* =========================
+   DAILY SUMMARY CRON
+========================= */
+// ส่งทุกวัน 18:00 เวลาไทย
+cron.schedule(
+  '0 18 * * *',
+  async () => {
+    try {
+      console.log('⏰ Running daily summary cron...');
+      await sendDailySummaryToGroup();
+    } catch (err) {
+      console.error('daily summary cron error:', err.message);
+    }
+  },
+  { timezone: 'Asia/Bangkok' }
+);
+
+/* =========================
+   START
+========================= */
+(async () => {
+  try {
+    await initDatabase();
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`✅ BASE_URL: ${BASE_URL || '(not set)'}`);
+    });
+  } catch (err) {
+    console.error('❌ Failed to start server:', err);
+    process.exit(1);
+  }
+})();

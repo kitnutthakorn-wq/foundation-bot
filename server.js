@@ -31,6 +31,18 @@ app.get("/", (req, res) => {
   res.status(200).send("Foundation Bot Running 🚀");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "foundation-line-bot",
+    time: new Date().toISOString(),
+  });
+});
+
+app.get("/webhook", (req, res) => {
+  res.status(200).send("Webhook endpoint is ready ✅");
+});
+
 app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook endpoint is ready ✅");
 });

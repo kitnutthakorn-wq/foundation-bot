@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executive Report Board Ready | คนช่วยฅน</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{--brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--card:#fff;--line:#dbe3ea;--muted:#6b7280;--shadow:0 10px 24px rgba(18,36,58,.08)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#16304e}
+    .container{max-width:1340px;margin:0 auto;padding:18px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand img{width:72px;height:72px;object-fit:contain;border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:6px}
+    h1{margin:0 0 6px;font-size:32px}
+    .subtitle,.meta{color:var(--muted)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    select,button{height:42px;border-radius:12px;border:1px solid var(--line);padding:0 12px;font-size:14px;background:#fff}
+    button{background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;padding:0 18px}
+    button.secondary{background:#fff;color:#16304e;border:1px solid var(--line)}
+    .cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
+    .card,.panel{background:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+    .card-title{color:#4b5563;margin-bottom:8px}
+    .card-value{font-size:34px;font-weight:800}
+    .wide-panel{margin-bottom:16px}
+    .mini-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
+    .mini-card{background:#fff;border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+    .mini-title{color:#6b7280;font-size:14px;margin-bottom:8px}
+    .mini-value{font-size:26px;font-weight:800}
+    .mini-sub{color:#6b7280;font-size:12px;margin-top:6px}
+.kpi-highlight{border:2px solid #d7efe2;background:linear-gradient(180deg,#f7fffb 0%,#f1fbf6 100%)}
+.kpi-highlight .mini-title{font-weight:700}
+.kpi-tone-good .mini-value{color:#15803d}
+.kpi-tone-mid .mini-value{color:#b45309}
+.kpi-tone-bad .mini-value{color:#b91c1c}
+.trend-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-top:10px}
+.trend-icon{font-size:14px}
+.trend-help{display:block;margin-top:6px;font-size:12px;color:#64748b}
+.baseline-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.baseline-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#1e3a8a;font-size:12px;font-weight:600}
+.trend-up{background:#dcfce7;color:#15803d}
+.trend-down{background:#fee2e2;color:#b91c1c}
+.trend-neutral{background:#e5e7eb;color:#4b5563}
+.insight-box{background:linear-gradient(135deg,#163c72 0%,#0b7c86 100%);color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.insight-box h2{margin:0 0 8px;font-size:20px}
+.insight-box p{margin:0;line-height:1.8;font-size:16px;font-weight:500}
+.en-label{font-size:12px;color:#64748b;font-weight:700;margin-left:4px}
+.tooltip-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:#e2e8f0;color:#334155;font-size:12px;cursor:help;vertical-align:middle}
+.baseline-pill.previous{background:#f1f5f9;color:#64748b}
+.mini-note{margin-top:8px;font-size:12px;color:#475569;font-weight:600}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+    .panel h2{margin:0 0 14px;font-size:20px}
+    .chart-wrap{position:relative;height:320px}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e9edf2;vertical-align:top;font-size:14px}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:12px;min-width:74px}
+    .status-new{background:#dbeafe;color:#1d4ed8}
+    .status-in_progress{background:#ffedd5;color:#c2410c}
+    .status-done{background:#dcfce7;color:#15803d}
+    .status-cancelled,.status-unknown{background:#e5e7eb;color:#4b5563}
+    .priority-normal{background:#f3f4f6;color:#374151}
+    .priority-urgent{background:#fee2e2;color:#b91c1c}
+    .live{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:10px 14px;border-radius:999px;box-shadow:var(--shadow)}
+    .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 1.6s infinite}
+    @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
+    .mobile-actions{display:none}
+    @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.mini-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+    @media (max-width:780px){.container{padding:12px 12px 96px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}select,button{width:100%}.toolbar{width:100%}.mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}}
+    @media (max-width:480px){.cards,.mini-cards{grid-template-columns:1fr}}
+    @media print{body{background:#fff}.toolbar,.mobile-actions,.live{display:none}.container{max-width:100%;padding:0}.card,.panel{box-shadow:none;border:1px solid #dfe4ea}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <img src="/logo.png" alt="โลโก้มูลนิธิคนช่วยฅน">
+        <div>
+          <h1>Executive Report</h1>
+          <div class="subtitle">มูลนิธิคนช่วยฅน • หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+          <div class="meta" id="generatedAt">กำลังโหลดรายงาน...</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;max-width:100%">
+        <div class="live"><span class="live-dot"></span><span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
+        <div class="toolbar">
+          <select id="daysFilter">
+            <option value="7">7 วันล่าสุด</option>
+            <option value="14">14 วันล่าสุด</option>
+            <option value="30">30 วันล่าสุด</option>
+          </select>
+          <button id="refreshBtn">รีเฟรชรายงาน</button>
+          <button id="printBtn" class="secondary">พิมพ์ / Save PDF</button>
+          <button id="exportBtn" class="secondary">Export CSV</button>
+          <button id="dashboardBtn" class="secondary">กลับ Dashboard</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card"><div class="card-title">เคสทั้งหมด</div><div class="card-value" id="totalCases">0</div></div>
+      <div class="card"><div class="card-title">เคสใหม่</div><div class="card-value" id="newCases">0</div></div>
+      <div class="card"><div class="card-title">เคสด่วน</div><div class="card-value" id="urgentCases">0</div></div>
+      <div class="card"><div class="card-title">เคสวันนี้</div><div class="card-value" id="todayCases">0</div></div>
+      <div class="card"><div class="card-title">กำลังดำเนินการ</div><div class="card-value" id="inProgressCases">0</div></div>
+      <div class="card"><div class="card-title">ปิดแล้ว</div><div class="card-value" id="doneCases">0</div></div>
+    </div>
+
+    <div class="mini-cards">
+      <div class="mini-card kpi-highlight" id="conversionCard">
+        <div class="mini-title">อัตราปิดเคส <span class="en-label">Conversion Rate</span> <span class="tooltip-icon" title="อัตราปิดเคส = จำนวนเคสที่ปิดแล้ว ÷ จำนวนเคสทั้งหมดในช่วงเวลาที่เลือก">ⓘ</span></div>
+        <div class="mini-value" id="conversionRate">0%</div>
+        <div class="mini-sub" id="conversionSub">จากช่วงเวลาที่เลือก</div>
+        <div class="baseline-row"><span class="baseline-pill" id="conversionCurrent">ปัจจุบัน 0%</span><span class="baseline-pill previous" id="conversionPrevious">ก่อนหน้า 0%</span></div>
+        <div class="trend-chip trend-neutral" id="conversionTrend"><span class="trend-icon">→</span><span>0%</span></div>
+        <span class="trend-help" id="conversionTrendHelp">ทรงตัวเมื่อเทียบกับช่วงก่อนหน้า</span>
+        <div class="mini-note" id="conversionMiniInsight">กำลังประเมินแนวโน้มประสิทธิภาพการปิดเคส</div>
+      </div>
+      <div class="mini-card kpi-highlight" id="slaCard">
+        <div class="mini-title">เวลาปิดเคสเฉลี่ย <span class="tooltip-icon" title="เวลาปิดเคสเฉลี่ย = เวลาเฉลี่ยตั้งแต่รับเคสจนถึงปิดเคส">ⓘ</span></div>
+        <div class="mini-value" id="avgCloseReadable">0 ชั่วโมง</div>
+        <div class="mini-sub" id="avgCloseSub">คำนวณจากเคสที่ปิดแล้ว</div>
+        <div class="baseline-row">
+          <span class="baseline-pill" id="slaCurrent">ปัจจุบัน 0 ชม.</span>
+          <span class="baseline-pill previous" id="slaPrevious">ก่อนหน้า 0 ชม.</span>
+        </div>
+        <div class="trend-chip trend-neutral" id="slaTrend"><span class="trend-icon">→</span><span>0%</span></div>
+        <span class="trend-help" id="slaTrendHelp">ทรงตัวเมื่อเทียบกับช่วงก่อนหน้า</span>
+        <div class="mini-note" id="slaMiniInsight">คำนวณจากเวลาปิดเคสเฉลี่ยในช่วงเวลาที่เลือก</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-title">พื้นที่ที่พบเคสมากสุด</div>
+        <div class="mini-value" id="topArea">-</div>
+        <div class="mini-sub" id="topAreaSub">0 เคส</div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-title">ปัญหาที่พบบ่อยสุด</div>
+        <div class="mini-value" id="topProblem">-</div>
+        <div class="mini-sub" id="topProblemSub">0 เคส</div>
+      </div>
+    </div>
+
+    <div class="insight-box">
+      <h2>สรุปเชิงวิเคราะห์สำหรับผู้บริหาร</h2>
+      <p id="insightSentence">กำลังวิเคราะห์ข้อมูล...</p>
+    </div>
+
+    <div class="panel wide-panel">
+      <h2>แนวโน้มจำนวนเคส</h2>
+      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>เคสล่าสุด</h2>
+        <div class="table-wrap"><table><thead><tr><th>เลขเคส</th><th>ชื่อ</th><th>พื้นที่</th><th>สถานะ</th><th>ระดับ</th></tr></thead><tbody id="recentBody"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h2>เคสด่วนที่ยังเปิด</h2>
+        <div class="table-wrap"><table><thead><tr><th>เลขเคส</th><th>ชื่อ</th><th>พื้นที่</th><th>สถานะ</th><th>ระดับ</th></tr></thead><tbody id="urgentBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>แยกเคสตามพื้นที่</h2>
+        <div class="table-wrap"><table><thead><tr><th>พื้นที่</th><th>จำนวนเคส</th></tr></thead><tbody id="areaBody"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h2>Top Problem</h2>
+        <div class="table-wrap"><table><thead><tr><th>ประเภทปัญหา</th><th>จำนวนเคส</th></tr></thead><tbody id="problemBody"></tbody></table></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>เคสที่กำลังดำเนินการ</h2>
+      <div class="table-wrap"><table><thead><tr><th>เลขเคส</th><th>ชื่อ</th><th>ผู้รับเคส</th><th>พื้นที่</th><th>อัปเดตล่าสุด</th></tr></thead><tbody id="progressBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="mobile-actions">
+    <button id="mobilePrintBtn">พิมพ์ PDF</button>
+    <button id="mobileDashboardBtn" class="secondary">Dashboard</button>
+  </div>
+
+  <script>
+    let chartInstance = null;
+    let eventSource = null;
+
+    function escapeHtml(value){return String(value ?? "-").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+    function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}
+    function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
+    function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
+    function setText(id, value){ const el = document.getElementById(id); if(el) el.textContent = value; }
+    async function fetchJSON(url){const res=await fetch(url);const data=await res.json();if(!res.ok||!data.ok) throw new Error(data.error||"Request failed");return data.data}
+    function getPerformanceTone(value){
+      if(value >= 70) return "kpi-tone-good";
+      if(value >= 30) return "kpi-tone-mid";
+      return "kpi-tone-bad";
+    }
+    function applyTone(el, value){
+      el.classList.remove("kpi-tone-good","kpi-tone-mid","kpi-tone-bad");
+      el.classList.add(getPerformanceTone(value));
+    }
+    function renderTrendChip(el, trend, inverse=false){
+      if(!el) return;
+      const direction = trend?.direction || "neutral";
+      const arrow = trend?.arrow || (direction === "up" ? "↑" : direction === "down" ? "↓" : "→");
+      let displayDirection = direction;
+      if(inverse){
+        displayDirection = direction === "up" ? "up" : direction === "down" ? "down" : "neutral";
+      }
+      const icon = displayDirection === "up" ? "🟢⬆️" : displayDirection === "down" ? "🔴⬇️" : "⚪➖";
+      const text = trend?.text || "0%";
+      el.className = `trend-chip trend-${displayDirection}`;
+      el.innerHTML = `<span class="trend-icon">${icon}</span><span>${arrow} ${text} จากช่วงก่อนหน้า</span>`;
+    }
+
+    function fillRows(id, rows, mode){
+      const el = document.getElementById(id);
+      if(!rows.length){ el.innerHTML = `<tr><td colspan="${mode==='progress'?5:5}">ไม่มีข้อมูล</td></tr>`; return; }
+      if(mode === "progress"){
+        el.innerHTML = rows.map(row=>`<tr><td>${escapeHtml(row.case_code||"-")}</td><td>${escapeHtml(row.full_name||"-")}</td><td>${escapeHtml(row.assigned_to||"-")}</td><td>${escapeHtml(row.location||"-")}</td><td>${escapeHtml(formatThaiDateTime(row.assigned_at || row.created_at))}</td></tr>`).join("");
+      } else {
+        el.innerHTML = rows.map(row=>`<tr><td>${escapeHtml(row.case_code||"-")}</td><td>${escapeHtml(row.full_name||"-")}</td><td>${escapeHtml(row.location||"-")}</td><td>${statusBadge(row.status)}</td><td>${priorityBadge(row.priority)}</td></tr>`).join("");
+      }
+    }
+
+    function fillMetricRows(id, rows, emptyLabel="ไม่มีข้อมูล"){
+      const el = document.getElementById(id);
+      if(!rows.length){ el.innerHTML = `<tr><td colspan="2">${emptyLabel}</td></tr>`; return; }
+      el.innerHTML = rows.map(row => `<tr><td>${escapeHtml(row.label || "-")}</td><td>${escapeHtml(row.count || 0)}</td></tr>`).join("");
+    }
+
+    function drawGraph(graph){
+      const ctx = document.getElementById("trendChart");
+      if(!ctx) return;
+      const labels = graph.map(x=>x.date);
+      const counts = graph.map(x=>x.count);
+      if(chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {type:"bar",data:{labels,datasets:[{label:"จำนวนเคส",data:counts,backgroundColor:"rgba(11,124,134,0.65)",borderColor:"rgba(22,60,114,1)",borderWidth:1,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+    }
+
+    async function loadReport(silent=false){
+      const days = document.getElementById("daysFilter").value;
+      const data = await fetchJSON(`/api/dashboard/report?days=${days}`);
+      const s = data.summary || {};
+      setText("generatedAt", `ออกรายงานเมื่อ: ${formatThaiDateTime(data.generated_at)}`);
+      setText("totalCases", s.total_cases || 0);
+      setText("newCases", s.new_cases || 0);
+      setText("urgentCases", s.urgent_cases || 0);
+      setText("todayCases", s.today_cases || 0);
+      setText("inProgressCases", s.in_progress_cases || 0);
+      setText("doneCases", s.done_cases || 0);
+      const insights = data.insights || {};
+      setText("conversionRate", `${insights.conversion_rate ?? 0}%`);
+      setText("conversionSub", `ปิดแล้ว ${insights.closed_cases_in_range ?? 0} จาก ${insights.total_cases_in_range ?? 0} เคส`);
+      setText("conversionCurrent", `ปัจจุบัน ${insights.conversion_rate ?? 0}%`);
+      setText("conversionPrevious", `ก่อนหน้า ${insights.previous_conversion_rate ?? 0}%`);
+      setText("avgCloseReadable", insights.avg_close_readable || "0 ชั่วโมง");
+      setText("avgCloseSub", `เฉลี่ย ${insights.avg_close_hours ?? 0} ชั่วโมง หรือ ${insights.avg_close_days ?? 0} วัน`);
+      const currentSla = Number(insights.avg_close_hours ?? 0);
+      const previousSla = Number(insights.previous_avg_close_hours ?? currentSla);
+      setText("slaCurrent", `ปัจจุบัน ${currentSla} ชม.`);
+      setText("slaPrevious", `ก่อนหน้า ${previousSla} ชม.`);
+      const slaTrend = insights.avg_close_trend || (() => {
+        if (!previousSla || previousSla === currentSla) return { direction: "neutral", text: "0%" };
+        const diff = ((currentSla - previousSla) / previousSla) * 100;
+        return { direction: diff < 0 ? "up" : "down", text: `${diff > 0 ? "+" : ""}${diff.toFixed(1)}%` };
+      })();
+      renderTrendChip(document.getElementById("slaTrend"), slaTrend, true);
+      setText("slaTrendHelp", insights.avg_close_trend_label || (currentSla < previousSla ? "เร็วขึ้นจากช่วงก่อนหน้า" : currentSla > previousSla ? "ช้าลงจากช่วงก่อนหน้า" : "ทรงตัวเมื่อเทียบกับช่วงก่อนหน้า"));
+      setText("slaMiniInsight", currentSla < previousSla ? "ปิดเคสได้เร็วขึ้นกว่าช่วงก่อนหน้า ช่วยลด backlog ได้ดีขึ้น" : currentSla > previousSla ? "เวลาปิดเคสเฉลี่ยเพิ่มขึ้น ควรติดตามคอขวดในกระบวนการ" : "เวลาปิดเคสเฉลี่ยทรงตัวจากช่วงก่อนหน้า");
+      setText("topArea", insights.top_area_label || "-");
+      setText("topAreaSub", `${insights.top_area_count ?? 0} เคส`);
+      setText("topProblem", insights.top_problem_label || "-");
+      setText("topProblemSub", `${insights.top_problem_count ?? 0} เคส`);
+      setText("insightSentence", insights.summary_sentence || "-");
+      applyTone(document.getElementById("conversionCard"), Number(insights.conversion_rate ?? 0));
+      const convEl = document.getElementById("conversionRate");
+      const convScore = Number(insights.conversion_rate ?? 0);
+      convEl.style.color = convScore >= 70 ? "#15803d" : convScore >= 30 ? "#ca8a04" : "#b91c1c";
+      const slaToneValue = Number(insights.avg_close_hours ?? 0) <= 24 ? 85 : Number(insights.avg_close_hours ?? 0) <= 72 ? 55 : 20;
+      applyTone(document.getElementById("slaCard"), slaToneValue);
+      renderTrendChip(document.getElementById("conversionTrend"), insights.conversion_trend);
+      setText("conversionTrendHelp", insights.conversion_trend_label || "ทรงตัวเมื่อเทียบกับช่วงก่อนหน้า");
+      setText("conversionMiniInsight", Number(insights.conversion_rate ?? 0) > Number(insights.previous_conversion_rate ?? 0) ? "ทีมสามารถเพิ่มประสิทธิภาพการปิดเคสได้อย่างชัดเจน" : Number(insights.conversion_rate ?? 0) < Number(insights.previous_conversion_rate ?? 0) ? "ประสิทธิภาพการปิดเคสลดลงจากช่วงก่อนหน้า ควรติดตามเชิงรุก" : "ประสิทธิภาพการปิดเคสทรงตัวจากช่วงก่อนหน้า");
+
+      drawGraph(data.graph || []);
+      fillRows("recentBody", data.recent_cases || [], "regular");
+      fillRows("urgentBody", data.urgent_cases || [], "regular");
+      fillRows("progressBody", data.in_progress_cases || [], "progress");
+      fillMetricRows("areaBody", insights.area_breakdown || []);
+      fillMetricRows("problemBody", insights.top_problems || []);
+      if(!silent) console.log("report refreshed");
+    }
+
+    function connectRealtime(){
+      eventSource = new EventSource("/api/stream");
+      eventSource.addEventListener("connected", ()=> setText("liveStatus", "เชื่อมต่อข้อมูลสดแล้ว"));
+      eventSource.addEventListener("heartbeat", ()=> setText("liveStatus", "เชื่อมต่อข้อมูลสดแล้ว"));
+      const onChange = ()=> loadReport(true).catch(console.error);
+      eventSource.addEventListener("case_created", onChange);
+      eventSource.addEventListener("case_updated", onChange);
+      eventSource.onerror = ()=> setText("liveStatus", "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...");
+    }
+
+    const daysFilterEl = document.getElementById("daysFilter");
+    if(daysFilterEl) daysFilterEl.onchange = ()=> loadReport(true).catch(err=>alert(err.message));
+    const refreshBtnEl = document.getElementById("refreshBtn");
+    if(refreshBtnEl) refreshBtnEl.onclick = ()=> loadReport(true).catch(err=>alert(err.message));
+    const printBtnEl = document.getElementById("printBtn");
+    if(printBtnEl) printBtnEl.onclick = ()=> window.print();
+    const exportBtnEl = document.getElementById("exportBtn");
+    if(exportBtnEl) exportBtnEl.onclick = ()=> window.location.href = "/api/dashboard/export.csv";
+    const dashboardBtnEl = document.getElementById("dashboardBtn");
+    if(dashboardBtnEl) dashboardBtnEl.onclick = ()=> window.location.href = "/dashboard";
+    const mobilePrintBtnEl = document.getElementById("mobilePrintBtn");
+    if(mobilePrintBtnEl) mobilePrintBtnEl.onclick = ()=> window.print();
+    const mobileDashboardBtnEl = document.getElementById("mobileDashboardBtn");
+    if(mobileDashboardBtnEl) mobileDashboardBtnEl.onclick = ()=> window.location.href = "/dashboard";
+
+    loadReport(true).catch(err=>alert("โหลดรายงานไม่สำเร็จ: " + err.message));
+    connectRealtime();
+  </script>
+</body>
+</html>

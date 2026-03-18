@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รายละเอียดเคส</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef2f6;
+      color: #16304e;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 20px rgba(23,34,56,.06);
+      margin-bottom: 16px;
+    }
+    h1, h2 { margin: 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .label { color: #6b7280; font-size: 13px; margin-bottom: 6px; }
+    .value {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      min-height: 44px;
+      border-radius: 12px;
+      padding: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .full { grid-column: 1 / -1; }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    input, button {
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid #d6dce5;
+      padding: 0 12px;
+      font-size: 14px;
+    }
+    input { min-width: 240px; }
+    button {
+      background: #19763b;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 0 18px;
+    }
+    button.secondary {
+      background: #fff;
+      color: #16304e;
+      border: 1px solid #d6dce5;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-weight: 700;
+      font-size: 13px;
+      min-width: 74px;
+    }
+    .status-new { background: #dbeafe; color: #1d4ed8; }
+    .status-in_progress { background: #ffedd5; color: #c2410c; }
+    .status-done { background: #dcfce7; color: #15803d; }
+    .status-cancelled { background: #e5e7eb; color: #4b5563; }
+    .priority-normal { background: #f3f4f6; color: #374151; }
+    .priority-urgent { background: #fee2e2; color: #b91c1c; }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+      input { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h1>รายละเอียดเคส</h1>
+      <div class="actions">
+        <button class="secondary" onclick="window.location.href='/dashboard'">กลับ Dashboard</button>
+        <button class="secondary" onclick="loadCase()">รีเฟรช</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <div class="label">เลขเคส</div>
+          <div class="value" id="case_code">-</div>
+        </div>
+        <div>
+          <div class="label">ชื่อผู้ขอความช่วยเหลือ</div>
+          <div class="value" id="full_name">-</div>
+        </div>
+        <div>
+          <div class="label">เบอร์โทร</div>
+          <div class="value" id="phone">-</div>
+        </div>
+        <div>
+          <div class="label">พื้นที่</div>
+          <div class="value" id="location">-</div>
+        </div>
+        <div>
+          <div class="label">สถานะ</div>
+          <div class="value" id="status">-</div>
+        </div>
+        <div>
+          <div class="label">ระดับ</div>
+          <div class="value" id="priority">-</div>
+        </div>
+        <div>
+          <div class="label">ผู้รับเคส</div>
+          <div class="value" id="assigned_to">-</div>
+        </div>
+        <div>
+          <div class="label">สร้างเมื่อ</div>
+          <div class="value" id="created_at">-</div>
+        </div>
+        <div class="full">
+          <div class="label">รายละเอียดปัญหา</div>
+          <div class="value" id="problem">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom: 14px;">จัดการเคส</h2>
+      <div class="actions">
+        <input id="staffName" placeholder="ชื่อทีมงาน เช่น ทีมงาน 1" />
+        <button onclick="assignCase()">รับเคส</button>
+        <button onclick="closeCase()">ปิดเคส</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get('id');
+
+    function escapeHtml(value) {
+      return String(value ?? '-')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function formatThaiDateTime(dateString) {
+      if (!dateString) return '-';
+      return new Date(dateString).toLocaleString('th-TH');
+    }
+
+    function statusBadge(status) {
+      const safe = escapeHtml(status || 'unknown');
+      const cls = ['new','in_progress','done','cancelled'].includes(status) ? status : 'cancelled';
+      return `<span class="badge status-${cls}">${safe}</span>`;
+    }
+
+    function priorityBadge(priority) {
+      const value = priority || 'normal';
+      const cls = value === 'urgent' ? 'urgent' : 'normal';
+      return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`;
+    }
+
+    async function fetchJSON(url, options = {}) {
+      const res = await fetch(url, options);
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+      return data.data;
+    }
+
+    async function loadCase() {
+      if (!caseId) {
+        alert('ไม่พบ id ของเคส');
+        return;
+      }
+
+      try {
+        const data = await fetchJSON(`/api/case/${caseId}`);
+        document.getElementById('case_code').innerHTML = escapeHtml(data.case_code || '-');
+        document.getElementById('full_name').innerHTML = escapeHtml(data.full_name || '-');
+        document.getElementById('phone').innerHTML = escapeHtml(data.phone || '-');
+        document.getElementById('location').innerHTML = escapeHtml(data.location || '-');
+        document.getElementById('status').innerHTML = statusBadge(data.status);
+        document.getElementById('priority').innerHTML = priorityBadge(data.priority);
+        document.getElementById('assigned_to').innerHTML = escapeHtml(data.assigned_to || '-');
+        document.getElementById('created_at').innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
+        document.getElementById('problem').innerHTML = escapeHtml(data.problem || '-');
+      } catch (err) {
+        alert('โหลดรายละเอียดเคสไม่สำเร็จ: ' + err.message);
+      }
+    }
+
+    async function assignCase() {
+      try {
+        const staffName = document.getElementById('staffName').value.trim() || 'ทีมงาน';
+        await fetchJSON(`/api/case/${caseId}/assign`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ staff_name: staffName })
+        });
+        alert('รับเคสเรียบร้อยแล้ว');
+        await loadCase();
+      } catch (err) {
+        alert('รับเคสไม่สำเร็จ: ' + err.message);
+      }
+    }
+
+    async function closeCase() {
+      try {
+        await fetchJSON(`/api/case/${caseId}/close`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        alert('ปิดเคสเรียบร้อยแล้ว');
+        await loadCase();
+      } catch (err) {
+        alert('ปิดเคสไม่สำเร็จ: ' + err.message);
+      }
+    }
+
+    loadCase();
+  </script>
+</body>
+</html>

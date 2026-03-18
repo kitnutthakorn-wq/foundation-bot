@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard ผู้บริหาร</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      margin: 0;
+      padding: 24px;
+      color: #222;
+    }
+    h1 {
+      margin-top: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      color: #666;
+    }
+    .value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #111;
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 0;
+      background: #1db954;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #4b5563;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      background: #f0f3f8;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #eef2ff;
+    }
+    .urgent {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .normal {
+      background: #ecfccb;
+      color: #3f6212;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dashboard ผู้บริหาร</h1>
+
+  <div class="grid">
+    <div class="card">
+      <h3>เคสทั้งหมด</h3>
+      <div class="value" id="total_cases">0</div>
+    </div>
+    <div class="card">
+      <h3>เคสใหม่</h3>
+      <div class="value" id="new_cases">0</div>
+    </div>
+    <div class="card">
+      <h3>เคสด่วน</h3>
+      <div class="value" id="urgent_cases">0</div>
+    </div>
+    <div class="card">
+      <h3>เคสวันนี้</h3>
+      <div class="value" id="today_cases">0</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button onclick="loadCases()">เคสล่าสุด</button>
+    <button onclick="loadCases('new')" class="secondary">เฉพาะเคสใหม่</button>
+    <button onclick="loadCases('', 'urgent')" class="secondary">เฉพาะเคสด่วน</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>เลขเคส</th>
+        <th>ชื่อ</th>
+        <th>พื้นที่</th>
+        <th>โทร</th>
+        <th>สถานะ</th>
+        <th>ระดับ</th>
+        <th>สร้างเมื่อ</th>
+      </tr>
+    </thead>
+    <tbody id="caseTableBody">
+      <tr><td colspan="7">กำลังโหลด...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    async function loadSummary() {
+      const res = await fetch("/api/dashboard/summary");
+      const json = await res.json();
+
+      if (!json.ok) return;
+
+      document.getElementById("total_cases").textContent = json.data.total_cases;
+      document.getElementById("new_cases").textContent = json.data.new_cases;
+      document.getElementById("urgent_cases").textContent = json.data.urgent_cases;
+      document.getElementById("today_cases").textContent = json.data.today_cases;
+    }
+
+    async function loadCases(status = "", priority = "") {
+      const params = new URLSearchParams();
+      if (status) params.set("status", status);
+      if (priority) params.set("priority", priority);
+      params.set("limit", "30");
+
+      const res = await fetch("/api/dashboard/cases?" + params.toString());
+      const json = await res.json();
+
+      const tbody = document.getElementById("caseTableBody");
+      tbody.innerHTML = "";
+
+      if (!json.ok || !json.data || json.data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">ไม่พบข้อมูล</td></tr>`;
+        return;
+      }
+
+      json.data.forEach(item => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.case_code || "-"}</td>
+          <td>${item.full_name || "-"}</td>
+          <td>${item.location || "-"}</td>
+          <td>${item.phone || "-"}</td>
+          <td>${item.status || "-"}</td>
+          <td>
+            <span class="tag ${item.priority === "urgent" ? "urgent" : "normal"}">
+              ${item.priority || "normal"}
+            </span>
+          </td>
+          <td>${item.created_at ? new Date(item.created_at).toLocaleString("th-TH") : "-"}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadSummary();
+    loadCases();
+  </script>
+</body>
+</html>

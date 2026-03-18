@@ -3,167 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard ผู้บริหาร</title>
+  <title>Dashboard ผู้บริหาร V15 | คนช่วยฅน</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #eef2f6;
-      color: #16304e;
+    :root{
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --accent:#1f8f4d;
+      --bg:#edf2f5;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --line:#dbe3ea;
+      --shadow:0 10px 24px rgba(18,36,58,.08);
     }
-    .container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 18px;
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#16304e}
+    .container{max-width:1340px;margin:0 auto;padding:18px}
+    .brandbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .brand img{width:70px;height:70px;object-fit:contain;border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:6px}
+    .brand h1{margin:0;font-size:32px;line-height:1.1}
+    .brand .subtitle{margin:6px 0 0;color:var(--muted);font-size:15px}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:#fff;padding:10px 14px;color:#24415f;box-shadow:var(--shadow);font-size:14px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input,select,button{height:42px;border-radius:12px;border:1px solid var(--line);padding:0 12px;font-size:14px;background:#fff}
+    input{min-width:260px}
+    button{background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;padding:0 18px}
+    button.secondary{background:#fff;color:#16304e;border:1px solid var(--line)}
+    .cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
+    .card,.panel{background:var(--card);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+    .card-title{color:#4b5563;margin-bottom:8px}
+    .card-value{font-size:38px;font-weight:800}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}
+    .panel h2{margin:0 0 14px;font-size:20px}
+    .chart-wrap{position:relative;height:310px}
+    .tips{line-height:1.9;color:#586272}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e9edf2;vertical-align:top}
+    tbody tr{transition:background-color .15s ease, transform .15s ease;cursor:pointer}
+    tbody tr:hover{background:#f7fafc;transform:translateY(-1px)}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:13px;min-width:74px}
+    .status-new{background:#dbeafe;color:#1d4ed8}
+    .status-in_progress{background:#ffedd5;color:#c2410c}
+    .status-done{background:#dcfce7;color:#15803d}
+    .status-cancelled,.status-unknown{background:#e5e7eb;color:#4b5563}
+    .priority-normal{background:#f3f4f6;color:#374151}
+    .priority-urgent{background:#fee2e2;color:#b91c1c}
+    .footer-note{color:var(--muted);font-size:13px;margin-top:10px}
+    .live-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+    .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 1.6s infinite}
+    @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
+    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:9999}
+    .toast{background:#163c72;color:#fff;padding:14px 16px;border-radius:16px;box-shadow:var(--shadow);min-width:260px;max-width:360px}
+    .toast strong{display:block;margin-bottom:4px}
+    .mobile-actions{display:none}
+    @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+    @media (max-width:780px){
+      .container{padding:12px 12px 96px}
+      .brand img{width:58px;height:58px}
+      .brand h1{font-size:26px}
+      input,select,button{width:100%}
+      .toolbar{width:100%}
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .chart-wrap{height:250px}
+      .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}
+      .mobile-actions button{width:100%}
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    h1 { margin: 0 0 6px; font-size: 28px; }
-    .subtitle { color: #6b7280; margin: 0; }
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    input, select, button {
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid #d6dce5;
-      padding: 0 12px;
-      font-size: 14px;
-      background: #fff;
-    }
-    input { min-width: 260px; }
-    button {
-      background: #19763b;
-      color: #fff;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 0 18px;
-    }
-    button.secondary {
-      background: #fff;
-      color: #16304e;
-      border: 1px solid #d6dce5;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-    .card, .panel {
-      background: #fff;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 8px 20px rgba(23,34,56,.06);
-    }
-    .card-title { color: #4b5563; margin-bottom: 8px; }
-    .card-value { font-size: 36px; font-weight: 800; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .panel h2 { margin: 0 0 14px; font-size: 18px; }
-    .table-wrap { overflow: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      text-align: left;
-      padding: 12px 10px;
-      border-bottom: 1px solid #e9edf2;
-      vertical-align: top;
-    }
-    th { color: #374151; font-size: 14px; }
-    td { font-size: 15px; }
-    tbody tr {
-      transition: background-color .15s ease, transform .12s ease;
-      cursor: pointer;
-    }
-    tbody tr:hover {
-      background: #f7fafc;
-      transform: translateY(-1px);
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-weight: 700;
-      font-size: 13px;
-      min-width: 74px;
-    }
-    .status-new { background: #dbeafe; color: #1d4ed8; }
-    .status-in_progress { background: #ffedd5; color: #c2410c; }
-    .status-done { background: #dcfce7; color: #15803d; }
-    .status-cancelled { background: #e5e7eb; color: #4b5563; }
-    .status-unknown { background: #e5e7eb; color: #374151; }
-    .priority-normal { background: #f3f4f6; color: #374151; }
-    .priority-urgent { background: #fee2e2; color: #b91c1c; }
-    .muted { color: #6b7280; }
-    .tips {
-      line-height: 1.9;
-      color: #5b6472;
-    }
-    .chart-wrap {
-      position: relative;
-      height: 310px;
-    }
-    .footer-note {
-      color: #6b7280;
-      font-size: 13px;
-      margin-top: 12px;
-    }
-    @media (max-width: 1100px) {
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 700px) {
-      .cards { grid-template-columns: 1fr; }
-      input { min-width: 100%; }
-      .toolbar { width: 100%; }
+    @media (max-width:480px){
+      .cards{grid-template-columns:1fr}
+      .card-value{font-size:34px}
+      .toast{min-width:auto;max-width:calc(100vw - 32px)}
+      .brandbar{align-items:flex-start}
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div>
-        <h1>Dashboard ผู้บริหาร</h1>
-        <p class="subtitle">ภาพรวมเคสจากระบบมูลนิธิ</p>
+    <div class="brandbar">
+      <div class="brand">
+        <img src="/logo.png" alt="โลโก้มูลนิธิคนช่วยฅน">
+        <div>
+          <h1>Dashboard ผู้บริหาร</h1>
+          <div class="subtitle">มูลนิธิคนช่วยฅน • หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+        </div>
       </div>
-      <div class="toolbar">
-        <input id="searchInput" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่ / รายละเอียด" />
-        <select id="statusFilter">
-          <option value="">ทุกสถานะ</option>
-          <option value="new">new</option>
-          <option value="in_progress">in_progress</option>
-          <option value="done">done</option>
-          <option value="cancelled">cancelled</option>
-        </select>
-        <select id="priorityFilter">
-          <option value="">ทุกระดับ</option>
-          <option value="normal">normal</option>
-          <option value="urgent">urgent</option>
-        </select>
-        <button id="searchBtn">ค้นหา</button>
-        <button id="resetBtn" class="secondary">ล้างค่า</button>
-      </div>
+      <div class="pill"><span class="live-dot"></span> <span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
+    </div>
+
+    <div class="toolbar" style="margin-bottom:16px">
+      <input id="searchInput" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่ / รายละเอียด">
+      <select id="statusFilter">
+        <option value="">ทุกสถานะ</option>
+        <option value="new">new</option>
+        <option value="in_progress">in_progress</option>
+        <option value="done">done</option>
+        <option value="cancelled">cancelled</option>
+      </select>
+      <select id="priorityFilter">
+        <option value="">ทุกระดับ</option>
+        <option value="normal">normal</option>
+        <option value="urgent">urgent</option>
+      </select>
+      <button id="searchBtn">ค้นหา</button>
+      <button id="exportBtn" class="secondary">Export CSV</button>
+      <button id="reportBtn" class="secondary">Executive Report</button>
+      <button id="resetBtn" class="secondary">ล้างค่า</button>
     </div>
 
     <div class="cards">
@@ -177,10 +122,11 @@
 
     <div class="grid">
       <div class="panel">
-        <h2>กราฟจำนวนเคส 7 วันล่าสุด</h2>
-        <div class="chart-wrap">
-          <canvas id="casesChart"></canvas>
+        <div class="live-row">
+          <h2>ภาพรวมเคส 7 วันล่าสุด</h2>
+          <div class="footer-note" id="updatedAt">อัปเดตล่าสุด: -</div>
         </div>
+        <div class="chart-wrap"><canvas id="casesChart"></canvas></div>
       </div>
       <div class="panel">
         <h2>คำแนะนำการใช้งาน</h2>
@@ -188,7 +134,7 @@
           - ใช้ช่องค้นหาเพื่อหาเลขเคส ชื่อ เบอร์ พื้นที่ หรือคำในรายละเอียด<br>
           - ใช้ตัวกรองสถานะและระดับเพื่อโฟกัสเฉพาะเคสที่ต้องการ<br>
           - คลิกที่รายการเคสเพื่อเปิดรายละเอียดและจัดการจากหน้าเว็บได้ทันที<br>
-          - สีของสถานะช่วยให้เห็นภาพรวมได้เร็วขึ้น โดยเฉพาะเคสด่วนและเคสที่กำลังดำเนินการ
+          - หน้านี้เชื่อมข้อมูลแบบสด เมื่อมีเคสใหม่หรือมีการอัปเดต ระบบจะรีเฟรชให้อัตโนมัติ
         </div>
       </div>
     </div>
@@ -215,154 +161,162 @@
     </div>
   </div>
 
+  <div class="mobile-actions">
+    <button id="mobileReportBtn" class="secondary">Report</button>
+    <button id="mobileExportBtn">Export CSV</button>
+  </div>
+  <div class="toast-wrap" id="toastWrap"></div>
+
   <script>
     let chartInstance = null;
+    let lastTotal = null;
+    let eventSource = null;
 
-    function escapeHtml(value) {
-      return String(value ?? "-")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
+    function escapeHtml(value){return String(value ?? "-").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+    function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}
+    function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
+    function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
 
-    function formatThaiDateTime(dateString) {
-      if (!dateString) return "-";
-      const d = new Date(dateString);
-      return d.toLocaleString("th-TH");
-    }
-
-    function statusBadge(status) {
-      const safe = escapeHtml(status || "unknown");
-      const cls = ["new","in_progress","done","cancelled"].includes(status) ? status : "unknown";
-      return `<span class="badge status-${cls}">${safe}</span>`;
-    }
-
-    function priorityBadge(priority) {
-      const value = priority || "normal";
-      const cls = value === "urgent" ? "urgent" : "normal";
-      return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`;
-    }
-
-    async function fetchJSON(url, options = {}) {
+    async function fetchJSON(url, options={}){
       const res = await fetch(url, options);
       const data = await res.json();
-      if (!res.ok || !data.ok) {
-        throw new Error(data.error || "Request failed");
-      }
+      if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");
       return data.data;
     }
 
-    async function loadSummary() {
-      const data = await fetchJSON('/api/dashboard/summary');
-      document.getElementById('totalCases').textContent = data.total_cases || 0;
-      document.getElementById('newCases').textContent = data.new_cases || 0;
-      document.getElementById('urgentCases').textContent = data.urgent_cases || 0;
-      document.getElementById('todayCases').textContent = data.today_cases || 0;
-      document.getElementById('inProgressCases').textContent = data.in_progress_cases || 0;
-      document.getElementById('doneCases').textContent = data.done_cases || 0;
+    function setUpdatedAt(){document.getElementById("updatedAt").textContent = "อัปเดตล่าสุด: " + formatThaiDateTime(new Date().toISOString())}
+
+    function showToast(title, message){
+      const wrap = document.getElementById("toastWrap");
+      const div = document.createElement("div");
+      div.className = "toast";
+      div.innerHTML = `<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;
+      wrap.appendChild(div);
+      setTimeout(()=>div.remove(), 5000);
     }
 
-    function renderCases(rows) {
-      const body = document.getElementById('casesTableBody');
-      body.innerHTML = '';
-
-      if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="7" class="muted">ไม่พบข้อมูลเคส</td></tr>';
-        return;
-      }
-
-      rows.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${escapeHtml(row.case_code || '-')}</td>
-          <td>${escapeHtml(row.full_name || '-')}</td>
-          <td>${escapeHtml(row.location || '-')}</td>
-          <td>${statusBadge(row.status)}</td>
-          <td>${priorityBadge(row.priority)}</td>
-          <td>${escapeHtml(row.assigned_to || '-')}</td>
-          <td>${escapeHtml(formatThaiDateTime(row.created_at))}</td>
-        `;
-        tr.addEventListener('click', () => {
-          window.location.href = `/case?id=${row.id}`;
-        });
-        body.appendChild(tr);
-      });
-    }
-
-    async function loadCases() {
-      const search = document.getElementById('searchInput').value.trim();
-      const status = document.getElementById('statusFilter').value;
-      const priority = document.getElementById('priorityFilter').value;
-      const params = new URLSearchParams();
-      if (search) params.set('search', search);
-      if (status) params.set('status', status);
-      if (priority) params.set('priority', priority);
-      params.set('limit', '50');
-      const data = await fetchJSON(`/api/dashboard/cases?${params.toString()}`);
-      renderCases(data);
-    }
-
-    async function loadChart() {
-      const data = await fetchJSON('/api/dashboard/stats?days=7');
-      const labels = data.map(item => item.date);
-      const values = data.map(item => item.count);
-      const ctx = document.getElementById('casesChart').getContext('2d');
-
-      if (chartInstance) chartInstance.destroy();
-
-      chartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{
-            label: 'จำนวนเคส',
-            data: values,
-            backgroundColor: 'rgba(25,118,59,0.75)',
-            borderRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { beginAtZero: true, ticks: { precision: 0 } }
+    async function maybeNotify(summary){
+      if(lastTotal === null){ lastTotal = summary.total_cases || 0; return; }
+      const current = summary.total_cases || 0;
+      if(current > lastTotal){
+        const diff = current - lastTotal;
+        showToast("มีเคสใหม่เข้าระบบ", `เพิ่ม ${diff} เคส • รวมทั้งหมด ${current} เคส`);
+        if("Notification" in window){
+          if(Notification.permission === "default"){ Notification.requestPermission().catch(()=>{}); }
+          if(Notification.permission === "granted"){
+            new Notification("มูลนิธิคนช่วยฅน", { body:`มีเคสใหม่เข้าระบบ ${diff} เคส`, icon:"/logo.png" });
           }
         }
+      }
+      lastTotal = current;
+    }
+
+    async function loadSummary(){
+      const data = await fetchJSON("/api/dashboard/summary");
+      document.getElementById("totalCases").textContent = data.total_cases || 0;
+      document.getElementById("newCases").textContent = data.new_cases || 0;
+      document.getElementById("urgentCases").textContent = data.urgent_cases || 0;
+      document.getElementById("todayCases").textContent = data.today_cases || 0;
+      document.getElementById("inProgressCases").textContent = data.in_progress_cases || 0;
+      document.getElementById("doneCases").textContent = data.done_cases || 0;
+      await maybeNotify(data);
+    }
+
+    function renderCases(rows){
+      const body = document.getElementById("casesTableBody");
+      body.innerHTML = rows.length ? rows.map(row => `
+        <tr onclick="window.location.href='/case?id=${row.id}'">
+          <td>${escapeHtml(row.case_code || "-")}</td>
+          <td>${escapeHtml(row.full_name || "-")}</td>
+          <td>${escapeHtml(row.location || "-")}</td>
+          <td>${statusBadge(row.status)}</td>
+          <td>${priorityBadge(row.priority)}</td>
+          <td>${escapeHtml(row.assigned_to || "-")}</td>
+          <td>${escapeHtml(formatThaiDateTime(row.created_at))}</td>
+        </tr>`).join("") : `<tr><td colspan="7" class="footer-note">ไม่พบข้อมูล</td></tr>`;
+    }
+
+    async function loadCases(){
+      const search = document.getElementById("searchInput").value.trim();
+      const status = document.getElementById("statusFilter").value;
+      const priority = document.getElementById("priorityFilter").value;
+      const params = new URLSearchParams({limit:"50"});
+      if(search) params.set("search", search);
+      if(status) params.set("status", status);
+      if(priority) params.set("priority", priority);
+      const rows = await fetchJSON("/api/dashboard/cases?" + params.toString());
+      renderCases(rows);
+    }
+
+    async function loadStats(){
+      const rows = await fetchJSON("/api/dashboard/stats?days=7");
+      const labels = rows.map(r => r.date);
+      const counts = rows.map(r => r.count);
+      const ctx = document.getElementById("casesChart");
+      if(chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {
+        type:"bar",
+        data:{labels,datasets:[{label:"จำนวนเคส",data:counts,backgroundColor:"rgba(11,124,134,0.65)",borderColor:"rgba(22,60,114,1)",borderWidth:1,borderRadius:8}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
       });
     }
 
-    async function runSearch() {
-      try {
-        await loadCases();
-      } catch (err) {
-        alert('ค้นหาไม่สำเร็จ: ' + err.message);
+    async function refreshAll(silent=false){
+      await Promise.all([loadSummary(), loadCases(), loadStats()]);
+      setUpdatedAt();
+      if(!silent) showToast("รีเฟรชข้อมูลแล้ว", "Dashboard อัปเดตข้อมูลล่าสุดเรียบร้อย");
+    }
+
+    function connectRealtime(){
+      try{
+        eventSource = new EventSource("/api/stream");
+        eventSource.addEventListener("connected", () => {
+          document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+        });
+        eventSource.addEventListener("heartbeat", () => {
+          document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+        });
+        const onChange = (ev) => {
+          const data = JSON.parse(ev.data || "{}");
+          if(data.action && data.case_code){
+            showToast("มีการอัปเดตเคส", `${data.case_code} • ${data.action}`);
+          }
+          refreshAll(true).catch(console.error);
+        };
+        eventSource.addEventListener("case_created", onChange);
+        eventSource.addEventListener("case_updated", onChange);
+        eventSource.onerror = () => {
+          document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
+        };
+      }catch(err){
+        document.getElementById("liveStatus").textContent = "ไม่สามารถเปิดโหมดสดได้";
       }
     }
 
-    document.getElementById('searchBtn').addEventListener('click', runSearch);
-    document.getElementById('resetBtn').addEventListener('click', async () => {
-      document.getElementById('searchInput').value = '';
-      document.getElementById('statusFilter').value = '';
-      document.getElementById('priorityFilter').value = '';
-      await loadCases();
-    });
-    document.getElementById('searchInput').addEventListener('keydown', async (e) => {
-      if (e.key === 'Enter') await runSearch();
-    });
-    document.getElementById('statusFilter').addEventListener('change', loadCases);
-    document.getElementById('priorityFilter').addEventListener('change', loadCases);
+    document.getElementById("searchBtn").onclick = () => refreshAll(true).catch(err => alert(err.message));
+    document.getElementById("resetBtn").onclick = () => {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("statusFilter").value = "";
+      document.getElementById("priorityFilter").value = "";
+      refreshAll(true).catch(err => alert(err.message));
+    };
+    document.getElementById("exportBtn").onclick = () => {
+      const params = new URLSearchParams();
+      const search = document.getElementById("searchInput").value.trim();
+      const status = document.getElementById("statusFilter").value;
+      const priority = document.getElementById("priorityFilter").value;
+      if(search) params.set("search", search);
+      if(status) params.set("status", status);
+      if(priority) params.set("priority", priority);
+      window.location.href = "/api/dashboard/export.csv?" + params.toString();
+    };
+    document.getElementById("reportBtn").onclick = () => window.location.href = "/report";
+    document.getElementById("mobileReportBtn").onclick = () => window.location.href = "/report";
+    document.getElementById("mobileExportBtn").onclick = () => document.getElementById("exportBtn").click();
+    document.getElementById("searchInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter") document.getElementById("searchBtn").click(); });
 
-    (async function init() {
-      try {
-        await Promise.all([loadSummary(), loadCases(), loadChart()]);
-      } catch (err) {
-        console.error(err);
-        alert('โหลด Dashboard ไม่สำเร็จ: ' + err.message);
-      }
-    })();
+    refreshAll(true).catch(err => alert("โหลดข้อมูลไม่สำเร็จ: " + err.message));
+    connectRealtime();
   </script>
 </body>
 </html>

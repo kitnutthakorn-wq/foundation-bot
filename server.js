@@ -881,191 +881,138 @@ function buildTeamNewCaseFlex(item = {}) {
 
 
 function buildTeamMenuFlex() {
+  function menuCard(title, subtitle, bgColor, textColor, borderColor, text) {
+    return {
+      type: "box",
+      layout: "vertical",
+      backgroundColor: bgColor,
+      cornerRadius: "16px",
+      borderWidth: "1px",
+      borderColor: borderColor,
+      paddingAll: "16px",
+      action: {
+        type: "message",
+        text
+      },
+      contents: [
+        {
+          type: "text",
+          text: title,
+          weight: "bold",
+          size: "lg",
+          color: textColor
+        },
+        {
+          type: "text",
+          text: subtitle,
+          size: "sm",
+          color: "#6B7280",
+          wrap: true,
+          margin: "sm"
+        }
+      ]
+    };
+  }
+
   return {
     type: "flex",
     altText: "เมนูทีมงาน",
     contents: {
       type: "bubble",
       size: "mega",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#0b7c86",
-        paddingAll: "16px",
-        contents: [
-          {
-            type: "text",
-            text: "เมนูทีมงาน",
-            color: "#ffffff",
-            weight: "bold",
-            size: "lg",
-            align: "center",
-          },
-          {
-            type: "text",
-            text: "กดปุ่มด้านล่างเพื่อดูรายการเคส",
-            color: "#d9f3f5",
-            size: "sm",
-            margin: "sm",
-            wrap: true,
-            align: "center",
-          },
-        ],
-      },
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
-        paddingAll: "18px",
+        paddingAll: "0px",
         contents: [
           {
             type: "box",
             layout: "vertical",
-            cornerRadius: "14px",
-            paddingAll: "14px",
-            backgroundColor: "#f7fbfc",
-            borderColor: "#dbe3ea",
-            borderWidth: "1px",
-            action: {
-              type: "message",
-              label: "ดูเคสใหม่",
-              text: "ดูเคสใหม่",
-            },
+            backgroundColor: "#127C84",
+            paddingTop: "22px",
+            paddingBottom: "20px",
+            paddingStart: "20px",
+            paddingEnd: "20px",
             contents: [
               {
                 type: "text",
-                text: "ดูเคสใหม่",
+                text: "เมนูทีมงาน",
+                color: "#FFFFFF",
                 weight: "bold",
-                size: "md",
-                wrap: true,
+                size: "xl",
+                align: "center"
               },
               {
                 type: "text",
-                text: "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+                text: "กดปุ่มด้านล่างเพื่อดูรายการเคส",
+                color: "#D8F2F4",
                 size: "sm",
-                color: "#666666",
-                margin: "sm",
-                wrap: true,
-              },
-            ],
+                align: "center",
+                margin: "md"
+              }
+            ]
           },
           {
             type: "box",
             layout: "vertical",
-            cornerRadius: "14px",
-            paddingAll: "14px",
-            backgroundColor: "#fff7ed",
-            borderColor: "#fed7aa",
-            borderWidth: "1px",
-            action: {
-              type: "message",
-              label: "เคสด่วน",
-              text: "เคสด่วน",
-            },
-             
+            paddingAll: "16px",
+            spacing: "12px",
             contents: [
-              {
-                type: "text",
-                text: "เคสด่วน",
-                weight: "bold",
-                size: "md",
-                wrap: true,
-                color: "#9a3412",
-              },
-              {
-                type: "text",
-                text: "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                size: "sm",
-                color: "#9a3412",
-                margin: "sm",
-                wrap: true,
-              },
-            ],
+              menuCard(
+                "ดูเคสใหม่",
+                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+                "#F3F5F7",
+                "#222222",
+                "#D8DEE5",
+                "ดูเคสใหม่"
+              ),
+              menuCard(
+                "เคสด่วน",
+                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
+                "#FBF4EB",
+                "#C95C00",
+                "#F1C58D",
+                "ดูเคสด่วน"
+              ),
+              menuCard(
+                "ค้นหาเคส",
+                "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
+                "#EEF1FB",
+                "#3748C5",
+                "#B8C4F5",
+                "พิมพ์:\nดูเคส <เลขเคส>\nหรือ\nเช็คสถานะ <เบอร์โทร>"
+              ),
+              menuCard(
+                "เคสวันนี้",
+                "สรุปรายการเคสที่เข้ามาในวันนี้",
+                "#EEF8F0",
+                "#1E7A34",
+                "#B7E0BF",
+                "เคสวันนี้"
+              )
+            ]
           },
-{
-  type: "box",
-  layout: "vertical",
-  cornerRadius: "14px",
-  paddingAll: "14px",
-  backgroundColor: "#eef2ff",
-  borderColor: "#c7d2fe",
-  borderWidth: "1px",
-  action: {
-    type: "message",
-    label: "ค้นหาเคส",
-    text: "ค้นหาเคส",
-  },
-  contents: [
-    {
-      type: "text",
-      text: "ค้นหาเคส",
-      weight: "bold",
-      size: "md",
-      wrap: true,
-      color: "#3730a3",
-    },
-    {
-      type: "text",
-      text: "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-      size: "sm",
-      color: "#3730a3",
-      margin: "sm",
-      wrap: true,
-    },
-  ],
-},
-         
-         {
+          {
             type: "box",
             layout: "vertical",
-            cornerRadius: "14px",
-            paddingAll: "14px",
-            backgroundColor: "#f0fdf4",
-            borderColor: "#bbf7d0",
-            borderWidth: "1px",
-            action: {
-              type: "message",
-              label: "เคสวันนี้",
-              text: "เคสวันนี้",
-            },
+            paddingTop: "2px",
+            paddingBottom: "16px",
+            paddingStart: "20px",
+            paddingEnd: "20px",
             contents: [
               {
                 type: "text",
-                text: "เคสวันนี้",
-                weight: "bold",
-                size: "md",
+                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
+                color: "#9AA3AB",
+                size: "xs",
                 wrap: true,
-                color: "#166534",
-              },
-              {
-                type: "text",
-                text: "สรุปรายการเคสที่เข้ามาในวันนี้",
-                size: "sm",
-                color: "#166534",
-                margin: "sm",
-                wrap: true,
-              },
-            ],
-          },
-        ],
-      },
-      footer: {
-        type: "box",
-        layout: "vertical",
-        spacing: "sm",
-        paddingAll: "16px",
-        contents: [
-          {
-            type: "text",
-            text: "แนะนำให้ปักหมุดการ์ดนี้ไว้ในกลุ่มเพื่อใช้งานสะดวก",
-            size: "xs",
-            color: "#888888",
-            wrap: true,
-            align: "center",
-          },
-        ],
-      },
-    },
+                align: "center"
+              }
+            ]
+          }
+        ]
+      }
+    }
   };
 }
 function buildTeamNewCaseText(item = {}) {

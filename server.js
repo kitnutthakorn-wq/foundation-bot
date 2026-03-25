@@ -3245,6 +3245,27 @@ if (!teamGuard.pass) {
   continue;
 }
 
+if (text === "เมนูทีมงาน") {
+  if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {
+    await safeReply(replyToken, [
+      { type: "text", text: "คำสั่งนี้ใช้ได้เฉพาะในกลุ่มทีมงานเท่านั้น" }
+    ]);
+    continue;
+  }
+
+  const role = await getUserRole(userId);
+
+  if (!["admin", "staff"].includes(String(role || "").toLowerCase())) {
+    await safeReply(replyToken, [
+      { type: "text", text: "เมนูนี้สำหรับทีมงานเท่านั้น" }
+    ]);
+    continue;
+  }
+
+  await safeReply(replyToken, [buildTeamMenuFlex()]);
+  continue;
+}
+      
 const addTeamCommand = parseAddTeamCommand(text);
 if (addTeamCommand) {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {

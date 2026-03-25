@@ -5,7 +5,12 @@ const express = require("express");
 const crypto = require("crypto");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
-const fetch = require("node-fetch");
+const fetch = (...args) => {
+  if (typeof globalThis.fetch === "function") {
+    return globalThis.fetch(...args);
+  }
+  return import("node-fetch").then(({ default: fetch }) => fetch(...args));
+};
 
 const app = express();
 const PORT = process.env.PORT || 3000;

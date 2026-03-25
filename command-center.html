@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command Center | มูลนิธิคนช่วยฅน</title>
+  <style>
+    :root {
+      --bg: #edf2f5;
+      --card: #ffffff;
+      --line: #dbe3ea;
+      --brand: #0b7c86;
+      --brand-dark: #163c72;
+      --text: #16324f;
+      --muted: #6b7280;
+      --danger: #dc2626;
+      --warn: #d97706;
+      --ok: #16a34a;
+      --soft-blue: #eff6ff;
+      --soft-orange: #fff7ed;
+      --soft-green: #f0fdf4;
+      --soft-red: #fef2f2;
+      --shadow: 0 10px 24px rgba(18,36,58,.08);
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: #fff;
+      object-fit: contain;
+      box-shadow: var(--shadow);
+      padding: 8px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 48px;
+      line-height: 1;
+      color: var(--brand-dark);
+    }
+    .sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 20px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    button, select, input {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: var(--text);
+    }
+    button {
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn-primary {
+      background: var(--ok);
+      color: #fff;
+      border-color: var(--ok);
+    }
+    .btn-secondary { background: #fff; }
+    .btn-alert {
+      background: var(--brand-dark);
+      color: #fff;
+      border-color: var(--brand-dark);
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(22,163,74,.12);
+      color: #166534;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .grid-top {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .card h2, .card h3 {
+      margin: 0 0 12px;
+      color: var(--brand-dark);
+    }
+    .alert-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+    .alert-item {
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+    }
+    .alert-item.danger { background: var(--soft-red); }
+    .alert-item.warn { background: var(--soft-orange); }
+    .alert-item.ok { background: var(--soft-green); }
+    .alert-item.info { background: var(--soft-blue); }
+    .alert-item .label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .alert-item .value {
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 800;
+    }
+    .alert-item .desc {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .feed-list {
+      display: grid;
+      gap: 10px;
+      max-height: 342px;
+      overflow: auto;
+    }
+    .feed-row {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #fbfdff;
+    }
+    .feed-time {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .command-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .filters input { min-width: 240px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      color: var(--brand-dark);
+      font-size: 15px;
+    }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .badge.new { background: #dbeafe; color: #1d4ed8; }
+    .badge.in_progress { background: #ffedd5; color: #c2410c; }
+    .badge.done { background: #dcfce7; color: #166534; }
+    .badge.cancelled { background: #e5e7eb; color: #374151; }
+    .badge.urgent { background: #fee2e2; color: #b91c1c; }
+    .badge.normal { background: #e5e7eb; color: #374151; }
+    .badge.high { background: #ffedd5; color: #c2410c; }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .action-row button {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+    .side-panel {
+      display: grid;
+      gap: 14px;
+    }
+    .panel-block {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fbfdff;
+    }
+    .quick-links {
+      display: grid;
+      gap: 10px;
+    }
+    .quick-links a {
+      text-decoration: none;
+      color: var(--brand-dark);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fff;
+      font-weight: 700;
+    }
+    .muted { color: var(--muted); }
+    .empty {
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: #fafcfe;
+    }
+    .footer-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .smart-alert-list {
+      display: grid;
+      gap: 10px;
+    }
+    .smart-alert-item {
+      border: 1px solid var(--line);
+      border-left-width: 6px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #fbfdff;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .smart-alert-item:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+    .smart-alert-item.high { border-left-color: var(--danger); background: var(--soft-red); }
+    .smart-alert-item.medium { border-left-color: var(--warn); background: var(--soft-orange); }
+    .smart-alert-item.low { border-left-color: var(--ok); background: var(--soft-green); }
+    .smart-alert-title {
+      font-weight: 800;
+      color: var(--brand-dark);
+      margin-bottom: 6px;
+    }
+    .smart-alert-detail {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .smart-alert-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    .case-link {
+      color: var(--brand-dark);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .case-link:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 1100px) {
+      .grid-top, .command-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      h1 { font-size: 34px; }
+      .alert-grid { grid-template-columns: 1fr; }
+      th:nth-child(3), td:nth-child(3), th:nth-child(4), td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand-wrap">
+        <img src="/logo.png" alt="logo" class="logo" onerror="this.style.display='none'" />
+        <div>
+          <h1>Command Center</h1>
+          <div class="sub">Executive Control System · คนช่วยฅน</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <select id="daysSelect">
+          <option value="7">7 วันล่าสุด</option>
+          <option value="14">14 วันล่าสุด</option>
+          <option value="30">30 วันล่าสุด</option>
+        </select>
+        <button class="btn-primary" id="refreshBtn">รีเฟรช</button>
+        <button class="btn-alert" onclick="location.href='/report'">รายงานผู้บริหาร</button>
+        <button class="btn-secondary" onclick="location.href='/dashboard'">กลับ Dashboard</button>
+        <div class="status-pill"><span class="dot"></span><span id="streamState">เชื่อมต่อข้อมูลสดแล้ว</span></div>
+      </div>
+    </div>
+
+    <div class="grid-top">
+      <div class="card">
+        <h2>🚨 Crisis Panel</h2>
+        <div class="alert-grid">
+          <div class="alert-item danger">
+            <div class="label">เคสด่วนที่ยังเปิด</div>
+            <div class="value" id="urgentOpenCount">0</div>
+            <div class="desc">ต้องเร่งจัดคนลงมือทันที</div>
+          </div>
+          <div class="alert-item warn">
+            <div class="label">เคสที่ล่าช้า</div>
+            <div class="value" id="delayedCount">0</div>
+            <div class="desc">เกินเกณฑ์ 2 วันและยังไม่ปิดเคส</div>
+          </div>
+          <div class="alert-item ok">
+            <div class="label">เคสปิดแล้ว</div>
+            <div class="value" id="closedCount">0</div>
+            <div class="desc">ใช้ดู output การปิดเคสล่าสุด</div>
+          </div>
+          <div class="alert-item info">
+            <div class="label">ติดตามด่วน</div>
+            <div class="value" id="followupCount">0</div>
+            <div class="desc">เคสด่วนที่ต้องติดตามต่อเนื่อง</div>
+          </div>
+        </div>
+        <div class="footer-note" id="summaryText">กำลังโหลดสรุปภาพรวม…</div>
+      </div>
+
+      <div class="card">
+        <h2>📡 Live Activity</h2>
+        <div class="feed-list" id="feedList">
+          <div class="empty">กำลังโหลดกิจกรรมล่าสุด…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="command-grid">
+      <div class="card">
+        <h2>🎛 Command Table</h2>
+        <div class="filters">
+          <select id="listType">
+            <option value="urgent_open">เคสด่วนที่ยังเปิด</option>
+            <option value="delayed">เคสที่ล่าช้า</option>
+            <option value="closed">เคสปิดแล้ว</option>
+            <option value="followup_urgent">ติดตามด่วน</option>
+            <option value="latest">เคสล่าสุด</option>
+          </select>
+          <input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / พื้นที่" />
+          <button id="loadListBtn">โหลดรายการ</button>
+        </div>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>เลขเคส</th>
+                <th>ชื่อ</th>
+                <th>พื้นที่</th>
+                <th>สถานะ</th>
+                <th>ระดับ</th>
+                <th>คำสั่ง</th>
+              </tr>
+            </thead>
+            <tbody id="caseTableBody">
+              <tr><td colspan="6"><div class="empty">ยังไม่มีข้อมูล</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="side-panel">
+        <div class="card">
+          <h3>🔔 Smart Alert</h3>
+          <div id="smartAlertList" class="smart-alert-list">
+            <div class="empty">กำลังวิเคราะห์สัญญาณเตือนสำคัญ…</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>⚡ Quick Command</h3>
+          <div class="panel-block muted">กดปุ่มในตารางเพื่อ รับเคส / ปิดเคส / เปลี่ยนระดับด่วน โดยใช้ API เดิมของระบบ ไม่แตะ flow เก่า</div>
+        </div>
+
+        <div class="card">
+          <h3>🧭 Shortcut</h3>
+          <div class="quick-links">
+            <a href="/dashboard">ไปหน้า Dashboard หลัก</a>
+            <a href="/report">ไปหน้า Executive Report</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>📝 Safe Patch Note</h3>
+          <div class="panel-block muted">
+            หน้า Command Center นี้ใช้แนวทาง Add only และเรียกใช้ route เดิม เช่น /api/case/:id/assign และ /api/case/:id/update เป็นหลัก
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="/ui-th.js"></script>
+  
+  <script>
+    const staffPromptDefault = 'ทีมงาน';
+    let eventSource = null;
+
+    function escapeHtml(v = '') {
+      return String(v)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function badgeClass(value = '') {
+      return String(value || '').toLowerCase().replace(/[^a-z_]/g, '_');
+    }
+
+    function mapStatusThai(status = '') {
+      const s = String(status || '').toLowerCase();
+      if (s === 'new') return 'รับเรื่องแล้ว';
+      if (s === 'in_progress') return 'กำลังดำเนินการ';
+      if (s === 'done') return 'ปิดแล้ว';
+      if (s === 'cancelled') return 'ยกเลิก';
+      return status || '-';
+    }
+
+    function mapPriorityThai(priority = '') {
+      const p = String(priority || '').toLowerCase();
+      if (p === 'urgent') return 'ด่วน';
+      if (p === 'high') return 'สูง';
+      if (p === 'normal') return 'ปกติ';
+      if (p === 'low') return 'ต่ำ';
+      return priority || '-';
+    }
+
+    function formatDateTime(value) {
+      if (!value) return '-';
+      try {
+        return new Date(value).toLocaleString('th-TH', {
+          year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+      } catch {
+        return value;
+      }
+    }
+
+    async function apiGet(url) {
+      const res = await fetch(url, { credentials: 'same-origin' });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function apiPost(url, payload) {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    async function loadSummary() {
+      const days = Number(document.getElementById('daysSelect').value || '7');
+      const result = await apiGet(`/api/command-center/summary?days=${days}`);
+      const d = result.data || {};
+      document.getElementById('urgentOpenCount').textContent = d.urgent_open_cases || 0;
+      document.getElementById('delayedCount').textContent = d.delayed_cases || 0;
+      document.getElementById('closedCount').textContent = d.done_cases || 0;
+      document.getElementById('followupCount').textContent = d.followup_urgent_cases || 0;
+      document.getElementById('summaryText').textContent = d.summary_text || 'โหลดสรุปสำเร็จ';
+    }
+
+    async function loadFeed() {
+      const result = await apiGet('/api/command-center/activity?limit=12');
+      const rows = result.data || [];
+      const el = document.getElementById('feedList');
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">ยังไม่มีกิจกรรมล่าสุด</div>';
+        return;
+      }
+      el.innerHTML = rows.map(row => `
+        <div class="feed-row">
+          <div class="feed-time">${escapeHtml(formatDateTime(row.event_time || row.created_at || row.updated_at))}</div>
+          <div><strong>${escapeHtml(row.case_code || '-')}</strong> · ${escapeHtml(row.full_name || '-')}</div>
+          <div class="muted">${escapeHtml(row.activity_text || `${mapStatusThai(row.status)} / ${mapPriorityThai(row.priority)}`)}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadList() {
+      const type = document.getElementById('listType').value;
+      const q = encodeURIComponent(document.getElementById('searchInput').value.trim());
+      const result = await apiGet(`/api/command-center/list?type=${encodeURIComponent(type)}&q=${q}&limit=30`);
+      const rows = result.data || [];
+      const body = document.getElementById('caseTableBody');
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="6"><div class="empty">ไม่พบรายการที่ตรงเงื่อนไข</div></td></tr>';
+        return;
+      }
+      body.innerHTML = rows.map(row => `
+        <tr>
+          <td>
+            ${row.case_code ? `<a href="/case?id=${Number(row.id)}" class="case-link">${escapeHtml(row.case_code)}</a>` : '-'}
+          </td>
+          <td>${escapeHtml(row.full_name || '-')}</td>
+          <td>${escapeHtml(row.location || '-')}</td>
+          <td><span class="badge ${badgeClass(row.status)}">${escapeHtml(mapStatusThai(row.status))}</span></td>
+          <td><span class="badge ${badgeClass(row.priority)}">${escapeHtml(mapPriorityThai(row.priority))}</span></td>
+          <td>
+            <div class="action-row">
+              <button onclick="assignCase(${Number(row.id)}, '${escapeHtml((row.case_code || '').replace(/'/g, "\\'"))}')">รับเคส</button>
+              <button onclick="closeCase(${Number(row.id)}, '${escapeHtml((row.case_code || '').replace(/'/g, "\\'"))}')">ปิดเคส</button>
+              <button onclick="markUrgent(${Number(row.id)}, '${escapeHtml((row.case_code || '').replace(/'/g, "\\'"))}')">Mark ด่วน</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function assignCase(id, caseCode) {
+      const staffName = prompt(`ระบุชื่อผู้รับเคสสำหรับ ${caseCode}`, staffPromptDefault);
+      if (staffName === null) return;
+      await apiPost(`/api/case/${id}/assign`, {
+        staff_name: staffName || staffPromptDefault,
+        status: 'in_progress',
+        priority: 'normal'
+      });
+      await refreshAll();
+    }
+
+    async function closeCase(id, caseCode) {
+      const ok = confirm(`ยืนยันปิดเคส ${caseCode} ?`);
+      if (!ok) return;
+      await apiPost(`/api/case/${id}/update`, { status: 'done' });
+      await refreshAll();
+    }
+
+    async function markUrgent(id, caseCode) {
+      const ok = confirm(`ตั้งค่า ${caseCode} เป็นเคสด่วน ?`);
+      if (!ok) return;
+      await apiPost(`/api/case/${id}/update`, { priority: 'urgent' });
+      await refreshAll();
+    }
+
+
+    async function loadAlerts() {
+      const result = await apiGet('/api/command-center/alerts');
+      const rows = result.data || [];
+      const el = document.getElementById('smartAlertList');
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">ยังไม่พบสัญญาณเตือนสำคัญ</div>';
+        return;
+      }
+
+      el.innerHTML = rows.map(row => `
+        <div class="smart-alert-item ${escapeHtml(row.severity || 'low')}" data-filter="${escapeHtml(row.filter_key || 'latest')}">
+          <div class="smart-alert-title">${escapeHtml(row.title || '-')}</div>
+          <div class="smart-alert-detail">${escapeHtml(row.detail || '-')}</div>
+          <div class="smart-alert-meta">คำแนะนำ: ${escapeHtml(row.recommendation || '-')}</div>
+        </div>
+      `).join('');
+
+      el.querySelectorAll('.smart-alert-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const filter = item.getAttribute('data-filter') || 'latest';
+          const filterEl = document.getElementById('listType');
+          if (filterEl) filterEl.value = filter;
+          loadList();
+        });
+      });
+    }
+
+    function bindRealtime() {
+      if (eventSource) eventSource.close();
+      eventSource = new EventSource('/api/stream');
+      eventSource.onopen = () => {
+        document.getElementById('streamState').textContent = 'เชื่อมต่อข้อมูลสดแล้ว';
+      };
+      eventSource.onerror = () => {
+        document.getElementById('streamState').textContent = 'สัญญาณสดสะดุด กำลัง reconnect';
+      };
+      eventSource.addEventListener('case_created', refreshAll);
+      eventSource.addEventListener('case_updated', refreshAll);
+      eventSource.addEventListener('heartbeat', () => {
+        document.getElementById('streamState').textContent = 'เชื่อมต่อข้อมูลสดแล้ว';
+      });
+    }
+
+    async function refreshAll() {
+      try {
+        await Promise.all([loadSummary(), loadFeed(), loadList(), loadAlerts()]);
+      } catch (err) {
+        console.error(err);
+        alert('โหลดข้อมูลไม่สำเร็จ: ' + err.message);
+      }
+    }
+
+    document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+    document.getElementById('loadListBtn').addEventListener('click', loadList);
+    document.getElementById('daysSelect').addEventListener('change', loadSummary);
+    document.getElementById('searchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') loadList();
+    });
+
+    bindRealtime();
+    refreshAll();
+  </script>
+<script src="/ui-th-apply.js"></script>
+  
+</body>
+</html>

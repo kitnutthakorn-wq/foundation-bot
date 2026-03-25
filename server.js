@@ -1358,7 +1358,7 @@ function buildAdminMenuFlex() {
                 action: {
                   type: "uri",
                   label: "📈 Dashboard",
-                  uri: `${APP_BASE_URL}/dashboard.html`
+                  uri: "https://foundation-bot-p5wu.onrender.com/dashboard"
                 }
               }
             ]

@@ -5,7 +5,7 @@ const express = require("express");
 const crypto = require("crypto");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
-const fetch = require("node-fetch");
+await fetch("https://api.line.me/v2/bot/message/reply", {...})
 
 const app = express();
 const PORT = process.env.PORT || 3000;

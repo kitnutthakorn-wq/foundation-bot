@@ -1203,6 +1203,247 @@ async function findLatestCaseByCaseCodeOrPhone(input = "") {
 }
 
 
+
+
+function buildAdminMenuFlex() {
+  return {
+    type: "flex",
+    altText: "เมนูแอดมิน",
+    contents: {
+      type: "carousel",
+      contents: [
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#0B7C86",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "🛠 เมนูแอดมิน",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "จัดการเคส",
+                color: "#DDF7FA",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "คำสั่งที่ใช้บ่อยสำหรับติดตามและจัดการเคส",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+          footer: {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#0B7C86",
+                action: {
+                  type: "message",
+                  label: "📌 ดูเคสใหม่",
+                  text: "ดูเคสใหม่"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#E65100",
+                action: {
+                  type: "message",
+                  label: "🚨 ดูเคสด่วน",
+                  text: "ดูเคสด่วน"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "message",
+                  label: "📅 เคสวันนี้",
+                  text: "เคสวันนี้"
+                }
+              }
+            ]
+          }
+        },
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#1F8F4D",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "📊 รายงานผู้บริหาร",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "รายงานและภาพรวม",
+                color: "#DDF7E7",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "ดูรายงาน สรุปรายวัน และเข้า dashboard",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+          footer: {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#1F8F4D",
+                action: {
+                  type: "message",
+                  label: "📊 รายงาน",
+                  text: "รายงาน"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#2E7D32",
+                action: {
+                  type: "message",
+                  label: "🗓 สรุปรายวัน",
+                  text: "สรุปรายวัน"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "📈 Dashboard",
+                  uri: `${APP_BASE_URL}/dashboard.html`
+                }
+              }
+            ]
+          }
+        },
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#C98A00",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "👑 จัดการทีม",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "สิทธิ์และบทบาท",
+                color: "#FFF5D6",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "ตรวจสอบสมาชิกทีมและสิทธิ์การใช้งาน",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+          footer: {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#C98A00",
+                action: {
+                  type: "message",
+                  label: "👥 ดูทีม",
+                  text: "ดูทีม"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "message",
+                  label: "🔍 วิธีดูสิทธิ์",
+                  text: "ดูสิทธิ์ USER_ID"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "message",
+                  label: "⚙️ วิธีตั้งสิทธิ์",
+                  text: "ตั้งสิทธิ์ USER_ID staff"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  };
+}
+
 function buildHelpRequestChoiceFlex() {
   return {
     type: "flex",
@@ -3316,6 +3557,39 @@ if (caseUpdateState?.step === "await_detail") {
 }
        
        
+
+if (text === "เมนูแอดมิน" || text === "เปิดเมนูแอดมิน" || text === "รีเฟรชเมนูแอดมิน") {
+  if (!isGroupEvent(event)) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }]);
+    continue;
+  }
+
+  if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ เมนูแอดมินใช้ได้เฉพาะในกลุ่มทีมงานที่ได้รับอนุญาตเท่านั้น" }]);
+    continue;
+  }
+
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ เมนูนี้สำหรับผู้ดูแลระบบ" }]);
+    continue;
+  }
+
+  await safeReply(replyToken, [buildAdminMenuFlex()], [
+    {
+      type: "text",
+      text:
+        "เมนูแอดมิน\n\n" +
+        "- ดูเคสใหม่\n" +
+        "- ดูเคสด่วน\n" +
+        "- เคสวันนี้\n" +
+        "- รายงาน\n" +
+        "- สรุปรายวัน\n" +
+        "- ดูทีม"
+    },
+  ]);
+  continue;
+}
+
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);

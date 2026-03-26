@@ -4653,6 +4653,296 @@ app.get("/api/command-center/activity", checkDashboardAuth, async (req, res) => 
   }
 });
 
+
+
+/* =========================
+   HYBRID SYSTEM PHASE 2 - TEAM WORKSPACE API (GOLDEN SAFE)
+   เพิ่ม endpoint ใหม่โดยไม่แตะ flow เดิม
+========================= */
+function mapCaseRowToTeamCase(row = {}) {
+  const rawStatus = String(row.status || "").toLowerCase();
+
+  let status = "new";
+  if (rawStatus.includes("urgent") || rawStatus.includes("ด่วน")) {
+    status = "urgent";
+  } else if (
+    rawStatus.includes("progress") ||
+    rawStatus.includes("ดำเนิน") ||
+    rawStatus.includes("รับเคสแล้ว") ||
+    rawStatus.includes("assigned") ||
+    rawStatus.includes("in_progress")
+  ) {
+    status = "progress";
+  } else if (
+    rawStatus.includes("done") ||
+    rawStatus.includes("closed") ||
+    rawStatus.includes("completed") ||
+    rawStatus.includes("เสร็จสิ้น") ||
+    rawStatus.includes("ปิดเคส")
+  ) {
+    status = "done";
+  }
+
+  const locationValue = row.location || row.province || row.location_province || "-";
+  const fallbackCategory = typeof mapProblemToBusinessLabel === "function"
+    ? mapProblemToBusinessLabel(row.problem || row.problem_summary || "")
+    : (row.problem_type || row.category || "-");
+
+  return {
+    case_code: row.case_code || row.id || "-",
+    title: row.full_name
+      ? `เคสขอความช่วยเหลือ: ${row.full_name}`
+      : (row.problem_summary || row.problem || "เคสขอความช่วยเหลือ"),
+    description:
+      row.problem_summary ||
+      row.problem ||
+      row.additional_details ||
+      "ไม่มีรายละเอียดเพิ่มเติม",
+    status,
+    province: locationValue,
+    owner: row.assigned_to_name || row.assigned_to || "-",
+    updated_at: row.updated_at || row.last_action_at || row.created_at || null,
+    category:
+      row.business_label ||
+      row.problem_type ||
+      row.category ||
+      fallbackCategory ||
+      "-"
+  };
+}
+
+app.get("/api/team/me", async (req, res) => {
+  try {
+    const userId = String(req.query.userId || "").trim();
+
+    if (!userId) {
+      return res.status(400).json({ ok: false, error: "missing userId" });
+    }
+
+    const effectiveRole = await getUserRole(userId);
+    let roleName = effectiveRole;
+    let profile = null;
+
+    try {
+      const roleResult = await supabase
+        .from("line_user_roles")
+        .select("line_user_id, role, is_active")
+        .eq("line_user_id", userId)
+        .maybeSingle();
+
+      if (!roleResult.error && roleResult.data) {
+        profile = roleResult.data;
+        roleName = roleResult.data.role || effectiveRole || "guest";
+      }
+    } catch (lookupError) {
+      console.warn("/api/team/me lookup fallback:", lookupError.message);
+    }
+
+    return res.json({
+      ok: true,
+      roleName,
+      profile,
+    });
+  } catch (err) {
+    console.error("GET /api/team/me error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/api/team/cases", async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "100", 10), 200);
+    const result = await supabase
+      .from("help_requests")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (result.error) throw result.error;
+
+    const cases = (result.data || []).map(mapCaseRowToTeamCase);
+
+    return res.json({
+      ok: true,
+      cases,
+    });
+  } catch (err) {
+    console.error("GET /api/team/cases error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/api/team/activities", async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "10", 10), 30);
+    const result = await supabase
+      .from("help_requests")
+      .select("case_code, full_name, status, assigned_to, assigned_to_name, updated_at, created_at")
+      .order("updated_at", { ascending: false })
+      .limit(limit);
+
+    if (result.error) throw result.error;
+
+    const activities = (result.data || []).map((row) => ({
+      title: `อัปเดตเคส ${row.case_code || "-"}`,
+      detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${row.assigned_to_name || row.assigned_to || "-"}`,
+      time: formatThaiDateTime(row.updated_at || row.created_at || null),
+    }));
+
+    return res.json({
+      ok: true,
+      activities,
+    });
+  } catch (err) {
+    console.error("GET /api/team/activities error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post("/api/team/cases/assign", async (req, res) => {
+  try {
+    const { caseCode, userId, displayName } = req.body || {};
+
+    if (!caseCode) {
+      return res.status(400).json({ ok: false, error: "missing caseCode" });
+    }
+
+    const payload = {
+      assigned_to: userId || null,
+      assigned_to_name: displayName || "ทีมงาน",
+      status: "assigned",
+      updated_at: new Date().toISOString(),
+      last_action_at: new Date().toISOString(),
+    };
+
+    const result = await supabase
+      .from("help_requests")
+      .update(payload)
+      .eq("case_code", caseCode)
+      .select()
+      .limit(1);
+
+    if (result.error) throw result.error;
+
+    broadcastSse("team_case_assigned", {
+      case_code: caseCode,
+      assigned_to: payload.assigned_to,
+      assigned_to_name: payload.assigned_to_name,
+    });
+
+    return res.json({
+      ok: true,
+      message: "assigned",
+      case: result.data?.[0] || null,
+    });
+  } catch (err) {
+    console.error("POST /api/team/cases/assign error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post("/api/team/cases/status", async (req, res) => {
+  try {
+    const { caseCode, status } = req.body || {};
+
+    if (!caseCode || !status) {
+      return res.status(400).json({ ok: false, error: "missing caseCode or status" });
+    }
+
+    let nextStatus = status;
+    if (status === "progress") nextStatus = "in_progress";
+    if (status === "done") nextStatus = "done";
+
+    const result = await supabase
+      .from("help_requests")
+      .update({
+        status: nextStatus,
+        updated_at: new Date().toISOString(),
+        last_action_at: new Date().toISOString(),
+        ...(nextStatus === "done" ? { closed_at: new Date().toISOString() } : {}),
+      })
+      .eq("case_code", caseCode)
+      .select()
+      .limit(1);
+
+    if (result.error) throw result.error;
+
+    broadcastSse("team_case_status_updated", {
+      case_code: caseCode,
+      status: nextStatus,
+    });
+
+    return res.json({
+      ok: true,
+      message: "status updated",
+      case: result.data?.[0] || null,
+    });
+  } catch (err) {
+    console.error("POST /api/team/cases/status error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post("/api/team/send-update", async (req, res) => {
+  try {
+    const { type, message, caseCode, targetUserId } = req.body || {};
+
+    if (!message) {
+      return res.status(400).json({ ok: false, error: "missing message" });
+    }
+
+    const effectiveTeamGroupId = process.env.LINE_TEAM_GROUP_ID || EFFECTIVE_TEAM_GROUP_ID;
+
+    if (type === "team") {
+      if (!effectiveTeamGroupId) {
+        return res.status(400).json({ ok: false, error: "missing LINE_TEAM_GROUP_ID / TEAM_GROUP_ID / LINE_GROUP_ID" });
+      }
+
+      await callLinePushApi(effectiveTeamGroupId, [
+        {
+          type: "text",
+          text: message,
+        },
+      ]);
+
+      return res.json({ ok: true, sentTo: "team_group" });
+    }
+
+    if (type === "requester") {
+      let userId = targetUserId || null;
+
+      if (!userId && caseCode) {
+        const caseResult = await supabase
+          .from("help_requests")
+          .select("line_user_id")
+          .eq("case_code", caseCode)
+          .maybeSingle();
+
+        if (caseResult.error) throw caseResult.error;
+        userId = caseResult.data?.line_user_id || null;
+      }
+
+      if (!userId) {
+        return res.status(400).json({ ok: false, error: "missing requester line user id" });
+      }
+
+      await callLinePushApi(userId, [
+        {
+          type: "text",
+          text: message,
+        },
+      ]);
+
+      return res.json({ ok: true, sentTo: "requester" });
+    }
+
+    return res.status(400).json({ ok: false, error: "invalid type" });
+  } catch (err) {
+    console.error("POST /api/team/send-update error:", err);
+    return res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log("✅ Server started on port " + PORT);
 });

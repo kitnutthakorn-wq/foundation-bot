@@ -3886,7 +3886,6 @@ if (userId && userStates[userId] === "tracking_case") {
     continue;
   }
 }
-
       if (text === "รหัสของฉัน") {
         await safeReply(replyToken, [{ type: "text", text: userId || "ไม่พบ userId" }]);
         continue;

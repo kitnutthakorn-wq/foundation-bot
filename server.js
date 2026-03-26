@@ -3477,99 +3477,109 @@ if (text === "อัปเดตเคส") {
 const caseUpdateState = getCaseUpdateState(userId);
 
 if (caseUpdateState?.step === "await_case_code") {
-  const foundCase = await findLatestCaseByCaseCodeOrPhone(text);
-
-  if (!foundCase) {
-    await safeReply(replyToken, [
-      { type: "text", text: "ไม่พบเลขเคสนี้ในระบบ\nกรุณาส่งเลขเคสใหม่อีกครั้ง" }
-    ]);
-    continue;
-  }
-
-  caseUpdateState.caseCode = foundCase.case_code;
-  caseUpdateState.step = "await_update_stage";
-  setCaseUpdateState(userId, caseUpdateState);
-
-  await safeReply(replyToken, [
-    {
-      type: "text",
-      text:
-        `พบเคส: ${foundCase.case_code}\n` +
-        `ชื่อ: ${foundCase.full_name || "-"}\n\n` +
-        "กรุณาเลือกสถานะอัปเดตจากปุ่มด้านล่าง หรือพิมพ์เองก็ได้",
-    quickReply: buildCaseUpdateStageQuickReply()
-    }
-  ]);
-  continue;
-}
-
-if (caseUpdateState?.step === "await_update_stage") {
-  if (!CASE_UPDATE_STAGES.includes(text)) {
-   await safeReply(replyToken, [
-  {
-    type: "text",
-    text:
-      "สถานะไม่ถูกต้อง\nกรุณาเลือกจากปุ่มด้านล่าง หรือพิมพ์ตามรายการนี้:\n- " +
-      CASE_UPDATE_STAGES.join("\n- "),
-    quickReply: buildCaseUpdateStageQuickReply()
-  }
-]);
-continue;
-  }
-
-  caseUpdateState.updateStage = text;
-  caseUpdateState.step = "await_detail";
-  setCaseUpdateState(userId, caseUpdateState);
-
-  await safeReply(replyToken, [
-    {
-      type: "text",
-      text:
-        `สถานะที่เลือก: ${text}\n` +
-        "กรุณาพิมพ์รายละเอียดการอัปเดต"
-    }
-  ]);
-  continue;
-}
-
-if (caseUpdateState?.step === "await_detail") {
-  const detail = String(text || "").trim();
-
-  if (!detail) {
-    await safeReply(replyToken, [
-      { type: "text", text: "กรุณาพิมพ์รายละเอียดการอัปเดต" }
-    ]);
-    continue;
-  }
-
-  try {
-    const saved = await upsertCaseUpdateLegacy({
-      caseCode: caseUpdateState.caseCode,
-      updateStage: caseUpdateState.updateStage,
-      detail,
-      updatedBy: userId
-    });
-
+  if (isOverrideMenuCommand(text)) {
     clearCaseUpdateState(userId);
+  } else {
+    const foundCase = await findLatestCaseByCaseCodeOrPhone(text);
+
+    if (!foundCase) {
+      await safeReply(replyToken, [
+        { type: "text", text: "ไม่พบเลขเคสนี้ในระบบ\nกรุณาส่งเลขเคสใหม่อีกครั้ง" }
+      ]);
+      continue;
+    }
+
+    caseUpdateState.caseCode = foundCase.case_code;
+    caseUpdateState.step = "await_update_stage";
+    setCaseUpdateState(userId, caseUpdateState);
 
     await safeReply(replyToken, [
       {
         type: "text",
         text:
-          "บันทึกอัปเดตเคสสำเร็จ\n" +
-          `เลขเคส: ${saved.case_code}\n` +
-          `สถานะ: ${saved.current_step}\n` +
-          `ความคืบหน้า: ${saved.progress_percent}%`
+          `พบเคส: ${foundCase.case_code}\n` +
+          `ชื่อ: ${foundCase.full_name || "-"}\n\n` +
+          "กรุณาเลือกสถานะอัปเดตจากปุ่มด้านล่าง หรือพิมพ์เองก็ได้",
+        quickReply: buildCaseUpdateStageQuickReply()
       }
     ]);
-  } catch (error) {
-    console.error("UPSERT CASE UPDATE ERROR:", error);
-    await safeReply(replyToken, [
-      { type: "text", text: "เกิดข้อผิดพลาดในการบันทึกอัปเดตเคส" }
-    ]);
+    continue;
   }
+}
 
-  continue;
+if (caseUpdateState?.step === "await_update_stage") {
+  if (isOverrideMenuCommand(text)) {
+    clearCaseUpdateState(userId);
+  } else {
+    if (!CASE_UPDATE_STAGES.includes(text)) {
+      await safeReply(replyToken, [
+        {
+          type: "text",
+          text:
+            "สถานะไม่ถูกต้อง\nกรุณาเลือกจากปุ่มด้านล่าง หรือพิมพ์ตามรายการนี้:\n- " +
+            CASE_UPDATE_STAGES.join("\n- "),
+          quickReply: buildCaseUpdateStageQuickReply()
+        }
+      ]);
+      continue;
+    }
+
+    caseUpdateState.updateStage = text;
+    caseUpdateState.step = "await_detail";
+    setCaseUpdateState(userId, caseUpdateState);
+
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: "กรุณาพิมพ์รายละเอียดเพิ่มเติมของการอัปเดตเคส"
+      }
+    ]);
+    continue;
+  }
+}
+
+if (caseUpdateState?.step === "await_detail") {
+  if (isOverrideMenuCommand(text)) {
+    clearCaseUpdateState(userId);
+  } else {
+    const detail = String(text || "").trim();
+
+    if (!detail) {
+      await safeReply(replyToken, [
+        { type: "text", text: "กรุณาพิมพ์รายละเอียดการอัปเดต" }
+      ]);
+      continue;
+    }
+
+    try {
+      const saved = await upsertCaseUpdateLegacy({
+        caseCode: caseUpdateState.caseCode,
+        updateStage: caseUpdateState.updateStage,
+        detail,
+        updatedBy: userId
+      });
+
+      clearCaseUpdateState(userId);
+
+      await safeReply(replyToken, [
+        {
+          type: "text",
+          text:
+            "บันทึกอัปเดตเคสสำเร็จ\n" +
+            `เลขเคส: ${saved.case_code}\n` +
+            `สถานะ: ${saved.current_step}\n` +
+            `ความคืบหน้า: ${saved.progress_percent}%`
+        }
+      ]);
+    } catch (error) {
+      console.error("UPSERT CASE UPDATE ERROR:", error);
+      await safeReply(replyToken, [
+        { type: "text", text: "เกิดข้อผิดพลาดในการบันทึกอัปเดตเคส" }
+      ]);
+    }
+
+    continue;
+  }
 }
        
        

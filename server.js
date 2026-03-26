@@ -974,14 +974,22 @@ function buildTeamMenuFlex() {
                 "#F1C58D",
                 "ดูเคสด่วน"
               ),
-              menuCard(
-                "ค้นหาเคส",
-                "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-                "#EEF1FB",
-                "#3748C5",
-                "#B8C4F5",
-                "พิมพ์:\nดูเคส <เลขเคส>\nหรือ\nเช็คสถานะ <เบอร์โทร>"
-              ),
+  menuCard(
+  "ค้นหาด้วยเลขเคส",
+  "พิมพ์เลขเคสเพื่อดูรายละเอียดเคส",
+  "#EEF1FB",
+  "#3748C5",
+  "#B8C4F5",
+  "ดูเคส "
+),
+menuCard(
+  "ค้นหาด้วยเบอร์",
+  "ค้นหาสถานะด้วยหมายเลขโทรศัพท์",
+  "#EEF8F0",
+  "#1E7A34",
+  "#B7E0BF",
+  "เช็คสถานะ "
+)
               menuCard(
                 "เคสวันนี้",
                 "สรุปรายการเคสที่เข้ามาในวันนี้",
@@ -1233,14 +1241,23 @@ function buildAdminMenuFlex() {
       }
     },
     {
-      type: "button",
-      style: "secondary",
-      action: {
-        type: "message",
-        label: "🔎 ค้นหาเคส",
-        text: "พิมพ์:\nดูเคส CASE_CODE\nหรือ\nเช็คสถานะ เบอร์โทร"
-      }
-    }
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "🔎 ค้นหาด้วยเลขเคส",
+    text: "ดูเคส "
+  }
+},
+{
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "📞 ค้นหาด้วยเบอร์",
+    text: "เช็คสถานะ "
+  }
+}
   ]
 }
         },

@@ -3818,29 +3818,14 @@ if (text === "ค้นหาเคส") {
   continue;
 }
 
-if (
-  userId &&
-  userStates[userId] === "search_case" &&
-  (/^\d{8}-\d{3}$/.test(text) || /^\d{9,10}$/.test(text))
-) {
-  const found = await findLatestCaseByCaseCodeOrPhone(text);
-
-  if (!found) {
-    await safeReply(replyToken, [
-      { type: "text", text: "ไม่พบเคสในระบบ" },
-    ]);
-    continue;
-  }
-
-  delete userStates[userId];
-
-  await safeReply(replyToken, [buildCaseTrackingFlex(found)]);
-  continue;
-}
-
 if (userId && userStates[userId] === "tracking_case") {
 
-  if (text === "ยกเลิก" || text === "ออก") {
+  // ✅ override menu (ตัวแก้หลัก)
+  if (isOverrideMenuCommand(text)) {
+    delete userStates[userId];
+  }
+
+  else if (text === "ยกเลิก" || text === "ออก") {
     delete userStates[userId];
 
     await safeReply(replyToken, [
@@ -3849,25 +3834,38 @@ if (userId && userStates[userId] === "tracking_case") {
         text: "ออกจากโหมดติดตามเคสแล้วครับ",
       },
     ]);
-
     continue;
   }
 
-  try {
-    const foundCase = await findLatestCaseByCaseCodeOrPhone(text);
+  else {
+    try {
+      const foundCase = await findLatestCaseByCaseCodeOrPhone(text);
 
-    if (!foundCase) {
+      if (!foundCase) {
+        await safeReply(replyToken, [
+          { type: "text", text: "ไม่พบข้อมูลเคส" },
+        ]);
+        delete userStates[userId];
+        continue;
+      }
+
       await safeReply(replyToken, [
-        {
-          type: "text",
-          text:
-            "ไม่พบข้อมูลเคส\n" +
-            "กรุณาตรวจสอบเลขเคสหรือเบอร์โทรอีกครั้ง",
-        },
+        buildCaseTrackingFlex(foundCase),
+      ]);
+
+      delete userStates[userId];
+      continue;
+
+    } catch (err) {
+      console.error("TRACKING ERROR:", err);
+      await safeReply(replyToken, [
+        { type: "text", text: "เกิดข้อผิดพลาดในการค้นหาเคส" },
       ]);
       delete userStates[userId];
       continue;
     }
+  }
+}
 
     await safeReply(
       replyToken,

@@ -880,97 +880,103 @@ function buildTeamNewCaseFlex(item = {}) {
 }
 
 
-function buildTeamMenuFlex() {
-  const TEAM_LIFF_BASE = "https://foundation-bot-p5wu.onrender.com/team.html";
+function getTeamLiffUrl() {
+  if (process.env.TEAM_LIFF_URL) {
+    return String(process.env.TEAM_LIFF_URL).trim();
+  }
 
-  function menuCard(title, subtitle, accentColor, softBg, textCmd) {
+  if (process.env.TEAM_LIFF_ID) {
+    return `https://liff.line.me/${String(process.env.TEAM_LIFF_ID).trim()}`;
+  }
+
+  return "https://liff.line.me/2009446483-VtE4rtgZ";
+}
+
+function buildTeamMenuFlex() {
+  const TEAM_LIFF_BASE = getTeamLiffUrl();
+
+  function menuCard(title, subtitle, accentColor, softBg) {
     return {
       type: "box",
       layout: "vertical",
       margin: "md",
-      paddingAll: "2px",
-      backgroundColor: accentColor,
+      backgroundColor: softBg,
+      borderColor: accentColor,
+      borderWidth: "2px",
       cornerRadius: "18px",
+      paddingAll: "14px",
+      action: {
+        type: "uri",
+        label: title,
+        uri: TEAM_LIFF_BASE
+      },
       contents: [
         {
           type: "box",
-          layout: "vertical",
-          cornerRadius: "16px",
-          backgroundColor: softBg,
-          paddingAll: "14px",
-          action: {
-            type: "message",
-            text: textCmd
-          },
+          layout: "horizontal",
+          justifyContent: "space-between",
+          alignItems: "center",
+          contents: [
+            {
+              type: "text",
+              text: title,
+              weight: "bold",
+              size: "lg",
+              color: accentColor,
+              flex: 1,
+              wrap: true
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              width: "22px",
+              height: "22px",
+              cornerRadius: "11px",
+              backgroundColor: accentColor,
+              contents: []
+            }
+          ]
+        },
+        {
+          type: "text",
+          text: subtitle,
+          size: "sm",
+          color: "#5F7285",
+          wrap: true,
+          margin: "sm"
+        },
+        {
+          type: "box",
+          layout: "horizontal",
+          margin: "md",
+          spacing: "sm",
           contents: [
             {
               type: "box",
-              layout: "horizontal",
-              justifyContent: "space-between",
-              alignItems: "center",
-              contents: [
-                {
-                  type: "text",
-                  text: title,
-                  weight: "bold",
-                  size: "lg",
-                  color: accentColor,
-                  flex: 1,
-                  wrap: true
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  width: "22px",
-                  height: "22px",
-                  cornerRadius: "11px",
-                  backgroundColor: accentColor,
-                  contents: []
-                }
-              ]
-            },
-            {
-              type: "text",
-              text: subtitle,
-              size: "sm",
-              color: "#D9E2F2",
-              wrap: true,
-              margin: "sm"
+              layout: "vertical",
+              width: "36px",
+              height: "4px",
+              cornerRadius: "2px",
+              backgroundColor: accentColor,
+              contents: []
             },
             {
               type: "box",
-              layout: "horizontal",
-              margin: "md",
-              spacing: "sm",
-              contents: [
-                {
-                  type: "box",
-                  layout: "vertical",
-                  width: "36px",
-                  height: "4px",
-                  cornerRadius: "2px",
-                  backgroundColor: accentColor,
-                  contents: []
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  width: "14px",
-                  height: "4px",
-                  cornerRadius: "2px",
-                  backgroundColor: "#7DD3FC",
-                  contents: []
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  width: "8px",
-                  height: "4px",
-                  cornerRadius: "2px",
-                  backgroundColor: "#FDE68A",
-                  contents: []
-                }
-              ]
+              layout: "vertical",
+              width: "14px",
+              height: "4px",
+              cornerRadius: "2px",
+              backgroundColor: "#B9D4D9",
+              contents: []
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              width: "8px",
+              height: "4px",
+              cornerRadius: "2px",
+              backgroundColor: "#D7E7EA",
+              contents: []
             }
           ]
         }
@@ -987,166 +993,120 @@ function buildTeamMenuFlex() {
       body: {
         type: "box",
         layout: "vertical",
-        paddingAll: "0px",
-        backgroundColor: "#071B7A",
+        paddingAll: "16px",
+        backgroundColor: "#EAF3F5",
+        spacing: "14px",
         contents: [
           {
             type: "box",
             layout: "vertical",
-            paddingTop: "18px",
-            paddingBottom: "10px",
-            paddingStart: "10px",
-            paddingEnd: "10px",
+            cornerRadius: "20px",
+            backgroundColor: "#0B7C86",
+            borderColor: "#1F8F4D",
+            borderWidth: "3px",
+            paddingTop: "14px",
+            paddingBottom: "14px",
+            paddingStart: "16px",
+            paddingEnd: "16px",
             contents: [
               {
-                type: "box",
-                layout: "vertical",
-                cornerRadius: "18px",
-                backgroundColor: "#5B7CFF",
-                paddingAll: "3px",
-                contents: [
-                  {
-                    type: "box",
-                    layout: "vertical",
-                    cornerRadius: "16px",
-                    backgroundColor: "#2141C6",
-                    paddingTop: "12px",
-                    paddingBottom: "12px",
-                    paddingStart: "16px",
-                    paddingEnd: "16px",
-                    contents: [
-                      {
-                        type: "text",
-                        text: "เมนูทีมงาน",
-                        color: "#FFFFFF",
-                        weight: "bold",
-                        size: "xl",
-                        align: "center"
-                      },
-                      {
-                        type: "text",
-                        text: "ศูนย์ปฏิบัติการรายการเคส",
-                        color: "#D6E4FF",
-                        size: "sm",
-                        align: "center",
-                        margin: "sm"
-                      }
-                    ]
-                  }
-                ]
+                type: "text",
+                text: "เมนูทีมงาน",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "xl",
+                align: "center"
+              },
+              {
+                type: "text",
+                text: "ศูนย์ปฏิบัติการรายการเคส",
+                color: "#DDF7FA",
+                size: "sm",
+                align: "center",
+                margin: "sm"
               }
             ]
           },
           {
             type: "box",
             layout: "vertical",
-            paddingStart: "12px",
-            paddingEnd: "12px",
-            paddingBottom: "12px",
+            cornerRadius: "20px",
+            backgroundColor: "#F7FBFC",
+            borderColor: "#CFE1E6",
+            borderWidth: "1px",
+            paddingAll: "12px",
             contents: [
-              {
-                type: "box",
-                layout: "vertical",
-                cornerRadius: "20px",
-                backgroundColor: "#0B2AA3",
-                paddingAll: "10px",
-                contents: [
-                  menuCard(
-                    "ดูเคสใหม่",
-                    "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                    "#AFC6FF",
-                    "#0F2D96",
-                    "ดูเคสใหม่"
-                  ),
-                  menuCard(
-                    "เคสด่วน",
-                    "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                    "#FFB86B",
-                    "#14338F",
-                    "ดูเคสด่วน"
-                  ),
-                  menuCard(
-                    "ค้นหาเคส",
-                    "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-                    "#7DD3FC",
-                    "#12318A",
-                    "ค้นหาเคส"
-                  ),
-                  menuCard(
-                    "เคสวันนี้",
-                    "สรุปรายการเคสที่เข้ามาในวันนี้",
-                    "#86EFAC",
-                    "#14348F",
-                    "เคสวันนี้"
-                  )
-                ]
-              }
+              menuCard(
+                "ดูเคสใหม่",
+                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+                "#0B7C86",
+                "#E9F8FA"
+              ),
+              menuCard(
+                "เคสด่วน",
+                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
+                "#C56608",
+                "#FFF7ED"
+              ),
+              menuCard(
+                "ค้นหาเคส",
+                "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
+                "#163C72",
+                "#F8FAFC"
+              ),
+              menuCard(
+                "เคสวันนี้",
+                "สรุปรายการเคสที่เข้ามาในวันนี้",
+                "#1F8F4D",
+                "#F0FDF4"
+              )
             ]
           },
           {
+            type: "button",
+            style: "primary",
+            height: "md",
+            color: "#0B7C86",
+            action: {
+              type: "uri",
+              label: "เปิดศูนย์ปฏิบัติการ",
+              uri: TEAM_LIFF_BASE
+            }
+          },
+          {
             type: "box",
-            layout: "vertical",
-            paddingStart: "18px",
-            paddingEnd: "18px",
-            paddingBottom: "10px",
+            layout: "horizontal",
             spacing: "sm",
             contents: [
               {
                 type: "button",
-                style: "primary",
-                height: "md",
-                color: "#5B7CFF",
+                style: "secondary",
+                flex: 1,
                 action: {
                   type: "uri",
-                  label: "เปิดศูนย์ปฏิบัติการ",
+                  label: "เคสด่วนเต็มจอ",
                   uri: TEAM_LIFF_BASE
                 }
               },
               {
-                type: "box",
-                layout: "horizontal",
-                spacing: "sm",
-                contents: [
-                  {
-                    type: "button",
-                    style: "secondary",
-                    flex: 1,
-                    action: {
-                      type: "uri",
-                      label: "เคสด่วนเต็มจอ",
-                      uri: `${TEAM_LIFF_BASE}?view=urgent`
-                    }
-                  },
-                  {
-                    type: "button",
-                    style: "secondary",
-                    flex: 1,
-                    action: {
-                      type: "uri",
-                      label: "ค้นหาเต็มจอ",
-                      uri: `${TEAM_LIFF_BASE}?view=search`
-                    }
-                  }
-                ]
+                type: "button",
+                style: "secondary",
+                flex: 1,
+                action: {
+                  type: "uri",
+                  label: "ค้นหาเต็มจอ",
+                  uri: TEAM_LIFF_BASE
+                }
               }
             ]
           },
           {
-            type: "box",
-            layout: "vertical",
-            paddingStart: "18px",
-            paddingEnd: "18px",
-            paddingBottom: "18px",
-            contents: [
-              {
-                type: "text",
-                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก และใช้ศูนย์ปฏิบัติการเมื่อต้องทำงานเต็มจอ",
-                color: "#BFD1FF",
-                size: "xs",
-                wrap: true,
-                align: "center"
-              }
-            ]
+            type: "text",
+            text: "เมนูทีมงานทุกปุ่มถูกบังคับให้เข้า LIFF ทั้งหมด เพื่อลดการเด้งไปหน้าเว็บเก่าและหน้า login",
+            color: "#5F7285",
+            size: "xs",
+            wrap: true,
+            align: "center"
           }
         ]
       }

@@ -3819,13 +3819,9 @@ if (text === "ค้นหาเคส") {
 }
 
 if (userId && userStates[userId] === "tracking_case") {
-
-  // ✅ override menu (ตัวแก้หลัก)
   if (isOverrideMenuCommand(text)) {
     delete userStates[userId];
-  }
-
-  else if (text === "ยกเลิก" || text === "ออก") {
+  } else if (text === "ยกเลิก" || text === "ออก") {
     delete userStates[userId];
 
     await safeReply(replyToken, [
@@ -3835,76 +3831,61 @@ if (userId && userStates[userId] === "tracking_case") {
       },
     ]);
     continue;
-  }
-
-  else {
+  } else {
     try {
       const foundCase = await findLatestCaseByCaseCodeOrPhone(text);
 
       if (!foundCase) {
         await safeReply(replyToken, [
-          { type: "text", text: "ไม่พบข้อมูลเคส" },
+          {
+            type: "text",
+            text:
+              "ไม่พบข้อมูลเคส\n" +
+              "กรุณาตรวจสอบเลขเคสหรือเบอร์โทรอีกครั้ง",
+          },
         ]);
         delete userStates[userId];
         continue;
       }
 
-      await safeReply(replyToken, [
-        buildCaseTrackingFlex(foundCase),
-      ]);
+      await safeReply(
+        replyToken,
+        [buildCaseTrackingFlex(foundCase)],
+        [
+          {
+            type: "text",
+            text:
+              "ผลการติดตามเคส\n\n" +
+              `เลขเคส: ${foundCase.case_code || "-"}\n` +
+              `ชื่อ: ${foundCase.full_name || "-"}\n` +
+              `สถานะ: ${formatCaseStatusThai(foundCase.status)}\n` +
+              `ระดับ: ${formatPriorityThai(foundCase.priority)}\n` +
+              `พื้นที่: ${foundCase.location || "-"}\n` +
+              `ผู้รับเคส: ${foundCase.assigned_to || "ยังไม่มีผู้รับผิดชอบ"}\n` +
+              `อัปเดตล่าสุด: ${formatThaiDateTime(
+                foundCase.closed_at ||
+                  foundCase.assigned_at ||
+                  foundCase.created_at
+              )}`,
+          },
+        ]
+      );
 
       delete userStates[userId];
-      continue;
-
     } catch (err) {
-      console.error("TRACKING ERROR:", err);
+      console.error("TRACK CASE ERROR:", err);
       await safeReply(replyToken, [
-        { type: "text", text: "เกิดข้อผิดพลาดในการค้นหาเคส" },
-      ]);
-      delete userStates[userId];
-      continue;
-    }
-  }
-}
-
-    await safeReply(
-      replyToken,
-      [buildCaseTrackingFlex(foundCase)],
-      [
         {
           type: "text",
-          text:
-            "ผลการติดตามเคส\n\n" +
-            `เลขเคส: ${foundCase.case_code || "-"}\n` +
-            `ชื่อ: ${foundCase.full_name || "-"}\n` +
-            `สถานะ: ${formatCaseStatusThai(foundCase.status)}\n` +
-            `ระดับ: ${formatPriorityThai(foundCase.priority)}\n` +
-            `พื้นที่: ${foundCase.location || "-"}\n` +
-            `ผู้รับเคส: ${foundCase.assigned_to || "ยังไม่มีผู้รับผิดชอบ"}\n` +
-            `อัปเดตล่าสุด: ${formatThaiDateTime(
-              foundCase.closed_at ||
-                foundCase.assigned_at ||
-                foundCase.created_at
-            )}`,
+          text: "ติดตามเคสไม่สำเร็จครับ กรุณาลองใหม่อีกครั้ง",
         },
-      ]
-    );
+      ]);
+      delete userStates[userId];
+    }
 
-    delete userStates[userId];
-  } catch (err) {
-    console.error("TRACK CASE ERROR:", err);
-    await safeReply(replyToken, [
-      {
-        type: "text",
-        text: "ติดตามเคสไม่สำเร็จครับ กรุณาลองใหม่อีกครั้ง",
-      },
-    ]);
-    delete userStates[userId];
+    continue;
   }
-
-  continue;
 }
-
 
       if (text === "รหัสของฉัน") {
         await safeReply(replyToken, [{ type: "text", text: userId || "ไม่พบ userId" }]);

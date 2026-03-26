@@ -3928,8 +3928,8 @@ if (userId && userStates[userId] === "tracking_case") {
 // =============================
 // 🔎 SMART SEARCH (ตัวแก้จริง)
 // =============================
-if (text.startsWith("ดูเคส ")) {
-  const input = text.replace("ดูเคส ", "").trim();
+if (text.startsWith("ดูเคส")) {
+  const input = text.replace("ดูเคส", "").trim();
 
   if (!input) {
     await safeReply(replyToken, [{
@@ -3958,6 +3958,45 @@ if (text.startsWith("ดูเคส ")) {
     await safeReply(replyToken, [{
       type: "text",
       text: "❌ ค้นหาเคสไม่สำเร็จ"
+    }]);
+  }
+
+  continue;
+}
+
+// =============================
+// 📞 SEARCH BY PHONE
+// =============================
+if (text.startsWith("เช็คสถานะ")) {
+  const input = text.replace("เช็คสถานะ", "").trim();
+
+  if (!input) {
+    await safeReply(replyToken, [{
+      type: "text",
+      text: "❌ กรุณาพิมพ์เบอร์ เช่น:\nเช็คสถานะ 0812345678"
+    }]);
+    continue;
+  }
+
+  try {
+    const found = await findLatestCaseByCaseCodeOrPhone(input);
+
+    if (!found) {
+      await safeReply(replyToken, [{
+        type: "text",
+        text: "❌ ไม่พบข้อมูลจากเบอร์นี้"
+      }]);
+      continue;
+    }
+
+    await safeReply(replyToken, [
+      buildCaseTrackingFlex(found)
+    ]);
+  } catch (err) {
+    console.error("SEARCH PHONE ERROR:", err);
+    await safeReply(replyToken, [{
+      type: "text",
+      text: "❌ ค้นหาไม่สำเร็จ"
     }]);
   }
 

@@ -933,7 +933,7 @@ function buildTeamMenuFlex() {
               type: "text",
               text: subtitle,
               size: "sm",
-              color: "#D9E2F2",
+              color: "#5B6B79",
               wrap: true,
               margin: "sm"
             },
@@ -958,7 +958,7 @@ function buildTeamMenuFlex() {
                   width: "14px",
                   height: "4px",
                   cornerRadius: "2px",
-                  backgroundColor: "#7DD3FC",
+                  backgroundColor: "#9CCAD0",
                   contents: []
                 },
                 {
@@ -967,7 +967,7 @@ function buildTeamMenuFlex() {
                   width: "8px",
                   height: "4px",
                   cornerRadius: "2px",
-                  backgroundColor: "#FDE68A",
+                  backgroundColor: "#CFE7D7",
                   contents: []
                 }
               ]
@@ -988,7 +988,7 @@ function buildTeamMenuFlex() {
         type: "box",
         layout: "vertical",
         paddingAll: "0px",
-        backgroundColor: "#071B7A",
+        backgroundColor: "#163C72",
         contents: [
           {
             type: "box",
@@ -1002,14 +1002,14 @@ function buildTeamMenuFlex() {
                 type: "box",
                 layout: "vertical",
                 cornerRadius: "18px",
-                backgroundColor: "#5B7CFF",
+                backgroundColor: "#1F8F4D",
                 paddingAll: "3px",
                 contents: [
                   {
                     type: "box",
                     layout: "vertical",
                     cornerRadius: "16px",
-                    backgroundColor: "#2141C6",
+                    backgroundColor: "#0B7C86",
                     paddingTop: "12px",
                     paddingBottom: "12px",
                     paddingStart: "16px",
@@ -1048,35 +1048,35 @@ function buildTeamMenuFlex() {
                 type: "box",
                 layout: "vertical",
                 cornerRadius: "20px",
-                backgroundColor: "#0B2AA3",
+                backgroundColor: "#EAF4F6",
                 paddingAll: "10px",
                 contents: [
                   menuCard(
                     "ดูเคสใหม่",
                     "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                    "#AFC6FF",
-                    "#0F2D96",
+                    "#0B7C86",
+                    "#F7FBFC",
                     "ดูเคสใหม่"
                   ),
                   menuCard(
                     "เคสด่วน",
                     "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                    "#FFB86B",
-                    "#14338F",
+                    "#B45309",
+                    "#FFF7ED",
                     "ดูเคสด่วน"
                   ),
                   menuCard(
                     "ค้นหาเคส",
                     "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-                    "#7DD3FC",
-                    "#12318A",
+                    "#163C72",
+                    "#F7FAFC",
                     "ค้นหาเคส"
                   ),
                   menuCard(
                     "เคสวันนี้",
                     "สรุปรายการเคสที่เข้ามาในวันนี้",
-                    "#86EFAC",
-                    "#14348F",
+                    "#1F8F4D",
+                    "#F2FBF5",
                     "เคสวันนี้"
                   )
                 ]
@@ -1095,7 +1095,7 @@ function buildTeamMenuFlex() {
                 type: "button",
                 style: "primary",
                 height: "md",
-                color: "#5B7CFF",
+                color: "#0B7C86",
                 action: {
                   type: "uri",
                   label: "เปิดศูนย์ปฏิบัติการ",
@@ -1141,7 +1141,7 @@ function buildTeamMenuFlex() {
               {
                 type: "text",
                 text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก และใช้ศูนย์ปฏิบัติการเมื่อต้องทำงานเต็มจอ",
-                color: "#BFD1FF",
+                color: "#CFE5E9",
                 size: "xs",
                 wrap: true,
                 align: "center"
@@ -1861,6 +1861,35 @@ app.get("/api/stream", checkDashboardAuth, (req, res) => {
   });
 });
 
+app.get("/api/team/stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders?.();
+
+  const client = {
+    id: Date.now() + Math.random(),
+    res,
+  };
+
+  sseClients.add(client);
+
+  sendSse(client, "connected", {
+    message: "team stream connected",
+    clients: sseClients.size,
+    scope: "team_workspace",
+  });
+
+  const heartbeat = setInterval(() => {
+    sendSse(client, "heartbeat", { ts: Date.now(), scope: "team_workspace" });
+  }, 20000);
+
+  req.on("close", () => {
+    clearInterval(heartbeat);
+    sseClients.delete(client);
+  });
+});
+
 /* =========================
    SIGNATURE VERIFY
 ========================= */
@@ -1952,6 +1981,100 @@ async function pushTeamNotification(text) {
   }
 
   await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [{ type: "text", text }]);
+}
+
+async function pushLineTextSafe(targetId, text) {
+  if (!targetId || !text) return false;
+  try {
+    await callLinePushApi(targetId, [{ type: "text", text }]);
+    return true;
+  } catch (error) {
+    console.warn("pushLineTextSafe failed:", error.message);
+    return false;
+  }
+}
+
+function buildTeamWorkspaceAutoText(action, row = {}, actorName = "ทีมงาน") {
+  const caseCode = row.case_code || "-";
+  const caseName = row.full_name || row.title || "-";
+  const statusText = typeof formatCaseStatusThai === "function" ? formatCaseStatusThai(row.status || "-") : (row.status || "-");
+  const priorityText = typeof formatPriorityThai === "function" ? formatPriorityThai(row.priority || "normal") : (row.priority || "normal");
+  const locationText = row.location || row.province || row.location_province || "-";
+
+  if (action === "assign") {
+    return [
+      "🧭 Team Workspace อัปเดต",
+      `รับเคสแล้ว: ${caseCode}`,
+      `ผู้รับผิดชอบ: ${actorName}`,
+      `ชื่อผู้ขอ: ${caseName}`,
+      `พื้นที่: ${locationText}`,
+      `ระดับ: ${priorityText}`,
+      `สถานะล่าสุด: ${statusText}`
+    ].join("\n");
+  }
+
+  if (action === "progress") {
+    return [
+      "🔄 Team Workspace อัปเดตสถานะ",
+      `เลขเคส: ${caseCode}`,
+      `ผู้ดำเนินการ: ${actorName}`,
+      `ชื่อผู้ขอ: ${caseName}`,
+      "สถานะ: กำลังดำเนินการ"
+    ].join("\n");
+  }
+
+  if (action === "done") {
+    return [
+      "✅ Team Workspace ปิดเคส",
+      `เลขเคส: ${caseCode}`,
+      `ผู้ดำเนินการ: ${actorName}`,
+      `ชื่อผู้ขอ: ${caseName}`,
+      "สถานะ: ปิดเคสแล้ว"
+    ].join("\n");
+  }
+
+  return [
+    "📌 Team Workspace แจ้งอัปเดต",
+    `เลขเคส: ${caseCode}`,
+    `ผู้ดำเนินการ: ${actorName}`,
+    `สถานะ: ${statusText}`
+  ].join("\n");
+}
+
+function buildRequesterAutoText(action, row = {}, actorName = "ทีมงาน") {
+  const caseCode = row.case_code || "-";
+
+  if (action === "assign") {
+    return [
+      "📌 อัปเดตคำขอความช่วยเหลือ",
+      `เลขเคส: ${caseCode}`,
+      `ขณะนี้ทีมงาน ${actorName} รับเรื่องแล้ว`,
+      "ระบบจะติดตามความคืบหน้าให้ต่อเนื่องครับ"
+    ].join("\n");
+  }
+
+  if (action === "progress") {
+    return [
+      "🔄 อัปเดตคำขอความช่วยเหลือ",
+      `เลขเคส: ${caseCode}`,
+      "ขณะนี้เคสของคุณอยู่ระหว่างดำเนินการ",
+      `ผู้ประสานงาน: ${actorName}`
+    ].join("\n");
+  }
+
+  if (action === "done") {
+    return [
+      "✅ อัปเดตคำขอความช่วยเหลือ",
+      `เลขเคส: ${caseCode}`,
+      "เคสนี้ถูกปิดงานในระบบแล้ว",
+      "หากข้อมูลยังไม่ครบหรือมีรายละเอียดเพิ่มเติม สามารถติดต่อทีมงานได้อีกครั้ง"
+    ].join("\n");
+  }
+
+  return [
+    "📌 มีการอัปเดตเคสของคุณ",
+    `เลขเคส: ${caseCode}`
+  ].join("\n");
 }
 
 /* =========================
@@ -4807,9 +4930,10 @@ app.post("/api/team/cases/assign", async (req, res) => {
       return res.status(400).json({ ok: false, error: "missing caseCode" });
     }
 
+    const actorName = displayName || "ทีมงาน";
     const payload = {
       assigned_to: userId || null,
-      assigned_to_name: displayName || "ทีมงาน",
+      assigned_to_name: actorName,
       status: "assigned",
       updated_at: new Date().toISOString(),
       last_action_at: new Date().toISOString(),
@@ -4824,16 +4948,34 @@ app.post("/api/team/cases/assign", async (req, res) => {
 
     if (result.error) throw result.error;
 
+    const updatedCase = result.data?.[0] || null;
+
     broadcastSse("team_case_assigned", {
       case_code: caseCode,
       assigned_to: payload.assigned_to,
       assigned_to_name: payload.assigned_to_name,
+      sync_target: "dashboard_and_team",
     });
+
+    broadcastSse("dashboard_refresh", {
+      reason: "team_case_assigned",
+      case_code: caseCode,
+      sync_target: "dashboard_and_team",
+    });
+
+    await pushTeamNotification(buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName));
+    if (updatedCase?.line_user_id) {
+      await pushLineTextSafe(updatedCase.line_user_id, buildRequesterAutoText("assign", updatedCase, actorName));
+    }
 
     return res.json({
       ok: true,
       message: "assigned",
-      case: result.data?.[0] || null,
+      case: updatedCase,
+      auto_notify: {
+        team: true,
+        requester: !!updatedCase?.line_user_id,
+      },
     });
   } catch (err) {
     console.error("POST /api/team/cases/assign error:", err);
@@ -4843,7 +4985,7 @@ app.post("/api/team/cases/assign", async (req, res) => {
 
 app.post("/api/team/cases/status", async (req, res) => {
   try {
-    const { caseCode, status } = req.body || {};
+    const { caseCode, status, displayName } = req.body || {};
 
     if (!caseCode || !status) {
       return res.status(400).json({ ok: false, error: "missing caseCode or status" });
@@ -4852,6 +4994,8 @@ app.post("/api/team/cases/status", async (req, res) => {
     let nextStatus = status;
     if (status === "progress") nextStatus = "in_progress";
     if (status === "done") nextStatus = "done";
+
+    const actorName = displayName || "ทีมงาน";
 
     const result = await supabase
       .from("help_requests")
@@ -4867,15 +5011,35 @@ app.post("/api/team/cases/status", async (req, res) => {
 
     if (result.error) throw result.error;
 
+    const updatedCase = result.data?.[0] || null;
+
     broadcastSse("team_case_status_updated", {
       case_code: caseCode,
       status: nextStatus,
+      sync_target: "dashboard_and_team",
     });
+
+    broadcastSse("dashboard_refresh", {
+      reason: "team_case_status_updated",
+      case_code: caseCode,
+      status: nextStatus,
+      sync_target: "dashboard_and_team",
+    });
+
+    const notifyAction = nextStatus === "done" ? "done" : "progress";
+    await pushTeamNotification(buildTeamWorkspaceAutoText(notifyAction, updatedCase || { case_code: caseCode, status: nextStatus }, actorName));
+    if (updatedCase?.line_user_id) {
+      await pushLineTextSafe(updatedCase.line_user_id, buildRequesterAutoText(notifyAction, updatedCase || { case_code: caseCode }, actorName));
+    }
 
     return res.json({
       ok: true,
       message: "status updated",
-      case: result.data?.[0] || null,
+      case: updatedCase,
+      auto_notify: {
+        team: true,
+        requester: !!updatedCase?.line_user_id,
+      },
     });
   } catch (err) {
     console.error("POST /api/team/cases/status error:", err);
@@ -4905,6 +5069,12 @@ app.post("/api/team/send-update", async (req, res) => {
         },
       ]);
 
+      broadcastSse("team_message_sent", {
+        type: "team",
+        target: "team_group",
+        sync_target: "dashboard_and_team",
+      });
+
       return res.json({ ok: true, sentTo: "team_group" });
     }
 
@@ -4932,6 +5102,13 @@ app.post("/api/team/send-update", async (req, res) => {
           text: message,
         },
       ]);
+
+      broadcastSse("team_message_sent", {
+        type: "requester",
+        target: userId,
+        case_code: caseCode || null,
+        sync_target: "dashboard_and_team",
+      });
 
       return res.json({ ok: true, sentTo: "requester" });
     }

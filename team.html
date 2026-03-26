@@ -589,12 +589,14 @@
       ASSIGN_CASE_ENDPOINT: "/api/team/cases/assign",
       UPDATE_STATUS_ENDPOINT: "/api/team/cases/status",
       SEND_UPDATE_ENDPOINT: "/api/team/send-update",
+      TEAM_STREAM_ENDPOINT: "/api/team/stream",
       DASHBOARD_URL: "/dashboard"
     };
 
     let allCases = [];
     let activities = [];
     let currentProfile = null;
+    let teamEventSource = null;
 
     const demoCases = [
       {
@@ -904,7 +906,7 @@
         const res = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ caseCode, status })
+          body: JSON.stringify({ caseCode, status, displayName: currentProfile?.displayName || 'ทีมงาน' })
         });
 
         if (!res.ok) throw new Error(res.error || 'status update failed');
@@ -956,6 +958,50 @@
       }
     }
 
+    function applyInitialViewFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const view = params.get('view') || '';
+      if (view === 'urgent') {
+        document.getElementById('statusFilter').value = 'urgent';
+      }
+      if (view === 'search') {
+        document.getElementById('searchInput').focus();
+      }
+      renderCases();
+    }
+
+    function connectRealtimeStream() {
+      try {
+        if (CONFIG.API_BASE_URL.includes('your-domain.com')) return;
+        if (teamEventSource) {
+          teamEventSource.close();
+          teamEventSource = null;
+        }
+
+        const streamUrl = `${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`;
+        teamEventSource = new EventSource(streamUrl);
+
+        teamEventSource.addEventListener('connected', () => {
+          document.getElementById('envChip').textContent = 'Environment: LIFF connected • realtime sync on';
+        });
+
+        const refreshHandler = async () => {
+          await Promise.all([loadCases(), loadActivities()]);
+        };
+
+        ['case_created', 'case_updated', 'team_case_assigned', 'team_case_status_updated', 'dashboard_refresh', 'team_message_sent']
+          .forEach((eventName) => {
+            teamEventSource.addEventListener(eventName, refreshHandler);
+          });
+
+        teamEventSource.onerror = () => {
+          document.getElementById('envChip').textContent = 'Environment: LIFF connected • reconnecting realtime';
+        };
+      } catch (error) {
+        console.warn('connectRealtimeStream failed:', error.message);
+      }
+    }
+
     function setToday() {
       const now = new Date();
       document.getElementById('todayDate').textContent = now.toLocaleDateString('th-TH', {
@@ -969,6 +1015,8 @@
         await initLiff();
         await loadTeamRole();
         await Promise.all([loadCases(), loadActivities()]);
+        applyInitialViewFromQuery();
+        connectRealtimeStream();
       } catch (err) {
         console.error('bootstrap error:', err);
         bindProfile({ displayName: 'Fallback User' }, 'เกิดข้อผิดพลาด - ใช้โหมดสำรอง');

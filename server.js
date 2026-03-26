@@ -881,41 +881,56 @@ function buildTeamNewCaseFlex(item = {}) {
 
 
 function buildTeamMenuFlex() {
-  const FRAME_URL = "https://img2.pic.in.th/B1ba5047e3b8d9e786.png";
-
-  function menuCard(title, subtitle, accentColor, cmd) {
+  function menuCard(title, subtitle, accentColor, softBg, textCmd) {
     return {
       type: "box",
       layout: "vertical",
       margin: "md",
       paddingAll: "2px",
-      cornerRadius: "16px",
       backgroundColor: accentColor,
+      cornerRadius: "18px",
       contents: [
         {
           type: "box",
           layout: "vertical",
-          cornerRadius: "14px",
-          backgroundColor: "#1437A6",
+          cornerRadius: "16px",
+          backgroundColor: softBg,
           paddingAll: "14px",
           action: {
             type: "message",
-            text: cmd
+            text: textCmd
           },
           contents: [
             {
-              type: "text",
-              text: title,
-              weight: "bold",
-              size: "lg",
-              color: "#FFFFFF",
-              wrap: true
+              type: "box",
+              layout: "horizontal",
+              justifyContent: "space-between",
+              alignItems: "center",
+              contents: [
+                {
+                  type: "text",
+                  text: title,
+                  weight: "bold",
+                  size: "lg",
+                  color: accentColor,
+                  flex: 1
+                },
+                {
+                  type: "box",
+                  layout: "vertical",
+                  width: "22px",
+                  height: "22px",
+                  cornerRadius: "11px",
+                  backgroundColor: accentColor,
+                  contents: []
+                }
+              ]
             },
             {
               type: "text",
               text: subtitle,
               size: "sm",
-              color: "#D6E4FF",
+              color: "#D9E2F2",
               wrap: true,
               margin: "sm"
             },
@@ -942,6 +957,15 @@ function buildTeamMenuFlex() {
                   cornerRadius: "2px",
                   backgroundColor: "#7DD3FC",
                   contents: []
+                },
+                {
+                  type: "box",
+                  layout: "vertical",
+                  width: "8px",
+                  height: "4px",
+                  cornerRadius: "2px",
+                  backgroundColor: "#FDE68A",
+                  contents: []
                 }
               ]
             }
@@ -961,105 +985,115 @@ function buildTeamMenuFlex() {
         type: "box",
         layout: "vertical",
         paddingAll: "0px",
-        backgroundColor: "#0A1F8F",
+        backgroundColor: "#071B7A",
         contents: [
           {
             type: "box",
             layout: "vertical",
-            position: "relative",
-            width: "100%",
-            height: "760px",
-            backgroundColor: "#102FA8",
+            paddingTop: "18px",
+            paddingBottom: "10px",
+            paddingStart: "10px",
+            paddingEnd: "10px",
             contents: [
               {
-                type: "image",
-                url: FRAME_URL,
-                size: "full",
-                aspectMode: "cover",
-                aspectRatio: "3:4",
-                position: "absolute",
-                offsetTop: "0px",
-                offsetStart: "0px",
-                offsetEnd: "0px"
-              },
-              {
                 type: "box",
                 layout: "vertical",
-                position: "absolute",
-                offsetTop: "34px",
-                offsetStart: "24px",
-                offsetEnd: "24px",
+                cornerRadius: "18px",
+                backgroundColor: "#5B7CFF",
+                paddingAll: "3px",
                 contents: [
                   {
-                    type: "text",
-                    text: "เมนูทีมงาน",
-                    color: "#FFFFFF",
-                    weight: "bold",
-                    size: "xl",
-                    align: "center"
-                  },
-                  {
-                    type: "text",
-                    text: "กดปุ่มด้านล่างเพื่อดูรายการเคส",
-                    color: "#D6E4FF",
-                    size: "sm",
-                    align: "center",
-                    margin: "sm",
-                    wrap: true
+                    type: "box",
+                    layout: "vertical",
+                    cornerRadius: "16px",
+                    backgroundColor: "#2141C6",
+                    paddingTop: "12px",
+                    paddingBottom: "12px",
+                    paddingStart: "16px",
+                    paddingEnd: "16px",
+                    contents: [
+                      {
+                        type: "text",
+                        text: "เมนูทีมงาน",
+                        color: "#FFFFFF",
+                        weight: "bold",
+                        size: "xl",
+                        align: "center"
+                      },
+                      {
+                        type: "text",
+                        text: "ศูนย์ปฏิบัติการรายการเคส",
+                        color: "#D6E4FF",
+                        size: "sm",
+                        align: "center",
+                        margin: "sm"
+                      }
+                    ]
                   }
                 ]
-              },
+              }
+            ]
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            paddingStart: "12px",
+            paddingEnd: "12px",
+            paddingBottom: "16px",
+            contents: [
               {
                 type: "box",
                 layout: "vertical",
-                position: "absolute",
-                offsetTop: "135px",
-                offsetStart: "26px",
-                offsetEnd: "26px",
+                cornerRadius: "20px",
+                backgroundColor: "#0B2AA3",
+                paddingAll: "10px",
                 contents: [
                   menuCard(
                     "ดูเคสใหม่",
                     "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                    "#9CC3FF",
+                    "#AFC6FF",
+                    "#0F2D96",
                     "ดูเคสใหม่"
                   ),
                   menuCard(
                     "เคสด่วน",
                     "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                    "#FFB55E",
+                    "#FFB86B",
+                    "#14338F",
                     "ดูเคสด่วน"
                   ),
                   menuCard(
                     "ค้นหาเคส",
                     "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
                     "#7DD3FC",
+                    "#12318A",
                     "ค้นหาเคส"
                   ),
                   menuCard(
                     "เคสวันนี้",
                     "สรุปรายการเคสที่เข้ามาในวันนี้",
                     "#86EFAC",
+                    "#14348F",
                     "เคสวันนี้"
                   )
                 ]
-              },
+              }
+            ]
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            paddingStart: "18px",
+            paddingEnd: "18px",
+            paddingBottom: "18px",
+            contents: [
               {
-                type: "box",
-                layout: "vertical",
-                position: "absolute",
-                offsetBottom: "28px",
-                offsetStart: "34px",
-                offsetEnd: "34px",
-                contents: [
-                  {
-                    type: "text",
-                    text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
-                    color: "#C7D7FF",
-                    size: "xs",
-                    align: "center",
-                    wrap: true
-                  }
-                ]
+                type: "text",
+                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
+                color: "#BFD1FF",
+                size: "xs",
+                wrap: true,
+                align: "center"
               }
             ]
           }

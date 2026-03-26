@@ -3,1034 +3,338 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIFF Team Workspace | คนช่วยฅน</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <title>ศูนย์ปฏิบัติการทีมงาน | คนช่วยฅน</title>
   <style>
-    :root {
-      --bg: #f3f7f9;
-      --card: #ffffff;
-      --brand: #0b7c86;
-      --brand-dark: #163c72;
-      --accent: #1f8f4d;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: #dbe3ea;
-      --danger: #b91c1c;
-      --warn: #b45309;
-      --shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
-      --radius: 18px;
+    :root{
+      --bg:#071b7a;
+      --panel:#0b2aa3;
+      --panel-2:#1437a6;
+      --line:#5b7cff;
+      --text:#ffffff;
+      --muted:#bfd1ff;
+      --soft:#d6e4ff;
+      --card:#102b8d;
+      --card-line:#8db2ff;
+      --accent-urgent:#ffb86b;
+      --accent-new:#afc6ff;
+      --accent-search:#7dd3fc;
+      --accent-today:#86efac;
+      --shadow:0 12px 24px rgba(4, 18, 74, .28);
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(11,124,134,.10), transparent 25%),
-        linear-gradient(180deg, #f8fbfc 0%, var(--bg) 100%);
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma, "Noto Sans Thai", sans-serif;
+      background:linear-gradient(180deg, #05145c 0%, #0a2b9f 100%);
+      color:var(--text);
+      min-height:100vh;
     }
-
-    .app {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px 16px 40px;
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+      padding:18px 14px 36px;
     }
-
-    .topbar {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 18px;
+    .shell{
+      background:rgba(4,17,83,.78);
+      border:1px solid rgba(164,190,255,.22);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter: blur(4px);
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .hero{
+      padding:18px;
+      background:linear-gradient(180deg, #2343cb 0%, #1737b8 100%);
+      border-bottom:1px solid rgba(191,209,255,.18);
     }
-
-    .brand-badge {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-      color: #fff;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      box-shadow: var(--shadow);
+    .hero-box{
+      border:3px solid var(--line);
+      border-radius:20px;
+      padding:18px 16px;
+      text-align:center;
+      background:linear-gradient(180deg, rgba(103,133,255,.18), rgba(26,54,175,.25));
     }
-
-    .brand h1 {
-      font-size: 1.15rem;
-      margin: 0;
-      line-height: 1.2;
+    .hero h1{margin:0;font-size:28px}
+    .hero p{margin:8px 0 0;color:var(--soft)}
+    .status-row{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
     }
-
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: .92rem;
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      background:rgba(255,255,255,.08);
+      color:var(--soft);
+      border:1px solid rgba(191,209,255,.18);
     }
-
-    .profile-card,
-    .card,
-    .stat,
-    .toolbar,
-    .case-item,
-    .activity-item {
-      background: var(--card);
-      border: 1px solid rgba(219,227,234,.9);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+    .main{
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1.25fr .9fr;
+      gap:16px;
     }
-
-    .profile-card {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      padding: 12px 14px;
-      min-width: 260px;
+    .panel{
+      background:rgba(11,42,163,.92);
+      border:1px solid rgba(164,190,255,.18);
+      border-radius:20px;
+      padding:14px;
     }
-
-    .avatar {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #e5eef1;
-      border: 2px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    .panel h2{
+      margin:0 0 12px;
+      font-size:18px;
     }
-
-    .profile-meta strong {
-      display: block;
-      font-size: .95rem;
+    .cards{
+      display:grid;
+      gap:12px;
     }
-
-    .profile-meta span {
-      color: var(--muted);
-      font-size: .84rem;
+    .card{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      border-radius:18px;
+      padding:2px;
+      background:var(--card-line);
     }
-
-    .hero {
-      display: grid;
-      grid-template-columns: 1.5fr .9fr;
-      gap: 16px;
-      margin-bottom: 16px;
+    .card-inner{
+      background:var(--card);
+      border-radius:16px;
+      padding:16px;
     }
-
-    .card {
-      padding: 18px;
+    .card h3{margin:0 0 8px;font-size:22px}
+    .card p{margin:0;color:var(--soft);font-size:14px;line-height:1.5}
+    .card-bars{
+      display:flex;
+      gap:8px;
+      margin-top:12px;
+      align-items:center;
     }
-
-    .headline {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 14px;
+    .bar1,.bar2,.bar3{
+      height:4px;border-radius:999px;display:block;
     }
-
-    .headline h2,
-    .section-title {
-      margin: 0;
-      font-size: 1.05rem;
+    .bar1{width:42px}.bar2{width:16px;background:#7dd3fc}.bar3{width:8px;background:#fde68a}
+    .new{background:var(--accent-new)} .new .bar1{background:var(--accent-new)}
+    .urgent{background:var(--accent-urgent)} .urgent .bar1{background:var(--accent-urgent)}
+    .search{background:var(--accent-search)} .search .bar1{background:var(--accent-search)}
+    .today{background:var(--accent-today)} .today .bar1{background:var(--accent-today)}
+    .actions{display:grid;gap:12px}
+    .btn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-decoration:none;
+      min-height:48px;
+      border-radius:14px;
+      border:1px solid rgba(191,209,255,.22);
+      color:#fff;
+      background:linear-gradient(180deg,#5b7cff,#3658df);
+      font-weight:700;
+      box-shadow:var(--shadow);
     }
-
-    .headline p,
-    .section-subtitle,
-    .muted {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: .9rem;
+    .btn.secondary{
+      background:rgba(255,255,255,.07);
+      color:var(--soft);
+      box-shadow:none;
     }
-
-    .chip-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px;
+    .search-box{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
     }
-
-    .chip {
-      border: 1px solid var(--line);
-      background: #f9fbfc;
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: .88rem;
-      color: #24414f;
+    .search-box input{
+      width:100%;
+      border:none;
+      border-radius:12px;
+      padding:14px 12px;
+      background:rgba(255,255,255,.92);
+      color:#0f172a;
+      font-size:15px;
     }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 14px;
+    .helper{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
     }
-
-    .stat {
-      padding: 14px;
+    .section-title{
+      color:var(--soft);
+      font-size:13px;
+      margin:0 0 6px;
     }
-
-    .stat-label {
-      color: var(--muted);
-      font-size: .82rem;
-      margin-bottom: 8px;
+    .grid-mini{
+      display:grid;
+      gap:10px;
+      grid-template-columns:repeat(2, 1fr);
+      margin-top:12px;
     }
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 800;
-      line-height: 1;
-      margin-bottom: 8px;
+    .mini{
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(191,209,255,.12);
     }
-
-    .stat-note {
-      font-size: .83rem;
-      color: var(--muted);
+    .mini strong{display:block;font-size:13px;margin-bottom:6px}
+    .mini span{font-size:12px;color:var(--muted);line-height:1.5}
+    .footer-note{
+      padding:0 16px 18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
     }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    button,
-    .btn {
-      border: 0;
-      border-radius: 14px;
-      cursor: pointer;
-      font: inherit;
-      transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease;
-    }
-
-    button:hover,
-    .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-      color: #fff;
-      padding: 12px 14px;
-      box-shadow: 0 10px 20px rgba(22,60,114,.18);
-    }
-
-    .btn-secondary {
-      background: #f7fafb;
-      color: var(--brand-dark);
-      border: 1px solid var(--line);
-      padding: 12px 14px;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: 1.45fr .95fr;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .toolbar {
-      padding: 12px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-
-    .toolbar input,
-    .toolbar select,
-    .composer select,
-    textarea {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 11px 12px;
-      font: inherit;
-      background: #fff;
-      width: 100%;
-    }
-
-    .toolbar .grow {
-      flex: 1 1 240px;
-    }
-
-    .toolbar .fixed {
-      width: 180px;
-    }
-
-    .case-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .case-item {
-      padding: 14px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .case-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: start;
-    }
-
-    .case-code {
-      font-weight: 800;
-      font-size: .95rem;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .badge.new { background: rgba(11,124,134,.12); color: var(--brand-dark); }
-    .badge.progress { background: rgba(180,83,9,.12); color: var(--warn); }
-    .badge.done { background: rgba(31,143,77,.12); color: var(--accent); }
-    .badge.urgent { background: rgba(185,28,28,.10); color: var(--danger); }
-
-    .case-title {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .case-desc,
-    .meta-row {
-      color: var(--muted);
-      font-size: .9rem;
-      line-height: 1.45;
-    }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .meta-box {
-      background: #f8fbfc;
-      border: 1px solid #edf2f5;
-      border-radius: 12px;
-      padding: 10px;
-    }
-
-    .meta-box strong {
-      display: block;
-      font-size: .78rem;
-      color: var(--muted);
-      margin-bottom: 5px;
-      font-weight: 600;
-    }
-
-    .meta-box span {
-      font-size: .9rem;
-      font-weight: 700;
-      color: #1f2937;
-    }
-
-    .case-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .case-actions button {
-      padding: 9px 12px;
-      background: #fff;
-      border: 1px solid var(--line);
-      color: var(--brand-dark);
-    }
-
-    .panel-stack {
-      display: grid;
-      gap: 16px;
-    }
-
-    .activity-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .activity-item {
-      padding: 12px;
-    }
-
-    .activity-item strong {
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .composer {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .footer-note {
-      text-align: center;
-      color: var(--muted);
-      font-size: .84rem;
-      margin-top: 24px;
-    }
-
-    .hidden { display: none !important; }
-
-    .loading {
-      display: grid;
-      place-items: center;
-      min-height: 40vh;
-      color: var(--muted);
-      font-weight: 600;
-    }
-
-    @media (max-width: 980px) {
-      .hero,
-      .workspace,
-      .topbar {
-        grid-template-columns: 1fr;
-      }
-
-      .stats,
-      .meta-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 640px) {
-      .stats,
-      .meta-grid,
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-card {
-        min-width: unset;
-      }
+    @media (max-width: 820px){
+      .main{grid-template-columns:1fr}
+      .hero h1{font-size:24px}
     }
   </style>
 </head>
 <body>
-  <div id="loading" class="loading">กำลังเปิด Team Workspace...</div>
-
-  <div id="app" class="app hidden">
-    <div class="topbar">
-      <div class="brand">
-        <div class="brand-badge">TK</div>
-        <div>
-          <h1>LIFF Team Workspace</h1>
-          <p>ศูนย์กลางทีมงานสำหรับติดตามเคส อัปเดตสถานะ และทำงานร่วมกัน</p>
+  <div class="wrap">
+    <div class="shell">
+      <div class="hero">
+        <div class="hero-box">
+          <h1>ศูนย์ปฏิบัติการทีมงาน</h1>
+          <p id="heroSubtitle">หน้าแรกสำหรับติดตามรายการเคสและเข้าสู่โหมดทำงานเต็มจอ</p>
+          <div class="status-row">
+            <div class="pill" id="modePill">โหมด: หน้าแรก</div>
+            <div class="pill" id="casePill">เลขเคส: -</div>
+          </div>
         </div>
       </div>
 
-      <div class="profile-card">
-        <img id="avatar" class="avatar" alt="profile" />
-        <div class="profile-meta">
-          <strong id="displayName">กำลังโหลด...</strong>
-          <span id="userRole">กำลังตรวจสอบสิทธิ์ทีมงาน</span>
-        </div>
+      <div class="main">
+        <section class="panel">
+          <h2>เมนูปฏิบัติการ</h2>
+          <div class="cards">
+            <a class="card new" href="./team.html?view=new">
+              <div class="card-inner">
+                <h3>ดูเคสใหม่</h3>
+                <p>รายการเคสที่เพิ่งเข้าระบบล่าสุด</p>
+                <div class="card-bars"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></div>
+              </div>
+            </a>
+
+            <a class="card urgent" href="./team.html?view=urgent">
+              <div class="card-inner">
+                <h3>เคสด่วน</h3>
+                <p>ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ</p>
+                <div class="card-bars"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></div>
+              </div>
+            </a>
+
+            <a class="card search" href="./team.html?view=search">
+              <div class="card-inner">
+                <h3>ค้นหาเคส</h3>
+                <p>ค้นหาด้วยเลขเคสหรือเบอร์โทร</p>
+                <div class="card-bars"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></div>
+              </div>
+            </a>
+
+            <a class="card today" href="./team.html?view=today">
+              <div class="card-inner">
+                <h3>เคสวันนี้</h3>
+                <p>สรุปรายการเคสที่เข้ามาในวันนี้</p>
+                <div class="card-bars"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></div>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <h2>ทางลัดแบบ Hybrid</h2>
+          <div class="actions">
+            <a class="btn" href="./team.html">หน้าแรกศูนย์ปฏิบัติการ</a>
+            <a class="btn secondary" href="./team.html?view=urgent">เปิดโหมดเคสด่วน</a>
+            <a class="btn secondary" href="./team.html?view=search">เปิดโหมดค้นหา</a>
+            <a class="btn secondary" href="./team.html?view=today">เปิดโหมดเคสวันนี้</a>
+          </div>
+
+          <div class="search-box">
+            <p class="section-title">เปิดเคสเฉพาะรายการ</p>
+            <input id="caseCodeInput" type="text" placeholder="เช่น 19032026-009" />
+            <button class="btn" id="openCaseBtn" type="button">เปิดเคสนี้ในศูนย์ปฏิบัติการ</button>
+            <div class="helper">
+              หน้าแรกนี้เป็นโครง Hybrid สำหรับเปิดโหมดทำงานเต็มจอจาก LINE Flex
+              โดยสามารถส่ง query string ได้ เช่น <code>?view=urgent</code> หรือ <code>?case_code=19032026-009</code>
+            </div>
+          </div>
+
+          <div class="grid-mini">
+            <div class="mini">
+              <strong>โหมดปัจจุบัน</strong>
+              <span id="modeDescription">แสดงภาพรวมศูนย์ปฏิบัติการทีมงาน</span>
+            </div>
+            <div class="mini">
+              <strong>การเชื่อมต่อ</strong>
+              <span>พร้อมสำหรับเชื่อม API รายการเคส, ตัวกรอง, และ deep-link จาก Flex</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer-note">
+        Hybrid Step 1: ใช้ Flex เป็น launcher และใช้ team.html เป็น workspace เต็มจอสำหรับทีมงาน
       </div>
     </div>
-
-    <section class="hero">
-      <div class="card">
-        <div class="headline">
-          <div>
-            <h2>ภาพรวมการทำงานวันนี้</h2>
-            <p>มุมมองเดียวสำหรับทีมงานภาคสนาม แอดมิน และผู้ประสานงาน</p>
-          </div>
-          <span class="badge new" id="todayDate">วันนี้</span>
-        </div>
-
-        <div class="chip-row">
-          <span class="chip">Hybrid Phase 2</span>
-          <span class="chip">LINE Flex → LIFF Workspace</span>
-          <span class="chip">Golden-safe structure</span>
-        </div>
-
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-label">เคสใหม่</div>
-            <div class="stat-value" id="statNew">0</div>
-            <div class="stat-note">รอรับเคส/ตรวจสอบ</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">กำลังดำเนินการ</div>
-            <div class="stat-value" id="statProgress">0</div>
-            <div class="stat-note">กำลังติดตามและประสานงาน</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">ด่วน</div>
-            <div class="stat-value" id="statUrgent">0</div>
-            <div class="stat-note">ต้องจัดการก่อน</div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">ปิดเคสแล้ว</div>
-            <div class="stat-value" id="statDone">0</div>
-            <div class="stat-note">สำเร็จในรอบนี้</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="headline">
-          <div>
-            <h2>Quick Actions</h2>
-            <p>ปุ่มหลักที่ทีมใช้บ่อยที่สุดในหนึ่งหน้าจอ</p>
-          </div>
-        </div>
-
-        <div class="quick-actions">
-          <button class="btn-primary" onclick="refreshCases()">รีเฟรชเคส</button>
-          <button class="btn-secondary" onclick="filterUrgent()">ดูเฉพาะเคสด่วน</button>
-          <button class="btn-secondary" onclick="mockOpenCaseCreate()">สร้างเคสใหม่</button>
-          <button class="btn-secondary" onclick="openDashboard()">เปิด Dashboard</button>
-        </div>
-
-        <div class="chip-row" style="margin-top:14px;">
-          <span class="chip" id="envChip">Environment: Demo</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="workspace">
-      <div>
-        <div class="toolbar">
-          <div class="grow">
-            <input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / จังหวัด / ประเภทปัญหา" oninput="renderCases()" />
-          </div>
-          <div class="fixed">
-            <select id="statusFilter" onchange="renderCases()">
-              <option value="all">ทุกสถานะ</option>
-              <option value="new">เคสใหม่</option>
-              <option value="progress">กำลังดำเนินการ</option>
-              <option value="urgent">เคสด่วน</option>
-              <option value="done">ปิดเคสแล้ว</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="headline">
-            <div>
-              <h2>รายการเคส</h2>
-              <p>ส่วนนี้พร้อมต่อกับ API จริงได้ทันที</p>
-            </div>
-            <span class="badge progress"><span id="caseCount">0</span> เคส</span>
-          </div>
-
-          <div id="caseList" class="case-list"></div>
-        </div>
-      </div>
-
-      <div class="panel-stack">
-        <div class="card">
-          <div class="headline">
-            <div>
-              <h2>กิจกรรมล่าสุด</h2>
-              <p>ไทม์ไลน์ทีมงานในมุมมองเดียว</p>
-            </div>
-          </div>
-          <div id="activityList" class="activity-list"></div>
-        </div>
-
-        <div class="card">
-          <div class="headline">
-            <div>
-              <h2>ส่งอัปเดตกลับไปที่ LINE</h2>
-              <p>ใช้สำหรับสรุปความคืบหน้าให้ทีม หรือแจ้งกลับผู้ขอความช่วยเหลือ</p>
-            </div>
-          </div>
-
-          <div class="composer">
-            <select id="messageType">
-              <option value="team">แจ้งในกลุ่มทีม</option>
-              <option value="requester">แจ้งผู้ขอความช่วยเหลือ</option>
-            </select>
-            <input id="messageCaseCode" type="text" placeholder="กรอกเลขเคส (จำเป็นเมื่อส่งถึงผู้ขอความช่วยเหลือ ถ้าไม่ใส่ targetUserId)" />
-            <input id="messageTargetUserId" type="text" placeholder="หรือใส่ LINE User ID ปลายทางโดยตรง (ถ้ามี)" />
-            <textarea id="messageBox" placeholder="พิมพ์ข้อความอัปเดต เช่น เคส KC-20260326-001 ทีมภาคสนามลงพื้นที่แล้ว เวลา 14:30 น."></textarea>
-            <button class="btn-primary" onclick="sendUpdate()">ส่งข้อความอัปเดต</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <div class="footer-note">Phase 2 เป้าหมาย: เปิดจาก Flex แล้วเข้าหน้า LIFF ที่ทีมงานใช้งานจริงได้ทันที</div>
   </div>
 
   <script>
-    const CONFIG = {
-      LIFF_ID: "PUT_YOUR_LIFF_ID_HERE",
-      API_BASE_URL: "https://your-domain.com",
-      TEAM_ROLE_ENDPOINT: "/api/team/me",
-      CASES_ENDPOINT: "/api/team/cases",
-      ACTIVITY_ENDPOINT: "/api/team/activities",
-      ASSIGN_CASE_ENDPOINT: "/api/team/cases/assign",
-      UPDATE_STATUS_ENDPOINT: "/api/team/cases/status",
-      SEND_UPDATE_ENDPOINT: "/api/team/send-update",
-      TEAM_STREAM_ENDPOINT: "/api/team/stream",
-      DASHBOARD_URL: "/dashboard"
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get("view") || "home";
+    const caseCode = params.get("case_code") || "";
+
+    const modePill = document.getElementById("modePill");
+    const casePill = document.getElementById("casePill");
+    const heroSubtitle = document.getElementById("heroSubtitle");
+    const modeDescription = document.getElementById("modeDescription");
+    const caseCodeInput = document.getElementById("caseCodeInput");
+    const openCaseBtn = document.getElementById("openCaseBtn");
+
+    const viewMap = {
+      home: {
+        title: "โหมด: หน้าแรก",
+        subtitle: "หน้าแรกสำหรับติดตามรายการเคสและเข้าสู่โหมดทำงานเต็มจอ",
+        description: "แสดงภาพรวมศูนย์ปฏิบัติการทีมงาน"
+      },
+      new: {
+        title: "โหมด: เคสใหม่",
+        subtitle: "เปิดโหมดสำหรับดูรายการเคสที่เพิ่งเข้าระบบล่าสุด",
+        description: "พร้อมเชื่อมรายการเคสใหม่จากระบบจริง"
+      },
+      urgent: {
+        title: "โหมด: เคสด่วน",
+        subtitle: "เปิดโหมดสำหรับดูและคัดกรองเคสเร่งด่วน",
+        description: "พร้อมเชื่อมรายการเคสด่วนและตัวกรองระดับความสำคัญ"
+      },
+      search: {
+        title: "โหมด: ค้นหาเคส",
+        subtitle: "เปิดโหมดสำหรับค้นหาด้วยเลขเคสหรือเบอร์โทร",
+        description: "พร้อมเชื่อมฟอร์มค้นหาและเปิดรายละเอียดเคส"
+      },
+      today: {
+        title: "โหมด: เคสวันนี้",
+        subtitle: "เปิดโหมดสำหรับดูสรุปรายการเคสที่เข้ามาในวันนี้",
+        description: "พร้อมเชื่อมรายการเคสวันนี้และสรุปจำนวน"
+      }
     };
 
-    let allCases = [];
-    let activities = [];
-    let currentProfile = null;
-    let teamEventSource = null;
+    const active = viewMap[view] || viewMap.home;
+    modePill.textContent = active.title;
+    heroSubtitle.textContent = active.subtitle;
+    modeDescription.textContent = active.description;
+    casePill.textContent = caseCode ? `เลขเคส: ${caseCode}` : "เลขเคส: -";
+    if (caseCode) caseCodeInput.value = caseCode;
 
-    const demoCases = [
-      {
-        case_code: "KC-20260326-001",
-        title: "ครอบครัวขาดรายได้และค่าเช่าค้างหลายเดือน",
-        description: "ผู้ร้องขออยู่ในภาวะเสี่ยงถูกไล่ออกจากที่พัก ต้องการประสานช่วยเหลือเร่งด่วน",
-        status: "urgent",
-        province: "สงขลา",
-        owner: "ทีมภาคสนาม A",
-        updated_at: "26 มี.ค. 2026 10:20",
-        category: "ที่อยู่อาศัย"
-      },
-      {
-        case_code: "KC-20260326-002",
-        title: "ขอทุนการศึกษาเด็กกำพร้าเรียนดี",
-        description: "รอเอกสารยืนยันผลการเรียนและการเยี่ยมบ้าน",
-        status: "progress",
-        province: "นราธิวาส",
-        owner: "ฝ่ายประสานทุน",
-        updated_at: "26 มี.ค. 2026 09:35",
-        category: "การศึกษา"
-      },
-      {
-        case_code: "KC-20260325-003",
-        title: "ซ่อมหลังคาบ้านผู้สูงอายุ",
-        description: "ทีมช่างประเมินหน้างานแล้ว รออนุมัติงบวัสดุ",
-        status: "new",
-        province: "ปัตตานี",
-        owner: "แอดมินกลาง",
-        updated_at: "25 มี.ค. 2026 18:10",
-        category: "ซ่อมบ้าน"
-      },
-      {
-        case_code: "KC-20260324-004",
-        title: "ช่วยค่ารักษาและเดินทางผู้ป่วยติดเตียง",
-        description: "ดำเนินการเสร็จแล้วและแจ้งผลกลับครอบครัวเรียบร้อย",
-        status: "done",
-        province: "ยะลา",
-        owner: "ทีมช่วยเหลือด่วน",
-        updated_at: "24 มี.ค. 2026 15:05",
-        category: "การแพทย์"
-      }
-    ];
-
-    const demoActivities = [
-      { title: "ทีมภาคสนามรับเคส KC-20260326-001", detail: "กำหนดลงพื้นที่ภายใน 2 ชั่วโมง", time: "10:25" },
-      { title: "อัปเดตเอกสารทุนการศึกษา", detail: "เคส KC-20260326-002 รอใบรับรองโรงเรียน", time: "09:40" },
-      { title: "เคส KC-20260324-004 ปิดเคส", detail: "ส่งข้อความแจ้งครอบครัวเรียบร้อย", time: "08:55" }
-    ];
-
-    function statusClass(status) {
-      return ({ new: 'new', progress: 'progress', urgent: 'urgent', done: 'done' })[status] || 'new';
-    }
-
-    function statusLabel(status) {
-      return ({ new: 'เคสใหม่', progress: 'กำลังดำเนินการ', urgent: 'ด่วน', done: 'ปิดเคสแล้ว' })[status] || status;
-    }
-
-    function escapeHtml(str = '') {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    async function safeFetchJson(url, options = {}) {
-      const res = await fetch(url, options);
-      const text = await res.text();
-      let data;
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch (e) {
-        data = { ok: false, error: text || `HTTP ${res.status}` };
-      }
-      if (!res.ok) {
-        throw new Error(data?.error || `HTTP ${res.status}`);
-      }
-      return data;
-    }
-
-    function setLoading(isLoading) {
-      document.getElementById('loading').classList.toggle('hidden', !isLoading);
-      document.getElementById('app').classList.toggle('hidden', isLoading);
-    }
-
-    function updateStats() {
-      const counts = {
-        new: allCases.filter(c => c.status === 'new').length,
-        progress: allCases.filter(c => c.status === 'progress').length,
-        urgent: allCases.filter(c => c.status === 'urgent').length,
-        done: allCases.filter(c => c.status === 'done').length,
-      };
-
-      document.getElementById('statNew').textContent = counts.new;
-      document.getElementById('statProgress').textContent = counts.progress;
-      document.getElementById('statUrgent').textContent = counts.urgent;
-      document.getElementById('statDone').textContent = counts.done;
-    }
-
-    function renderActivities() {
-      const root = document.getElementById('activityList');
-      root.innerHTML = activities.map(item => `
-        <div class="activity-item">
-          <strong>${escapeHtml(item.title)}</strong>
-          <div class="meta-row">${escapeHtml(item.detail)}</div>
-          <div class="meta-row" style="margin-top:6px;">${escapeHtml(item.time)}</div>
-        </div>
-      `).join('');
-    }
-
-    function renderCases() {
-      const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
-      const status = document.getElementById('statusFilter').value;
-
-      const filtered = allCases.filter(item => {
-        const hay = [item.case_code, item.title, item.description, item.province, item.category, item.owner]
-          .join(' ')
-          .toLowerCase();
-        const matchKeyword = !keyword || hay.includes(keyword);
-        const matchStatus = status === 'all' || item.status === status;
-        return matchKeyword && matchStatus;
-      });
-
-      document.getElementById('caseCount').textContent = filtered.length;
-
-      const root = document.getElementById('caseList');
-      if (!filtered.length) {
-        root.innerHTML = `<div class="case-item"><div class="case-desc">ไม่พบเคสตามเงื่อนไขที่ค้นหา</div></div>`;
+    openCaseBtn.addEventListener("click", () => {
+      const value = String(caseCodeInput.value || "").trim();
+      if (!value) {
+        caseCodeInput.focus();
         return;
       }
-
-      root.innerHTML = filtered.map(item => `
-        <div class="case-item">
-          <div class="case-top">
-            <div>
-              <div class="case-code">${escapeHtml(item.case_code)}</div>
-              <div class="case-title">${escapeHtml(item.title)}</div>
-            </div>
-            <span class="badge ${statusClass(item.status)}">${escapeHtml(statusLabel(item.status))}</span>
-          </div>
-
-          <div class="case-desc">${escapeHtml(item.description)}</div>
-
-          <div class="meta-grid">
-            <div class="meta-box"><strong>จังหวัด</strong><span>${escapeHtml(item.province || '-')}</span></div>
-            <div class="meta-box"><strong>ผู้รับผิดชอบ</strong><span>${escapeHtml(item.owner || '-')}</span></div>
-            <div class="meta-box"><strong>หมวดปัญหา</strong><span>${escapeHtml(item.category || '-')}</span></div>
-          </div>
-
-          <div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at || '-')}</div>
-
-          <div class="case-actions">
-            <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
-            <button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button>
-            <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}', 'progress')">ตั้งเป็นกำลังดำเนินการ</button>
-            <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}', 'done')">ปิดเคส</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function initLiff() {
-      if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
-        console.warn('Missing LIFF ID. Running in demo mode.');
-        currentProfile = {
-          displayName: 'Demo Team Member',
-          pictureUrl: '',
-          userId: 'demo-user'
-        };
-        bindProfile(currentProfile, 'ทีมงาน (Demo)');
-        document.getElementById('envChip').textContent = 'Environment: Demo mode';
-        return;
-      }
-
-      await liff.init({ liffId: CONFIG.LIFF_ID });
-
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
-
-      currentProfile = await liff.getProfile();
-      bindProfile(currentProfile, 'ทีมงาน');
-      document.getElementById('envChip').textContent = 'Environment: LIFF connected';
-    }
-
-    function bindProfile(profile, roleText) {
-      document.getElementById('displayName').textContent = profile?.displayName || 'ไม่ทราบชื่อ';
-      document.getElementById('avatar').src = profile?.pictureUrl || 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>`);
-      document.getElementById('userRole').textContent = roleText;
-    }
-
-    async function loadTeamRole() {
-      try {
-        if (!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return;
-        const data = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`);
-        if (data?.roleName) {
-          document.getElementById('userRole').textContent = data.roleName;
-        }
-      } catch (err) {
-        console.warn('loadTeamRole failed:', err.message);
-      }
-    }
-
-    async function loadCases() {
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-          allCases = demoCases;
-          updateStats();
-          renderCases();
-          return;
-        }
-
-        const data = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);
-        allCases = Array.isArray(data?.cases) ? data.cases : [];
-      } catch (err) {
-        console.warn('loadCases failed, fallback to demo:', err.message);
-        allCases = demoCases;
-      }
-
-      updateStats();
-      renderCases();
-    }
-
-    async function loadActivities() {
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-          activities = demoActivities;
-          renderActivities();
-          return;
-        }
-
-        const data = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);
-        activities = Array.isArray(data?.activities) ? data.activities : [];
-      } catch (err) {
-        console.warn('loadActivities failed, fallback to demo:', err.message);
-        activities = demoActivities;
-      }
-
-      renderActivities();
-    }
-
-    async function refreshCases() {
-      await Promise.all([loadCases(), loadActivities()]);
-    }
-
-    function filterUrgent() {
-      document.getElementById('statusFilter').value = 'urgent';
-      renderCases();
-    }
-
-    function openDashboard() {
-      const url = CONFIG.API_BASE_URL.includes('your-domain.com')
-        ? '#'
-        : `${CONFIG.API_BASE_URL}${CONFIG.DASHBOARD_URL}`;
-      if (url === '#') {
-        alert('ยังไม่ได้ตั้งค่า Dashboard URL');
-        return;
-      }
-      window.open(url, '_blank');
-    }
-
-    function mockOpenCaseCreate() {
-      alert('Phase ถัดไป: เปิดฟอร์มสร้างเคส/แก้ไขเคสใน LIFF');
-    }
-
-    function viewCase(caseCode) {
-      alert(`ดูรายละเอียดเคส: ${caseCode}\n\nPhase ถัดไปสามารถต่อไปยังหน้า case-detail.html ได้ทันที`);
-    }
-
-    async function assignCase(caseCode) {
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-          alert(`โหมดเดโม: รับเคส ${caseCode} สำเร็จ`);
-          return;
-        }
-
-        const res = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ASSIGN_CASE_ENDPOINT}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            caseCode,
-            userId: currentProfile?.userId || null,
-            displayName: currentProfile?.displayName || 'ทีมงาน'
-          })
-        });
-
-        if (!res.ok) throw new Error(res.error || 'assign failed');
-
-        await refreshCases();
-        alert(`รับเคส ${caseCode} สำเร็จ`);
-      } catch (err) {
-        console.warn('assignCase failed:', err.message);
-        alert(`รับเคสไม่สำเร็จ: ${err.message}`);
-      }
-    }
-
-    async function updateCaseStatus(caseCode, status) {
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-          alert(`โหมดเดโม: อัปเดตสถานะ ${caseCode} → ${status}`);
-          return;
-        }
-
-        const res = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ caseCode, status, displayName: currentProfile?.displayName || 'ทีมงาน' })
-        });
-
-        if (!res.ok) throw new Error(res.error || 'status update failed');
-
-        await refreshCases();
-        alert(`อัปเดตสถานะ ${caseCode} สำเร็จ`);
-      } catch (err) {
-        console.warn('updateCaseStatus failed:', err.message);
-        alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);
-      }
-    }
-
-    async function sendUpdate() {
-      const type = document.getElementById('messageType').value;
-      const caseCode = document.getElementById('messageCaseCode').value.trim();
-      const targetUserId = document.getElementById('messageTargetUserId').value.trim();
-      const message = document.getElementById('messageBox').value.trim();
-
-      if (!message) {
-        alert('กรุณาพิมพ์ข้อความก่อนส่ง');
-        return;
-      }
-
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-          alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);
-          document.getElementById('messageBox').value = '';
-          return;
-        }
-
-        const res = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type,
-            message,
-            caseCode: caseCode || null,
-            targetUserId: targetUserId || null
-          })
-        });
-
-        if (!res.ok) throw new Error(res.error || 'send failed');
-
-        alert(`ส่งอัปเดตแล้ว (${type === 'team' ? 'กลุ่มทีม' : 'ผู้ขอความช่วยเหลือ'})`);
-        document.getElementById('messageBox').value = '';
-      } catch (err) {
-        console.warn('sendUpdate failed:', err.message);
-        alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);
-      }
-    }
-
-    function applyInitialViewFromQuery() {
-      const params = new URLSearchParams(window.location.search);
-      const view = params.get('view') || '';
-      if (view === 'urgent') {
-        document.getElementById('statusFilter').value = 'urgent';
-      }
-      if (view === 'search') {
-        document.getElementById('searchInput').focus();
-      }
-      renderCases();
-    }
-
-    function connectRealtimeStream() {
-      try {
-        if (CONFIG.API_BASE_URL.includes('your-domain.com')) return;
-        if (teamEventSource) {
-          teamEventSource.close();
-          teamEventSource = null;
-        }
-
-        const streamUrl = `${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`;
-        teamEventSource = new EventSource(streamUrl);
-
-        teamEventSource.addEventListener('connected', () => {
-          document.getElementById('envChip').textContent = 'Environment: LIFF connected • realtime sync on';
-        });
-
-        const refreshHandler = async () => {
-          await Promise.all([loadCases(), loadActivities()]);
-        };
-
-        ['case_created', 'case_updated', 'team_case_assigned', 'team_case_status_updated', 'dashboard_refresh', 'team_message_sent']
-          .forEach((eventName) => {
-            teamEventSource.addEventListener(eventName, refreshHandler);
-          });
-
-        teamEventSource.onerror = () => {
-          document.getElementById('envChip').textContent = 'Environment: LIFF connected • reconnecting realtime';
-        };
-      } catch (error) {
-        console.warn('connectRealtimeStream failed:', error.message);
-      }
-    }
-
-    function setToday() {
-      const now = new Date();
-      document.getElementById('todayDate').textContent = now.toLocaleDateString('th-TH', {
-        day: 'numeric', month: 'short', year: 'numeric'
-      });
-    }
-
-    async function bootstrap() {
-      try {
-        setToday();
-        await initLiff();
-        await loadTeamRole();
-        await Promise.all([loadCases(), loadActivities()]);
-        applyInitialViewFromQuery();
-        connectRealtimeStream();
-      } catch (err) {
-        console.error('bootstrap error:', err);
-        bindProfile({ displayName: 'Fallback User' }, 'เกิดข้อผิดพลาด - ใช้โหมดสำรอง');
-        allCases = demoCases;
-        activities = demoActivities;
-        updateStats();
-        renderCases();
-        renderActivities();
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    bootstrap();
+      window.location.href = `./team.html?case_code=${encodeURIComponent(value)}`;
+    });
   </script>
 </body>
 </html>

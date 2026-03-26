@@ -881,34 +881,71 @@ function buildTeamNewCaseFlex(item = {}) {
 
 
 function buildTeamMenuFlex() {
-  function menuCard(title, subtitle, bgColor, textColor, borderColor, text) {
+  const FRAME_URL = "https://img2.pic.in.th/B1ba5047e3b8d9e786.png";
+
+  function menuCard(title, subtitle, accentColor, cmd) {
     return {
       type: "box",
       layout: "vertical",
-      backgroundColor: bgColor,
+      margin: "md",
+      paddingAll: "2px",
       cornerRadius: "16px",
-      borderWidth: "1px",
-      borderColor: borderColor,
-      paddingAll: "16px",
-      action: {
-        type: "message",
-        text
-      },
+      backgroundColor: accentColor,
       contents: [
         {
-          type: "text",
-          text: title,
-          weight: "bold",
-          size: "lg",
-          color: textColor
-        },
-        {
-          type: "text",
-          text: subtitle,
-          size: "sm",
-          color: "#6B7280",
-          wrap: true,
-          margin: "sm"
+          type: "box",
+          layout: "vertical",
+          cornerRadius: "14px",
+          backgroundColor: "#1437A6",
+          paddingAll: "14px",
+          action: {
+            type: "message",
+            text: cmd
+          },
+          contents: [
+            {
+              type: "text",
+              text: title,
+              weight: "bold",
+              size: "lg",
+              color: "#FFFFFF",
+              wrap: true
+            },
+            {
+              type: "text",
+              text: subtitle,
+              size: "sm",
+              color: "#D6E4FF",
+              wrap: true,
+              margin: "sm"
+            },
+            {
+              type: "box",
+              layout: "horizontal",
+              margin: "md",
+              spacing: "sm",
+              contents: [
+                {
+                  type: "box",
+                  layout: "vertical",
+                  width: "36px",
+                  height: "4px",
+                  cornerRadius: "2px",
+                  backgroundColor: accentColor,
+                  contents: []
+                },
+                {
+                  type: "box",
+                  layout: "vertical",
+                  width: "14px",
+                  height: "4px",
+                  cornerRadius: "2px",
+                  backgroundColor: "#7DD3FC",
+                  contents: []
+                }
+              ]
+            }
+          ]
         }
       ]
     };
@@ -924,97 +961,105 @@ function buildTeamMenuFlex() {
         type: "box",
         layout: "vertical",
         paddingAll: "0px",
+        backgroundColor: "#0A1F8F",
         contents: [
           {
             type: "box",
             layout: "vertical",
-            backgroundColor: "#127C84",
-            paddingTop: "22px",
-            paddingBottom: "20px",
-            paddingStart: "20px",
-            paddingEnd: "20px",
+            position: "relative",
+            width: "100%",
+            height: "760px",
+            backgroundColor: "#102FA8",
             contents: [
               {
-                type: "text",
-                text: "เมนูทีมงาน",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "xl",
-                align: "center"
+                type: "image",
+                url: FRAME_URL,
+                size: "full",
+                aspectMode: "cover",
+                aspectRatio: "3:4",
+                position: "absolute",
+                offsetTop: "0px",
+                offsetStart: "0px",
+                offsetEnd: "0px"
               },
               {
-                type: "text",
-                text: "กดปุ่มด้านล่างเพื่อดูรายการเคส",
-                color: "#D8F2F4",
-                size: "sm",
-                align: "center",
-                margin: "md"
-              }
-            ]
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            paddingAll: "16px",
-            spacing: "12px",
-            contents: [
-              menuCard(
-                "ดูเคสใหม่",
-                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                "#F3F5F7",
-                "#222222",
-                "#D8DEE5",
-                "ดูเคสใหม่"
-              ),
-              menuCard(
-                "เคสด่วน",
-                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                "#FBF4EB",
-                "#C95C00",
-                "#F1C58D",
-                "ดูเคสด่วน"
-              ),
-              menuCard(
-                "ค้นหาด้วยเลขเคส",
-                "พิมพ์เลขเคสเพื่อดูรายละเอียดเคส",
-                "#EEF1FB",
-                "#3748C5",
-                "#B8C4F5",
-                "ดูเคส "
-              ),
-              menuCard(
-                "ค้นหาด้วยเบอร์",
-                "ค้นหาสถานะด้วยหมายเลขโทรศัพท์",
-                "#EEF8F0",
-                "#1E7A34",
-                "#B7E0BF",
-                "เช็คสถานะ "
-              ),
-              menuCard(
-                "เคสวันนี้",
-                "สรุปรายการเคสที่เข้ามาในวันนี้",
-                "#EEF8F0",
-                "#1E7A34",
-                "#B7E0BF",
-                "เคสวันนี้"
-              )
-            ]
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            paddingTop: "2px",
-            paddingBottom: "16px",
-            paddingStart: "20px",
-            paddingEnd: "20px",
-            contents: [
+                type: "box",
+                layout: "vertical",
+                position: "absolute",
+                offsetTop: "34px",
+                offsetStart: "24px",
+                offsetEnd: "24px",
+                contents: [
+                  {
+                    type: "text",
+                    text: "เมนูทีมงาน",
+                    color: "#FFFFFF",
+                    weight: "bold",
+                    size: "xl",
+                    align: "center"
+                  },
+                  {
+                    type: "text",
+                    text: "กดปุ่มด้านล่างเพื่อดูรายการเคส",
+                    color: "#D6E4FF",
+                    size: "sm",
+                    align: "center",
+                    margin: "sm",
+                    wrap: true
+                  }
+                ]
+              },
               {
-                type: "text",
-                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
-                color: "#9AA3AB",
-                size: "xs",
-                wrap: true,
-                align: "center"
+                type: "box",
+                layout: "vertical",
+                position: "absolute",
+                offsetTop: "135px",
+                offsetStart: "26px",
+                offsetEnd: "26px",
+                contents: [
+                  menuCard(
+                    "ดูเคสใหม่",
+                    "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+                    "#9CC3FF",
+                    "ดูเคสใหม่"
+                  ),
+                  menuCard(
+                    "เคสด่วน",
+                    "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
+                    "#FFB55E",
+                    "ดูเคสด่วน"
+                  ),
+                  menuCard(
+                    "ค้นหาเคส",
+                    "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
+                    "#7DD3FC",
+                    "ค้นหาเคส"
+                  ),
+                  menuCard(
+                    "เคสวันนี้",
+                    "สรุปรายการเคสที่เข้ามาในวันนี้",
+                    "#86EFAC",
+                    "เคสวันนี้"
+                  )
+                ]
+              },
+              {
+                type: "box",
+                layout: "vertical",
+                position: "absolute",
+                offsetBottom: "28px",
+                offsetStart: "34px",
+                offsetEnd: "34px",
+                contents: [
+                  {
+                    type: "text",
+                    text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
+                    color: "#C7D7FF",
+                    size: "xs",
+                    align: "center",
+                    wrap: true
+                  }
+                ]
               }
             ]
           }

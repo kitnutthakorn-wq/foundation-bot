@@ -1198,42 +1198,51 @@ function buildAdminMenuFlex() {
               }
             ]
           },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#0B7C86",
-                action: {
-                  type: "message",
-                  label: "📌 ดูเคสใหม่",
-                  text: "ดูเคสใหม่"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#E65100",
-                action: {
-                  type: "message",
-                  label: "🚨 ดูเคสด่วน",
-                  text: "ดูเคสด่วน"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "📅 เคสวันนี้",
-                  text: "เคสวันนี้"
-                }
-              }
-            ]
-          }
+        footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#0B7C86",
+      action: {
+        type: "message",
+        label: "📌 ดูเคสใหม่",
+        text: "ดูเคสใหม่"
+      }
+    },
+    {
+      type: "button",
+      style: "primary",
+      color: "#E65100",
+      action: {
+        type: "message",
+        label: "🚨 ดูเคสด่วน",
+        text: "ดูเคสด่วน"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "📅 เคสวันนี้",
+        text: "เคสวันนี้"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "🔎 ค้นหาเคส",
+        text: "พิมพ์:\nดูเคส CASE_CODE\nหรือ\nเช็คสถานะ เบอร์โทร"
+      }
+    }
+  ]
+}
         },
         {
           type: "bubble",
@@ -1350,41 +1359,50 @@ function buildAdminMenuFlex() {
               }
             ]
           },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#C98A00",
-                action: {
-                  type: "message",
-                  label: "👥 ดูทีม",
-                  text: "ดูทีม"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "🔍 วิธีดูสิทธิ์",
-                  text: "ดูสิทธิ์ USER_ID"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "⚙️ วิธีตั้งสิทธิ์",
-                  text: "ตั้งสิทธิ์ USER_ID staff"
-                }
-              }
-            ]
-          }
+         footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#C98A00",
+      action: {
+        type: "message",
+        label: "👥 ดูทีม",
+        text: "ดูทีม"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "🔍 ดูสิทธิ์",
+        text: "ดูสิทธิ์ USER_ID"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "⚙️ ตั้งเป็น staff",
+        text: "ตั้งสิทธิ์ USER_ID staff"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "👑 ตั้งเป็น admin",
+        text: "ตั้งสิทธิ์ USER_ID admin"
+      }
+    }
+  ]
+}
         }
       ]
     }

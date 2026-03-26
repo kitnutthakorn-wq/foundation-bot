@@ -881,6 +881,8 @@ function buildTeamNewCaseFlex(item = {}) {
 
 
 function buildTeamMenuFlex() {
+  const TEAM_LIFF_BASE = "https://foundation-bot-p5wu.onrender.com/team.html";
+
   function menuCard(title, subtitle, accentColor, softBg, textCmd) {
     return {
       type: "box",
@@ -913,7 +915,8 @@ function buildTeamMenuFlex() {
                   weight: "bold",
                   size: "lg",
                   color: accentColor,
-                  flex: 1
+                  flex: 1,
+                  wrap: true
                 },
                 {
                   type: "box",
@@ -1039,7 +1042,7 @@ function buildTeamMenuFlex() {
             layout: "vertical",
             paddingStart: "12px",
             paddingEnd: "12px",
-            paddingBottom: "16px",
+            paddingBottom: "12px",
             contents: [
               {
                 type: "box",
@@ -1085,11 +1088,59 @@ function buildTeamMenuFlex() {
             layout: "vertical",
             paddingStart: "18px",
             paddingEnd: "18px",
+            paddingBottom: "10px",
+            spacing: "sm",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                height: "md",
+                color: "#5B7CFF",
+                action: {
+                  type: "uri",
+                  label: "เปิดศูนย์ปฏิบัติการ",
+                  uri: TEAM_LIFF_BASE
+                }
+              },
+              {
+                type: "box",
+                layout: "horizontal",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "button",
+                    style: "secondary",
+                    flex: 1,
+                    action: {
+                      type: "uri",
+                      label: "เคสด่วนเต็มจอ",
+                      uri: `${TEAM_LIFF_BASE}?view=urgent`
+                    }
+                  },
+                  {
+                    type: "button",
+                    style: "secondary",
+                    flex: 1,
+                    action: {
+                      type: "uri",
+                      label: "ค้นหาเต็มจอ",
+                      uri: `${TEAM_LIFF_BASE}?view=search`
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            paddingStart: "18px",
+            paddingEnd: "18px",
             paddingBottom: "18px",
             contents: [
               {
                 type: "text",
-                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก",
+                text: "แนะนำให้ทีมกดภารกิจนี้ในไลน์กลุ่มเพื่อใช้งานสะดวก และใช้ศูนย์ปฏิบัติการเมื่อต้องทำงานเต็มจอ",
                 color: "#BFD1FF",
                 size: "xs",
                 wrap: true,
@@ -1744,6 +1795,13 @@ app.get("/case", checkDashboardAuth, (req, res) => {
 
 app.get("/report", checkDashboardAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "report.html"));
+});
+app.get("/team", (req, res) => {
+  res.sendFile(path.join(__dirname, "team.html"));
+});
+
+app.get("/team.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "team.html"));
 });
 
 app.get("/logo.png", (req, res) => {

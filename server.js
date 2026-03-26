@@ -3421,7 +3421,28 @@ if (removeTeamCommand) {
 
   continue;
 }
-       
+
+function isOverrideMenuCommand(text = "") {
+  const t = String(text || "").trim();
+  return [
+    "เมนู",
+    "กลับสู่เมนูหลัก",
+    "เมนูทีมงาน",
+    "เมนูแอดมิน",
+    "ดูเคสใหม่",
+    "เคสใหม่",
+    "ดูเคสด่วน",
+    "เคสด่วน",
+    "เคสวันนี้",
+    "ค้นหาเคส",
+    "รายงาน",
+    "สรุปรายวัน",
+    "ดูทีม",
+    "ขอความช่วยเหลือ",
+    "ติดต่อเจ้าหน้าที่"
+  ].includes(t);
+}
+      
 if (text === "อัปเดตเคส") {
   if (!(event.source?.type === "group" && event.source?.groupId === ALLOWED_TEAM_GROUP_ID)) {
     await safeReply(replyToken, [

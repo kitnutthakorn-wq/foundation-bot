@@ -957,48 +957,40 @@ function buildTeamMenuFlex() {
             layout: "vertical",
             paddingAll: "16px",
             spacing: "12px",
-            contents: [
-              menuCard(
-                "ดูเคสใหม่",
-                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                "#F3F5F7",
-                "#222222",
-                "#D8DEE5",
-                "ดูเคสใหม่"
-              ),
-              menuCard(
-                "เคสด่วน",
-                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                "#FBF4EB",
-                "#C95C00",
-                "#F1C58D",
-                "ดูเคสด่วน"
-              ),
-              menuCard(
-                "ค้นหาด้วยเลขเคส",
-                "พิมพ์เลขเคสเพื่อดูรายละเอียดเคส",
-                "#EEF1FB",
-                "#3748C5",
-                "#B8C4F5",
-                "ดูเคส "
-              ),
-              menuCard(
-                "ค้นหาด้วยเบอร์",
-                "ค้นหาสถานะด้วยหมายเลขโทรศัพท์",
-                "#EEF8F0",
-                "#1E7A34",
-                "#B7E0BF",
-                "เช็คสถานะ "
-              ),
-              menuCard(
-                "เคสวันนี้",
-                "สรุปรายการเคสที่เข้ามาในวันนี้",
-                "#EEF8F0",
-                "#1E7A34",
-                "#B7E0BF",
-                "เคสวันนี้"
-              )
-            ]
+ contents: [
+  menuCard(
+    "ดูเคสใหม่",
+    "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+    "#F3F5F7",
+    "#222222",
+    "#D8DEE5",
+    "ดูเคสใหม่"
+  ),
+  menuCard(
+    "เคสด่วน",
+    "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
+    "#FBF4EB",
+    "#C95C00",
+    "#F1C58D",
+    "ดูเคสด่วน"
+  ),
+  menuCard(
+    "ค้นหาเคส",
+    "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
+    "#EEF1FB",
+    "#3748C5",
+    "#B8C4F5",
+    "ค้นหาเคส"
+  ),
+  menuCard(
+    "เคสวันนี้",
+    "สรุปรายการเคสที่เข้ามาในวันนี้",
+    "#EEF8F0",
+    "#1E7A34",
+    "#B7E0BF",
+    "เคสวันนี้"
+  )
+]
           },
           {
             type: "box",
@@ -1231,36 +1223,36 @@ function buildAdminMenuFlex() {
                   text: "ดูเคสด่วน"
                 }
               },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "📅 เคสวันนี้",
-                  text: "เคสวันนี้"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "🔎 ค้นหาด้วยเลขเคส",
-                  text: "ดูเคส "
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "📞 ค้นหาด้วยเบอร์",
-                  text: "เช็คสถานะ "
-                }
-              }
-            ]
-          }
-        },
+{
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "📅 เคสวันนี้",
+    text: "เคสวันนี้"
+  }
+},
+{
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "🔎 ค้นหาเคส",
+    text: "ค้นหาเคส"
+  }
+},
+{
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "📞 ค้นหาด้วยเบอร์",
+    text: "ค้นหาเคส"
+  }
+}
+ ]
+  }
+  },
         {
           type: "bubble",
           size: "mega",

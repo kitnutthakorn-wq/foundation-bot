@@ -957,40 +957,48 @@ function buildTeamMenuFlex() {
             layout: "vertical",
             paddingAll: "16px",
             spacing: "12px",
- contents: [
-  menuCard(
-    "ดูเคสใหม่",
-    "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-    "#F3F5F7",
-    "#222222",
-    "#D8DEE5",
-    "ดูเคสใหม่"
-  ),
-  menuCard(
-    "เคสด่วน",
-    "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-    "#FBF4EB",
-    "#C95C00",
-    "#F1C58D",
-    "ดูเคสด่วน"
-  ),
-  menuCard(
-    "ค้นหาเคส",
-    "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-    "#EEF1FB",
-    "#3748C5",
-    "#B8C4F5",
-    "ค้นหาเคส"
-  ),
-  menuCard(
-    "เคสวันนี้",
-    "สรุปรายการเคสที่เข้ามาในวันนี้",
-    "#EEF8F0",
-    "#1E7A34",
-    "#B7E0BF",
-    "เคสวันนี้"
-  )
-]
+            contents: [
+              menuCard(
+                "ดูเคสใหม่",
+                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
+                "#F3F5F7",
+                "#222222",
+                "#D8DEE5",
+                "ดูเคสใหม่"
+              ),
+              menuCard(
+                "เคสด่วน",
+                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
+                "#FBF4EB",
+                "#C95C00",
+                "#F1C58D",
+                "ดูเคสด่วน"
+              ),
+              menuCard(
+                "ค้นหาด้วยเลขเคส",
+                "พิมพ์เลขเคสเพื่อดูรายละเอียดเคส",
+                "#EEF1FB",
+                "#3748C5",
+                "#B8C4F5",
+                "ดูเคส "
+              ),
+              menuCard(
+                "ค้นหาด้วยเบอร์",
+                "ค้นหาสถานะด้วยหมายเลขโทรศัพท์",
+                "#EEF8F0",
+                "#1E7A34",
+                "#B7E0BF",
+                "เช็คสถานะ "
+              ),
+              menuCard(
+                "เคสวันนี้",
+                "สรุปรายการเคสที่เข้ามาในวันนี้",
+                "#EEF8F0",
+                "#1E7A34",
+                "#B7E0BF",
+                "เคสวันนี้"
+              )
+            ]
           },
           {
             type: "box",
@@ -1198,47 +1206,47 @@ function buildAdminMenuFlex() {
               }
             ]
           },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#0B7C86",
-                action: {
-                  type: "message",
-                  label: "📌 ดูเคสใหม่",
-                  text: "ดูเคสใหม่"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#E65100",
-                action: {
-                  type: "message",
-                  label: "🚨 ดูเคสด่วน",
-                  text: "ดูเคสด่วน"
-                }
-              },
-{
+        footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#0B7C86",
+      action: {
+        type: "message",
+        label: "📌 ดูเคสใหม่",
+        text: "ดูเคสใหม่"
+      }
+    },
+    {
+      type: "button",
+      style: "primary",
+      color: "#E65100",
+      action: {
+        type: "message",
+        label: "🚨 ดูเคสด่วน",
+        text: "ดูเคสด่วน"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "📅 เคสวันนี้",
+        text: "เคสวันนี้"
+      }
+    },
+    {
   type: "button",
   style: "secondary",
   action: {
     type: "message",
-    label: "📅 เคสวันนี้",
-    text: "เคสวันนี้"
-  }
-},
-{
-  type: "button",
-  style: "secondary",
-  action: {
-    type: "message",
-    label: "🔎 ค้นหาเคส",
-    text: "ค้นหาเคส"
+    label: "🔎 ค้นหาด้วยเลขเคส",
+    text: "ดูเคส "
   }
 },
 {
@@ -1247,12 +1255,12 @@ function buildAdminMenuFlex() {
   action: {
     type: "message",
     label: "📞 ค้นหาด้วยเบอร์",
-    text: "ค้นหาเคส"
+    text: "เช็คสถานะ "
   }
 }
- ]
-  }
-  },
+  ]
+}
+        },
         {
           type: "bubble",
           size: "mega",
@@ -1368,50 +1376,50 @@ function buildAdminMenuFlex() {
               }
             ]
           },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#C98A00",
-                action: {
-                  type: "message",
-                  label: "👥 ดูทีม",
-                  text: "ดูทีม"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "🔍 ดูสิทธิ์",
-                  text: "ดูสิทธิ์ USER_ID"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "⚙️ ตั้งเป็น staff",
-                  text: "ตั้งสิทธิ์ USER_ID staff"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "👑 ตั้งเป็น admin",
-                  text: "ตั้งสิทธิ์ USER_ID admin"
-                }
-              }
-            ]
-          }
+         footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#C98A00",
+      action: {
+        type: "message",
+        label: "👥 ดูทีม",
+        text: "ดูทีม"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "🔍 ดูสิทธิ์",
+        text: "ดูสิทธิ์ USER_ID"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "⚙️ ตั้งเป็น staff",
+        text: "ตั้งสิทธิ์ USER_ID staff"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "👑 ตั้งเป็น admin",
+        text: "ตั้งสิทธิ์ USER_ID admin"
+      }
+    }
+  ]
+}
         }
       ]
     }
@@ -3917,122 +3925,7 @@ if (userId && userStates[userId] === "tracking_case") {
         continue;
       }
 
-// =============================
-// 🔎 SMART SEARCH (ตัวแก้จริง)
-// =============================
-if (text.startsWith("ดูเคส")) {
-  const input = text.replace("ดูเคส", "").trim();
 
-  if (!input) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ กรุณาพิมพ์เลขเคส เช่น:\nดูเคส 21032026-001"
-    }]);
-    continue;
-  }
-
-  try {
-    const found = await findLatestCaseByCaseCodeOrPhone(input);
-
-    if (!found) {
-      await safeReply(replyToken, [{
-        type: "text",
-        text: "❌ ไม่พบข้อมูลเคสนี้"
-      }]);
-      continue;
-    }
-
-    await safeReply(replyToken, [
-      buildCaseTrackingFlex(found)
-    ]);
-  } catch (err) {
-    console.error("SEARCH CASE ERROR:", err);
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ ค้นหาเคสไม่สำเร็จ"
-    }]);
-  }
-
-  continue;
-}
-
-// =============================
-// 📞 SEARCH BY PHONE
-// =============================
-if (text.startsWith("เช็คสถานะ")) {
-  const input = text.replace("เช็คสถานะ", "").trim();
-
-  if (!input) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ กรุณาพิมพ์เบอร์ เช่น:\nเช็คสถานะ 0812345678"
-    }]);
-    continue;
-  }
-
-  try {
-    const found = await findLatestCaseByCaseCodeOrPhone(input);
-
-    if (!found) {
-      await safeReply(replyToken, [{
-        type: "text",
-        text: "❌ ไม่พบข้อมูลจากเบอร์นี้"
-      }]);
-      continue;
-    }
-
-    await safeReply(replyToken, [
-      buildCaseTrackingFlex(found)
-    ]);
-  } catch (err) {
-    console.error("SEARCH PHONE ERROR:", err);
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ ค้นหาไม่สำเร็จ"
-    }]);
-  }
-
-  continue;
-}
-
-// =============================
-// 📞 SEARCH BY PHONE
-// =============================
-if (text.startsWith("เช็คสถานะ ")) {
-  const input = text.replace("เช็คสถานะ ", "").trim();
-
-  if (!input) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ กรุณาพิมพ์เบอร์ เช่น:\nเช็คสถานะ 0812345678"
-    }]);
-    continue;
-  }
-
-  try {
-    const found = await findLatestCaseByCaseCodeOrPhone(input);
-
-    if (!found) {
-      await safeReply(replyToken, [{
-        type: "text",
-        text: "❌ ไม่พบข้อมูลจากเบอร์นี้"
-      }]);
-      continue;
-    }
-
-    await safeReply(replyToken, [
-      buildCaseTrackingFlex(found)
-    ]);
-  } catch (err) {
-    console.error("SEARCH PHONE ERROR:", err);
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "❌ ค้นหาไม่สำเร็จ"
-    }]);
-  }
-
-  continue;
-}
 if (text === "ดูเคสใหม่" || text === "เคสใหม่") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคส" }]);

@@ -2474,11 +2474,17 @@ async function assignCase(caseCode, staffName = "ทีมงาน") {
 async function closeCase(caseCode, staffName = "ทีมงาน") {
   const { data, error } = await supabase
     .from("help_requests")
-    .update({
-      status: "done",
-      assigned_to: staffName,
-      closed_at: new Date().toISOString(),
-    })
+   .update({
+  status: "done",
+  assigned_to: staffName,
+  closed_at: new Date().toISOString(),
+
+  // 🔥 FIX ตรงนี้ด้วย
+  priority: "normal",
+  urgent: false,
+  urgent_flag: false,
+  is_urgent: false
+})
     .eq("case_code", caseCode)
     .select()
     .single();
@@ -2497,8 +2503,14 @@ async function changeCaseStatus(caseCode, newStatus) {
   const payload = { status: newStatus };
 
   if (newStatus === "done") {
-    payload.closed_at = new Date().toISOString();
-  }
+  payload.closed_at = new Date().toISOString();
+
+  // 🔥 FIX KPI mismatch
+  payload.priority = "normal";
+  payload.urgent = false;
+  payload.urgent_flag = false;
+  payload.is_urgent = false;
+}
 
   const { data, error } = await supabase
     .from("help_requests")

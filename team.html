@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team Workspace KCK FD</title>
+  <title>Team Workspace PRO MAX UI</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root{
@@ -29,11 +29,8 @@
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
     .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px}
     .stat-label{font-size:.82rem;color:#dff8fb}.stat-value{font-size:1.5rem;font-weight:800;line-height:1;margin:8px 0}.stat-note{font-size:.83rem;color:#dff8fb}
-    .quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
-    .qa-full{grid-column:span 2}
+    .quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
     button{border:0;border-radius:14px;cursor:pointer;font:inherit;transition:transform .15s ease}.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:12px 14px}.btn-secondary{background:#fff;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}.btn-accent{background:linear-gradient(135deg,var(--accent),#2ea95f);color:#fff;padding:12px 14px}
-    .btn-update{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:12px 14px}
-    .btn-ghost{background:#f8fbfc;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}
     .toolbar{padding:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;background:var(--panel)} .toolbar input,.toolbar select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff}
     .grow{flex:1 1 240px}.fixed{width:180px}.case-list,.activity-list,.panel-stack,.role-row{display:grid;gap:12px}
     .case-item{padding:14px;position:relative;overflow:hidden}.case-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--brand)}
@@ -43,26 +40,84 @@
     .badge.new{background:rgba(11,124,134,.12);color:var(--brand-dark)} .badge.progress{background:rgba(197,102,8,.12);color:var(--warn)} .badge.urgent{background:rgba(185,28,28,.10);color:var(--danger)} .badge.done{background:rgba(31,143,77,.12);color:var(--accent)}
     .meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.meta-box{background:#f8fbfc;border:1px solid #edf2f5;border-radius:12px;padding:10px}
     .meta-box strong{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px}.meta-box span{font-size:.9rem;font-weight:700}
-    .case-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .case-actions button{padding:9px 12px;background:#fff;border:1px solid var(--line);color:var(--brand-dark);font-weight:700}
-    .case-actions .btn-progress{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
-    .case-actions .btn-update-case{background:#eefaf3;border-color:#b7ebc9;color:#166534}
-    .case-actions .is-disabled{opacity:.58;cursor:not-allowed;pointer-events:none}
+    .case-actions{display:flex;gap:8px;flex-wrap:wrap}.case-actions button{padding:9px 12px;background:#fff;border:1px solid var(--line);color:var(--brand-dark)}
     .activity-item{padding:12px;background:var(--panel)}.activity-item strong{display:block;margin-bottom:6px}.composer{display:grid;gap:10px;margin-top:12px}
     textarea{min-height:110px;resize:vertical}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:24px}
     .pulse-urgent{animation:pulseUrgent 1.8s infinite}@keyframes pulseUrgent{0%{box-shadow:0 0 0 0 rgba(185,28,28,.24)}70%{box-shadow:0 0 0 12px rgba(185,28,28,0)}100%{box-shadow:0 0 0 0 rgba(185,28,28,0)}}
     .role-chip{padding:10px 12px;background:var(--panel);border-radius:16px}.role-chip strong{display:block;font-size:.88rem}.role-chip span{font-size:.8rem;color:var(--muted)}
+
+    .mobile-menu-btn{display:none;align-items:center;justify-content:center;width:46px;height:46px;border:1px solid var(--line);background:#fff;color:var(--brand-dark);box-shadow:var(--shadow);font-size:1.3rem;font-weight:800;padding:0}
+    .mobile-drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,.42);backdrop-filter:blur(2px);z-index:1200;opacity:0;pointer-events:none;transition:opacity .22s ease}
+    .mobile-drawer{position:fixed;top:0;left:0;height:100%;width:min(88vw,360px);background:#fff;border-right:1px solid var(--line);box-shadow:0 20px 50px rgba(15,23,42,.18);z-index:1201;transform:translateX(-100%);transition:transform .24s ease;display:flex;flex-direction:column}
+    body.drawer-open{overflow:hidden}
+    body.drawer-open .mobile-drawer-overlay{opacity:1;pointer-events:auto}
+    body.drawer-open .mobile-drawer{transform:translateX(0)}
+    .mobile-drawer-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 16px 14px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(11,124,134,.08),rgba(22,60,114,.08))}
+    .mobile-drawer-brand{display:flex;align-items:center;gap:12px}
+    .mobile-drawer-title{font-size:1rem;font-weight:800;color:var(--brand-dark)}
+    .mobile-drawer-subtitle{font-size:.84rem;color:var(--muted);margin-top:3px}
+    .mobile-drawer-body{padding:16px;display:grid;gap:16px;overflow:auto}
+    .mobile-drawer-section{display:grid;gap:10px}
+    .mobile-drawer-section h3{margin:0;font-size:.95rem;color:var(--brand-dark)}
+    .mobile-drawer-grid{display:grid;gap:10px}
+    .mobile-drawer-grid button{width:100%;text-align:left}
+    .mobile-drawer-close{width:42px;height:42px;border:1px solid var(--line);background:#fff;color:var(--brand-dark);border-radius:12px;padding:0;font-size:1.15rem;box-shadow:none}
+    .mobile-drawer .role-chip{box-shadow:none}
+    .desktop-only{display:block}
+    .mobile-only{display:none}
     @media (max-width:980px){.topbar,.hero,.workspace{grid-template-columns:1fr}.stats,.meta-grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.qa-full{grid-column:auto}.profile-card{min-width:unset}}
+    @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.profile-card{min-width:unset}}
   </style>
 </head>
 <body>
-<div id="loading" class="loading">กำลังเปิด Team Workspace KCK FD...</div>
+<div id="loading" class="loading">กำลังเปิด Team Workspace PRO MAX...</div>
 <div id="app" class="app hidden">
+  <div id="mobileDrawerOverlay" class="mobile-drawer-overlay" onclick="closeMobileDrawer()"></div>
+  <aside id="mobileDrawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="mobile-drawer-brand">
+        <div class="brand-badge">TK</div>
+        <div>
+          <div class="mobile-drawer-title">เมนูทีมงาน</div>
+          <div class="mobile-drawer-subtitle">Quick Actions สำหรับมือถือ</div>
+        </div>
+      </div>
+      <button class="mobile-drawer-close" type="button" onclick="closeMobileDrawer()" aria-label="ปิดเมนู">✕</button>
+    </div>
+    <div class="mobile-drawer-body">
+      <div class="mobile-drawer-section">
+        <h3>Quick Actions</h3>
+        <div class="mobile-drawer-grid">
+          <button class="btn-primary" type="button" onclick="runMobileAction(refreshCases)">รีเฟรชเคส</button>
+          <button class="btn-secondary" type="button" onclick="runMobileAction(() => applyPresetFilter('urgent'))">ดูเฉพาะเคสด่วน</button>
+          <button class="btn-secondary" type="button" onclick="runMobileAction(() => applyPresetFilter('new'))">ดูเฉพาะเคสใหม่</button>
+          <button class="btn-ghost" type="button" onclick="runMobileAction(filterTodayCases)">เคสวันนี้</button>
+          <button class="btn-update" type="button" onclick="runMobileAction(openCaseUpdateCenter)">อัปเดตเคส</button>
+        </div>
+      </div>
+
+      <div class="mobile-drawer-section">
+        <h3>มุมมองการใช้งาน</h3>
+        <select id="mobileRoleView" onchange="syncRoleViewFromDrawer()">
+          <option value="field">ทีมงานภาคสนาม</option>
+          <option value="readonly">ดูได้อย่างเดียว</option>
+        </select>
+      </div>
+
+      <div class="mobile-drawer-section">
+        <h3>สถานะระบบ</h3>
+        <div class="role-row">
+          <div class="role-chip"><strong>Environment</strong><span id="envChipDrawer">Demo</span></div>
+          <div class="role-chip"><strong>Menu Version</strong><span id="menuVersionChipDrawer">v-next</span></div>
+          <div class="role-chip"><strong>Realtime</strong><span id="realtimeStatusDrawer">กำลังเชื่อมต่อ...</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
   <div class="topbar">
     <div class="brand-wrap">
       <div class="brand-badge">TK</div>
-      <div><h1>Team Workspace KCK FD</h1><p>Role-based • Realtime • Unified Theme • Golden-safe flow</p></div>
+      <div><h1>Team Workspace PRO MAX UI</h1><p>Role-based • Realtime • Unified Theme • Golden-safe flow</p></div>
     </div>
     <div class="profile-card">
       <img id="avatar" class="avatar" alt="profile" />
@@ -80,14 +135,13 @@
         <div class="stat"><div class="stat-label">ปิดเคสแล้ว</div><div class="stat-value" id="statDone">0</div><div class="stat-note">สำเร็จในรอบนี้</div></div>
       </div>
     </div>
-    <div class="card">
+    <div class="card desktop-only">
       <div class="headline"><div><h2>Quick Actions</h2><p>โหมดทีมงานแบบ PRO MAX</p></div></div>
       <div class="quick-actions">
         <button class="btn-primary" onclick="refreshCases()">รีเฟรชเคส</button>
         <button class="btn-secondary" onclick="applyPresetFilter('urgent')">ดูเฉพาะเคสด่วน</button>
         <button class="btn-secondary" onclick="applyPresetFilter('new')">ดูเฉพาะเคสใหม่</button>
-        <button class="btn-ghost" onclick="filterTodayCases()">เคสวันนี้</button>
-        <button class="btn-update qa-full" onclick="openCaseUpdateCenter()">อัปเดตเคส</button>
+        <button class="btn-accent" onclick="openDashboard()">เปิด Dashboard</button>
       </div>
       <div class="role-row" style="margin-top:14px">
         <div class="role-chip"><strong>Environment</strong><span id="envChip">Demo</span></div>
@@ -102,9 +156,7 @@
       <div class="toolbar">
         <div class="grow"><input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / จังหวัด / ประเภทปัญหา" oninput="renderCases()" /></div>
         <div class="fixed"><select id="statusFilter" onchange="renderCases()"><option value="all">ทุกสถานะ</option><option value="new">เคสใหม่</option><option value="progress">กำลังดำเนินการ</option><option value="urgent">เคสด่วน</option><option value="done">ปิดเคสแล้ว</option></select></div>
-        <div class="fixed"><select id="roleView" onchange="handleTeamViewModeChange()">
-          <option value="field">ทีมงานภาคสนาม</option>
-         <option value="readonly">ดูได้อย่างเดียว</option></select></div>
+        <div class="fixed"><select id="roleView" onchange="renderCases()"><option value="all">ทุกมุมมอง</option><option value="admin">แอดมิน</option><option value="field">ภาคสนาม</option><option value="viewer">ดูอย่างเดียว</option></select></div>
       </div>
       <div class="card">
         <div class="headline"><div><h2>รายการเคส</h2><p id="casePanelSubtitle">กรองแบบ role-based และ realtime sync</p></div><span class="badge progress"><span id="caseCount">0</span> เคส</span></div>
@@ -149,11 +201,10 @@ const CONFIG = {
 };
 
 let allCases = [], activities = [], currentProfile = null, eventSource = null;
-let currentPresetFilter = "all";
 const demoCases = [
   {case_code:"KC-20260326-001",title:"ครอบครัวขาดรายได้และค่าเช่าค้างหลายเดือน",description:"ผู้ร้องขออยู่ในภาวะเสี่ยงถูกไล่ออกจากที่พัก ต้องการประสานช่วยเหลือเร่งด่วน",status:"urgent",province:"สงขลา",owner:"ทีมภาคสนาม A",updated_at:"26 มี.ค. 2026 10:20",category:"ที่อยู่อาศัย",role_hint:"field"},
   {case_code:"KC-20260326-002",title:"ขอทุนการศึกษาเด็กกำพร้าเรียนดี",description:"รอเอกสารยืนยันผลการเรียนและการเยี่ยมบ้าน",status:"progress",province:"นราธิวาส",owner:"ฝ่ายประสานทุน",updated_at:"26 มี.ค. 2026 09:35",category:"การศึกษา",role_hint:"admin"},
-  {case_code:"KC-20260325-003",title:"ซ่อมหลังคาบ้านผู้สูงอายุ",description:"ทีมช่างประเมินหน้างานแล้ว รออนุมัติงบวัสดุ",status:"new",province:"ปัตตานี",owner:"แอดมินกลาง",updated_at:"25 มี.ค. 2026 18:10",category:"ซ่อมบ้าน",role_hint:"readonly"},
+  {case_code:"KC-20260325-003",title:"ซ่อมหลังคาบ้านผู้สูงอายุ",description:"ทีมช่างประเมินหน้างานแล้ว รออนุมัติงบวัสดุ",status:"new",province:"ปัตตานี",owner:"แอดมินกลาง",updated_at:"25 มี.ค. 2026 18:10",category:"ซ่อมบ้าน",role_hint:"viewer"},
   {case_code:"KC-20260324-004",title:"ช่วยค่ารักษาและเดินทางผู้ป่วยติดเตียง",description:"ดำเนินการเสร็จแล้วและแจ้งผลกลับครอบครัวเรียบร้อย",status:"done",province:"ยะลา",owner:"ทีมช่วยเหลือด่วน",updated_at:"24 มี.ค. 2026 15:05",category:"การแพทย์",role_hint:"field"}
 ];
 const demoActivities = [
@@ -173,14 +224,25 @@ async function safeFetchJson(url, options={}) {
   return data;
 }
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
-function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
-function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
+function setToday(){
+  const now=new Date();
+  document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;
+  const drawerVersion = document.getElementById('menuVersionChipDrawer');
+  if (drawerVersion) drawerVersion.textContent = CONFIG.MENU_VERSION;
+}
+function bindProfile(profile, roleText){
+  document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';
+  document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');
+  document.getElementById('userRole').textContent=roleText;
+}
 async function initLiff(){
-  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');document.getElementById('envChip').textContent='Demo mode';return;}
+  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');document.getElementById('envChip').textContent='Demo mode';syncStatusChips();return;}
   await liff.init({ liffId: CONFIG.LIFF_ID });
-  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='LIFF in LINE'; return; }
+  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='LIFF in LINE'; syncStatusChips(); return; }
   if (!liff.isLoggedIn()) { liff.login(); return; }
   currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='External browser';
+  syncStatusChips();
 }
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
@@ -282,9 +344,14 @@ function priorityClass(item = {}) {
 
 function updateStats() {
   const c = {
-    new: allCases.filter(x => isNewCase(x)).length,
-    progress: allCases.filter(x => isInProgressCase(x)).length,
+    new: allCases.filter(x => x.status === 'new').length,
+
+    progress: allCases.filter(x =>
+      x.status === 'in_progress' || x.status === 'progress'
+    ).length,
+
     urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
+
     done: allCases.filter(x => isDoneCase(x)).length
   };
 
@@ -297,61 +364,10 @@ function updateStats() {
     .classList.toggle('pulse-urgent', c.urgent > 0);
 }
 
-
-function getSelectedRoleLabel() {
-  const roleSelect = document.getElementById('roleView');
-  return roleSelect?.selectedOptions?.[0]?.textContent || 'ทีมงานภาคสนาม';
-}
-
-// 🔒 Global state (ใช้ตัวเดียวให้ชัด)
-let TEAM_VIEW_MODE = "field";
-
-// 🔁 เปลี่ยนโหมดจาก dropdown
-function handleTeamViewModeChange() {
-  const roleSelect = document.getElementById('roleView');
-  TEAM_VIEW_MODE = roleSelect ? roleSelect.value : "field";
-
-  // debug (แนะนำเปิดไว้ช่วงนี้)
-  console.log("TEAM_VIEW_MODE:", TEAM_VIEW_MODE);
-
-  renderCases();
-}
-
-// 🔍 เช็คว่าเป็นโหมดดูอย่างเดียวหรือไม่
-function isReadOnlyMode() {
-  return TEAM_VIEW_MODE === "readonly";
-}
-
-// 🏷️ label แสดงผล (กันสลับอีกในอนาคต)
-function getViewLabel() {
-  return TEAM_VIEW_MODE === "readonly"
-    ? "ดูได้อย่างเดียว"
-    : "ทีมงานภาคสนาม";
-}
-
-function isTodayCase(item = {}) {
-  const raw = String(item.created_at || item.updated_at || '').trim();
-  if (!raw) return false;
-
-  const parsed = new Date(raw);
-  if (!Number.isNaN(parsed.getTime())) {
-    const now = new Date();
-    return parsed.getFullYear() === now.getFullYear()
-      && parsed.getMonth() === now.getMonth()
-      && parsed.getDate() === now.getDate();
-  }
-
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
-  const iso = `${yyyy}-${mm}-${dd}`;
-  return raw.startsWith(iso);
-}
-
 function filteredCases() {
   const k = document.getElementById('searchInput').value.trim().toLowerCase();
   const status = document.getElementById('statusFilter').value;
+  const role = document.getElementById('roleView').value;
 
   return allCases.filter(item => {
     const hay = [
@@ -365,32 +381,28 @@ function filteredCases() {
 
     const matchKeyword = !k || hay.includes(k);
 
-    let matchStatus = true;
-    if (status === 'urgent') {
-      matchStatus = isOpenUrgentCase(item);
-    } else if (status === 'progress') {
-      matchStatus = isInProgressCase(item);
-    } else if (status === 'new') {
-      matchStatus = isNewCase(item);
-    } else if (status === 'done') {
-      matchStatus = isDoneCase(item);
-    }
+   const matchStatus =
+  status === 'all'
+    ? true
+    : status === 'urgent'
+      ? isOpenUrgentCase(item)
+      : status === 'progress'
+        ? (item.status === 'in_progress' || item.status === 'progress')
+        : item.status === status;
 
-    const matchPreset = currentPresetFilter === 'today'
-      ? isTodayCase(item)
-      : true;
+    const matchRole =
+      role === 'all' || (item.role_hint || 'admin') === role;
 
-    return matchKeyword && matchStatus && matchPreset;
+    return matchKeyword && matchStatus && matchRole;
   });
 }
-
+  
 function renderCases() {
   const filtered = filteredCases();
-  const readOnly = isReadOnlyMode();
 
   document.getElementById('caseCount').textContent = filtered.length;
   document.getElementById('casePanelSubtitle').textContent =
-  `มุมมองปัจจุบัน: ${getViewLabel()}`;
+    `มุมมองปัจจุบัน: ${document.getElementById('roleView').selectedOptions[0].textContent}`;
 
   const root = document.getElementById('caseList');
 
@@ -433,27 +445,76 @@ function renderCases() {
 
       <div class="case-actions">
         <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
-        <button class="btn-progress ${readOnly ? 'is-disabled' : ''}" onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
-        <button class="btn-update-case ${readOnly ? 'is-disabled' : ''}" onclick="openCaseUpdateLiff('${escapeHtml(item.case_code)}')">อัปเดตเคส</button>
+        <button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button>
+        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
+        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','done')">ปิดเคส</button>
       </div>
     </div>
   `).join('');
 }
 function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
-function applyPresetFilter(s){currentPresetFilter='all';document.getElementById('statusFilter').value=s; renderCases();}
-function filterTodayCases(){currentPresetFilter='today';document.getElementById('statusFilter').value='all';renderCases();}
-function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}
+function applyPresetFilter(s){document.getElementById('statusFilter').value=s; renderCases();}
+function openDashboard(){const url=CONFIG.API_BASE_URL.includes('your-domain.com') ? '#' : `${CONFIG.API_BASE_URL}${CONFIG.DASHBOARD_URL}`; if(url === '#'){alert('ยังไม่ได้ตั้งค่า Dashboard URL'); return;} window.open(url,'_blank');}
 function viewCase(code){alert(`ดูรายละเอียดเคส: ${code}\n\nPhase ถัดไปสามารถต่อหน้า case-detail.html หรือ modal ได้`);}
-function openCaseUpdateLiff(caseCode){
-  const target = `update-case.html?caseCode=${encodeURIComponent(caseCode)}`;
-  window.location.href = target;
-}
-
-async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
+async function assignCase(caseCode){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: รับเคส ${caseCode}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ASSIGN_CASE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,userId:currentProfile?.userId||null,displayName:currentProfile?.displayName||'ทีมงาน'})});if(!res.ok) throw new Error(res.error||'assign failed');await refreshCases();alert(`รับเคส ${caseCode} สำเร็จ`);}catch(err){alert(`รับเคสไม่สำเร็จ: ${err.message}`);}}
+async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} สำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
-function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
+function connectRealtime(){
+  try{
+    if(CONFIG.API_BASE_URL.includes('your-domain.com')){
+      document.getElementById('realtimeStatus').textContent='Demo mode';
+      syncStatusChips();
+      return;
+    }
+    if(eventSource) eventSource.close();
+    eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`);
+    eventSource.onopen=()=>{
+      document.getElementById('realtimeStatus').textContent='Connected';
+      syncStatusChips();
+    };
+    eventSource.onmessage=async()=>{
+      document.getElementById('realtimeStatus').textContent='Syncing...';
+      syncStatusChips();
+      await Promise.all([loadCases(),loadActivities()]);
+      document.getElementById('realtimeStatus').textContent='Connected';
+      syncStatusChips();
+    };
+    eventSource.onerror=()=>{
+      document.getElementById('realtimeStatus').textContent='Reconnect...';
+      syncStatusChips();
+    };
+  }catch{
+    document.getElementById('realtimeStatus').textContent='Unavailable';
+    syncStatusChips();
+  }
+}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+async function bootstrap(){
+  try{
+    setToday();
+    await initLiff();
+    await loadTeamRole();
+    await Promise.all([loadCases(),loadActivities()]);
+    syncRoleViewToDrawer();
+    syncStatusChips();
+    connectRealtime();
+  }catch{
+    bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง');
+    allCases=demoCases;
+    activities=demoActivities;
+    updateStats();
+    renderCases();
+    renderActivities();
+    syncRoleViewToDrawer();
+    syncStatusChips();
+  }finally{
+    setLoading(false);
+  }
+}
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeMobileDrawer();
+});
+
 bootstrap();
 </script>
 </body>

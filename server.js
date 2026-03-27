@@ -4984,10 +4984,15 @@ app.get("/api/team/activities", async (req, res) => {
 
     if (result.error) throw result.error;
 
-    const actor = row.assigned_to || row.last_action_by || "-";
+    const activities = (result.data || []).map((row) => {
+  const actor = row.assigned_to || row.last_action_by || "-";
+
+  return {
+    title: `อัปเดตเคส ${row.case_code || "-"}`,
     detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${actor}`,
-      time: formatThaiDateTime(row.updated_at || row.created_at || null),
-    }));
+    time: formatThaiDateTime(row.updated_at || row.created_at || null),
+  };
+});
 
     return res.json({
       ok: true,

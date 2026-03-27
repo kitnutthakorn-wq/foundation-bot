@@ -4809,9 +4809,20 @@ app.get("/api/command-center/activity", checkDashboardAuth, async (req, res) => 
 ========================= */
 function mapCaseRowToTeamCase(row = {}) {
   const rawStatus = String(row.status || "").toLowerCase();
+  const rawPriority = String(row.priority || row.case_priority || "").toLowerCase();
+
+  const urgentFlag =
+    row.is_urgent === true ||
+    row.urgent === true ||
+    row.urgent_flag === true;
 
   let status = "new";
-  if (rawStatus.includes("urgent") || rawStatus.includes("ด่วน")) {
+  if (
+    rawStatus.includes("urgent") ||
+    rawStatus.includes("ด่วน") ||
+    rawPriority.includes("urgent") ||
+    urgentFlag
+  ) {
     status = "urgent";
   } else if (
     rawStatus.includes("progress") ||
@@ -4831,10 +4842,13 @@ function mapCaseRowToTeamCase(row = {}) {
     status = "done";
   }
 
-  const locationValue = row.location || row.province || row.location_province || "-";
-  const fallbackCategory = typeof mapProblemToBusinessLabel === "function"
-    ? mapProblemToBusinessLabel(row.problem || row.problem_summary || "")
-    : (row.problem_type || row.category || "-");
+  const locationValue =
+    row.location || row.province || row.location_province || "-";
+
+  const fallbackCategory =
+    typeof mapProblemToBusinessLabel === "function"
+      ? mapProblemToBusinessLabel(row.problem || row.problem_summary || "")
+      : (row.problem_type || row.category || "-");
 
   return {
     case_code: row.case_code || row.id || "-",
@@ -4847,6 +4861,10 @@ function mapCaseRowToTeamCase(row = {}) {
       row.additional_details ||
       "ไม่มีรายละเอียดเพิ่มเติม",
     status,
+    priority: rawPriority || (urgentFlag ? "urgent" : ""),
+    urgent: urgentFlag,
+    urgent_flag: urgentFlag,
+    is_urgent: urgentFlag,
     province: locationValue,
     owner: row.assigned_to_name || row.assigned_to || "-",
     updated_at: row.updated_at || row.last_action_at || row.created_at || null,

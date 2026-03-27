@@ -302,14 +302,30 @@ function getSelectedRoleLabel() {
   return roleSelect?.selectedOptions?.[0]?.textContent || 'ทีมงานภาคสนาม';
 }
 
-function isReadOnlyMode() {
-  return currentTeamViewMode === 'viewer';
-}
+// 🔒 Global state (ใช้ตัวเดียวให้ชัด)
+let TEAM_VIEW_MODE = "field";
 
+// 🔁 เปลี่ยนโหมดจาก dropdown
 function handleTeamViewModeChange() {
   const roleSelect = document.getElementById('roleView');
-  currentTeamViewMode = roleSelect ? roleSelect.value : 'field';
+  TEAM_VIEW_MODE = roleSelect ? roleSelect.value : "field";
+
+  // debug (แนะนำเปิดไว้ช่วงนี้)
+  console.log("TEAM_VIEW_MODE:", TEAM_VIEW_MODE);
+
   renderCases();
+}
+
+// 🔍 เช็คว่าเป็นโหมดดูอย่างเดียวหรือไม่
+function isReadOnlyMode() {
+  return TEAM_VIEW_MODE === "readonly";
+}
+
+// 🏷️ label แสดงผล (กันสลับอีกในอนาคต)
+function getViewLabel() {
+  return TEAM_VIEW_MODE === "readonly"
+    ? "ดูได้อย่างเดียว"
+    : "ทีมงานภาคสนาม";
 }
 
 function isTodayCase(item = {}) {

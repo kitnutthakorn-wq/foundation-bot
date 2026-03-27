@@ -5078,14 +5078,21 @@ app.post("/api/team/cases/status", async (req, res) => {
 
     const actorName = displayName || "ทีมงาน";
 
+    const payload = {
+      status: nextStatus,
+      updated_at: new Date().toISOString(),
+      last_action_at: new Date().toISOString(),
+      last_action_by: actorName,
+    };
+
+    if (nextStatus === "done") {
+      payload.closed_at = new Date().toISOString();
+      payload.priority = "normal";
+    }
+
     const result = await supabase
       .from("help_requests")
-      .update({
-        status: nextStatus,
-        updated_at: new Date().toISOString(),
-        last_action_at: new Date().toISOString(),
-        ...(nextStatus === "done" ? { closed_at: new Date().toISOString() } : {}),
-      })
+      .update(payload)
       .eq("case_code", caseCode)
       .select()
       .limit(1);
@@ -5108,9 +5115,23 @@ app.post("/api/team/cases/status", async (req, res) => {
     });
 
     const notifyAction = nextStatus === "done" ? "done" : "progress";
-    await pushTeamNotification(buildTeamWorkspaceAutoText(notifyAction, updatedCase || { case_code: caseCode, status: nextStatus }, actorName));
+    await pushTeamNotification(
+      buildTeamWorkspaceAutoText(
+        notifyAction,
+        updatedCase || { case_code: caseCode, status: nextStatus },
+        actorName
+      )
+    );
+
     if (updatedCase?.line_user_id) {
-      await pushLineTextSafe(updatedCase.line_user_id, buildRequesterAutoText(notifyAction, updatedCase || { case_code: caseCode }, actorName));
+      await pushLineTextSafe(
+        updatedCase.line_user_id,
+        buildRequesterAutoText(
+          notifyAction,
+          updatedCase || { case_code: caseCode },
+          actorName
+        )
+      );
     }
 
     return res.json({

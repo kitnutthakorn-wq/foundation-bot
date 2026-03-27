@@ -3,240 +3,382 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>อัปเดตเคส | Team Workspace</title>
+  <title>อัปเดตเคส | KCK FD</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     :root{
-      --brand:#0f7f8f;
-      --brand-dark:#173f73;
-      --line:#d9e3ea;
-      --bg:#eef3f6;
-      --card:#ffffff;
-      --text:#17324d;
-      --muted:#6f8092;
-      --success:#22a35a;
+      --brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--card:#ffffff;
+      --line:#dbe3ea;--text:#1f2937;--muted:#6b7280;--success:#15803d;--warn:#b45309;
+      --shadow:0 14px 35px rgba(18,36,58,.08);--radius:22px;
     }
-
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      padding:18px;
-    }
-
-    .wrap{
-      max-width:720px;
-      margin:0 auto;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:18px;
-      box-shadow:0 8px 20px rgba(20,40,60,.06);
-    }
-
-    h1{
-      margin:0 0 8px;
-      font-size:24px;
-    }
-
-    .sub{
-      color:var(--muted);
-      margin-bottom:18px;
-    }
-
-    .case-meta{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:16px;
-    }
-
-    .meta-box{
-      background:#f7fafc;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-    }
-
-    .meta-label{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:4px;
-    }
-
-    .meta-value{
-      font-size:16px;
-      font-weight:700;
-    }
-
-    .field{
-      margin-bottom:16px;
-    }
-
-    label{
-      display:block;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-
-    textarea,
-    input[type="file"]{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      font-size:16px;
-      background:#fff;
-    }
-
-    textarea{
-      min-height:140px;
-      resize:vertical;
-    }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
-
-    button{
-      min-height:46px;
-      border:none;
-      border-radius:14px;
-      padding:12px 16px;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .btn-primary{
-      background:linear-gradient(90deg,var(--brand),var(--brand-dark));
-      color:#fff;
-    }
-
-    .btn-secondary{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--line);
-    }
-
-    .status{
-      margin-top:14px;
-      font-size:14px;
-      color:var(--muted);
-      white-space:pre-line;
-    }
-
-    .status.ok{
-      color:var(--success);
-      font-weight:700;
-    }
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left, rgba(11,124,134,.10), transparent 25%),linear-gradient(180deg,#f8fbfc 0%,var(--bg) 100%)}
+    .wrap{max-width:860px;margin:0 auto;padding:18px 14px 40px}
+    .hidden{display:none!important}
+    .loading{min-height:100vh;display:grid;place-items:center;color:var(--muted);font-weight:700}
+    .card{background:var(--card);border:1px solid rgba(219,227,234,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .topbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand-badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;font-weight:800}
+    .brand h1{margin:0;font-size:1.12rem}.brand p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .head-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-bottom:16px}
+    .hero{background:linear-gradient(135deg,var(--brand),#138a96);color:#fff;border:2px solid var(--accent)}
+    .hero p{color:#dff8fb}
+    .headline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .headline h2{margin:0;font-size:1.02rem}.headline p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+    .hero .headline p{color:#dff8fb}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .meta-box{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px}
+    .meta-box strong{display:block;font-size:.82rem;color:#dff8fb;margin-bottom:6px}
+    .meta-box span{font-size:1rem;font-weight:800}
+    .panel-stack{display:grid;gap:16px}
+    .field{display:grid;gap:8px;margin-bottom:14px}
+    label{font-weight:700}
+    input,textarea,select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;font:inherit;color:var(--text)}
+    textarea{min-height:140px;resize:vertical}
+    .hint{font-size:.85rem;color:var(--muted)}
+    .upload-box{border:1.5px dashed #b8c8d8;border-radius:18px;padding:14px;background:#f9fcfd}
+    .preview-wrap{display:grid;gap:10px;margin-top:12px}
+    .preview-image{width:100%;max-height:320px;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#eef3f6}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{border:0;border-radius:14px;cursor:pointer;font:inherit;transition:transform .15s ease;padding:12px 14px;font-weight:700}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff}
+    .btn-accent{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+    .btn-secondary{background:#fff;color:var(--brand-dark);border:1px solid var(--line)}
+    .btn-ghost{background:#f8fbfc;color:var(--brand-dark);border:1px solid var(--line)}
+    .status-box{margin-top:14px;border-radius:16px;padding:12px 14px;border:1px solid var(--line);background:#f8fbfc;color:var(--muted);white-space:pre-line}
+    .status-box.success{background:#f0fdf4;border-color:#bbf7d0;color:var(--success)}
+    .status-box.error{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
+    .status-box.warn{background:#fffbeb;border-color:#fde68a;color:var(--warn)}
+    .inline-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:18px}
+    @media (max-width:880px){.head-grid{grid-template-columns:1fr}.meta-grid,.inline-grid{grid-template-columns:1fr}}
+    @media (max-width:640px){.wrap{padding:14px 12px 32px}.topbar{align-items:flex-start;flex-direction:column}.actions button{width:100%}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>อัปเดตเคส</h1>
-      <div class="sub">สำหรับทีมงานภาคสนาม ใช้ส่งความคืบหน้า รูปภาพ และรายละเอียดของงาน</div>
+<div id="loading" class="loading">กำลังเปิดหน้าส่งอัปเดตเคส...</div>
+<div id="app" class="wrap hidden">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-badge">UP</div>
+      <div>
+        <h1>อัปเดตเคสภาคสนาม</h1>
+        <p>Field Operation • LIFF • Upload จริง • Notify อัตโนมัติ</p>
+      </div>
+    </div>
+    <button class="btn-secondary" type="button" onclick="goBack()">ย้อนกลับ</button>
+  </div>
 
-      <div class="case-meta">
+  <div class="head-grid">
+    <div class="card hero">
+      <div class="headline">
+        <div>
+          <h2>ข้อมูลอ้างอิงเคส</h2>
+          <p>หน้านี้เปิดต่อจาก team.html เพื่อส่งความคืบหน้า รูป และตำแหน่งหน้างาน</p>
+        </div>
+      </div>
+      <div class="meta-grid">
         <div class="meta-box">
-          <div class="meta-label">Case ID</div>
-          <div class="meta-value" id="caseIdText">-</div>
+          <strong>เลขเคส</strong>
+          <span id="caseCodeText">-</span>
         </div>
         <div class="meta-box">
-          <div class="meta-label">เลขเคส</div>
-          <div class="meta-value" id="caseCodeText">-</div>
+          <strong>ผู้ส่งอัปเดต</strong>
+          <span id="senderText">กำลังโหลด...</span>
+        </div>
+        <div class="meta-box">
+          <strong>วันที่/เวลา</strong>
+          <span id="timestampText">-</span>
+        </div>
+        <div class="meta-box">
+          <strong>สถานะระบบ</strong>
+          <span id="envText">-</span>
         </div>
       </div>
+    </div>
 
-      <div class="field">
-        <label for="updateMessage">รายละเอียดอัปเดต</label>
-        <textarea id="updateMessage" placeholder="เช่น ลงพื้นที่แล้ว พบผู้ประสบปัญหาเรียบร้อย กำลังรวบรวมข้อมูลและประเมินความช่วยเหลือ..."></textarea>
+    <div class="panel-stack">
+      <div class="card">
+        <div class="headline"><div><h2>สิ่งที่จะถูกส่ง</h2><p>ระบบจะบันทึกลงฐานข้อมูล อัปโหลดรูป และแจ้งเตือน LINE อัตโนมัติ</p></div></div>
+        <div class="hint">• note ความคืบหน้า<br>• รูปหน้างาน 1 รูปขึ้นไป<br>• พิกัดปัจจุบัน (ถ้าอนุญาต)<br>• ชื่อผู้ส่งจาก LIFF profile</div>
       </div>
-
-      <div class="field">
-        <label for="updateImage">แนบรูปภาพ (ยังไม่บังคับ)</label>
-        <input type="file" id="updateImage" accept="image/*" />
+      <div class="card">
+        <div class="headline"><div><h2>ตัวเลือกแจ้งเตือน</h2><p>กำหนดปลายทางที่ต้องการแจ้ง</p></div></div>
+        <div class="field">
+          <label><input type="checkbox" id="notifyTeam" checked /> แจ้งกลุ่มทีมงาน</label>
+          <label><input type="checkbox" id="notifyRequester" /> แจ้งผู้ขอความช่วยเหลือ</label>
+        </div>
       </div>
-
-      <div class="actions">
-        <button class="btn-primary" onclick="submitCaseUpdate()">ส่งอัปเดตเคส</button>
-        <button class="btn-secondary" onclick="goBack()">ย้อนกลับ</button>
-      </div>
-
-      <div id="statusBox" class="status"></div>
     </div>
   </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("caseId") || "";
-    const caseCode = params.get("caseCode") || "";
+  <div class="card">
+    <div class="headline"><div><h2>แบบฟอร์มอัปเดตเคส</h2><p>เวอร์ชันพร้อมใช้งานจริงสำหรับภาคสนาม</p></div></div>
 
-    document.getElementById("caseIdText").textContent = caseId || "-";
-    document.getElementById("caseCodeText").textContent = caseCode || "-";
+    <div class="inline-grid">
+      <div class="field">
+        <label for="updateTitle">หัวข้ออัปเดต</label>
+        <input id="updateTitle" type="text" placeholder="เช่น ลงพื้นที่ครั้งที่ 1 / ส่งมอบของแล้ว / ติดตามความคืบหน้า" />
+      </div>
+      <div class="field">
+        <label for="progressStatus">สถานะงาน</label>
+        <select id="progressStatus">
+          <option value="progress">กำลังดำเนินการ</option>
+          <option value="done">ดำเนินการเสร็จ</option>
+          <option value="new">บันทึกข้อมูลเพิ่มเติม</option>
+        </select>
+      </div>
+    </div>
 
-    function setStatus(message, ok = false) {
-      const box = document.getElementById("statusBox");
-      box.textContent = message;
-      box.className = ok ? "status ok" : "status";
+    <div class="field">
+      <label for="updateMessage">รายละเอียดอัปเดต</label>
+      <textarea id="updateMessage" placeholder="พิมพ์รายละเอียดหน้างาน เช่น วันนี้ลงพื้นที่แล้ว พบผู้ขอความช่วยเหลือครบตามนัด และบันทึกข้อมูลประกอบเพิ่มเติมเรียบร้อย"></textarea>
+      <div class="hint">แนะนำให้ใส่รายละเอียดที่อ่านแล้วทีมเข้าใจต่อได้ทันที</div>
+    </div>
+
+    <div class="field upload-box">
+      <label for="updateImages">แนบรูปหน้างาน</label>
+      <input id="updateImages" type="file" accept="image/*" capture="environment" multiple />
+      <div class="hint">รองรับหลายรูป ระบบจะอัปโหลดขึ้น Supabase Storage แล้วเก็บ URL ในฐานข้อมูล</div>
+      <div id="previewWrap" class="preview-wrap hidden"></div>
+    </div>
+
+    <div class="inline-grid">
+      <div class="field">
+        <label for="locationText">พิกัดหน้างาน</label>
+        <input id="locationText" type="text" placeholder="ยังไม่ได้ดึงพิกัด" readonly />
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn-ghost" type="button" onclick="captureLocation()">ดึงตำแหน่งปัจจุบัน</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-accent" type="button" onclick="submitCaseUpdate()">ส่งอัปเดตเคส</button>
+      <button class="btn-secondary" type="button" onclick="resetFormState()">ล้างแบบฟอร์ม</button>
+      <button class="btn-primary" type="button" onclick="goBack()">กลับไปหน้าทีม</button>
+    </div>
+
+    <div id="statusBox" class="status-box">พร้อมส่งอัปเดต</div>
+  </div>
+
+  <div class="footer-note">Phase update-case.html production • Supabase Storage • Realtime LINE notify</div>
+</div>
+
+<script>
+const CONFIG = {
+  LIFF_ID: "2009446483-2q6biMUk",
+  API_BASE_URL: "https://foundation-bot-p5wu.onrender.com",
+  CREATE_CASE_UPDATE_ENDPOINT: "/api/case-updates",
+  APP_ENV_LABEL: "Production",
+  RETURN_PATH: "team.html"
+};
+
+let currentProfile = null;
+let currentLocation = null;
+const params = new URLSearchParams(window.location.search);
+const caseCode = params.get('caseCode') || '';
+
+function setLoading(v){
+  document.getElementById('loading').classList.toggle('hidden', !v);
+  document.getElementById('app').classList.toggle('hidden', v);
+}
+
+function setStatus(message, tone = 'default') {
+  const box = document.getElementById('statusBox');
+  box.textContent = message;
+  box.className = `status-box${tone === 'default' ? '' : ' ' + tone}`;
+}
+
+function bindStaticInfo() {
+  document.getElementById('caseCodeText').textContent = caseCode || '-';
+  document.getElementById('timestampText').textContent = new Date().toLocaleString('th-TH');
+  document.getElementById('envText').textContent = CONFIG.APP_ENV_LABEL;
+}
+
+async function initLiff() {
+  if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
+    currentProfile = { displayName: 'Demo Team Member', userId: 'demo-user' };
+    document.getElementById('senderText').textContent = currentProfile.displayName;
+    return;
+  }
+
+  await liff.init({ liffId: CONFIG.LIFF_ID });
+
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
+
+  currentProfile = await liff.getProfile();
+  document.getElementById('senderText').textContent = currentProfile?.displayName || 'ไม่ทราบชื่อ';
+}
+
+function goBack() {
+  const returnTo = params.get('returnTo') || CONFIG.RETURN_PATH;
+  window.location.href = returnTo;
+}
+
+function resetFormState() {
+  document.getElementById('updateTitle').value = '';
+  document.getElementById('updateMessage').value = '';
+  document.getElementById('progressStatus').value = 'progress';
+  document.getElementById('updateImages').value = '';
+  document.getElementById('locationText').value = '';
+  document.getElementById('notifyTeam').checked = true;
+  document.getElementById('notifyRequester').checked = false;
+  currentLocation = null;
+  renderPreview([]);
+  setStatus('ล้างแบบฟอร์มเรียบร้อย', 'warn');
+}
+
+function renderPreview(files) {
+  const wrap = document.getElementById('previewWrap');
+  if (!files || !files.length) {
+    wrap.innerHTML = '';
+    wrap.classList.add('hidden');
+    return;
+  }
+
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = Array.from(files).map(file => {
+    const url = URL.createObjectURL(file);
+    return `
+      <div>
+        <div class="hint">${escapeHtml(file.name)} • ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+        <img class="preview-image" src="${url}" alt="preview" />
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function captureLocation() {
+  if (!navigator.geolocation) {
+    setStatus('อุปกรณ์นี้ไม่รองรับการดึงตำแหน่ง', 'error');
+    return;
+  }
+
+  setStatus('กำลังดึงตำแหน่งปัจจุบัน...', 'warn');
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      currentLocation = {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        accuracy: pos.coords.accuracy
+      };
+      document.getElementById('locationText').value = `${currentLocation.latitude}, ${currentLocation.longitude} (±${Math.round(currentLocation.accuracy)}m)`;
+      setStatus('ดึงตำแหน่งเรียบร้อย', 'success');
+    },
+    (err) => {
+      setStatus(`ดึงตำแหน่งไม่สำเร็จ: ${err.message}`, 'error');
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+}
+
+async function submitCaseUpdate() {
+  const title = document.getElementById('updateTitle').value.trim();
+  const message = document.getElementById('updateMessage').value.trim();
+  const progressStatus = document.getElementById('progressStatus').value;
+  const files = document.getElementById('updateImages').files;
+  const notifyTeam = document.getElementById('notifyTeam').checked;
+  const notifyRequester = document.getElementById('notifyRequester').checked;
+
+  if (!caseCode) {
+    setStatus('ไม่พบเลขเคสจาก URL', 'error');
+    return;
+  }
+
+  if (!title) {
+    setStatus('กรุณากรอกหัวข้ออัปเดต', 'error');
+    return;
+  }
+
+  if (!message) {
+    setStatus('กรุณากรอกรายละเอียดอัปเดต', 'error');
+    return;
+  }
+
+  if (!files.length) {
+    setStatus('กรุณาแนบรูปหน้างานอย่างน้อย 1 รูป', 'error');
+    return;
+  }
+
+  try {
+    setStatus('กำลังอัปโหลดรูป บันทึกข้อมูล และแจ้งเตือน LINE...', 'warn');
+
+    const formData = new FormData();
+    formData.append('caseCode', caseCode);
+    formData.append('title', title);
+    formData.append('message', message);
+    formData.append('progressStatus', progressStatus);
+    formData.append('senderName', currentProfile?.displayName || 'Unknown');
+    formData.append('senderUserId', currentProfile?.userId || '');
+    formData.append('notifyTeam', notifyTeam ? 'true' : 'false');
+    formData.append('notifyRequester', notifyRequester ? 'true' : 'false');
+    formData.append('clientTimestamp', new Date().toISOString());
+
+    if (currentLocation) {
+      formData.append('latitude', String(currentLocation.latitude));
+      formData.append('longitude', String(currentLocation.longitude));
+      formData.append('accuracy', String(currentLocation.accuracy || ''));
     }
 
-    function goBack() {
-      history.back();
+    Array.from(files).forEach(file => {
+      formData.append('images', file, file.name);
+    });
+
+    const res = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.CREATE_CASE_UPDATE_ENDPOINT}`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data?.ok) {
+      throw new Error(data?.error || `HTTP ${res.status}`);
     }
 
-    async function submitCaseUpdate() {
-      const message = document.getElementById("updateMessage").value.trim();
-      const fileInput = document.getElementById("updateImage");
-      const file = fileInput.files[0] || null;
+    setStatus('ส่งอัปเดตเคสเรียบร้อย ระบบบันทึกและแจ้งเตือนแล้ว', 'success');
 
-      if (!caseId) {
-        setStatus("ไม่พบ caseId");
-        return;
-      }
+    setTimeout(() => {
+      goBack();
+    }, 1400);
+  } catch (err) {
+    setStatus(`ส่งอัปเดตไม่สำเร็จ: ${err.message}`, 'error');
+  }
+}
 
-      if (!message && !file) {
-        setStatus("กรุณากรอกรายละเอียด หรือแนบรูปอย่างน้อย 1 อย่าง");
-        return;
-      }
+document.getElementById('updateImages').addEventListener('change', (e) => {
+  renderPreview(e.target.files);
+});
 
-      try {
-        setStatus("กำลังส่งข้อมูล...");
+async function bootstrap() {
+  try {
+    bindStaticInfo();
+    await initLiff();
+  } catch (err) {
+    currentProfile = { displayName: 'Fallback User', userId: '' };
+    document.getElementById('senderText').textContent = currentProfile.displayName;
+    setStatus(`โหมดสำรอง: ${err.message}`, 'warn');
+  } finally {
+    setLoading(false);
+  }
+}
 
-        const formData = new FormData();
-        formData.append("case_id", caseId);
-        formData.append("case_code", caseCode);
-        formData.append("message", message);
-        if (file) {
-          formData.append("image", file);
-        }
-
-        const res = await fetch("/api/case-updates", {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.ok) {
-          throw new Error(data.error || "ไม่สามารถบันทึกข้อมูลได้");
-        }
-
-        setStatus("ส่งอัปเดตเคสเรียบร้อยแล้ว", true);
-        document.getElementById("updateMessage").value = "";
-        document.getElementById("updateImage").value = "";
-      } catch (err) {
-        setStatus("เกิดข้อผิดพลาด: " + err.message);
-      }
-    }
-  </script>
+bootstrap();
+</script>
 </body>
 </html>

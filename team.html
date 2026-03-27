@@ -45,26 +45,6 @@
     textarea{min-height:110px;resize:vertical}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:24px}
     .pulse-urgent{animation:pulseUrgent 1.8s infinite}@keyframes pulseUrgent{0%{box-shadow:0 0 0 0 rgba(185,28,28,.24)}70%{box-shadow:0 0 0 12px rgba(185,28,28,0)}100%{box-shadow:0 0 0 0 rgba(185,28,28,0)}}
     .role-chip{padding:10px 12px;background:var(--panel);border-radius:16px}.role-chip strong{display:block;font-size:.88rem}.role-chip span{font-size:.8rem;color:var(--muted)}
-
-    .mobile-menu-btn{display:none;align-items:center;justify-content:center;width:46px;height:46px;border:1px solid var(--line);background:#fff;color:var(--brand-dark);box-shadow:var(--shadow);font-size:1.3rem;font-weight:800;padding:0}
-    .mobile-drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,.42);backdrop-filter:blur(2px);z-index:1200;opacity:0;pointer-events:none;transition:opacity .22s ease}
-    .mobile-drawer{position:fixed;top:0;left:0;height:100%;width:min(88vw,360px);background:#fff;border-right:1px solid var(--line);box-shadow:0 20px 50px rgba(15,23,42,.18);z-index:1201;transform:translateX(-100%);transition:transform .24s ease;display:flex;flex-direction:column}
-    body.drawer-open{overflow:hidden}
-    body.drawer-open .mobile-drawer-overlay{opacity:1;pointer-events:auto}
-    body.drawer-open .mobile-drawer{transform:translateX(0)}
-    .mobile-drawer-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 16px 14px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,rgba(11,124,134,.08),rgba(22,60,114,.08))}
-    .mobile-drawer-brand{display:flex;align-items:center;gap:12px}
-    .mobile-drawer-title{font-size:1rem;font-weight:800;color:var(--brand-dark)}
-    .mobile-drawer-subtitle{font-size:.84rem;color:var(--muted);margin-top:3px}
-    .mobile-drawer-body{padding:16px;display:grid;gap:16px;overflow:auto}
-    .mobile-drawer-section{display:grid;gap:10px}
-    .mobile-drawer-section h3{margin:0;font-size:.95rem;color:var(--brand-dark)}
-    .mobile-drawer-grid{display:grid;gap:10px}
-    .mobile-drawer-grid button{width:100%;text-align:left}
-    .mobile-drawer-close{width:42px;height:42px;border:1px solid var(--line);background:#fff;color:var(--brand-dark);border-radius:12px;padding:0;font-size:1.15rem;box-shadow:none}
-    .mobile-drawer .role-chip{box-shadow:none}
-    .desktop-only{display:block}
-    .mobile-only{display:none}
     @media (max-width:980px){.topbar,.hero,.workspace{grid-template-columns:1fr}.stats,.meta-grid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.profile-card{min-width:unset}}
   </style>
@@ -72,49 +52,8 @@
 <body>
 <div id="loading" class="loading">กำลังเปิด Team Workspace PRO MAX...</div>
 <div id="app" class="app hidden">
-  <div id="mobileDrawerOverlay" class="mobile-drawer-overlay" onclick="closeMobileDrawer()"></div>
-  <aside id="mobileDrawer" class="mobile-drawer" aria-hidden="true">
-    <div class="mobile-drawer-header">
-      <div class="mobile-drawer-brand">
-        <div class="brand-badge">TK</div>
-        <div>
-          <div class="mobile-drawer-title">เมนูทีมงาน</div>
-          <div class="mobile-drawer-subtitle">Quick Actions สำหรับมือถือ</div>
-        </div>
-      </div>
-      <button class="mobile-drawer-close" type="button" onclick="closeMobileDrawer()" aria-label="ปิดเมนู">✕</button>
-    </div>
-    <div class="mobile-drawer-body">
-      <div class="mobile-drawer-section">
-        <h3>Quick Actions</h3>
-        <div class="mobile-drawer-grid">
-          <button class="btn-primary" type="button" onclick="runMobileAction(refreshCases)">รีเฟรชเคส</button>
-          <button class="btn-secondary" type="button" onclick="runMobileAction(() => applyPresetFilter('urgent'))">ดูเฉพาะเคสด่วน</button>
-          <button class="btn-secondary" type="button" onclick="runMobileAction(() => applyPresetFilter('new'))">ดูเฉพาะเคสใหม่</button>
-          <button class="btn-ghost" type="button" onclick="runMobileAction(filterTodayCases)">เคสวันนี้</button>
-          <button class="btn-update" type="button" onclick="runMobileAction(openCaseUpdateCenter)">อัปเดตเคส</button>
-        </div>
-      </div>
-
-      <div class="mobile-drawer-section">
-        <h3>มุมมองการใช้งาน</h3>
-        <select id="mobileRoleView" onchange="syncRoleViewFromDrawer()">
-          <option value="field">ทีมงานภาคสนาม</option>
-          <option value="readonly">ดูได้อย่างเดียว</option>
-        </select>
-      </div>
-
-      <div class="mobile-drawer-section">
-        <h3>สถานะระบบ</h3>
-        <div class="role-row">
-          <div class="role-chip"><strong>Environment</strong><span id="envChipDrawer">Demo</span></div>
-          <div class="role-chip"><strong>Menu Version</strong><span id="menuVersionChipDrawer">v-next</span></div>
-          <div class="role-chip"><strong>Realtime</strong><span id="realtimeStatusDrawer">กำลังเชื่อมต่อ...</span></div>
-        </div>
-      </div>
-    </div>
-  </aside>
   <div class="topbar">
+    <button class="mobile-menu-toggle" type="button" aria-label="เปิดเมนู" onclick="toggleMobileDrawer(true)">☰</button>
     <div class="brand-wrap">
       <div class="brand-badge">TK</div>
       <div><h1>Team Workspace PRO MAX UI</h1><p>Role-based • Realtime • Unified Theme • Golden-safe flow</p></div>
@@ -124,6 +63,43 @@
       <div class="profile-meta"><strong id="displayName">กำลังโหลด...</strong><span id="userRole">กำลังตรวจสอบสิทธิ์ทีมงาน</span></div>
     </div>
   </div>
+
+  <div id="mobileDrawerOverlay" class="mobile-drawer-overlay" onclick="toggleMobileDrawer(false)"></div>
+  <aside id="mobileDrawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="mobile-drawer-title">เมนูทีมงาน</div>
+      <button class="mobile-drawer-close" type="button" aria-label="ปิดเมนู" onclick="toggleMobileDrawer(false)">✕</button>
+    </div>
+    <div class="mobile-drawer-body">
+      <div class="drawer-section">
+        <h3>Quick Actions</h3>
+        <div class="drawer-grid">
+          <button class="btn-primary" onclick="runDrawerAction(refreshCases)">รีเฟรชเคส</button>
+          <button class="btn-secondary" onclick="runDrawerAction(() => applyPresetFilter('urgent'))">ดูเฉพาะเคสด่วน</button>
+          <button class="btn-secondary" onclick="runDrawerAction(() => applyPresetFilter('new'))">ดูเฉพาะเคสใหม่</button>
+          <button class="btn-ghost" onclick="runDrawerAction(filterTodayCases)">เคสวันนี้</button>
+          <button class="btn-update" onclick="runDrawerAction(openCaseUpdateCenter)">อัปเดตเคส</button>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <h3>มุมมอง</h3>
+        <select id="roleViewMobile" onchange="handleTeamViewModeChange('mobile')">
+          <option value="field">ทีมงานภาคสนาม</option>
+          <option value="readonly">ดูได้อย่างเดียว</option>
+        </select>
+      </div>
+
+      <div class="drawer-section">
+        <h3>สถานะระบบ</h3>
+        <div class="drawer-meta">
+          <div class="role-chip"><strong>Environment</strong><span id="envChipMobile">Demo</span></div>
+          <div class="role-chip"><strong>Menu Version</strong><span id="menuVersionChipMobile">v-next</span></div>
+          <div class="role-chip"><strong>Realtime</strong><span id="realtimeStatusMobile">กำลังเชื่อมต่อ...</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <section class="hero">
     <div class="card hero-card">
@@ -135,7 +111,7 @@
         <div class="stat"><div class="stat-label">ปิดเคสแล้ว</div><div class="stat-value" id="statDone">0</div><div class="stat-note">สำเร็จในรอบนี้</div></div>
       </div>
     </div>
-    <div class="card desktop-only">
+    <div class="card quick-actions-card">
       <div class="headline"><div><h2>Quick Actions</h2><p>โหมดทีมงานแบบ PRO MAX</p></div></div>
       <div class="quick-actions">
         <button class="btn-primary" onclick="refreshCases()">รีเฟรชเคส</button>
@@ -224,25 +200,20 @@ async function safeFetchJson(url, options={}) {
   return data;
 }
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
-function setToday(){
-  const now=new Date();
-  document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
-  document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;
-  const drawerVersion = document.getElementById('menuVersionChipDrawer');
-  if (drawerVersion) drawerVersion.textContent = CONFIG.MENU_VERSION;
-}
-function bindProfile(profile, roleText){
-  document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';
-  document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');
-  document.getElementById('userRole').textContent=roleText;
-}
+function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;const mv=document.getElementById('menuVersionChipMobile'); if(mv) mv.textContent=CONFIG.MENU_VERSION;}
+function syncMirrorText(primaryId, mirrorId){const a=document.getElementById(primaryId), b=document.getElementById(mirrorId); if(a && b) b.textContent = a.textContent;}
+function updateEnvChip(value){const a=document.getElementById('envChip'), b=document.getElementById('envChipMobile'); if(a) a.textContent=value; if(b) b.textContent=value;}
+function updateRealtimeStatus(value){const a=document.getElementById('realtimeStatus'), b=document.getElementById('realtimeStatusMobile'); if(a) a.textContent=value; if(b) b.textContent=value;}
+function syncRoleViewSelects(source='desktop'){const desktop=document.getElementById('roleView'); const mobile=document.getElementById('roleViewMobile'); if(!desktop || !mobile) return; if(source==='mobile'){desktop.value = mobile.value;} else {mobile.value = desktop.value;}}
+function toggleMobileDrawer(force){const drawer=document.getElementById('mobileDrawer'); const overlay=document.getElementById('mobileDrawerOverlay'); if(!drawer || !overlay) return; const open = typeof force === 'boolean' ? force : !drawer.classList.contains('open'); drawer.classList.toggle('open', open); overlay.classList.toggle('open', open); drawer.setAttribute('aria-hidden', open ? 'false' : 'true'); document.body.style.overflow = open ? 'hidden' : ''; }
+function runDrawerAction(fn){toggleMobileDrawer(false); if(typeof fn === 'function') fn();}
+function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
 async function initLiff(){
-  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');document.getElementById('envChip').textContent='Demo mode';syncStatusChips();return;}
+  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');updateEnvChip('Demo mode');return;}
   await liff.init({ liffId: CONFIG.LIFF_ID });
-  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='LIFF in LINE'; syncStatusChips(); return; }
+  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); updateEnvChip('LIFF in LINE'); return; }
   if (!liff.isLoggedIn()) { liff.login(); return; }
-  currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='External browser';
-  syncStatusChips();
+  currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); updateEnvChip('External browser');
 }
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
@@ -459,62 +430,10 @@ function viewCase(code){alert(`ดูรายละเอียดเคส: ${
 async function assignCase(caseCode){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: รับเคส ${caseCode}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ASSIGN_CASE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,userId:currentProfile?.userId||null,displayName:currentProfile?.displayName||'ทีมงาน'})});if(!res.ok) throw new Error(res.error||'assign failed');await refreshCases();alert(`รับเคส ${caseCode} สำเร็จ`);}catch(err){alert(`รับเคสไม่สำเร็จ: ${err.message}`);}}
 async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} สำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
-function connectRealtime(){
-  try{
-    if(CONFIG.API_BASE_URL.includes('your-domain.com')){
-      document.getElementById('realtimeStatus').textContent='Demo mode';
-      syncStatusChips();
-      return;
-    }
-    if(eventSource) eventSource.close();
-    eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`);
-    eventSource.onopen=()=>{
-      document.getElementById('realtimeStatus').textContent='Connected';
-      syncStatusChips();
-    };
-    eventSource.onmessage=async()=>{
-      document.getElementById('realtimeStatus').textContent='Syncing...';
-      syncStatusChips();
-      await Promise.all([loadCases(),loadActivities()]);
-      document.getElementById('realtimeStatus').textContent='Connected';
-      syncStatusChips();
-    };
-    eventSource.onerror=()=>{
-      document.getElementById('realtimeStatus').textContent='Reconnect...';
-      syncStatusChips();
-    };
-  }catch{
-    document.getElementById('realtimeStatus').textContent='Unavailable';
-    syncStatusChips();
-  }
-}
+function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){updateRealtimeStatus('Demo mode');return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>updateRealtimeStatus('Connected'); eventSource.onmessage=async()=>{updateRealtimeStatus('Syncing...'); await Promise.all([loadCases(),loadActivities()]); updateRealtimeStatus('Connected');}; eventSource.onerror=()=>updateRealtimeStatus('Reconnect...');}catch{updateRealtimeStatus('Unavailable');}}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){
-  try{
-    setToday();
-    await initLiff();
-    await loadTeamRole();
-    await Promise.all([loadCases(),loadActivities()]);
-    syncRoleViewToDrawer();
-    syncStatusChips();
-    connectRealtime();
-  }catch{
-    bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง');
-    allCases=demoCases;
-    activities=demoActivities;
-    updateStats();
-    renderCases();
-    renderActivities();
-    syncRoleViewToDrawer();
-    syncStatusChips();
-  }finally{
-    setLoading(false);
-  }
-}
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeMobileDrawer();
-});
-
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMobileDrawer(false); });
+async function bootstrap(){try{setToday(); syncRoleViewSelects('desktop'); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
 bootstrap();
 </script>
 </body>

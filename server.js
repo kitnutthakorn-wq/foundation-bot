@@ -4984,7 +4984,7 @@ app.get("/api/team/activities", async (req, res) => {
 
     if (result.error) throw result.error;
 
-    const activities = (result.data || []).map((row) => {
+   const activities = (result.data || []).map((row) => {
   const actor = row.assigned_to || row.last_action_by || "-";
 
   return {

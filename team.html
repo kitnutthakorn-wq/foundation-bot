@@ -102,7 +102,9 @@
       <div class="toolbar">
         <div class="grow"><input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / จังหวัด / ประเภทปัญหา" oninput="renderCases()" /></div>
         <div class="fixed"><select id="statusFilter" onchange="renderCases()"><option value="all">ทุกสถานะ</option><option value="new">เคสใหม่</option><option value="progress">กำลังดำเนินการ</option><option value="urgent">เคสด่วน</option><option value="done">ปิดเคสแล้ว</option></select></div>
-        <div class="fixed"><select id="roleView" onchange="handleTeamViewModeChange()"><option value="field">ทีมงานภาคสนาม</option><option value="viewer">ดูได้อย่างเดียว</option></select></div>
+        <div class="fixed"><select id="roleView" onchange="handleTeamViewModeChange()">
+          <option value="field">ทีมงานภาคสนาม</option>
+         <option value="readonly">ดูได้อย่างเดียว</option></select></div>
       </div>
       <div class="card">
         <div class="headline"><div><h2>รายการเคส</h2><p id="casePanelSubtitle">กรองแบบ role-based และ realtime sync</p></div><span class="badge progress"><span id="caseCount">0</span> เคส</span></div>
@@ -351,7 +353,6 @@ function isTodayCase(item = {}) {
 function filteredCases() {
   const k = document.getElementById('searchInput').value.trim().toLowerCase();
   const status = document.getElementById('statusFilter').value;
-  const role = document.getElementById('roleView').value;
 
   return allCases.filter(item => {
     const hay = [
@@ -376,14 +377,11 @@ function filteredCases() {
       matchStatus = isDoneCase(item);
     }
 
-    const roleHint = String(item.role_hint || 'field').toLowerCase();
-    const matchRole = role === 'viewer' ? true : roleHint === 'field' || roleHint === 'viewer' || roleHint === 'team';
-
     const matchPreset = currentPresetFilter === 'today'
       ? isTodayCase(item)
       : true;
 
-    return matchKeyword && matchStatus && matchRole && matchPreset;
+    return matchKeyword && matchStatus && matchPreset;
   });
 }
 
@@ -393,7 +391,7 @@ function renderCases() {
 
   document.getElementById('caseCount').textContent = filtered.length;
   document.getElementById('casePanelSubtitle').textContent =
-    `มุมมองปัจจุบัน: ${getSelectedRoleLabel()}`;
+  `มุมมองปัจจุบัน: ${getViewLabel()}`;
 
   const root = document.getElementById('caseList');
 

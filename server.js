@@ -4808,8 +4808,8 @@ app.get("/api/command-center/activity", checkDashboardAuth, async (req, res) => 
    เพิ่ม endpoint ใหม่โดยไม่แตะ flow เดิม
 ========================= */
 function mapCaseRowToTeamCase(row = {}) {
-  const rawStatus = String(row.status || "").toLowerCase();
-  const rawPriority = String(row.priority || row.case_priority || "").toLowerCase();
+  const rawStatus = String(row.status || "").toLowerCase().trim();
+  const rawPriority = String(row.priority || row.case_priority || "").toLowerCase().trim();
 
   const urgentFlag =
     row.is_urgent === true ||
@@ -4817,33 +4817,48 @@ function mapCaseRowToTeamCase(row = {}) {
     row.urgent_flag === true;
 
   let status = "new";
+
   if (
-    rawStatus.includes("urgent") ||
-    rawStatus.includes("ด่วน") ||
-    rawPriority.includes("urgent") ||
-    urgentFlag
+    rawStatus === "in_progress" ||
+    rawStatus === "progress" ||
+    rawStatus === "assigned" ||
+    rawStatus === "รับเคสแล้ว" ||
+    rawStatus === "กำลังดำเนินการ" ||
+    rawStatus.includes("ดำเนิน")
   ) {
-    status = "urgent";
+    status = "in_progress";
   } else if (
-    rawStatus.includes("progress") ||
-    rawStatus.includes("ดำเนิน") ||
-    rawStatus.includes("รับเคสแล้ว") ||
-    rawStatus.includes("assigned") ||
-    rawStatus.includes("in_progress")
-  ) {
-    status = "progress";
-  } else if (
-    rawStatus.includes("done") ||
-    rawStatus.includes("closed") ||
-    rawStatus.includes("completed") ||
-    rawStatus.includes("เสร็จสิ้น") ||
-    rawStatus.includes("ปิดเคส")
+    rawStatus === "done" ||
+    rawStatus === "closed" ||
+    rawStatus === "completed" ||
+    rawStatus === "ปิดเคส" ||
+    rawStatus.includes("ปิด")
   ) {
     status = "done";
+  } else if (
+    rawStatus === "cancelled" ||
+    rawStatus === "canceled" ||
+    rawStatus === "ยกเลิก"
+  ) {
+    status = "cancelled";
+  } else {
+    status = "new";
+  }
+
+  let priority = "normal";
+  if (
+    rawPriority === "urgent" ||
+    rawPriority === "ด่วน" ||
+    urgentFlag
+  ) {
+    priority = "urgent";
   }
 
   const locationValue =
-    row.location || row.province || row.location_province || "-";
+    row.location ||
+    row.province ||
+    row.location_province ||
+    "-";
 
   const fallbackCategory =
     typeof mapProblemToBusinessLabel === "function"
@@ -4860,11 +4875,16 @@ function mapCaseRowToTeamCase(row = {}) {
       row.problem ||
       row.additional_details ||
       "ไม่มีรายละเอียดเพิ่มเติม",
+
+    // แยก 2 มิติชัดเจน
     status,
-    priority: rawPriority || (urgentFlag ? "urgent" : ""),
-    urgent: urgentFlag,
-    urgent_flag: urgentFlag,
-    is_urgent: urgentFlag,
+    priority,
+
+    // ส่ง flag ไปด้วย เผื่อฝั่งหน้าใช้
+    urgent: priority === "urgent",
+    urgent_flag: priority === "urgent",
+    is_urgent: priority === "urgent",
+
     province: locationValue,
     owner: row.assigned_to_name || row.assigned_to || "-",
     updated_at: row.updated_at || row.last_action_at || row.created_at || null,
@@ -4873,7 +4893,10 @@ function mapCaseRowToTeamCase(row = {}) {
       row.problem_type ||
       row.category ||
       fallbackCategory ||
-      "-"
+      "-",
+
+    // optional
+    role_hint: row.role_hint || "admin"
   };
 }
 

@@ -187,13 +187,27 @@ async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain
     item.is_urgent === true
   );
 }
+
+function isDoneCase(item = {}) {
+  const status = String(item.status || "").toLowerCase();
+  return (
+    status === "done" ||
+    status === "closed" ||
+    status === "completed" ||
+    status.includes("ปิด")
+  );
+}
+
+function isOpenUrgentCase(item = {}) {
+  return isUrgentCase(item) && !isDoneCase(item);
+}
   
-  function updateStats() {
+function updateStats() {
   const c = {
     new: allCases.filter(x => x.status === 'new').length,
     progress: allCases.filter(x => x.status === 'progress').length,
-    urgent: allCases.filter(x => isUrgentCase(x)).length,
-    done: allCases.filter(x => x.status === 'done').length
+    urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
+    done: allCases.filter(x => isDoneCase(x)).length
   };
 
   document.getElementById('statNew').textContent = c.new;
@@ -223,8 +237,8 @@ function filteredCases() {
       status === 'all'
         ? true
         : status === 'urgent'
-          ? isUrgentCase(item)
-          : item.status === status;
+  ? isOpenUrgentCase(item)
+  : item.status === status;
 
     const matchRole =
       role === 'all' || (item.role_hint || 'admin') === role;

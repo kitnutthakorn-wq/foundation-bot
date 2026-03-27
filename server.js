@@ -5013,9 +5013,9 @@ app.post("/api/team/cases/assign", async (req, res) => {
     }
 
     const actorName = displayName || "ทีมงาน";
-    const payload = {
-  assigned_to: actorName, // ใช้ชื่อคนจริงเลย
-  status: "in_progress", // สำคัญ! อย่าใช้ assigned
+const payload = {
+  assigned_to: actorName,
+  status: "in_progress",
   updated_at: new Date().toISOString(),
   last_action_at: new Date().toISOString(),
   last_action_by: actorName
@@ -5032,11 +5032,11 @@ app.post("/api/team/cases/assign", async (req, res) => {
 
     const updatedCase = result.data?.[0] || null;
 
-    broadcastSse("team_case_assigned", {
-      case_code: caseCode,
-      assigned_to: payload.assigned_to,
-      sync_target: "dashboard_and_team",
-    });
+  broadcastSse("team_case_assigned", {
+  case_code: caseCode,
+  assigned_to: payload.assigned_to,
+  sync_target: "dashboard_and_team",
+});
 
     broadcastSse("dashboard_refresh", {
       reason: "team_case_assigned",

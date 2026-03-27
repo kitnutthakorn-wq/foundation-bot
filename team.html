@@ -29,8 +29,11 @@
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
     .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px}
     .stat-label{font-size:.82rem;color:#dff8fb}.stat-value{font-size:1.5rem;font-weight:800;line-height:1;margin:8px 0}.stat-note{font-size:.83rem;color:#dff8fb}
-    .quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+    .quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+    .qa-full{grid-column:span 2}
     button{border:0;border-radius:14px;cursor:pointer;font:inherit;transition:transform .15s ease}.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:12px 14px}.btn-secondary{background:#fff;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}.btn-accent{background:linear-gradient(135deg,var(--accent),#2ea95f);color:#fff;padding:12px 14px}
+    .btn-update{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:12px 14px}
+    .btn-ghost{background:#f8fbfc;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}
     .toolbar{padding:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;background:var(--panel)} .toolbar input,.toolbar select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff}
     .grow{flex:1 1 240px}.fixed{width:180px}.case-list,.activity-list,.panel-stack,.role-row{display:grid;gap:12px}
     .case-item{padding:14px;position:relative;overflow:hidden}.case-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--brand)}
@@ -40,13 +43,17 @@
     .badge.new{background:rgba(11,124,134,.12);color:var(--brand-dark)} .badge.progress{background:rgba(197,102,8,.12);color:var(--warn)} .badge.urgent{background:rgba(185,28,28,.10);color:var(--danger)} .badge.done{background:rgba(31,143,77,.12);color:var(--accent)}
     .meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.meta-box{background:#f8fbfc;border:1px solid #edf2f5;border-radius:12px;padding:10px}
     .meta-box strong{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px}.meta-box span{font-size:.9rem;font-weight:700}
-    .case-actions{display:flex;gap:8px;flex-wrap:wrap}.case-actions button{padding:9px 12px;background:#fff;border:1px solid var(--line);color:var(--brand-dark)}
+    .case-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .case-actions button{padding:9px 12px;background:#fff;border:1px solid var(--line);color:var(--brand-dark);font-weight:700}
+    .case-actions .btn-progress{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .case-actions .btn-update-case{background:#eefaf3;border-color:#b7ebc9;color:#166534}
+    .case-actions .is-disabled{opacity:.58;cursor:not-allowed;pointer-events:none}
     .activity-item{padding:12px;background:var(--panel)}.activity-item strong{display:block;margin-bottom:6px}.composer{display:grid;gap:10px;margin-top:12px}
     textarea{min-height:110px;resize:vertical}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:24px}
     .pulse-urgent{animation:pulseUrgent 1.8s infinite}@keyframes pulseUrgent{0%{box-shadow:0 0 0 0 rgba(185,28,28,.24)}70%{box-shadow:0 0 0 12px rgba(185,28,28,0)}100%{box-shadow:0 0 0 0 rgba(185,28,28,0)}}
     .role-chip{padding:10px 12px;background:var(--panel);border-radius:16px}.role-chip strong{display:block;font-size:.88rem}.role-chip span{font-size:.8rem;color:var(--muted)}
     @media (max-width:980px){.topbar,.hero,.workspace{grid-template-columns:1fr}.stats,.meta-grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.profile-card{min-width:unset}}
+    @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.qa-full{grid-column:auto}.profile-card{min-width:unset}}
   </style>
 </head>
 <body>
@@ -79,7 +86,8 @@
         <button class="btn-primary" onclick="refreshCases()">รีเฟรชเคส</button>
         <button class="btn-secondary" onclick="applyPresetFilter('urgent')">ดูเฉพาะเคสด่วน</button>
         <button class="btn-secondary" onclick="applyPresetFilter('new')">ดูเฉพาะเคสใหม่</button>
-        <button class="btn-accent" onclick="openDashboard()">เปิด Dashboard</button>
+        <button class="btn-ghost" onclick="filterTodayCases()">เคสวันนี้</button>
+        <button class="btn-update qa-full" onclick="openCaseUpdateCenter()">อัปเดตเคส</button>
       </div>
       <div class="role-row" style="margin-top:14px">
         <div class="role-chip"><strong>Environment</strong><span id="envChip">Demo</span></div>
@@ -94,7 +102,7 @@
       <div class="toolbar">
         <div class="grow"><input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / จังหวัด / ประเภทปัญหา" oninput="renderCases()" /></div>
         <div class="fixed"><select id="statusFilter" onchange="renderCases()"><option value="all">ทุกสถานะ</option><option value="new">เคสใหม่</option><option value="progress">กำลังดำเนินการ</option><option value="urgent">เคสด่วน</option><option value="done">ปิดเคสแล้ว</option></select></div>
-        <div class="fixed"><select id="roleView" onchange="renderCases()"><option value="all">ทุกมุมมอง</option><option value="admin">แอดมิน</option><option value="field">ภาคสนาม</option><option value="viewer">ดูอย่างเดียว</option></select></div>
+        <div class="fixed"><select id="roleView" onchange="handleTeamViewModeChange()"><option value="field">ทีมงานภาคสนาม</option><option value="viewer">ดูได้อย่างเดียว</option></select></div>
       </div>
       <div class="card">
         <div class="headline"><div><h2>รายการเคส</h2><p id="casePanelSubtitle">กรองแบบ role-based และ realtime sync</p></div><span class="badge progress"><span id="caseCount">0</span> เคส</span></div>
@@ -139,6 +147,8 @@ const CONFIG = {
 };
 
 let allCases = [], activities = [], currentProfile = null, eventSource = null;
+let currentTeamViewMode = "field";
+let currentPresetFilter = "all";
 const demoCases = [
   {case_code:"KC-20260326-001",title:"ครอบครัวขาดรายได้และค่าเช่าค้างหลายเดือน",description:"ผู้ร้องขออยู่ในภาวะเสี่ยงถูกไล่ออกจากที่พัก ต้องการประสานช่วยเหลือเร่งด่วน",status:"urgent",province:"สงขลา",owner:"ทีมภาคสนาม A",updated_at:"26 มี.ค. 2026 10:20",category:"ที่อยู่อาศัย",role_hint:"field"},
   {case_code:"KC-20260326-002",title:"ขอทุนการศึกษาเด็กกำพร้าเรียนดี",description:"รอเอกสารยืนยันผลการเรียนและการเยี่ยมบ้าน",status:"progress",province:"นราธิวาส",owner:"ฝ่ายประสานทุน",updated_at:"26 มี.ค. 2026 09:35",category:"การศึกษา",role_hint:"admin"},
@@ -271,14 +281,9 @@ function priorityClass(item = {}) {
 
 function updateStats() {
   const c = {
-    new: allCases.filter(x => x.status === 'new').length,
-
-    progress: allCases.filter(x =>
-      x.status === 'in_progress' || x.status === 'progress'
-    ).length,
-
+    new: allCases.filter(x => isNewCase(x)).length,
+    progress: allCases.filter(x => isInProgressCase(x)).length,
     urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
-
     done: allCases.filter(x => isDoneCase(x)).length
   };
 
@@ -289,6 +294,42 @@ function updateStats() {
 
   document.getElementById('urgentStatCard')
     .classList.toggle('pulse-urgent', c.urgent > 0);
+}
+
+
+function getSelectedRoleLabel() {
+  const roleSelect = document.getElementById('roleView');
+  return roleSelect?.selectedOptions?.[0]?.textContent || 'ทีมงานภาคสนาม';
+}
+
+function isReadOnlyMode() {
+  return currentTeamViewMode === 'viewer';
+}
+
+function handleTeamViewModeChange() {
+  const roleSelect = document.getElementById('roleView');
+  currentTeamViewMode = roleSelect ? roleSelect.value : 'field';
+  renderCases();
+}
+
+function isTodayCase(item = {}) {
+  const raw = String(item.created_at || item.updated_at || '').trim();
+  if (!raw) return false;
+
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    const now = new Date();
+    return parsed.getFullYear() === now.getFullYear()
+      && parsed.getMonth() === now.getMonth()
+      && parsed.getDate() === now.getDate();
+  }
+
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const iso = `${yyyy}-${mm}-${dd}`;
+  return raw.startsWith(iso);
 }
 
 function filteredCases() {
@@ -308,28 +349,35 @@ function filteredCases() {
 
     const matchKeyword = !k || hay.includes(k);
 
-   const matchStatus =
-  status === 'all'
-    ? true
-    : status === 'urgent'
-      ? isOpenUrgentCase(item)
-      : status === 'progress'
-        ? (item.status === 'in_progress' || item.status === 'progress')
-        : item.status === status;
+    let matchStatus = true;
+    if (status === 'urgent') {
+      matchStatus = isOpenUrgentCase(item);
+    } else if (status === 'progress') {
+      matchStatus = isInProgressCase(item);
+    } else if (status === 'new') {
+      matchStatus = isNewCase(item);
+    } else if (status === 'done') {
+      matchStatus = isDoneCase(item);
+    }
 
-    const matchRole =
-      role === 'all' || (item.role_hint || 'admin') === role;
+    const roleHint = String(item.role_hint || 'field').toLowerCase();
+    const matchRole = role === 'viewer' ? true : roleHint === 'field' || roleHint === 'viewer' || roleHint === 'team';
 
-    return matchKeyword && matchStatus && matchRole;
+    const matchPreset = currentPresetFilter === 'today'
+      ? isTodayCase(item)
+      : true;
+
+    return matchKeyword && matchStatus && matchRole && matchPreset;
   });
 }
-  
+
 function renderCases() {
   const filtered = filteredCases();
+  const readOnly = isReadOnlyMode();
 
   document.getElementById('caseCount').textContent = filtered.length;
   document.getElementById('casePanelSubtitle').textContent =
-    `มุมมองปัจจุบัน: ${document.getElementById('roleView').selectedOptions[0].textContent}`;
+    `มุมมองปัจจุบัน: ${getSelectedRoleLabel()}`;
 
   const root = document.getElementById('caseList');
 
@@ -372,19 +420,23 @@ function renderCases() {
 
       <div class="case-actions">
         <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
-        <button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button>
-        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
-        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','done')">ปิดเคส</button>
+        <button class="btn-progress ${readOnly ? 'is-disabled' : ''}" onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
+        <button class="btn-update-case ${readOnly ? 'is-disabled' : ''}" onclick="openCaseUpdateLiff('${escapeHtml(item.case_code)}')">อัปเดตเคส</button>
       </div>
     </div>
   `).join('');
 }
 function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
-function applyPresetFilter(s){document.getElementById('statusFilter').value=s; renderCases();}
-function openDashboard(){const url=CONFIG.API_BASE_URL.includes('your-domain.com') ? '#' : `${CONFIG.API_BASE_URL}${CONFIG.DASHBOARD_URL}`; if(url === '#'){alert('ยังไม่ได้ตั้งค่า Dashboard URL'); return;} window.open(url,'_blank');}
+function applyPresetFilter(s){currentPresetFilter='all';document.getElementById('statusFilter').value=s; renderCases();}
+function filterTodayCases(){currentPresetFilter='today';document.getElementById('statusFilter').value='all';renderCases();}
+function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}
 function viewCase(code){alert(`ดูรายละเอียดเคส: ${code}\n\nPhase ถัดไปสามารถต่อหน้า case-detail.html หรือ modal ได้`);}
-async function assignCase(caseCode){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: รับเคส ${caseCode}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ASSIGN_CASE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,userId:currentProfile?.userId||null,displayName:currentProfile?.displayName||'ทีมงาน'})});if(!res.ok) throw new Error(res.error||'assign failed');await refreshCases();alert(`รับเคส ${caseCode} สำเร็จ`);}catch(err){alert(`รับเคสไม่สำเร็จ: ${err.message}`);}}
-async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} สำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
+function openCaseUpdateLiff(caseCode){
+  const target = `update-case.html?caseCode=${encodeURIComponent(caseCode)}`;
+  window.location.href = target;
+}
+
+async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
 function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}

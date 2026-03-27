@@ -175,37 +175,104 @@ async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
 async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
 
- function isUrgentCase(item = {}) {
-  const status = String(item.status || "").toLowerCase();
-  const priority = String(item.priority || item.case_priority || "").toLowerCase();
+function normalizeStatus(item = {}) {
+  const s = String(item.status || "").toLowerCase().trim();
 
-  return (
-    status === "urgent" ||
-    priority === "urgent" ||
+  if (
+    s === "in_progress" ||
+    s === "progress" ||
+    s === "assigned" ||
+    s === "รับเคสแล้ว" ||
+    s === "กำลังดำเนินการ" ||
+    s.includes("ดำเนิน")
+  ) {
+    return "in_progress";
+  }
+
+  if (
+    s === "done" ||
+    s === "closed" ||
+    s === "completed" ||
+    s === "ปิดเคส" ||
+    s.includes("ปิด")
+  ) {
+    return "done";
+  }
+
+  if (
+    s === "cancelled" ||
+    s === "canceled" ||
+    s === "ยกเลิก"
+  ) {
+    return "cancelled";
+  }
+
+  return "new";
+}
+
+function normalizePriority(item = {}) {
+  const p = String(item.priority || item.case_priority || "").toLowerCase().trim();
+
+  if (
+    p === "urgent" ||
+    p === "ด่วน" ||
     item.urgent === true ||
     item.urgent_flag === true ||
     item.is_urgent === true
-  );
+  ) {
+    return "urgent";
+  }
+
+  return "normal";
 }
 
 function isDoneCase(item = {}) {
-  const status = String(item.status || "").toLowerCase();
-  return (
-    status === "done" ||
-    status === "closed" ||
-    status === "completed" ||
-    status.includes("ปิด")
-  );
+  return normalizeStatus(item) === "done";
+}
+
+function isInProgressCase(item = {}) {
+  return normalizeStatus(item) === "in_progress";
+}
+
+function isNewCase(item = {}) {
+  return normalizeStatus(item) === "new";
+}
+
+function isUrgentCase(item = {}) {
+  return normalizePriority(item) === "urgent";
 }
 
 function isOpenUrgentCase(item = {}) {
-  return isUrgentCase(item) && !isDoneCase(item);
+  const s = normalizeStatus(item);
+  return normalizePriority(item) === "urgent" && (s === "new" || s === "in_progress");
 }
-  
+
+function workflowStatusClass(item = {}) {
+  const s = normalizeStatus(item);
+  if (s === "in_progress") return "progress";
+  if (s === "done") return "done";
+  return "new";
+}
+
+function workflowStatusLabel(item = {}) {
+  const s = normalizeStatus(item);
+  if (s === "in_progress") return "กำลังดำเนินการ";
+  if (s === "done") return "ปิดเคสแล้ว";
+  return "เคสใหม่";
+}
+
+function priorityLabel(item = {}) {
+  return normalizePriority(item) === "urgent" ? "ด่วน" : "ปกติ";
+}
+
+function priorityClass(item = {}) {
+  return normalizePriority(item) === "urgent" ? "urgent" : "new";
+}
+
 function updateStats() {
   const c = {
-    new: allCases.filter(x => x.status === 'new').length,
-    progress: allCases.filter(x => x.status === 'progress').length,
+    new: allCases.filter(x => isNewCase(x)).length,
+    progress: allCases.filter(x => isInProgressCase(x)).length,
     urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
     done: allCases.filter(x => isDoneCase(x)).length
   };
@@ -216,7 +283,7 @@ function updateStats() {
   document.getElementById('statDone').textContent = c.done;
   document.getElementById('urgentStatCard').classList.toggle('pulse-urgent', c.urgent > 0);
 }
-  
+
 function filteredCases() {
   const k = document.getElementById('searchInput').value.trim().toLowerCase();
   const status = document.getElementById('statusFilter').value;
@@ -233,12 +300,14 @@ function filteredCases() {
     ].join(' ').toLowerCase();
 
     const matchKeyword = !k || hay.includes(k);
+
     const matchStatus =
-      status === 'all'
-        ? true
-        : status === 'urgent'
-  ? isOpenUrgentCase(item)
-  : item.status === status;
+      status === 'all' ? true :
+      status === 'new' ? isNewCase(item) :
+      status === 'progress' ? isInProgressCase(item) :
+      status === 'urgent' ? isOpenUrgentCase(item) :
+      status === 'done' ? isDoneCase(item) :
+      true;
 
     const matchRole =
       role === 'all' || (item.role_hint || 'admin') === role;
@@ -247,7 +316,61 @@ function filteredCases() {
   });
 }
   
-function renderCases(){const filtered=filteredCases();document.getElementById('caseCount').textContent=filtered.length;document.getElementById('casePanelSubtitle').textContent=`มุมมองปัจจุบัน: ${document.getElementById('roleView').selectedOptions[0].textContent}`;const root=document.getElementById('caseList'); if(!filtered.length){root.innerHTML='<div class="case-item"><div class="case-desc">ไม่พบเคสตามเงื่อนไขที่ค้นหา</div></div>';return;} root.innerHTML=filtered.map(item=>`<div class="case-item ${escapeHtml(statusClass(item.status))}"><div class="case-top"><div><div class="case-code">${escapeHtml(item.case_code)}</div><div class="case-title">${escapeHtml(item.title)}</div></div><span class="badge ${statusClass(item.status)}">${escapeHtml(statusLabel(item.status))}</span></div><div class="case-desc">${escapeHtml(item.description)}</div><div class="meta-grid"><div class="meta-box"><strong>จังหวัด</strong><span>${escapeHtml(item.province||'-')}</span></div><div class="meta-box"><strong>ผู้รับผิดชอบ</strong><span>${escapeHtml(item.owner||'-')}</span></div><div class="meta-box"><strong>หมวดปัญหา</strong><span>${escapeHtml(item.category||'-')}</span></div></div><div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at||'-')}</div><div class="case-actions"><button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button><button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button><button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button><button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','done')">ปิดเคส</button></div></div>`).join('');}
+function renderCases() {
+  const filtered = filteredCases();
+
+  document.getElementById('caseCount').textContent = filtered.length;
+  document.getElementById('casePanelSubtitle').textContent =
+    `มุมมองปัจจุบัน: ${document.getElementById('roleView').selectedOptions[0].textContent}`;
+
+  const root = document.getElementById('caseList');
+
+  if (!filtered.length) {
+    root.innerHTML = '<div class="case-item"><div class="case-desc">ไม่พบเคสตามเงื่อนไขที่ค้นหา</div></div>';
+    return;
+  }
+
+  root.innerHTML = filtered.map(item => `
+    <div class="case-item ${workflowStatusClass(item)}">
+      <div class="case-top">
+        <div>
+          <div class="case-code">${escapeHtml(item.case_code)}</div>
+          <div class="case-title">${escapeHtml(item.title)}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <span class="badge ${workflowStatusClass(item)}">${escapeHtml(workflowStatusLabel(item))}</span>
+          <span class="badge ${priorityClass(item)}">${escapeHtml(priorityLabel(item))}</span>
+        </div>
+      </div>
+
+      <div class="case-desc">${escapeHtml(item.description)}</div>
+
+      <div class="meta-grid">
+        <div class="meta-box">
+          <strong>จังหวัด</strong>
+          <span>${escapeHtml(item.province || '-')}</span>
+        </div>
+        <div class="meta-box">
+          <strong>ผู้รับผิดชอบ</strong>
+          <span>${escapeHtml(item.owner || '-')}</span>
+        </div>
+        <div class="meta-box">
+          <strong>หมวดปัญหา</strong>
+          <span>${escapeHtml(item.category || '-')}</span>
+        </div>
+      </div>
+
+      <div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at || '-')}</div>
+
+      <div class="case-actions">
+        <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
+        <button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button>
+        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
+        <button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','done')">ปิดเคส</button>
+      </div>
+    </div>
+  `).join('');
+}
 function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
 function applyPresetFilter(s){document.getElementById('statusFilter').value=s; renderCases();}
 function openDashboard(){const url=CONFIG.API_BASE_URL.includes('your-domain.com') ? '#' : `${CONFIG.API_BASE_URL}${CONFIG.DASHBOARD_URL}`; if(url === '#'){alert('ยังไม่ได้ตั้งค่า Dashboard URL'); return;} window.open(url,'_blank');}

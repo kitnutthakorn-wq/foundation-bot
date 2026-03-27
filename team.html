@@ -174,8 +174,65 @@ async function initLiff(){
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
 async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
-function updateStats(){const c={new:allCases.filter(x=>x.status==='new').length,progress:allCases.filter(x=>x.status==='progress').length,urgent:allCases.filter(x=>x.status==='urgent').length,done:allCases.filter(x=>x.status==='done').length};document.getElementById('statNew').textContent=c.new;document.getElementById('statProgress').textContent=c.progress;document.getElementById('statUrgent').textContent=c.urgent;document.getElementById('statDone').textContent=c.done;document.getElementById('urgentStatCard').classList.toggle('pulse-urgent', c.urgent > 0);}
-function filteredCases(){const k=document.getElementById('searchInput').value.trim().toLowerCase(), status=document.getElementById('statusFilter').value, role=document.getElementById('roleView').value; return allCases.filter(item=>{const hay=[item.case_code,item.title,item.description,item.province,item.category,item.owner].join(' ').toLowerCase(); return (!k || hay.includes(k)) && (status==='all' || item.status===status) && (role==='all' || (item.role_hint||'admin')===role);});}
+
+ function isUrgentCase(item = {}) {
+  const status = String(item.status || "").toLowerCase();
+  const priority = String(item.priority || item.case_priority || "").toLowerCase();
+
+  return (
+    status === "urgent" ||
+    priority === "urgent" ||
+    item.urgent === true ||
+    item.urgent_flag === true ||
+    item.is_urgent === true
+  );
+}
+  
+  function updateStats() {
+  const c = {
+    new: allCases.filter(x => x.status === 'new').length,
+    progress: allCases.filter(x => x.status === 'progress').length,
+    urgent: allCases.filter(x => isUrgentCase(x)).length,
+    done: allCases.filter(x => x.status === 'done').length
+  };
+
+  document.getElementById('statNew').textContent = c.new;
+  document.getElementById('statProgress').textContent = c.progress;
+  document.getElementById('statUrgent').textContent = c.urgent;
+  document.getElementById('statDone').textContent = c.done;
+  document.getElementById('urgentStatCard').classList.toggle('pulse-urgent', c.urgent > 0);
+}
+  
+function filteredCases() {
+  const k = document.getElementById('searchInput').value.trim().toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  const role = document.getElementById('roleView').value;
+
+  return allCases.filter(item => {
+    const hay = [
+      item.case_code,
+      item.title,
+      item.description,
+      item.province,
+      item.category,
+      item.owner
+    ].join(' ').toLowerCase();
+
+    const matchKeyword = !k || hay.includes(k);
+    const matchStatus =
+      status === 'all'
+        ? true
+        : status === 'urgent'
+          ? isUrgentCase(item)
+          : item.status === status;
+
+    const matchRole =
+      role === 'all' || (item.role_hint || 'admin') === role;
+
+    return matchKeyword && matchStatus && matchRole;
+  });
+}
+  
 function renderCases(){const filtered=filteredCases();document.getElementById('caseCount').textContent=filtered.length;document.getElementById('casePanelSubtitle').textContent=`มุมมองปัจจุบัน: ${document.getElementById('roleView').selectedOptions[0].textContent}`;const root=document.getElementById('caseList'); if(!filtered.length){root.innerHTML='<div class="case-item"><div class="case-desc">ไม่พบเคสตามเงื่อนไขที่ค้นหา</div></div>';return;} root.innerHTML=filtered.map(item=>`<div class="case-item ${escapeHtml(statusClass(item.status))}"><div class="case-top"><div><div class="case-code">${escapeHtml(item.case_code)}</div><div class="case-title">${escapeHtml(item.title)}</div></div><span class="badge ${statusClass(item.status)}">${escapeHtml(statusLabel(item.status))}</span></div><div class="case-desc">${escapeHtml(item.description)}</div><div class="meta-grid"><div class="meta-box"><strong>จังหวัด</strong><span>${escapeHtml(item.province||'-')}</span></div><div class="meta-box"><strong>ผู้รับผิดชอบ</strong><span>${escapeHtml(item.owner||'-')}</span></div><div class="meta-box"><strong>หมวดปัญหา</strong><span>${escapeHtml(item.category||'-')}</span></div></div><div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at||'-')}</div><div class="case-actions"><button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button><button onclick="assignCase('${escapeHtml(item.case_code)}')">รับเคส</button><button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button><button onclick="updateCaseStatus('${escapeHtml(item.case_code)}','done')">ปิดเคส</button></div></div>`).join('');}
 function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
 function applyPresetFilter(s){document.getElementById('statusFilter').value=s; renderCases();}

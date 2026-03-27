@@ -4898,7 +4898,7 @@ function mapCaseRowToTeamCase(row = {}) {
     is_urgent: priority === "urgent",
 
     province: locationValue,
-   owner: row.assigned_to || row.last_action_by || "-"
+    owner: row.assigned_to || row.last_action_by || "-",
     updated_at: row.updated_at || row.last_action_at || row.created_at || null,
     category:
       row.business_label ||

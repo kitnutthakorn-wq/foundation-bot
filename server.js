@@ -879,23 +879,24 @@ function buildTeamNewCaseFlex(item = {}) {
   };
 }
 
-
 function getTeamLiffUrl(baseView = "") {
+  let raw = null;
+
   if (process.env.TEAM_LIFF_URL) {
-    const raw = String(process.env.TEAM_LIFF_URL).trim();
-    if (!baseView) return raw;
-    return raw.includes("?") ? `${raw}&view=${encodeURIComponent(baseView)}` : `${raw}?view=${encodeURIComponent(baseView)}`;
+    raw = String(process.env.TEAM_LIFF_URL).trim();
+  } else if (process.env.TEAM_LIFF_ID) {
+    raw = `https://liff.line.me/${String(process.env.TEAM_LIFF_ID).trim()}`;
   }
 
-  if (process.env.TEAM_LIFF_ID) {
-    const raw = `https://liff.line.me/${String(process.env.TEAM_LIFF_ID).trim()}`;
-    if (!baseView) return raw;
-    return `${raw}?view=${encodeURIComponent(baseView)}`;
+  if (!raw) {
+    throw new Error("❌ TEAM_LIFF_URL / TEAM_LIFF_ID not set");
   }
 
-  const fallback = "https://liff.line.me/2009446483-VtE4rtgZ";
-  if (!baseView) return fallback;
-  return `${fallback}?view=${encodeURIComponent(baseView)}`;
+  if (!baseView) return raw;
+
+  return raw.includes("?")
+    ? `${raw}&view=${encodeURIComponent(baseView)}`
+    : `${raw}?view=${encodeURIComponent(baseView)}`;
 }
 
 function buildTeamMenuFlex() {

@@ -271,9 +271,14 @@ function priorityClass(item = {}) {
 
 function updateStats() {
   const c = {
-    new: allCases.filter(x => isNewCase(x)).length,
-    progress: allCases.filter(x => isInProgressCase(x)).length,
+    new: allCases.filter(x => x.status === 'new').length,
+
+    progress: allCases.filter(x =>
+      x.status === 'in_progress' || x.status === 'progress'
+    ).length,
+
     urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
+
     done: allCases.filter(x => isDoneCase(x)).length
   };
 
@@ -281,7 +286,9 @@ function updateStats() {
   document.getElementById('statProgress').textContent = c.progress;
   document.getElementById('statUrgent').textContent = c.urgent;
   document.getElementById('statDone').textContent = c.done;
-  document.getElementById('urgentStatCard').classList.toggle('pulse-urgent', c.urgent > 0);
+
+  document.getElementById('urgentStatCard')
+    .classList.toggle('pulse-urgent', c.urgent > 0);
 }
 
 function filteredCases() {
@@ -301,13 +308,14 @@ function filteredCases() {
 
     const matchKeyword = !k || hay.includes(k);
 
-    const matchStatus =
-      status === 'all' ? true :
-      status === 'new' ? isNewCase(item) :
-      status === 'progress' ? isInProgressCase(item) :
-      status === 'urgent' ? isOpenUrgentCase(item) :
-      status === 'done' ? isDoneCase(item) :
-      true;
+   const matchStatus =
+  status === 'all'
+    ? true
+    : status === 'urgent'
+      ? isOpenUrgentCase(item)
+      : status === 'progress'
+        ? (item.status === 'in_progress' || item.status === 'progress')
+        : item.status === status;
 
     const matchRole =
       role === 'all' || (item.role_hint || 'admin') === role;

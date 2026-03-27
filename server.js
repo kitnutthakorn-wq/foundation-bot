@@ -4978,15 +4978,14 @@ app.get("/api/team/activities", async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit || "10", 10), 30);
     const result = await supabase
       .from("help_requests")
-      .select("case_code, full_name, status, assigned_to, assigned_to_name, updated_at, created_at")
+      .select("case_code, full_name, status, assigned_to, last_action_by, updated_at, created_at")
       .order("updated_at", { ascending: false })
       .limit(limit);
 
     if (result.error) throw result.error;
 
-    const activities = (result.data || []).map((row) => ({
-      title: `อัปเดตเคส ${row.case_code || "-"}`,
-      detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${row.assigned_to_name || row.assigned_to || "-"}`,
+    const actor = row.assigned_to || row.last_action_by || "-";
+    detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${actor}`,
       time: formatThaiDateTime(row.updated_at || row.created_at || null),
     }));
 
@@ -5010,12 +5009,12 @@ app.post("/api/team/cases/assign", async (req, res) => {
 
     const actorName = displayName || "ทีมงาน";
     const payload = {
-      assigned_to: userId || null,
-      assigned_to_name: actorName,
-      status: "assigned",
-      updated_at: new Date().toISOString(),
-      last_action_at: new Date().toISOString(),
-    };
+  assigned_to: actorName, // ใช้ชื่อคนจริงเลย
+  status: "in_progress", // สำคัญ! อย่าใช้ assigned
+  updated_at: new Date().toISOString(),
+  last_action_at: new Date().toISOString(),
+  last_action_by: actorName
+};
 
     const result = await supabase
       .from("help_requests")
@@ -5031,7 +5030,6 @@ app.post("/api/team/cases/assign", async (req, res) => {
     broadcastSse("team_case_assigned", {
       case_code: caseCode,
       assigned_to: payload.assigned_to,
-      assigned_to_name: payload.assigned_to_name,
       sync_target: "dashboard_and_team",
     });
 

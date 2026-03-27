@@ -4504,6 +4504,47 @@ app.get("/api/executive/decision-board", async (req, res) => {
   }
 });
 
+/**
+ * Phase PRO MAX UI - Golden-safe patch
+ * เพิ่ม block นี้ก่อน app.listen(...)
+ */
+
+const TEAM_MENU_VERSION = process.env.TEAM_MENU_VERSION || "PRO-MAX-UI-v1";
+
+const __teamSseClients = new Set();
+
+function broadcastTeamUiEvent(payload = {}) {
+  const data = `data: ${JSON.stringify({ ok: true, ts: Date.now(), ...payload })}\n\n`;
+  for (const res of __teamSseClients) {
+    try { res.write(data); } catch (_) {}
+  }
+}
+
+app.get("/api/team/stream", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+  res.setHeader("Connection", "keep-alive");
+  if (typeof res.flushHeaders === "function") res.flushHeaders();
+
+  res.write(`data: ${JSON.stringify({ ok:true, event:"connected", version:TEAM_MENU_VERSION, ts:Date.now() })}\n\n`);
+  __teamSseClients.add(res);
+
+  const keepAlive = setInterval(() => {
+    try { res.write(`: keep-alive ${Date.now()}\n\n`); } catch (_) {}
+  }, 25000);
+
+  req.on("close", () => {
+    clearInterval(keepAlive);
+    __teamSseClients.delete(res);
+  });
+});
+
+/**
+ * เรียกต่อท้ายในจุดที่ assign / update status / send update สำเร็จ เช่น:
+ * broadcastTeamUiEvent({ event: "cases_updated" });
+ */
+
+
 /* =========================
    COMMAND CENTER (ADD ONLY / SAFE PATCH)
    วางบล็อกนี้ก่อน app.listen(...) ตัวสุดท้าย

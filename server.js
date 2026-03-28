@@ -1841,6 +1841,60 @@ app.get("/api/recent-activity", async (req, res) => {
 });
 
 // =========================
+// TEAM CASE DETAIL (Golden Safe)
+// =========================
+app.get("/api/team/case-detail", async (req, res) => {
+  try {
+    const caseCode = String(req.query.case_code || "").trim();
+
+    if (!caseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: "case_code is required"
+      });
+    }
+
+    // 🔹 ดึงข้อมูลเคสหลัก
+    const { data: caseItem, error: caseError } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("case_code", caseCode)
+      .maybeSingle();
+
+    if (caseError) throw caseError;
+
+    if (!caseItem) {
+      return res.status(404).json({
+        ok: false,
+        error: "case not found"
+      });
+    }
+
+    // 🔹 ดึง timeline อัปเดต
+    const { data: updates, error: updatesError } = await supabase
+      .from("case_updates")
+      .select("*")
+      .eq("case_code", caseCode)
+      .order("updated_at", { ascending: false });
+
+    if (updatesError) throw updatesError;
+
+    return res.json({
+      ok: true,
+      case: caseItem,
+      updates: updates || []
+    });
+
+  } catch (err) {
+    console.error("TEAM CASE DETAIL ERROR:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "team case detail failed"
+    });
+  }
+});
+
+// =========================
 // 🔥 CASE UPDATE (REAL FLOW)
 // =========================
 app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {

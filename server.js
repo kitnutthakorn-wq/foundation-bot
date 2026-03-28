@@ -5237,7 +5237,7 @@ app.post("/api/team/cases/assign", async (req, res) => {
 const payload = {
   assigned_to: actorName,
   status: "in_progress",
-  updated_at: new Date().toISOString(),
+  assigned_at: new Date().toISOString(),
   last_action_at: new Date().toISOString(),
   last_action_by: actorName
 };

@@ -2643,7 +2643,8 @@ async function assignCase(caseCode, staffName = "ทีมงาน") {
     .single();
 
   if (error) throw error;
-  broadcastSse("case_updated", { case_id: data.id, case_code: data.case_code, action: "assign", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("case_update", { case_id: data.id, case_code: data.case_code, action: "assign", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("recent_activity_refresh", { case_code: data.case_code, action: "assign", updated_at: new Date().toISOString() });
   return data;
 }
 
@@ -2666,7 +2667,8 @@ async function closeCase(caseCode, staffName = "ทีมงาน") {
     .single();
 
   if (error) throw error;
-  broadcastSse("case_updated", { case_id: data.id, case_code: data.case_code, action: "close", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("case_update", { case_id: data.id, case_code: data.case_code, action: "close", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("recent_activity_refresh", { case_code: data.case_code, action: "close", updated_at: new Date().toISOString() });
   return data;
 }
 
@@ -2696,7 +2698,8 @@ async function changeCaseStatus(caseCode, newStatus) {
     .single();
 
   if (error) throw error;
-  broadcastSse("case_updated", { case_id: data.id, case_code: data.case_code, action: "change_status", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("case_update", { case_id: data.id, case_code: data.case_code, action: "change_status", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("recent_activity_refresh", { case_code: data.case_code, action: "change_status", updated_at: new Date().toISOString() });
   return data;
 }
 
@@ -3574,7 +3577,8 @@ if (nextStatus === "done") {
       .single();
 
     if (error) throw error;
-    broadcastSse("case_updated", { case_id: data.id, case_code: data.case_code, action: "update_dashboard", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+    broadcastSse("case_update", { case_id: data.id, case_code: data.case_code, action: "update_dashboard", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("recent_activity_refresh", { case_code: data.case_code, action: "update_dashboard", updated_at: new Date().toISOString() });
     res.json({ ok: true, data });
   } catch (error) {
     console.error("CASE ASSIGN ERROR:", error);
@@ -3619,7 +3623,8 @@ Object.assign(payload, buildProjectPatchForHelpRequest(req.body.project_ref));
       .single();
 
     if (error) throw error;
-    broadcastSse("case_updated", { case_id: data.id, case_code: data.case_code, action: "close_dashboard", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+    broadcastSse("case_update", { case_id: data.id, case_code: data.case_code, action: "close_dashboard", status: data.status, priority: data.priority, assigned_to: data.assigned_to });
+  broadcastSse("recent_activity_refresh", { case_code: data.case_code, action: "close_dashboard", updated_at: new Date().toISOString() });
     res.json({ ok: true, data });
   } catch (error) {
     console.error("CASE UPDATE ERROR:", error);
@@ -5322,46 +5327,6 @@ app.post("/api/team/cases/status", async (req, res) => {
   } catch (err) {
     console.error("POST /api/team/cases/status error:", err);
     return res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-app.get("/api/team/case-detail", async (req, res) => {
-  try {
-    const caseCode = String(req.query.case_code || "").trim();
-    if (!caseCode) {
-      return res.status(400).json({ ok: false, error: "case_code is required" });
-    }
-
-    const { data: caseItem, error: caseError } = await supabase
-      .from("help_requests")
-      .select("*")
-      .eq("case_code", caseCode)
-      .maybeSingle();
-
-    if (caseError) throw caseError;
-    if (!caseItem) {
-      return res.status(404).json({ ok: false, error: "case not found" });
-    }
-
-    const { data: updates, error: updatesError } = await supabase
-      .from("case_updates")
-      .select("*")
-      .eq("case_code", caseCode)
-      .order("updated_at", { ascending: false });
-
-    if (updatesError) throw updatesError;
-
-    return res.json({
-      ok: true,
-      case: caseItem,
-      updates: updates || [],
-    });
-  } catch (err) {
-    console.error("TEAM CASE DETAIL ERROR:", err);
-    return res.status(500).json({
-      ok: false,
-      error: err.message || "team case detail failed",
-    });
   }
 });
 

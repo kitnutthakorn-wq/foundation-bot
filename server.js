@@ -1927,11 +1927,56 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
 };
 
     const { data: insertedUpdate, error } = await supabase
-  .from("case_updates")
-  .insert([payload])
-  .select()
-  .single();
+      .from("case_updates")
+      .insert([payload])
+      .select()
+      .single();
     if (error) throw error;
+
+    const latestFields = {
+      latest_note: payload.latest_note || null,
+      last_action_at: insertedUpdate?.updated_at || new Date().toISOString(),
+      last_action_by: payload.updater_name || payload.updated_by || null
+    };
+
+    if (payload.status_after) {
+      latestFields.status = payload.status_after;
+    }
+
+    const { error: helpReqUpdateError } = await supabase
+      .from("help_requests")
+      .update(latestFields)
+      .eq("case_code", payload.case_code);
+
+    if (helpReqUpdateError) {
+      console.error("help_requests sync error:", helpReqUpdateError);
+    }
+
+    broadcastSse("case_update", {
+      scope: "team_workspace",
+      item: {
+        id: insertedUpdate.id,
+        case_code: insertedUpdate.case_code,
+        progress_percent: insertedUpdate.progress_percent,
+        current_step: insertedUpdate.current_step,
+        waiting_for: insertedUpdate.waiting_for,
+        latest_note: insertedUpdate.latest_note,
+        updated_at: insertedUpdate.updated_at,
+        updated_by: insertedUpdate.updated_by,
+        updated_by_user_id: insertedUpdate.updated_by_user_id,
+        updated_by_role: insertedUpdate.updated_by_role,
+        updater_name: insertedUpdate.updater_name,
+        message: insertedUpdate.message,
+        images: insertedUpdate.images || [],
+        status_after: insertedUpdate.status_after
+      }
+    });
+
+    broadcastSse("recent_activity_refresh", {
+      scope: "team_workspace",
+      case_code: insertedUpdate.case_code,
+      updated_at: insertedUpdate.updated_at
+    });
 
     // 🔥 LINE notify
     if (CHANNEL_ACCESS_TOKEN && EFFECTIVE_TEAM_GROUP_ID) {
@@ -4709,7 +4754,7 @@ function broadcastTeamUiEvent(payload = {}) {
   }
 }
 
-app.get("/api/team/stream", async (req, res) => {
+app.get("/api/team/ui-stream", async (req, res) => {
   res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
   res.setHeader("Cache-Control", "no-cache, no-transform");
   res.setHeader("Connection", "keep-alive");

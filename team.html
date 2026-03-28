@@ -185,6 +185,44 @@ async function initLiff(){
 }
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
+
+async function loadRecentActivityRealtime() {
+  try {
+    if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
+      return;
+    }
+
+    const data = await safeFetchJson(
+      `${CONFIG.API_BASE_URL}${CONFIG.RECENT_ACTIVITY_ENDPOINT}?limit=20`
+    );
+
+    const items = Array.isArray(data?.items) ? data.items : [];
+
+    const root = document.getElementById('activityList');
+    if (!root) return;
+
+    if (!items.length) {
+      root.innerHTML = '<div class="activity-item">ยังไม่มีกิจกรรมล่าสุด</div>';
+      return;
+    }
+
+    root.innerHTML = items.map(item => {
+      const time = new Date(item.updated_at || Date.now())
+        .toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <div class="activity-item">
+          <strong>อัปเดตเคส ${escapeHtml(item.case_code || '-')}</strong>
+          <div class="meta-row">${escapeHtml(item.latest_note || item.message || '-')}</div>
+          <div class="meta-row" style="margin-top:6px">${time}</div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Realtime activity load error:', err);
+  }
+}
+  
 async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
 
 function normalizeStatus(item = {}) {

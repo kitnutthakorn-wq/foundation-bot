@@ -10,7 +10,7 @@ const { createClient } = require("@supabase/supabase-js");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-const supabaseAdmin = createClient(
+const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
@@ -1732,14 +1732,15 @@ if (!CHANNEL_ACCESS_TOKEN) {
   process.exit(1);
 }
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error("❌ Missing SUPABASE_URL or SUPABASE_KEY");
+if (!SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("❌ Missing SUPABASE_URL or SERVICE_ROLE_KEY");
   process.exit(1);
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const userStates = {};
-const caseFollowupTracker = {};
+const supabase = createClient(
+  SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 /* =========================
    MIDDLEWARE

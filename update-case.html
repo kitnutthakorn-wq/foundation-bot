@@ -322,7 +322,7 @@ async function submitCaseUpdate() {
     setStatus('กำลังอัปโหลดรูป บันทึกข้อมูล และแจ้งเตือน LINE...', 'warn');
 
     const formData = new FormData();
-    formData.append('caseCode', caseCode);
+   formData.append('case_code', caseCode);
     formData.append('title', title);
     formData.append('message', message);
     formData.append('progressStatus', progressStatus);

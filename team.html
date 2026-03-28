@@ -140,7 +140,6 @@ const CONFIG = {
   TEAM_ROLE_ENDPOINT: "/api/team/me",
   CASES_ENDPOINT: "/api/team/cases",
   ACTIVITY_ENDPOINT: "/api/team/activities",
-  RECENT_ACTIVITY_ENDPOINT: "/api/recent-activity",
   ASSIGN_CASE_ENDPOINT: "/api/team/cases/assign",
   UPDATE_STATUS_ENDPOINT: "/api/team/cases/status",
   SEND_UPDATE_ENDPOINT: "/api/team/send-update",
@@ -165,11 +164,6 @@ const demoActivities = [
 const statusClass = s => ({new:'new',progress:'progress',urgent:'urgent',done:'done'})[s] || 'new';
 const statusLabel = s => ({new:'เคสใหม่',progress:'กำลังดำเนินการ',urgent:'ด่วน',done:'ปิดเคสแล้ว'})[s] || s;
 const escapeHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-const formatActivityTime = value => {
-  const d = value ? new Date(value) : null;
-  if (!d || Number.isNaN(d.getTime())) return '-';
-  return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-};
 
 async function safeFetchJson(url, options={}) {
   const res = await fetch(url, options), text = await res.text();
@@ -190,40 +184,7 @@ async function initLiff(){
 }
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
-
-async function loadRecentActivityRealtime() {
-  try {
-    if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-      activities = demoActivities;
-      renderActivities();
-      return;
-    }
-
-    const data = await safeFetchJson(
-      `${CONFIG.API_BASE_URL}${CONFIG.RECENT_ACTIVITY_ENDPOINT}?limit=20`
-    );
-
-    const items = Array.isArray(data?.items) ? data.items : [];
-
-    activities = items.map(item => ({
-      title: `อัปเดตเคส ${item.case_code || '-'}`,
-      detail: item.latest_note || item.message || '-',
-      time: formatActivityTime(item.updated_at)
-    }));
-
-    renderActivities();
-  } catch (err) {
-    console.error('Realtime activity load error:', err);
-    if (!activities.length) {
-      activities = demoActivities;
-      renderActivities();
-    }
-  }
-}
-
-async function loadActivities(){
-  return loadRecentActivityRealtime();
-}
+async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
 
 function normalizeStatus(item = {}) {
   const s = String(item.status || "").toLowerCase().trim();
@@ -482,7 +443,9 @@ function renderActivities(){document.getElementById('activityList').innerHTML=ac
 function applyPresetFilter(s){currentPresetFilter='all';document.getElementById('statusFilter').value=s; renderCases();}
 function filterTodayCases(){currentPresetFilter='today';document.getElementById('statusFilter').value='all';renderCases();}
 function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}
-function viewCase(code){alert(`ดูรายละเอียดเคส: ${code}\n\nPhase ถัดไปสามารถต่อหน้า case-detail.html หรือ modal ได้`);}
+function viewCase(code){
+  window.location.href = `team-case-view.html?case_code=${encodeURIComponent(code)}`;
+}
 function openCaseUpdateLiff(caseCode){
   const target = `update-case.html?case_code=${encodeURIComponent(caseCode)}`;
   window.location.href = target;
@@ -490,61 +453,9 @@ function openCaseUpdateLiff(caseCode){
 
 async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
-function connectRealtime() {
-  try {
-    if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
-      document.getElementById('realtimeStatus').textContent = 'Demo mode';
-      return;
-    }
-
-    if (eventSource) eventSource.close();
-    eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`);
-
-    eventSource.onopen = () => {
-      document.getElementById('realtimeStatus').textContent = 'Connected';
-    };
-
-    eventSource.onmessage = async (event) => {
-      try {
-        const payload = JSON.parse(event.data || '{}');
-        document.getElementById('realtimeStatus').textContent = 'Syncing...';
-
-        if (payload.type === 'case_update' || payload.type === 'recent_activity_refresh') {
-          await loadRecentActivityRealtime();
-          document.getElementById('realtimeStatus').textContent = 'Connected';
-          return;
-        }
-
-        await Promise.all([loadCases(), loadActivities()]);
-        document.getElementById('realtimeStatus').textContent = 'Connected';
-      } catch (err) {
-        console.error('SSE parse error', err);
-        document.getElementById('realtimeStatus').textContent = 'Connected';
-      }
-    };
-
-    eventSource.addEventListener('case_update', async () => {
-      document.getElementById('realtimeStatus').textContent = 'Syncing...';
-      await loadRecentActivityRealtime();
-      document.getElementById('realtimeStatus').textContent = 'Connected';
-    });
-
-    eventSource.addEventListener('recent_activity_refresh', async () => {
-      document.getElementById('realtimeStatus').textContent = 'Syncing...';
-      await loadRecentActivityRealtime();
-      document.getElementById('realtimeStatus').textContent = 'Connected';
-    });
-
-    eventSource.onerror = () => {
-      document.getElementById('realtimeStatus').textContent = 'Reconnect...';
-    };
-  } catch {
-    document.getElementById('realtimeStatus').textContent = 'Unavailable';
-  }
-}
-
+function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); await loadRecentActivityRealtime(); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
 bootstrap();
 </script>
 </body>

@@ -114,7 +114,10 @@
   </div>
 
   <div class="card">
-    <div class="headline"><div><h2>แบบฟอร์มอัปเดตเคส</h2><p>เวอร์ชันพร้อมใช้งานจริงสำหรับภาคสนาม</p></div></div>
+  <input type="hidden" id="case_code" />
+
+  <div class="headline">
+      <div><h2>แบบฟอร์มอัปเดตเคส</h2><p>เวอร์ชันพร้อมใช้งานจริงสำหรับภาคสนาม</p></div></div>
 
     <div class="inline-grid">
       <div class="field">
@@ -322,7 +325,7 @@ async function submitCaseUpdate() {
     setStatus('กำลังอัปโหลดรูป บันทึกข้อมูล และแจ้งเตือน LINE...', 'warn');
 
     const formData = new FormData();
-   formData.append('case_code', caseCode);
+  formData.append('case_code', caseCode);
     formData.append('title', title);
     formData.append('message', message);
     formData.append('progressStatus', progressStatus);

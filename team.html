@@ -492,8 +492,11 @@ async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.incl
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
 function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
-bootstrap();
+async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole();
+await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+
+  
+  bootstrap();
 </script>
 </body>
 </html>

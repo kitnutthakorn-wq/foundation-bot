@@ -1907,17 +1907,24 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
     }
 
     const payload = {
-      case_code,
-      message,
-      updater_name,
-      updater_user_id,
-      latitude: latitude ? Number(latitude) : null,
-      longitude: longitude ? Number(longitude) : null,
-      location_text,
-      status_after,
-      images: imageUrls,
-      updated_at: new Date().toISOString()
-    };
+  case_code,
+  message,
+  updater_name,
+  updater_user_id,
+  updated_by: updater_user_id,
+  updated_by_user_id: updater_user_id,
+  updated_by_role: null,
+  progress_percent: null,
+  current_step: null,
+  waiting_for: null,
+  latest_note: message,
+  latitude: latitude ? Number(latitude) : null,
+  longitude: longitude ? Number(longitude) : null,
+  location_text,
+  status_after,
+  images: imageUrls,
+  updated_at: new Date().toISOString()
+};
 
     const { data: insertedUpdate, error } = await supabase
   .from("case_updates")

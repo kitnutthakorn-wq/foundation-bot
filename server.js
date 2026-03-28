@@ -5300,11 +5300,10 @@ app.post("/api/team/cases/status", async (req, res) => {
     const actorName = displayName || "ทีมงาน";
 
     const payload = {
-      status: nextStatus,
-      updated_at: new Date().toISOString(),
-      last_action_at: new Date().toISOString(),
-      last_action_by: actorName,
-    };
+  status: nextStatus,
+  last_action_at: new Date().toISOString(),
+  last_action_by: actorName,
+};
 
     if (nextStatus === "done") {
       payload.closed_at = new Date().toISOString();

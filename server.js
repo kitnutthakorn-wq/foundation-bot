@@ -1919,10 +1919,11 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       updated_at: new Date().toISOString()
     };
 
-    const { error } = await supabase
-      .from("case_updates")
-      .upsert(payload, { onConflict: "case_code" });
-
+    const { data: insertedUpdate, error } = await supabase
+  .from("case_updates")
+  .insert([payload])
+  .select()
+  .single();
     if (error) throw error;
 
     // 🔥 LINE notify

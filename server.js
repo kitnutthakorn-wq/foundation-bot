@@ -1799,6 +1799,101 @@ app.get("/team.html", (req, res) => {
   res.sendFile(path.join(__dirname, "team.html"));
 });
 
+// =========================
+// 🔥 CASE UPDATE (REAL FLOW)
+// =========================
+app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
+  try {
+    const {
+      case_code,
+      message,
+      updater_name,
+      updater_user_id,
+      latitude,
+      longitude,
+      location_text,
+      status_after
+    } = req.body;
+
+    if (!case_code) {
+      return res.status(400).json({ ok: false, error: "case_code is required" });
+    }
+
+    const imageUrls = [];
+
+    if (req.files?.length) {
+      for (const file of req.files) {
+        const ext = (file.mimetype || "image/jpeg").split("/")[1] || "jpg";
+        const fileName = `case/${case_code}/${uuidv4()}.${ext}`;
+
+        const { error: uploadError } = await supabase
+          .storage
+          .from("case-updates")
+          .upload(fileName, file.buffer, {
+            contentType: file.mimetype,
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data } = await supabase
+          .storage
+          .from("case-updates")
+          .createSignedUrl(fileName, 60 * 60 * 24 * 7);
+
+        imageUrls.push(data?.signedUrl || "");
+      }
+    }
+
+    const payload = {
+      case_code,
+      message: message || null,
+      updater_name: updater_name || null,
+      updater_user_id: updater_user_id || null,
+      latitude: latitude ? Number(latitude) : null,
+      longitude: longitude ? Number(longitude) : null,
+      location_text: location_text || null,
+      status_after: status_after || null,
+      images: imageUrls
+    };
+
+    const { error } = await supabase
+      .from("case_updates")
+      .insert(payload);
+
+    if (error) throw error;
+
+    // 🔥 LINE notify
+    if (CHANNEL_ACCESS_TOKEN && EFFECTIVE_TEAM_GROUP_ID) {
+      await fetch("https://api.line.me/v2/bot/message/push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`
+        },
+        body: JSON.stringify({
+          to: EFFECTIVE_TEAM_GROUP_ID,
+          messages: [{
+            type: "text",
+            text:
+              `📢 อัปเดตเคส\n` +
+              `เลขเคส: ${case_code}\n` +
+              `ผู้ส่ง: ${updater_name || "-"}\n` +
+              `รายละเอียด: ${message || "-"}\n` +
+              `${imageUrls.length ? `แนบรูป ${imageUrls.length} รูป` : "ไม่มีรูป"}`
+          }]
+        })
+      });
+    }
+
+    res.json({ ok: true });
+
+  } catch (err) {
+    console.error("CASE UPDATE ERROR:", err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.get("/logo.png", (req, res) => {
   res.sendFile(path.join(__dirname, "Logo.png"));
 });

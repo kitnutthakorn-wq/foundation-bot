@@ -15,6 +15,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+const userStates = {};
+const caseFollowupTracker = {};
 const fetch = (...args) => {
   if (typeof globalThis.fetch === "function") {
     return globalThis.fetch(...args);
@@ -1737,10 +1739,9 @@ if (!SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-const supabase = createClient(
-  SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+
+
+
 
 /* =========================
    MIDDLEWARE

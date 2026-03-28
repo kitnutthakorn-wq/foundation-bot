@@ -1792,12 +1792,52 @@ app.get("/case", checkDashboardAuth, (req, res) => {
 app.get("/report", checkDashboardAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "report.html"));
 });
+app.get("/team.html", (req, res) => {
+  res.redirect("/team");
+});
+
 app.get("/team", (req, res) => {
   res.sendFile(path.join(__dirname, "team.html"));
 });
 
-app.get("/team.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "team.html"));
+app.get("/api/recent-activity", async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "20", 10), 50);
+
+    const { data, error } = await supabase
+      .from("case_updates")
+      .select(`
+        id,
+        case_code,
+        progress_percent,
+        current_step,
+        waiting_for,
+        latest_note,
+        updated_at,
+        updated_by,
+        updated_by_user_id,
+        updated_by_role,
+        updater_name,
+        message,
+        images,
+        status_after
+      `)
+      .order("updated_at", { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+
+    return res.json({
+      ok: true,
+      items: data || [],
+    });
+  } catch (err) {
+    console.error("recent-activity error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "recent-activity failed",
+    });
+  }
 });
 
 // =========================

@@ -4,7 +4,17 @@ require("dotenv").config();
 const express = require("express");
 const crypto = require("crypto");
 const path = require("path");
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 const fetch = (...args) => {
   if (typeof globalThis.fetch === "function") {
     return globalThis.fetch(...args);
@@ -18,7 +28,7 @@ const PORT = process.env.PORT || 3000;
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
 
 const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID || "";
 const LINE_GROUP_ID = process.env.LINE_GROUP_ID || "";

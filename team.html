@@ -165,6 +165,11 @@ const demoActivities = [
 const statusClass = s => ({new:'new',progress:'progress',urgent:'urgent',done:'done'})[s] || 'new';
 const statusLabel = s => ({new:'เคสใหม่',progress:'กำลังดำเนินการ',urgent:'ด่วน',done:'ปิดเคสแล้ว'})[s] || s;
 const escapeHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+const formatActivityTime = value => {
+  const d = value ? new Date(value) : null;
+  if (!d || Number.isNaN(d.getTime())) return '-';
+  return d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+};
 
 async function safeFetchJson(url, options={}) {
   const res = await fetch(url, options), text = await res.text();
@@ -189,6 +194,8 @@ async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com'
 async function loadRecentActivityRealtime() {
   try {
     if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
+      activities = demoActivities;
+      renderActivities();
       return;
     }
 
@@ -198,32 +205,25 @@ async function loadRecentActivityRealtime() {
 
     const items = Array.isArray(data?.items) ? data.items : [];
 
-    const root = document.getElementById('activityList');
-    if (!root) return;
+    activities = items.map(item => ({
+      title: `อัปเดตเคส ${item.case_code || '-'}`,
+      detail: item.latest_note || item.message || '-',
+      time: formatActivityTime(item.updated_at)
+    }));
 
-    if (!items.length) {
-      root.innerHTML = '<div class="activity-item">ยังไม่มีกิจกรรมล่าสุด</div>';
-      return;
-    }
-
-    root.innerHTML = items.map(item => {
-      const time = new Date(item.updated_at || Date.now())
-        .toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-
-      return `
-        <div class="activity-item">
-          <strong>อัปเดตเคส ${escapeHtml(item.case_code || '-')}</strong>
-          <div class="meta-row">${escapeHtml(item.latest_note || item.message || '-')}</div>
-          <div class="meta-row" style="margin-top:6px">${time}</div>
-        </div>
-      `;
-    }).join('');
+    renderActivities();
   } catch (err) {
     console.error('Realtime activity load error:', err);
+    if (!activities.length) {
+      activities = demoActivities;
+      renderActivities();
+    }
   }
 }
-  
-async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
+
+async function loadActivities(){
+  return loadRecentActivityRealtime();
+}
 
 function normalizeStatus(item = {}) {
   const s = String(item.status || "").toLowerCase().trim();
@@ -490,13 +490,62 @@ function openCaseUpdateLiff(caseCode){
 
 async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
-function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
-async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole();
-await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+function connectRealtime() {
+  try {
+    if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
+      document.getElementById('realtimeStatus').textContent = 'Demo mode';
+      return;
+    }
 
-  
-  bootstrap();
+    if (eventSource) eventSource.close();
+    eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`);
+
+    eventSource.onopen = () => {
+      document.getElementById('realtimeStatus').textContent = 'Connected';
+    };
+
+    eventSource.onmessage = async (event) => {
+      try {
+        const payload = JSON.parse(event.data || '{}');
+        document.getElementById('realtimeStatus').textContent = 'Syncing...';
+
+        if (payload.type === 'case_update' || payload.type === 'recent_activity_refresh') {
+          await loadRecentActivityRealtime();
+          document.getElementById('realtimeStatus').textContent = 'Connected';
+          return;
+        }
+
+        await Promise.all([loadCases(), loadActivities()]);
+        document.getElementById('realtimeStatus').textContent = 'Connected';
+      } catch (err) {
+        console.error('SSE parse error', err);
+        document.getElementById('realtimeStatus').textContent = 'Connected';
+      }
+    };
+
+    eventSource.addEventListener('case_update', async () => {
+      document.getElementById('realtimeStatus').textContent = 'Syncing...';
+      await loadRecentActivityRealtime();
+      document.getElementById('realtimeStatus').textContent = 'Connected';
+    });
+
+    eventSource.addEventListener('recent_activity_refresh', async () => {
+      document.getElementById('realtimeStatus').textContent = 'Syncing...';
+      await loadRecentActivityRealtime();
+      document.getElementById('realtimeStatus').textContent = 'Connected';
+    });
+
+    eventSource.onerror = () => {
+      document.getElementById('realtimeStatus').textContent = 'Reconnect...';
+    };
+  } catch {
+    document.getElementById('realtimeStatus').textContent = 'Unavailable';
+  }
+}
+
+async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
+async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); await loadRecentActivityRealtime(); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+bootstrap();
 </script>
 </body>
 </html>

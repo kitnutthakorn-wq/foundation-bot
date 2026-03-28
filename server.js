@@ -1806,15 +1806,33 @@ app.get("/team.html", (req, res) => {
 app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
   try {
     const {
-      case_code,
-      message,
-      updater_name,
-      updater_user_id,
+      case_code: rawCaseCode,
+      message: rawMessage,
+      updater_name: rawUpdaterName,
+      updater_user_id: rawUpdaterUserId,
       latitude,
       longitude,
-      location_text,
-      status_after
+      location_text: rawLocationText,
+      status_after: rawStatusAfter,
+      title,
+      progressStatus,
+      senderName,
+      senderUserId,
+      locationText
     } = req.body;
+
+    const case_code = String(rawCaseCode || req.body.caseCode || "").trim();
+    const updater_name = String(rawUpdaterName || senderName || "").trim() || null;
+    const updater_user_id = String(rawUpdaterUserId || senderUserId || "").trim() || null;
+    const status_after = String(rawStatusAfter || progressStatus || "").trim() || null;
+    const location_text = String(rawLocationText || locationText || "").trim() || null;
+
+    const trimmedTitle = String(title || "").trim();
+    const trimmedMessage = String(rawMessage || "").trim();
+    const message = [trimmedTitle ? `[${trimmedTitle}]` : "", trimmedMessage]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || null;
 
     if (!case_code) {
       return res.status(400).json({ ok: false, error: "case_code is required" });
@@ -1837,10 +1855,12 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
 
         if (uploadError) throw uploadError;
 
-        const { data } = await supabase
+        const { data, error: signedUrlError } = await supabase
           .storage
           .from("case-updates")
           .createSignedUrl(fileName, 60 * 60 * 24 * 7);
+
+        if (signedUrlError) throw signedUrlError;
 
         imageUrls.push(data?.signedUrl || "");
       }
@@ -1848,19 +1868,20 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
 
     const payload = {
       case_code,
-      message: message || null,
-      updater_name: updater_name || null,
-      updater_user_id: updater_user_id || null,
+      message,
+      updater_name,
+      updater_user_id,
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
-      location_text: location_text || null,
-      status_after: status_after || null,
-      images: imageUrls
+      location_text,
+      status_after,
+      images: imageUrls,
+      updated_at: new Date().toISOString()
     };
 
     const { error } = await supabase
       .from("case_updates")
-      .insert(payload);
+      .upsert(payload, { onConflict: "case_code" });
 
     if (error) throw error;
 
@@ -5085,21 +5106,21 @@ app.get("/api/team/activities", async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit || "10", 10), 30);
     const result = await supabase
       .from("help_requests")
-      .select("case_code, full_name, status, assigned_to, last_action_by, updated_at, created_at")
-      .order("updated_at", { ascending: false })
+      .select("case_code, full_name, status, assigned_to, last_action_by, created_at")
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (result.error) throw result.error;
 
-   const activities = (result.data || []).map((row) => {
-  const actor = row.assigned_to || row.last_action_by || "-";
+    const activities = (result.data || []).map((row) => {
+      const actor = row.assigned_to || row.last_action_by || "-";
 
-  return {
-    title: `อัปเดตเคส ${row.case_code || "-"}`,
-    detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${actor}`,
-    time: formatThaiDateTime(row.updated_at || row.created_at || null),
-  };
-});
+      return {
+        title: `อัปเดตเคส ${row.case_code || "-"}`,
+        detail: `${row.full_name || "ไม่ระบุชื่อ"} • สถานะ ${row.status || "-"} • ผู้รับเคส ${actor}`,
+        time: formatThaiDateTime(row.created_at || null),
+      };
+    });
 
     return res.json({
       ok: true,

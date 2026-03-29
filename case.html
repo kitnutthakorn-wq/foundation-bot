@@ -463,7 +463,10 @@ button:active{transform:translateY(0)}
     <button onclick="assignCase()">รับเคส</button>
     <button onclick="closeCase()" class="secondary">ปิดเคส</button>
   </div>
-  <div class="toast-wrap" id="toastWrap"></div>
+  <div class="toast-wrap" id="toastWrap"></div>  
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get("id");
 
 function statusThai(status) {
   const s = String(status || '').trim().toLowerCase();
@@ -476,10 +479,8 @@ function statusThai(status) {
 
   return status || '-';
 }
-  
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("id");
+    
+    
     let eventSource = null;
 
     const formState = {

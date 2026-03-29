@@ -1844,19 +1844,32 @@ app.get("/api/recent-activity", async (req, res) => {
 // MAP API (Golden Safe Patch - YOUR VERSION)
 // ===============================
 app.get("/api/cases/map", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
   try {
     const { data, error } = await supabase
       .from("help_requests")
       .select(`
+        id,
         case_code,
         full_name,
         phone,
+        location,
+        problem,
         status,
         priority,
         latitude,
         longitude,
         location_text,
-        updated_at
+        latest_note,
+        updated_at,
+        created_at
       `)
       .not("latitude", "is", null)
       .not("longitude", "is", null)
@@ -1873,15 +1886,20 @@ app.get("/api/cases/map", async (req, res) => {
     return res.json({
       ok: true,
       items: (data || []).map((row) => ({
+        id: row.id || null,
         case_code: row.case_code || "",
         full_name: row.full_name || "-",
         phone: row.phone || "-",
+        location: row.location || "",
+        problem: row.problem || "",
         status: row.status || "new",
         priority: row.priority || "normal",
-        latitude: row.latitude,
-        longitude: row.longitude,
-        location_text: row.location_text || "",
-        updated_at: row.updated_at || null
+        latitude: typeof row.latitude === "number" ? row.latitude : Number(row.latitude),
+        longitude: typeof row.longitude === "number" ? row.longitude : Number(row.longitude),
+        location_text: row.location_text || row.location || "",
+        latest_note: row.latest_note || "",
+        updated_at: row.updated_at || row.created_at || null,
+        created_at: row.created_at || null
       }))
     });
 
@@ -2047,6 +2065,18 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       last_action_by: payload.updater_name || payload.updated_by || null
     };
 
+    if (payload.latitude !== null && Number.isFinite(payload.latitude)) {
+      latestFields.latitude = payload.latitude;
+    }
+
+    if (payload.longitude !== null && Number.isFinite(payload.longitude)) {
+      latestFields.longitude = payload.longitude;
+    }
+
+    if (payload.location_text) {
+      latestFields.location_text = payload.location_text;
+    }
+
     if (payload.status_after) {
       latestFields.status = payload.status_after;
     }
@@ -2076,7 +2106,10 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
         updater_name: insertedUpdate.updater_name,
         message: insertedUpdate.message,
         images: insertedUpdate.images || [],
-        status_after: insertedUpdate.status_after
+        status_after: insertedUpdate.status_after,
+        latitude: insertedUpdate.latitude,
+        longitude: insertedUpdate.longitude,
+        location_text: insertedUpdate.location_text || ""
       }
     });
 

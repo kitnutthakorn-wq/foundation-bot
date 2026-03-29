@@ -5,132 +5,698 @@
   <title>Live Map Command Center</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <style>
     :root {
-      --brand:#0b7c86;
-      --bg:#edf2f5;
-      --card:#fff;
+      --brand: #0b7c86;
+      --brand-dark: #163c72;
+      --accent: #1f8f4d;
+      --bg: #edf2f5;
+      --card: #ffffff;
+      --line: #dbe3ea;
+      --text: #0f172a;
+      --muted: #64748b;
+      --shadow: 0 10px 24px rgba(18, 36, 58, 0.08);
+      --danger: #dc2626;
+      --warning: #ea580c;
+      --info: #2563eb;
+      --low: #6b7280;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: system-ui;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background: var(--bg);
     }
 
-    header {
-      padding: 14px 18px;
-      background: var(--brand);
-      color: white;
-      font-weight: bold;
+    .page-shell {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      min-height: 100vh;
+    }
+
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      box-shadow: var(--shadow);
     }
 
-    #map {
-      height: calc(100vh - 56px);
+    .topbar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .topbar-title strong {
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .topbar-title span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, minmax(120px, 180px)) auto;
+      gap: 12px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.92);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .field,
+    .toolbar button,
+    .toolbar select {
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font: inherit;
+    }
+
+    .field,
+    .toolbar select {
+      width: 100%;
+      padding: 0 12px;
+      outline: none;
+    }
+
+    .toolbar button {
+      padding: 0 14px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+      box-shadow: 0 2px 0 rgba(15, 23, 42, 0.03);
+    }
+
+    .toolbar button:hover { transform: translateY(-1px); }
+    .toolbar button:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--brand-dark);
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 14px;
+      padding: 14px 18px 18px;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fbfc;
+    }
+
+    .panel-header strong {
+      font-size: 16px;
+    }
+
+    .panel-header span,
+    .subtle {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .case-list {
+      max-height: calc(100vh - 190px);
+      overflow: auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fff;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      cursor: pointer;
+    }
+
+    .case-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(18, 36, 58, 0.08);
+    }
+
+    .case-card.active {
+      border-color: rgba(11, 124, 134, 0.45);
+      box-shadow: 0 0 0 3px rgba(11, 124, 134, 0.10);
+    }
+
+    .case-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .case-code {
+      font-weight: 800;
+      color: var(--brand-dark);
+    }
+
+    .case-name {
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .case-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
     }
 
     .badge {
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 6px;
-      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
     }
 
-    .urgent { background: red; }
-    .high { background: orange; }
-    .normal { background: blue; }
-    .low { background: gray; }
+    .badge.priority-urgent, .badge.status-cancelled { background: var(--danger); }
+    .badge.priority-high { background: var(--warning); }
+    .badge.priority-normal, .badge.status-new { background: var(--info); }
+    .badge.priority-low { background: var(--low); }
+    .badge.status-in_progress { background: #b45309; }
+    .badge.status-done { background: var(--accent); }
+
+    .case-note,
+    .case-location {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.45;
+    }
+
+    .map-panel {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: calc(100vh - 190px);
+    }
+
+    .map-meta {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      color: var(--brand-dark);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #map {
+      width: 100%;
+      min-height: 420px;
+      height: 100%;
+    }
+
+    .status-banner {
+      display: none;
+      margin: 12px 18px 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      color: #991b1b;
+      font-size: 14px;
+    }
+
+    .status-banner.show { display: block; }
+
+    .empty-state {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    @media (max-width: 980px) {
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .case-list {
+        max-height: none;
+      }
+
+      .map-panel {
+        min-height: 70vh;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="topbar-title">
+        <strong>🗺️ Live Map Command Center</strong>
+        <span>Golden Version Safe Patch • Live cases map • Auto refresh ทุก 20 วินาที</span>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#dc2626"></span>ด่วน</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ea580c"></span>สูง</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>ปกติ</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#6b7280"></span>ต่ำ</span>
+      </div>
+    </header>
 
-<header>
-  🗺️ Live Map Command Center
-  <button onclick="loadMapData()">รีเฟรช</button>
-</header>
+    <section class="toolbar">
+      <input id="searchInput" class="field" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / พื้นที่" />
+      <select id="statusFilter">
+        <option value="">ทุกสถานะ</option>
+        <option value="new">รับเรื่องแล้ว</option>
+        <option value="in_progress">กำลังดำเนินการ</option>
+        <option value="done">เสร็จสิ้นแล้ว</option>
+        <option value="cancelled">ยกเลิก</option>
+      </select>
+      <select id="priorityFilter">
+        <option value="">ทุกระดับ</option>
+        <option value="urgent">ด่วน</option>
+        <option value="high">สูง</option>
+        <option value="normal">ปกติ</option>
+        <option value="low">ต่ำ</option>
+      </select>
+      <select id="sortFilter">
+        <option value="updated_desc">อัปเดตล่าสุดก่อน</option>
+        <option value="priority_desc">ด่วนก่อน</option>
+        <option value="name_asc">ชื่อ A-Z</option>
+      </select>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-secondary" id="fitAllBtn" type="button">จัดกรอบหมุด</button>
+        <button class="btn-primary" id="refreshBtn" type="button">รีเฟรช</button>
+      </div>
+    </section>
 
-<div id="map"></div>
+    <div id="statusBanner" class="status-banner"></div>
 
-<script>
-const API_URL = "/api/cases/map";
+    <main class="content">
+      <aside class="panel">
+        <div class="panel-header">
+          <strong>รายการเคสบนแผนที่</strong>
+          <span id="resultCount">0 เคส</span>
+        </div>
+        <div id="caseList" class="case-list"></div>
+      </aside>
 
-// ตั้งค่า map เริ่มต้น (สุราษฎร์)
-const map = L.map('map').setView([9.14, 99.33], 8);
+      <section class="panel map-panel">
+        <div class="map-meta">
+          <span class="pill" id="lastRefresh">ยังไม่ได้โหลดข้อมูล</span>
+          <span class="pill" id="apiInfo">API: waiting</span>
+          <span class="subtle">คลิกหมุดหรือรายการด้านซ้ายเพื่อโฟกัสเคส</span>
+        </div>
+        <div id="map"></div>
+      </section>
+    </main>
+  </div>
 
-// base map
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 18
-}).addTo(map);
+  <script>
+    const DEFAULT_API_BASE = "https://foundation-bot-p5wu.onrender.com";
+    const API_BASE = (() => {
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = (params.get("apiBase") || "").trim();
+      const fromStorage = (localStorage.getItem("FOUNDATION_API_BASE") || "").trim();
+      const chosen = fromQuery || fromStorage || DEFAULT_API_BASE;
+      if (fromQuery) localStorage.setItem("FOUNDATION_API_BASE", fromQuery);
+      return chosen.replace(/\/$/, "");
+    })();
+    const API_URL = `${API_BASE}/api/cases/map`;
+    const CASE_VIEW_URL = `${API_BASE}/case`;
+    const AUTO_REFRESH_MS = 20000;
 
-// layer marker
-let markersLayer = L.layerGroup().addTo(map);
+    const map = L.map("map", { preferCanvas: true }).setView([9.14, 99.33], 8);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(map);
 
-// สีตาม priority
-function getColor(priority) {
-  if (priority === "urgent") return "red";
-  if (priority === "high") return "orange";
-  if (priority === "normal") return "blue";
-  return "gray";
-}
+    const markersLayer = L.layerGroup().addTo(map);
+    const markerIndex = new Map();
 
-// badge html
-function badge(priority) {
-  return `<span class="badge ${priority}">${priority}</span>`;
-}
+    const state = {
+      rawItems: [],
+      filteredItems: [],
+      selectedCaseCode: ""
+    };
 
-// โหลดข้อมูล
-async function loadMapData() {
-  try {
-    const res = await fetch(API_URL);
-    const json = await res.json();
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const priorityFilter = document.getElementById("priorityFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const caseList = document.getElementById("caseList");
+    const resultCount = document.getElementById("resultCount");
+    const lastRefresh = document.getElementById("lastRefresh");
+    const apiInfo = document.getElementById("apiInfo");
+    const statusBanner = document.getElementById("statusBanner");
 
-    markersLayer.clearLayers();
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
-    (json.items || []).forEach(c => {
-      if (!c.latitude || !c.longitude) return;
+    function formatThaiDateTime(value) {
+      if (!value) return "-";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString("th-TH", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
-      const marker = L.circleMarker([c.latitude, c.longitude], {
-        radius: 9,
-        color: getColor(c.priority),
-        fillOpacity: 0.9
+    function getPriorityWeight(priority) {
+      switch (String(priority || "").toLowerCase()) {
+        case "urgent": return 4;
+        case "high": return 3;
+        case "normal": return 2;
+        case "low": return 1;
+        default: return 0;
+      }
+    }
+
+    function getPriorityLabel(priority) {
+      switch (String(priority || "").toLowerCase()) {
+        case "urgent": return "ด่วน";
+        case "high": return "สูง";
+        case "normal": return "ปกติ";
+        case "low": return "ต่ำ";
+        default: return "-";
+      }
+    }
+
+    function getStatusLabel(status) {
+      switch (String(status || "").toLowerCase()) {
+        case "new": return "รับเรื่องแล้ว";
+        case "in_progress": return "กำลังดำเนินการ";
+        case "done": return "เสร็จสิ้นแล้ว";
+        case "cancelled": return "ยกเลิก";
+        default: return status || "-";
+      }
+    }
+
+    function getPriorityColor(priority) {
+      switch (String(priority || "").toLowerCase()) {
+        case "urgent": return "#dc2626";
+        case "high": return "#ea580c";
+        case "normal": return "#2563eb";
+        case "low": return "#6b7280";
+        default: return "#64748b";
+      }
+    }
+
+    function setBanner(message, isError = false) {
+      if (!message) {
+        statusBanner.classList.remove("show");
+        statusBanner.textContent = "";
+        return;
+      }
+      statusBanner.textContent = message;
+      statusBanner.classList.add("show");
+      statusBanner.style.borderColor = isError ? "#fecaca" : "#bbf7d0";
+      statusBanner.style.background = isError ? "#fff1f2" : "#f0fdf4";
+      statusBanner.style.color = isError ? "#991b1b" : "#166534";
+    }
+
+    function normalizeItem(item) {
+      return {
+        ...item,
+        latitude: Number(item.latitude),
+        longitude: Number(item.longitude),
+        status: String(item.status || "new").toLowerCase(),
+        priority: String(item.priority || "normal").toLowerCase(),
+        searchable: [item.case_code, item.full_name, item.location, item.location_text, item.problem]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+      };
+    }
+
+    function applyFilters(items) {
+      const q = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
+      const priority = priorityFilter.value;
+      const sort = sortFilter.value;
+
+      const filtered = items.filter((item) => {
+        if (!Number.isFinite(item.latitude) || !Number.isFinite(item.longitude)) return false;
+        if (status && item.status !== status) return false;
+        if (priority && item.priority !== priority) return false;
+        if (q && !item.searchable.includes(q)) return false;
+        return true;
       });
 
-      marker.bindPopup(`
-        <b>${c.case_code}</b><br><br>
-        👤 ${c.full_name}<br>
-        📌 สถานะ: ${c.status}<br>
-        ⚡ ระดับ: ${badge(c.priority)}<br><br>
-        📍 ${c.location_text || "-"}<br>
-        🕒 ${c.updated_at || "-"}<br><br>
-        <button onclick="openCase('${c.case_code}')">ดูรายละเอียด</button>
-      `);
+      filtered.sort((a, b) => {
+        if (sort === "priority_desc") {
+          return getPriorityWeight(b.priority) - getPriorityWeight(a.priority) || new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
+        }
+        if (sort === "name_asc") {
+          return String(a.full_name || "").localeCompare(String(b.full_name || ""), "th");
+        }
+        return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
+      });
 
-      markersLayer.addLayer(marker);
+      return filtered;
+    }
+
+    function renderCaseList(items) {
+      resultCount.textContent = `${items.length} เคส`;
+
+      if (!items.length) {
+        caseList.innerHTML = `<div class="empty-state">ยังไม่พบเคสที่มีพิกัดตามเงื่อนไขที่เลือก</div>`;
+        return;
+      }
+
+      caseList.innerHTML = items.map((item) => `
+        <article class="case-card ${state.selectedCaseCode === item.case_code ? "active" : ""}" data-case-code="${escapeHtml(item.case_code)}">
+          <div class="case-row">
+            <div>
+              <div class="case-code">${escapeHtml(item.case_code || "-")}</div>
+              <div class="case-name">${escapeHtml(item.full_name || "-")}</div>
+            </div>
+            <span class="badge priority-${escapeHtml(item.priority)}">${escapeHtml(getPriorityLabel(item.priority))}</span>
+          </div>
+          <div class="case-meta">
+            <span class="badge status-${escapeHtml(item.status)}">${escapeHtml(getStatusLabel(item.status))}</span>
+            <span class="subtle">${escapeHtml(formatThaiDateTime(item.updated_at))}</span>
+          </div>
+          <div class="case-location">📍 ${escapeHtml(item.location_text || item.location || "-")}</div>
+          <div class="case-note">${escapeHtml(item.latest_note || item.problem || "ไม่มีบันทึกล่าสุด")}</div>
+        </article>
+      `).join("");
+
+      caseList.querySelectorAll(".case-card").forEach((el) => {
+        el.addEventListener("click", () => focusCase(el.dataset.caseCode));
+      });
+    }
+
+    function buildPopup(item) {
+      const caseLink = `${CASE_VIEW_URL}?case_code=${encodeURIComponent(item.case_code || "")}`;
+      return `
+        <div style="min-width:220px;line-height:1.5;">
+          <div style="font-weight:800;font-size:15px;color:#163c72;">${escapeHtml(item.case_code || "-")}</div>
+          <div style="margin-top:4px;">👤 ${escapeHtml(item.full_name || "-")}</div>
+          <div style="margin-top:4px;">📌 สถานะ: ${escapeHtml(getStatusLabel(item.status))}</div>
+          <div style="margin-top:4px;">⚡ ระดับ: <span style="display:inline-block;background:${getPriorityColor(item.priority)};color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;">${escapeHtml(getPriorityLabel(item.priority))}</span></div>
+          <div style="margin-top:8px;">📍 ${escapeHtml(item.location_text || item.location || "-")}</div>
+          <div style="margin-top:4px;">🕒 ${escapeHtml(formatThaiDateTime(item.updated_at))}</div>
+          <div style="margin-top:8px;color:#475569;">${escapeHtml(item.latest_note || item.problem || "ไม่มีบันทึกล่าสุด")}</div>
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <button type="button" onclick="openCase('${encodeURIComponent(item.case_code || "")}')" style="border:0;background:#0b7c86;color:#fff;border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer;">ดูรายละเอียด</button>
+            <a href="https://www.google.com/maps?q=${encodeURIComponent(`${item.latitude},${item.longitude}`)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#163c72;border:1px solid #dbe3ea;border-radius:10px;padding:8px 10px;font-weight:700;text-decoration:none;">เปิดในแผนที่</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMarkers(items) {
+      markersLayer.clearLayers();
+      markerIndex.clear();
+
+      items.forEach((item) => {
+        const marker = L.circleMarker([item.latitude, item.longitude], {
+          radius: item.priority === "urgent" ? 10 : 8,
+          color: getPriorityColor(item.priority),
+          weight: 2,
+          fillColor: getPriorityColor(item.priority),
+          fillOpacity: item.priority === "urgent" ? 0.92 : 0.8
+        });
+
+        marker.bindPopup(buildPopup(item));
+        marker.on("click", () => {
+          state.selectedCaseCode = item.case_code || "";
+          renderCaseList(state.filteredItems);
+        });
+
+        markersLayer.addLayer(marker);
+        markerIndex.set(item.case_code, marker);
+      });
+    }
+
+    function fitAllMarkers() {
+      const markers = Array.from(markerIndex.values());
+      if (!markers.length) return;
+      const group = L.featureGroup(markers);
+      map.fitBounds(group.getBounds().pad(0.15));
+    }
+
+    function focusCase(caseCode) {
+      const marker = markerIndex.get(caseCode);
+      if (!marker) return;
+      state.selectedCaseCode = caseCode;
+      renderCaseList(state.filteredItems);
+      map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 12), { duration: 0.6 });
+      marker.openPopup();
+    }
+
+    async function loadMapData() {
+      try {
+        apiInfo.textContent = `API: ${API_BASE}`;
+        const res = await fetch(API_URL, { cache: "no-store" });
+        const json = await res.json();
+
+        if (!res.ok || json.ok === false) {
+          throw new Error(json.error || `โหลดข้อมูลไม่สำเร็จ (${res.status})`);
+        }
+
+        state.rawItems = (json.items || []).map(normalizeItem);
+        state.filteredItems = applyFilters(state.rawItems);
+
+        renderCaseList(state.filteredItems);
+        renderMarkers(state.filteredItems);
+        lastRefresh.textContent = `อัปเดตล่าสุด: ${formatThaiDateTime(new Date().toISOString())}`;
+        setBanner("");
+
+        if (state.filteredItems.length) {
+          if (state.selectedCaseCode && markerIndex.has(state.selectedCaseCode)) {
+            focusCase(state.selectedCaseCode);
+          } else {
+            fitAllMarkers();
+          }
+        }
+      } catch (err) {
+        console.error("โหลด map ไม่สำเร็จ:", err);
+        setBanner(`โหลดแผนที่ไม่สำเร็จ: ${err.message || err}`, true);
+      }
+    }
+
+    function openCase(encodedCaseCode) {
+      const caseCode = decodeURIComponent(encodedCaseCode || "");
+      const url = `${CASE_VIEW_URL}?case_code=${encodeURIComponent(caseCode)}`;
+      window.open(url, "_blank", "noopener");
+    }
+
+    window.openCase = openCase;
+
+    [searchInput, statusFilter, priorityFilter, sortFilter].forEach((el) => {
+      el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => {
+        state.filteredItems = applyFilters(state.rawItems);
+        renderCaseList(state.filteredItems);
+        renderMarkers(state.filteredItems);
+        if (state.filteredItems.length) fitAllMarkers();
+      });
     });
 
-  } catch (err) {
-    console.error("โหลด map ไม่สำเร็จ:", err);
-  }
-}
+    document.getElementById("refreshBtn").addEventListener("click", loadMapData);
+    document.getElementById("fitAllBtn").addEventListener("click", fitAllMarkers);
 
-// ไปหน้าเคส
-function openCase(code) {
-  window.open(`/case.html?case_code=${code}`, "_blank");
-}
-
-// โหลดครั้งแรก
-loadMapData();
-
-// auto refresh ทุก 20 วิ
-setInterval(loadMapData, 20000);
-</script>
-
+    loadMapData();
+    setInterval(loadMapData, AUTO_REFRESH_MS);
+  </script>
 </body>
 </html>

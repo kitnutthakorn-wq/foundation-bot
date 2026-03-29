@@ -2,6 +2,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const crypto = require("crypto");
 const path = require("path");
 const multer = require("multer");
@@ -26,6 +27,23 @@ const fetch = (...args) => {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const ALLOWED_ORIGINS = [
+  process.env.APP_ORIGIN,
+  process.env.NETLIFY_URL ? `https://${process.env.NETLIFY_URL}` : null,
+  process.env.PUBLIC_SITE_URL,
+  "https://foundation-bot.netlify.app",
+].filter(Boolean);
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+    if (!ALLOWED_ORIGINS.length || ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    return callback(null, true);
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
@@ -1844,16 +1862,13 @@ app.get("/api/recent-activity", async (req, res) => {
 // MAP API (Golden Safe Patch - YOUR VERSION)
 // ===============================
 app.get("/api/cases/map", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
-
   try {
-    const { data, error } = await supabase
+    const statusFilter = String(req.query.status || "").trim().toLowerCase();
+    const priorityFilter = String(req.query.priority || "").trim().toLowerCase();
+    const search = String(req.query.search || "").trim();
+    const limit = Math.min(Math.max(parseInt(req.query.limit || "500", 10) || 500, 1), 1000);
+
+    let query = supabase
       .from("help_requests")
       .select(`
         id,
@@ -1864,23 +1879,31 @@ app.get("/api/cases/map", async (req, res) => {
         problem,
         status,
         priority,
+        assigned_to,
+        latest_note,
         latitude,
         longitude,
         location_text,
-        latest_note,
         updated_at,
         created_at
       `)
       .not("latitude", "is", null)
       .not("longitude", "is", null)
-      .order("updated_at", { ascending: false });
+      .order("updated_at", { ascending: false })
+      .limit(limit);
+
+    if (statusFilter) query = query.eq("status", statusFilter);
+    if (priorityFilter) query = query.eq("priority", priorityFilter);
+    if (search) {
+      const safe = search.replace(/,/g, " ").trim();
+      query = query.or(`case_code.ilike.%${safe}%,full_name.ilike.%${safe}%,phone.ilike.%${safe}%,location.ilike.%${safe}%,problem.ilike.%${safe}%,location_text.ilike.%${safe}%`);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("MAP API ERROR:", error);
-      return res.status(500).json({
-        ok: false,
-        error: error.message
-      });
+      return res.status(500).json({ ok: false, error: error.message });
     }
 
     return res.json({
@@ -1892,23 +1915,21 @@ app.get("/api/cases/map", async (req, res) => {
         phone: row.phone || "-",
         location: row.location || "",
         problem: row.problem || "",
+        assigned_to: row.assigned_to || "",
+        latest_note: row.latest_note || "",
         status: row.status || "new",
         priority: row.priority || "normal",
-        latitude: typeof row.latitude === "number" ? row.latitude : Number(row.latitude),
-        longitude: typeof row.longitude === "number" ? row.longitude : Number(row.longitude),
+        latitude: row.latitude,
+        longitude: row.longitude,
         location_text: row.location_text || row.location || "",
-        latest_note: row.latest_note || "",
-        updated_at: row.updated_at || row.created_at || null,
+        updated_at: row.updated_at || null,
         created_at: row.created_at || null
       }))
     });
 
   } catch (err) {
     console.error("GET /api/cases/map FAILED:", err);
-    return res.status(500).json({
-      ok: false,
-      error: err.message || "internal error"
-    });
+    return res.status(500).json({ ok: false, error: err.message || "internal error" });
   }
 });
 
@@ -2065,14 +2086,12 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       last_action_by: payload.updater_name || payload.updated_by || null
     };
 
-    if (payload.latitude !== null && Number.isFinite(payload.latitude)) {
+    if (typeof payload.latitude === "number" && !Number.isNaN(payload.latitude)) {
       latestFields.latitude = payload.latitude;
     }
-
-    if (payload.longitude !== null && Number.isFinite(payload.longitude)) {
+    if (typeof payload.longitude === "number" && !Number.isNaN(payload.longitude)) {
       latestFields.longitude = payload.longitude;
     }
-
     if (payload.location_text) {
       latestFields.location_text = payload.location_text;
     }
@@ -2111,6 +2130,15 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
         longitude: insertedUpdate.longitude,
         location_text: insertedUpdate.location_text || ""
       }
+    });
+
+    broadcastSse("case_geo_updated", {
+      scope: "team_workspace",
+      case_code: insertedUpdate.case_code,
+      latitude: insertedUpdate.latitude,
+      longitude: insertedUpdate.longitude,
+      location_text: insertedUpdate.location_text || "",
+      updated_at: insertedUpdate.updated_at
     });
 
     broadcastSse("recent_activity_refresh", {

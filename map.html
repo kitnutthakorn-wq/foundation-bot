@@ -2,701 +2,605 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Live Map Command Center</title>
+  <title>Live Map Command Center | Realtime PRO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
   <style>
     :root {
-      --brand: #0b7c86;
-      --brand-dark: #163c72;
-      --accent: #1f8f4d;
-      --bg: #edf2f5;
-      --card: #ffffff;
-      --line: #dbe3ea;
-      --text: #0f172a;
-      --muted: #64748b;
-      --shadow: 0 10px 24px rgba(18, 36, 58, 0.08);
-      --danger: #dc2626;
-      --warning: #ea580c;
-      --info: #2563eb;
-      --low: #6b7280;
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --bg:#edf2f5;
+      --card:#fff;
+      --line:#dbe3ea;
+      --text:#0f172a;
+      --muted:#64748b;
+      --urgent:#dc2626;
+      --high:#ea580c;
+      --normal:#2563eb;
+      --low:#6b7280;
+      --success:#16a34a;
+      --shadow:0 12px 28px rgba(15,23,42,.10);
+      --radius:18px;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background: var(--bg);
+    * { box-sizing:border-box; }
+    html, body { margin:0; height:100%; font-family:system-ui, -apple-system, Segoe UI, sans-serif; background:var(--bg); color:var(--text); }
+    body { overflow:hidden; }
+    .app {
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      height:100vh;
+      gap:14px;
+      padding:14px;
     }
-
-    .page-shell {
-      display: grid;
-      grid-template-rows: auto auto 1fr;
-      min-height: 100vh;
+    .panel, .map-wrap {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-      color: #fff;
-      box-shadow: var(--shadow);
-    }
-
-    .topbar-title {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .topbar-title strong {
-      font-size: 20px;
-      line-height: 1.1;
-    }
-
-    .topbar-title span {
-      font-size: 12px;
-      color: rgba(255,255,255,0.82);
-    }
-
-    .toolbar {
-      display: grid;
-      grid-template-columns: 1.2fr repeat(3, minmax(120px, 180px)) auto;
-      gap: 12px;
-      padding: 14px 18px;
-      background: rgba(255,255,255,0.92);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(10px);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .field,
-    .toolbar button,
-    .toolbar select {
-      min-height: 42px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-      font: inherit;
-    }
-
-    .field,
-    .toolbar select {
-      width: 100%;
-      padding: 0 12px;
-      outline: none;
-    }
-
-    .toolbar button {
-      padding: 0 14px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
-      box-shadow: 0 2px 0 rgba(15, 23, 42, 0.03);
-    }
-
-    .toolbar button:hover { transform: translateY(-1px); }
-    .toolbar button:active { transform: translateY(0); }
-
-    .btn-primary {
-      background: var(--brand);
-      color: #fff;
-      border-color: var(--brand);
-    }
-
-    .btn-secondary {
-      background: #fff;
-      color: var(--brand-dark);
-    }
-
-    .content {
-      display: grid;
-      grid-template-columns: minmax(280px, 360px) 1fr;
-      gap: 14px;
-      padding: 14px 18px 18px;
-      min-height: 0;
-    }
-
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      min-height: 0;
-    }
-
+    .panel { display:flex; flex-direction:column; min-width:0; }
     .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-      background: #f8fbfc;
+      padding:18px 18px 12px;
+      background:linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color:#fff;
     }
-
-    .panel-header strong {
-      font-size: 16px;
-    }
-
-    .panel-header span,
-    .subtle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .case-list {
-      max-height: calc(100vh - 190px);
-      overflow: auto;
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .case-card {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
-      background: #fff;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-      cursor: pointer;
-    }
-
-    .case-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(18, 36, 58, 0.08);
-    }
-
-    .case-card.active {
-      border-color: rgba(11, 124, 134, 0.45);
-      box-shadow: 0 0 0 3px rgba(11, 124, 134, 0.10);
-    }
-
-    .case-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .case-code {
-      font-weight: 800;
-      color: var(--brand-dark);
-    }
-
-    .case-name {
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .case-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      border-radius: 999px;
-      padding: 4px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .badge.priority-urgent, .badge.status-cancelled { background: var(--danger); }
-    .badge.priority-high { background: var(--warning); }
-    .badge.priority-normal, .badge.status-new { background: var(--info); }
-    .badge.priority-low { background: var(--low); }
-    .badge.status-in_progress { background: #b45309; }
-    .badge.status-done { background: var(--accent); }
-
-    .case-note,
-    .case-location {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 8px;
-      line-height: 1.45;
-    }
-
-    .map-panel {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      min-height: calc(100vh - 190px);
-    }
-
-    .map-meta {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      background: #fff;
-    }
-
+    .title { font-size:1.2rem; font-weight:800; letter-spacing:.2px; }
+    .subtitle { margin-top:4px; font-size:.88rem; opacity:.88; }
+    .status-row { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #eff6ff;
-      color: var(--brand-dark);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 700;
+      border:none; border-radius:999px; padding:7px 10px; font-size:.76rem; font-weight:700;
+      background:rgba(255,255,255,.14); color:#fff;
     }
-
-    #map {
-      width: 100%;
-      min-height: 420px;
-      height: 100%;
+    .toolbar { padding:14px; display:grid; gap:10px; border-bottom:1px solid var(--line); }
+    .toolbar-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .search {
+      width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--line); outline:none; font-size:.95rem;
+      transition:border-color .22s ease, box-shadow .22s ease, transform .18s ease;
     }
-
-    .status-banner {
-      display: none;
-      margin: 12px 18px 0;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid #fecaca;
-      background: #fff1f2;
-      color: #991b1b;
-      font-size: 14px;
+    .search:focus, select:focus { border-color:var(--brand); box-shadow:0 0 0 4px rgba(11,124,134,.12); transform:translateY(-1px); }
+    select, .btn {
+      width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:#fff; font-size:.92rem;
+      transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease, opacity .22s ease;
     }
-
-    .status-banner.show { display: block; }
-
-    .empty-state {
-      padding: 24px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
+    .btn:hover, .case-item:hover { transform:translateY(-1px); box-shadow:0 10px 18px rgba(15,23,42,.08); }
+    .btn-primary { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:700; }
+    .btn-secondary { background:#f8fafc; color:var(--text); }
+    .btn:active { transform:translateY(0); }
+    .legend { display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px; border-bottom:1px solid var(--line); }
+    .legend-item { display:flex; gap:6px; align-items:center; font-size:.78rem; color:var(--muted); }
+    .dot { width:10px; height:10px; border-radius:999px; }
+    .list-wrap { min-height:0; display:flex; flex-direction:column; }
+    .list-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; }
+    .list-title { font-weight:800; }
+    .list-meta { font-size:.78rem; color:var(--muted); }
+    .cases { overflow:auto; padding:0 10px 12px; display:grid; gap:10px; }
+    .case-item {
+      border:1px solid var(--line); border-radius:18px; padding:12px; background:#fff; cursor:pointer;
+      transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+      position:relative;
     }
-
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .case-item.active { border-color:var(--brand); background:#f0fbfc; }
+    .case-item.flash {
+      animation: flashCard 1.35s ease 2;
+      border-color:#22c55e;
     }
-
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--muted);
+    @keyframes flashCard {
+      0% { box-shadow:0 0 0 0 rgba(34,197,94,.28); }
+      50% { box-shadow:0 0 0 8px rgba(34,197,94,0); }
+      100% { box-shadow:0 0 0 0 rgba(34,197,94,0); }
     }
-
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      display: inline-block;
+    .case-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .case-code { font-weight:800; font-size:.94rem; }
+    .case-name { font-size:.9rem; margin-top:4px; }
+    .muted { color:var(--muted); }
+    .small { font-size:.78rem; }
+    .badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+    .badge {
+      display:inline-flex; align-items:center; gap:5px; font-size:.72rem; padding:5px 8px; border-radius:999px; font-weight:700;
     }
-
-    @media (max-width: 980px) {
-      .toolbar {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .content {
-        grid-template-columns: 1fr;
-      }
-
-      .case-list {
-        max-height: none;
-      }
-
-      .map-panel {
-        min-height: 70vh;
-      }
+    .badge.status { background:#eff6ff; color:#1d4ed8; }
+    .badge.priority.urgent { background:#fee2e2; color:#b91c1c; }
+    .badge.priority.high { background:#ffedd5; color:#c2410c; }
+    .badge.priority.normal { background:#dbeafe; color:#1d4ed8; }
+    .badge.priority.low { background:#e5e7eb; color:#475569; }
+    .note { margin-top:10px; font-size:.82rem; color:#334155; line-height:1.35; }
+    .map-wrap { position:relative; min-width:0; }
+    .map-topbar {
+      position:absolute; top:14px; left:14px; right:14px; z-index:500;
+      display:flex; gap:10px; justify-content:space-between; align-items:center;
+      pointer-events:none;
     }
-
-    @media (max-width: 640px) {
-      .toolbar {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .map-card {
+      background:rgba(255,255,255,.94); backdrop-filter: blur(10px);
+      border:1px solid rgba(219,227,234,.88); border-radius:18px; box-shadow:var(--shadow);
+      padding:10px 12px; pointer-events:auto;
+    }
+    .map-actions { display:flex; gap:8px; }
+    #map { height:100%; width:100%; }
+    .marker-core {
+      width:18px; height:18px; border-radius:999px; border:3px solid #fff; box-shadow:0 8px 18px rgba(15,23,42,.18);
+      position:relative; transform:translateZ(0);
+    }
+    .marker-core.urgent { background:var(--urgent); }
+    .marker-core.high { background:var(--high); }
+    .marker-core.normal { background:var(--normal); }
+    .marker-core.low { background:var(--low); }
+    .marker-core.pulse::after {
+      content:""; position:absolute; inset:-8px; border-radius:999px; border:2px solid currentColor; opacity:.65;
+      animation:pulseRing 1.7s ease-out infinite;
+    }
+    .marker-core.urgent { color:rgba(220,38,38,.6); }
+    .marker-core.high { color:rgba(234,88,12,.55); }
+    .marker-core.normal { color:rgba(37,99,235,.45); }
+    .marker-core.low { color:rgba(107,114,128,.45); }
+    @keyframes pulseRing {
+      0% { transform:scale(.55); opacity:.8; }
+      100% { transform:scale(1.5); opacity:0; }
+    }
+    .toast {
+      position:absolute; right:14px; bottom:14px; z-index:550; min-width:240px; max-width:360px;
+      background:rgba(15,23,42,.92); color:#fff; border-radius:16px; padding:12px 14px; box-shadow:var(--shadow);
+      transform:translateY(16px); opacity:0; pointer-events:none; transition:all .28s ease;
+    }
+    .toast.show { transform:translateY(0); opacity:1; }
+    .toast-title { font-weight:800; }
+    .toast-text { margin-top:4px; font-size:.84rem; opacity:.92; }
+    .popup-title { font-weight:800; font-size:.95rem; margin-bottom:6px; }
+    .popup-grid { display:grid; gap:6px; font-size:.84rem; color:#334155; }
+    .popup-actions { display:flex; gap:8px; margin-top:10px; }
+    .popup-btn {
+      border:none; border-radius:10px; padding:8px 10px; font-size:.8rem; font-weight:700; cursor:pointer;
+      background:var(--brand); color:#fff;
+    }
+    .popup-btn.secondary { background:#e2e8f0; color:#0f172a; }
+    @media (max-width: 1024px) {
+      .app { grid-template-columns: 1fr; grid-template-rows: 42vh 1fr; }
+      .panel { order:2; }
+      .map-wrap { order:1; min-height:42vh; }
+      .map-topbar { top:10px; left:10px; right:10px; flex-direction:column; align-items:stretch; }
+      .map-actions { width:100%; }
+      .toolbar-row { grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar">
-      <div class="topbar-title">
-        <strong>🗺️ Live Map Command Center</strong>
-        <span>Golden Version Safe Patch • Live cases map • Auto refresh ทุก 20 วินาที</span>
+  <div class="app">
+    <aside class="panel">
+      <div class="panel-header">
+        <div class="title">🗺️ Live Map Command Center</div>
+        <div class="subtitle">Realtime SSE + Highlight Motion PRO</div>
+        <div class="status-row">
+          <span class="pill" id="conn-pill">กำลังเชื่อมต่อ…</span>
+          <span class="pill" id="refresh-pill">Auto refresh 20s</span>
+        </div>
       </div>
-      <div class="legend">
-        <span class="legend-item"><span class="legend-dot" style="background:#dc2626"></span>ด่วน</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#ea580c"></span>สูง</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>ปกติ</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#6b7280"></span>ต่ำ</span>
-      </div>
-    </header>
 
-    <section class="toolbar">
-      <input id="searchInput" class="field" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / พื้นที่" />
-      <select id="statusFilter">
-        <option value="">ทุกสถานะ</option>
-        <option value="new">รับเรื่องแล้ว</option>
-        <option value="in_progress">กำลังดำเนินการ</option>
-        <option value="done">เสร็จสิ้นแล้ว</option>
-        <option value="cancelled">ยกเลิก</option>
-      </select>
-      <select id="priorityFilter">
-        <option value="">ทุกระดับ</option>
-        <option value="urgent">ด่วน</option>
-        <option value="high">สูง</option>
-        <option value="normal">ปกติ</option>
-        <option value="low">ต่ำ</option>
-      </select>
-      <select id="sortFilter">
-        <option value="updated_desc">อัปเดตล่าสุดก่อน</option>
-        <option value="priority_desc">ด่วนก่อน</option>
-        <option value="name_asc">ชื่อ A-Z</option>
-      </select>
-      <div style="display:flex;gap:10px;">
-        <button class="btn-secondary" id="fitAllBtn" type="button">จัดกรอบหมุด</button>
-        <button class="btn-primary" id="refreshBtn" type="button">รีเฟรช</button>
+      <div class="toolbar">
+        <input id="searchInput" class="search" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่" />
+        <div class="toolbar-row">
+          <select id="statusFilter">
+            <option value="">ทุกสถานะ</option>
+            <option value="new">รับเรื่องแล้ว</option>
+            <option value="in_progress">กำลังดำเนินการ</option>
+            <option value="done">เสร็จสิ้นแล้ว</option>
+            <option value="cancelled">ยกเลิก</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="">ทุกระดับ</option>
+            <option value="urgent">ด่วน</option>
+            <option value="high">สูง</option>
+            <option value="normal">ปกติ</option>
+            <option value="low">ต่ำ</option>
+          </select>
+        </div>
+        <div class="toolbar-row">
+          <select id="sortBy">
+            <option value="updated_desc">อัปเดตล่าสุดก่อน</option>
+            <option value="priority_desc">เรียงตามความด่วน</option>
+            <option value="name_asc">เรียงตามชื่อ</option>
+          </select>
+          <button class="btn btn-secondary" id="fitAllBtn">ซูมดูทุกหมุด</button>
+        </div>
+        <div class="toolbar-row">
+          <button class="btn btn-primary" id="refreshBtn">รีเฟรชตอนนี้</button>
+          <button class="btn btn-secondary" id="clearBtn">ล้างตัวกรอง</button>
+        </div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="dot" style="background:var(--urgent)"></span> ด่วน</div>
+        <div class="legend-item"><span class="dot" style="background:var(--high)"></span> สูง</div>
+        <div class="legend-item"><span class="dot" style="background:var(--normal)"></span> ปกติ</div>
+        <div class="legend-item"><span class="dot" style="background:var(--low)"></span> ต่ำ</div>
+      </div>
+
+      <div class="list-wrap">
+        <div class="list-head">
+          <div class="list-title">รายการเคสบนแผนที่</div>
+          <div class="list-meta" id="caseCount">0 เคส</div>
+        </div>
+        <div class="cases" id="caseList"></div>
+      </div>
+    </aside>
+
+    <section class="map-wrap">
+      <div class="map-topbar">
+        <div class="map-card">
+          <div style="font-weight:800">Command View</div>
+          <div class="small muted" id="lastUpdated">ยังไม่มีข้อมูล</div>
+        </div>
+        <div class="map-actions">
+          <div class="map-card small" id="liveBadge">Realtime: standby</div>
+        </div>
+      </div>
+      <div id="map"></div>
+      <div class="toast" id="toast">
+        <div class="toast-title" id="toastTitle">Realtime update</div>
+        <div class="toast-text" id="toastText">มีการอัปเดตใหม่</div>
       </div>
     </section>
-
-    <div id="statusBanner" class="status-banner"></div>
-
-    <main class="content">
-      <aside class="panel">
-        <div class="panel-header">
-          <strong>รายการเคสบนแผนที่</strong>
-          <span id="resultCount">0 เคส</span>
-        </div>
-        <div id="caseList" class="case-list"></div>
-      </aside>
-
-      <section class="panel map-panel">
-        <div class="map-meta">
-          <span class="pill" id="lastRefresh">ยังไม่ได้โหลดข้อมูล</span>
-          <span class="pill" id="apiInfo">API: waiting</span>
-          <span class="subtle">คลิกหมุดหรือรายการด้านซ้ายเพื่อโฟกัสเคส</span>
-        </div>
-        <div id="map"></div>
-      </section>
-    </main>
   </div>
 
-  <script>
-    const DEFAULT_API_BASE = "https://foundation-bot-p5wu.onrender.com";
-    const API_BASE = (() => {
-      const params = new URLSearchParams(window.location.search);
-      const fromQuery = (params.get("apiBase") || "").trim();
-      const fromStorage = (localStorage.getItem("FOUNDATION_API_BASE") || "").trim();
-      const chosen = fromQuery || fromStorage || DEFAULT_API_BASE;
-      if (fromQuery) localStorage.setItem("FOUNDATION_API_BASE", fromQuery);
-      return chosen.replace(/\/$/, "");
-    })();
-    const API_URL = `${API_BASE}/api/cases/map`;
-    const CASE_VIEW_URL = `${API_BASE}/case`;
-    const AUTO_REFRESH_MS = 20000;
+<script>
+(() => {
+  const qs = new URLSearchParams(window.location.search);
+  const DEFAULT_API_BASE = qs.get('apiBase') || window.__API_BASE__ || localStorage.getItem('foundation_api_base') || 'https://foundation-bot-p5wu.onrender.com';
+  if (DEFAULT_API_BASE) localStorage.setItem('foundation_api_base', DEFAULT_API_BASE);
 
-    const map = L.map("map", { preferCanvas: true }).setView([9.14, 99.33], 8);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18 }).addTo(map);
+  const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
+  const API_URL = `${API_BASE}/api/cases/map`;
+  const STREAM_URL = `${API_BASE}/api/team/stream`;
+  const CASE_URL_BASE = `${API_BASE}/case`;
 
-    const markersLayer = L.layerGroup().addTo(map);
-    const markerIndex = new Map();
+  const map = L.map('map', { zoomControl: true }).setView([9.14, 99.33], 8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
 
-    const state = {
-      rawItems: [],
-      filteredItems: [],
-      selectedCaseCode: ""
-    };
+  const markerLayer = L.layerGroup().addTo(map);
+  const markersByCase = new Map();
+  let allItems = [];
+  let filteredItems = [];
+  let selectedCaseCode = '';
+  let stream = null;
+  let pollTimer = null;
+  let reconnectTimer = null;
+  let toastTimer = null;
 
-    const searchInput = document.getElementById("searchInput");
-    const statusFilter = document.getElementById("statusFilter");
-    const priorityFilter = document.getElementById("priorityFilter");
-    const sortFilter = document.getElementById("sortFilter");
-    const caseList = document.getElementById("caseList");
-    const resultCount = document.getElementById("resultCount");
-    const lastRefresh = document.getElementById("lastRefresh");
-    const apiInfo = document.getElementById("apiInfo");
-    const statusBanner = document.getElementById("statusBanner");
+  const els = {
+    caseList: document.getElementById('caseList'),
+    caseCount: document.getElementById('caseCount'),
+    searchInput: document.getElementById('searchInput'),
+    statusFilter: document.getElementById('statusFilter'),
+    priorityFilter: document.getElementById('priorityFilter'),
+    sortBy: document.getElementById('sortBy'),
+    refreshBtn: document.getElementById('refreshBtn'),
+    fitAllBtn: document.getElementById('fitAllBtn'),
+    clearBtn: document.getElementById('clearBtn'),
+    lastUpdated: document.getElementById('lastUpdated'),
+    connPill: document.getElementById('conn-pill'),
+    liveBadge: document.getElementById('liveBadge'),
+    toast: document.getElementById('toast'),
+    toastTitle: document.getElementById('toastTitle'),
+    toastText: document.getElementById('toastText'),
+  };
 
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
+  function priorityRank(p) {
+    return ({ urgent: 4, high: 3, normal: 2, low: 1 }[String(p || '').toLowerCase()] || 0);
+  }
+
+  function getPriorityColor(priority) {
+    return ({ urgent: '#dc2626', high: '#ea580c', normal: '#2563eb', low: '#6b7280' }[String(priority || '').toLowerCase()] || '#6b7280');
+  }
+
+  function getStatusLabel(status) {
+    return ({ new:'รับเรื่องแล้ว', in_progress:'กำลังดำเนินการ', done:'เสร็จสิ้นแล้ว', cancelled:'ยกเลิก' }[String(status || '').toLowerCase()] || (status || '-'));
+  }
+
+  function getPriorityLabel(priority) {
+    return ({ urgent:'ด่วน', high:'สูง', normal:'ปกติ', low:'ต่ำ' }[String(priority || '').toLowerCase()] || (priority || '-'));
+  }
+
+  function formatDate(value) {
+    if (!value) return '-';
+    try {
+      return new Date(value).toLocaleString('th-TH', { dateStyle:'medium', timeStyle:'short' });
+    } catch {
+      return value;
     }
+  }
 
-    function formatThaiDateTime(value) {
-      if (!value) return "-";
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return value;
-      return date.toLocaleString("th-TH", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function showToast(title, text) {
+    els.toastTitle.textContent = title;
+    els.toastText.textContent = text;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2600);
+  }
+
+  function setConnectionState(mode, text) {
+    els.connPill.textContent = text;
+    els.liveBadge.textContent = `Realtime: ${text}`;
+    if (mode === 'live') {
+      els.connPill.style.background = 'rgba(34,197,94,.22)';
+      els.liveBadge.style.color = '#166534';
+    } else if (mode === 'polling') {
+      els.connPill.style.background = 'rgba(245,158,11,.22)';
+      els.liveBadge.style.color = '#92400e';
+    } else {
+      els.connPill.style.background = 'rgba(255,255,255,.14)';
+      els.liveBadge.style.color = '#334155';
+    }
+  }
+
+  function markerHtml(priority, pulse = false) {
+    const cls = escapeHtml(String(priority || 'low').toLowerCase());
+    return `<div class="marker-core ${cls} ${pulse ? 'pulse' : ''}"></div>`;
+  }
+
+  function buildPopup(item) {
+    return `
+      <div class="popup-title">${escapeHtml(item.case_code || '-')}</div>
+      <div class="popup-grid">
+        <div>👤 ${escapeHtml(item.full_name || '-')}</div>
+        <div>📌 สถานะ: ${escapeHtml(getStatusLabel(item.status))}</div>
+        <div>⚡ ระดับ: ${escapeHtml(getPriorityLabel(item.priority))}</div>
+        <div>📍 ${escapeHtml(item.location_text || item.location || '-')}</div>
+        <div>📝 ${escapeHtml(item.latest_note || item.problem || '-')}</div>
+        <div>🕒 ${escapeHtml(formatDate(item.updated_at || item.created_at))}</div>
+      </div>
+      <div class="popup-actions">
+        <button class="popup-btn" onclick="window.__openCase('${escapeHtml(item.case_code || '')}')">ดูรายละเอียด</button>
+        <button class="popup-btn secondary" onclick="window.__focusCase('${escapeHtml(item.case_code || '')}')">โฟกัสรายการ</button>
+      </div>
+    `;
+  }
+
+  function clearMarkers() {
+    markerLayer.clearLayers();
+    markersByCase.clear();
+  }
+
+  function renderMarkers(items, focusCaseCode = '') {
+    clearMarkers();
+    items.forEach((item) => {
+      if (item.latitude == null || item.longitude == null) return;
+      const pulse = item.priority === 'urgent' || item.case_code === focusCaseCode;
+      const icon = L.divIcon({
+        html: markerHtml(item.priority, pulse),
+        className: 'custom-marker-wrap',
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -10],
       });
+      const marker = L.marker([Number(item.latitude), Number(item.longitude)], { icon, keyboard: false });
+      marker.bindPopup(buildPopup(item));
+      marker.on('click', () => selectCase(item.case_code, true));
+      marker.addTo(markerLayer);
+      markersByCase.set(item.case_code, marker);
+    });
+  }
+
+  function sortItems(items) {
+    const sortBy = els.sortBy.value;
+    const cloned = [...items];
+    if (sortBy === 'priority_desc') {
+      cloned.sort((a, b) => priorityRank(b.priority) - priorityRank(a.priority) || new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
+    } else if (sortBy === 'name_asc') {
+      cloned.sort((a, b) => String(a.full_name || '').localeCompare(String(b.full_name || ''), 'th'));
+    } else {
+      cloned.sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
+    }
+    return cloned;
+  }
+
+  function applyFilters() {
+    const q = els.searchInput.value.trim().toLowerCase();
+    const status = els.statusFilter.value;
+    const priority = els.priorityFilter.value;
+
+    filteredItems = sortItems(allItems.filter((item) => {
+      const hay = [item.case_code, item.full_name, item.phone, item.location, item.problem, item.location_text, item.latest_note].join(' ').toLowerCase();
+      if (status && item.status !== status) return false;
+      if (priority && item.priority !== priority) return false;
+      if (q && !hay.includes(q)) return false;
+      return true;
+    }));
+
+    renderCaseList();
+    renderMarkers(filteredItems, selectedCaseCode);
+    els.caseCount.textContent = `${filteredItems.length} เคส`;
+    els.lastUpdated.textContent = `อัปเดตข้อมูล: ${formatDate(new Date().toISOString())}`;
+  }
+
+  function renderCaseList() {
+    if (!filteredItems.length) {
+      els.caseList.innerHTML = `<div class="case-item"><div class="case-code">ยังไม่มีเคสที่มีพิกัด</div><div class="note muted">ลองส่งอัปเดตเคสพร้อมตำแหน่ง หรือปรับตัวกรอง</div></div>`;
+      return;
     }
 
-    function getPriorityWeight(priority) {
-      switch (String(priority || "").toLowerCase()) {
-        case "urgent": return 4;
-        case "high": return 3;
-        case "normal": return 2;
-        case "low": return 1;
-        default: return 0;
-      }
-    }
-
-    function getPriorityLabel(priority) {
-      switch (String(priority || "").toLowerCase()) {
-        case "urgent": return "ด่วน";
-        case "high": return "สูง";
-        case "normal": return "ปกติ";
-        case "low": return "ต่ำ";
-        default: return "-";
-      }
-    }
-
-    function getStatusLabel(status) {
-      switch (String(status || "").toLowerCase()) {
-        case "new": return "รับเรื่องแล้ว";
-        case "in_progress": return "กำลังดำเนินการ";
-        case "done": return "เสร็จสิ้นแล้ว";
-        case "cancelled": return "ยกเลิก";
-        default: return status || "-";
-      }
-    }
-
-    function getPriorityColor(priority) {
-      switch (String(priority || "").toLowerCase()) {
-        case "urgent": return "#dc2626";
-        case "high": return "#ea580c";
-        case "normal": return "#2563eb";
-        case "low": return "#6b7280";
-        default: return "#64748b";
-      }
-    }
-
-    function setBanner(message, isError = false) {
-      if (!message) {
-        statusBanner.classList.remove("show");
-        statusBanner.textContent = "";
-        return;
-      }
-      statusBanner.textContent = message;
-      statusBanner.classList.add("show");
-      statusBanner.style.borderColor = isError ? "#fecaca" : "#bbf7d0";
-      statusBanner.style.background = isError ? "#fff1f2" : "#f0fdf4";
-      statusBanner.style.color = isError ? "#991b1b" : "#166534";
-    }
-
-    function normalizeItem(item) {
-      return {
-        ...item,
-        latitude: Number(item.latitude),
-        longitude: Number(item.longitude),
-        status: String(item.status || "new").toLowerCase(),
-        priority: String(item.priority || "normal").toLowerCase(),
-        searchable: [item.case_code, item.full_name, item.location, item.location_text, item.problem]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-      };
-    }
-
-    function applyFilters(items) {
-      const q = searchInput.value.trim().toLowerCase();
-      const status = statusFilter.value;
-      const priority = priorityFilter.value;
-      const sort = sortFilter.value;
-
-      const filtered = items.filter((item) => {
-        if (!Number.isFinite(item.latitude) || !Number.isFinite(item.longitude)) return false;
-        if (status && item.status !== status) return false;
-        if (priority && item.priority !== priority) return false;
-        if (q && !item.searchable.includes(q)) return false;
-        return true;
-      });
-
-      filtered.sort((a, b) => {
-        if (sort === "priority_desc") {
-          return getPriorityWeight(b.priority) - getPriorityWeight(a.priority) || new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
-        }
-        if (sort === "name_asc") {
-          return String(a.full_name || "").localeCompare(String(b.full_name || ""), "th");
-        }
-        return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
-      });
-
-      return filtered;
-    }
-
-    function renderCaseList(items) {
-      resultCount.textContent = `${items.length} เคส`;
-
-      if (!items.length) {
-        caseList.innerHTML = `<div class="empty-state">ยังไม่พบเคสที่มีพิกัดตามเงื่อนไขที่เลือก</div>`;
-        return;
-      }
-
-      caseList.innerHTML = items.map((item) => `
-        <article class="case-card ${state.selectedCaseCode === item.case_code ? "active" : ""}" data-case-code="${escapeHtml(item.case_code)}">
-          <div class="case-row">
-            <div>
-              <div class="case-code">${escapeHtml(item.case_code || "-")}</div>
-              <div class="case-name">${escapeHtml(item.full_name || "-")}</div>
-            </div>
-            <span class="badge priority-${escapeHtml(item.priority)}">${escapeHtml(getPriorityLabel(item.priority))}</span>
+    els.caseList.innerHTML = filteredItems.map((item) => `
+      <div class="case-item ${item.case_code === selectedCaseCode ? 'active' : ''}" data-case-code="${escapeHtml(item.case_code)}">
+        <div class="case-top">
+          <div>
+            <div class="case-code">${escapeHtml(item.case_code || '-')}</div>
+            <div class="case-name">${escapeHtml(item.full_name || '-')}</div>
           </div>
-          <div class="case-meta">
-            <span class="badge status-${escapeHtml(item.status)}">${escapeHtml(getStatusLabel(item.status))}</span>
-            <span class="subtle">${escapeHtml(formatThaiDateTime(item.updated_at))}</span>
-          </div>
-          <div class="case-location">📍 ${escapeHtml(item.location_text || item.location || "-")}</div>
-          <div class="case-note">${escapeHtml(item.latest_note || item.problem || "ไม่มีบันทึกล่าสุด")}</div>
-        </article>
-      `).join("");
-
-      caseList.querySelectorAll(".case-card").forEach((el) => {
-        el.addEventListener("click", () => focusCase(el.dataset.caseCode));
-      });
-    }
-
-    function buildPopup(item) {
-      const caseLink = `${CASE_VIEW_URL}?case_code=${encodeURIComponent(item.case_code || "")}`;
-      return `
-        <div style="min-width:220px;line-height:1.5;">
-          <div style="font-weight:800;font-size:15px;color:#163c72;">${escapeHtml(item.case_code || "-")}</div>
-          <div style="margin-top:4px;">👤 ${escapeHtml(item.full_name || "-")}</div>
-          <div style="margin-top:4px;">📌 สถานะ: ${escapeHtml(getStatusLabel(item.status))}</div>
-          <div style="margin-top:4px;">⚡ ระดับ: <span style="display:inline-block;background:${getPriorityColor(item.priority)};color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;">${escapeHtml(getPriorityLabel(item.priority))}</span></div>
-          <div style="margin-top:8px;">📍 ${escapeHtml(item.location_text || item.location || "-")}</div>
-          <div style="margin-top:4px;">🕒 ${escapeHtml(formatThaiDateTime(item.updated_at))}</div>
-          <div style="margin-top:8px;color:#475569;">${escapeHtml(item.latest_note || item.problem || "ไม่มีบันทึกล่าสุด")}</div>
-          <div style="margin-top:12px;display:flex;gap:8px;">
-            <button type="button" onclick="openCase('${encodeURIComponent(item.case_code || "")}')" style="border:0;background:#0b7c86;color:#fff;border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer;">ดูรายละเอียด</button>
-            <a href="https://www.google.com/maps?q=${encodeURIComponent(`${item.latitude},${item.longitude}`)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#163c72;border:1px solid #dbe3ea;border-radius:10px;padding:8px 10px;font-weight:700;text-decoration:none;">เปิดในแผนที่</a>
-          </div>
+          <div class="small muted">${escapeHtml(formatDate(item.updated_at || item.created_at))}</div>
         </div>
-      `;
-    }
+        <div class="badges">
+          <span class="badge status">${escapeHtml(getStatusLabel(item.status))}</span>
+          <span class="badge priority ${escapeHtml(String(item.priority || 'low').toLowerCase())}">${escapeHtml(getPriorityLabel(item.priority))}</span>
+        </div>
+        <div class="note">${escapeHtml(item.location_text || item.location || '-')}</div>
+      </div>
+    `).join('');
 
-    function renderMarkers(items) {
-      markersLayer.clearLayers();
-      markerIndex.clear();
+    els.caseList.querySelectorAll('.case-item[data-case-code]').forEach((el) => {
+      el.addEventListener('click', () => selectCase(el.dataset.caseCode, true));
+    });
+  }
 
-      items.forEach((item) => {
-        const marker = L.circleMarker([item.latitude, item.longitude], {
-          radius: item.priority === "urgent" ? 10 : 8,
-          color: getPriorityColor(item.priority),
-          weight: 2,
-          fillColor: getPriorityColor(item.priority),
-          fillOpacity: item.priority === "urgent" ? 0.92 : 0.8
-        });
-
-        marker.bindPopup(buildPopup(item));
-        marker.on("click", () => {
-          state.selectedCaseCode = item.case_code || "";
-          renderCaseList(state.filteredItems);
-        });
-
-        markersLayer.addLayer(marker);
-        markerIndex.set(item.case_code, marker);
-      });
-    }
-
-    function fitAllMarkers() {
-      const markers = Array.from(markerIndex.values());
-      if (!markers.length) return;
-      const group = L.featureGroup(markers);
-      map.fitBounds(group.getBounds().pad(0.15));
-    }
-
-    function focusCase(caseCode) {
-      const marker = markerIndex.get(caseCode);
-      if (!marker) return;
-      state.selectedCaseCode = caseCode;
-      renderCaseList(state.filteredItems);
-      map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 12), { duration: 0.6 });
+  function selectCase(caseCode, panToMarker = false) {
+    selectedCaseCode = caseCode || '';
+    renderCaseList();
+    renderMarkers(filteredItems, selectedCaseCode);
+    const marker = markersByCase.get(selectedCaseCode);
+    if (marker && panToMarker) {
+      map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 13), { duration: 0.7 });
       marker.openPopup();
     }
+  }
 
-    async function loadMapData() {
-      try {
-        apiInfo.textContent = `API: ${API_BASE}`;
-        const res = await fetch(API_URL, { cache: "no-store" });
-        const json = await res.json();
-
-        if (!res.ok || json.ok === false) {
-          throw new Error(json.error || `โหลดข้อมูลไม่สำเร็จ (${res.status})`);
-        }
-
-        state.rawItems = (json.items || []).map(normalizeItem);
-        state.filteredItems = applyFilters(state.rawItems);
-
-        renderCaseList(state.filteredItems);
-        renderMarkers(state.filteredItems);
-        lastRefresh.textContent = `อัปเดตล่าสุด: ${formatThaiDateTime(new Date().toISOString())}`;
-        setBanner("");
-
-        if (state.filteredItems.length) {
-          if (state.selectedCaseCode && markerIndex.has(state.selectedCaseCode)) {
-            focusCase(state.selectedCaseCode);
-          } else {
-            fitAllMarkers();
-          }
-        }
-      } catch (err) {
-        console.error("โหลด map ไม่สำเร็จ:", err);
-        setBanner(`โหลดแผนที่ไม่สำเร็จ: ${err.message || err}`, true);
-      }
-    }
-
-    function openCase(encodedCaseCode) {
-      const caseCode = decodeURIComponent(encodedCaseCode || "");
-      const url = `${CASE_VIEW_URL}?case_code=${encodeURIComponent(caseCode)}`;
-      window.open(url, "_blank", "noopener");
-    }
-
-    window.openCase = openCase;
-
-    [searchInput, statusFilter, priorityFilter, sortFilter].forEach((el) => {
-      el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => {
-        state.filteredItems = applyFilters(state.rawItems);
-        renderCaseList(state.filteredItems);
-        renderMarkers(state.filteredItems);
-        if (state.filteredItems.length) fitAllMarkers();
-      });
+  function fitAllMarkers() {
+    const bounds = [];
+    filteredItems.forEach((item) => {
+      if (item.latitude != null && item.longitude != null) bounds.push([Number(item.latitude), Number(item.longitude)]);
     });
+    if (!bounds.length) return;
+    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
+  }
 
-    document.getElementById("refreshBtn").addEventListener("click", loadMapData);
-    document.getElementById("fitAllBtn").addEventListener("click", fitAllMarkers);
+  async function loadMapData({ silent = false, focusCaseCode = '' } = {}) {
+    try {
+      const params = new URLSearchParams();
+      if (els.statusFilter.value) params.set('status', els.statusFilter.value);
+      if (els.priorityFilter.value) params.set('priority', els.priorityFilter.value);
+      if (els.searchInput.value.trim()) params.set('search', els.searchInput.value.trim());
+      params.set('limit', '500');
 
-    loadMapData();
-    setInterval(loadMapData, AUTO_REFRESH_MS);
-  </script>
+      const res = await fetch(`${API_URL}?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || 'map api failed');
+      allItems = Array.isArray(json.items) ? json.items : [];
+      applyFilters();
+
+      if (focusCaseCode) {
+        requestAnimationFrame(() => selectCase(focusCaseCode, true));
+      }
+
+      if (!silent) showToast('รีเฟรชข้อมูลสำเร็จ', `โหลด ${allItems.length} เคส`);
+    } catch (err) {
+      console.error('โหลด map ไม่สำเร็จ:', err);
+      showToast('โหลดข้อมูลไม่สำเร็จ', err.message || 'unknown error');
+    }
+  }
+
+  function flashCase(caseCode) {
+    const el = els.caseList.querySelector(`[data-case-code="${CSS.escape(caseCode)}"]`);
+    if (!el) return;
+    el.classList.remove('flash');
+    void el.offsetWidth;
+    el.classList.add('flash');
+  }
+
+  function startPollingFallback() {
+    clearInterval(pollTimer);
+    setConnectionState('polling', 'Polling fallback');
+    pollTimer = setInterval(() => loadMapData({ silent: true }), 20000);
+  }
+
+  function startRealtime() {
+    if (stream) {
+      stream.close();
+      stream = null;
+    }
+    clearTimeout(reconnectTimer);
+
+    try {
+      stream = new EventSource(STREAM_URL);
+      setConnectionState('connecting', 'กำลังเชื่อมต่อ SSE…');
+
+      stream.addEventListener('connected', () => {
+        setConnectionState('live', 'SSE live');
+      });
+
+      stream.addEventListener('case_update', (event) => {
+        try {
+          const data = JSON.parse(event.data || '{}');
+          const code = data?.item?.case_code || '';
+          showToast('มีอัปเดตเคส', code || 'case_update');
+          loadMapData({ silent: true, focusCaseCode: code });
+          if (code) flashCase(code);
+        } catch (err) {
+          console.error('case_update parse error', err);
+        }
+      });
+
+      stream.addEventListener('case_geo_updated', (event) => {
+        try {
+          const data = JSON.parse(event.data || '{}');
+          const code = data?.case_code || '';
+          showToast('ตำแหน่งเคสอัปเดต', code || 'case_geo_updated');
+          loadMapData({ silent: true, focusCaseCode: code });
+          if (code) flashCase(code);
+        } catch (err) {
+          console.error('case_geo_updated parse error', err);
+        }
+      });
+
+      ['case_created', 'case_updated', 'recent_activity_refresh', 'dashboard_refresh'].forEach((name) => {
+        stream.addEventListener(name, (event) => {
+          try {
+            const data = JSON.parse(event.data || '{}');
+            const code = data?.case_code || data?.item?.case_code || '';
+            loadMapData({ silent: true, focusCaseCode: code });
+            if (code) flashCase(code);
+          } catch (err) {
+            console.error(name, err);
+          }
+        });
+      });
+
+      stream.onerror = () => {
+        setConnectionState('polling', 'SSE หลุด ใช้ polling');
+        startPollingFallback();
+        try { stream.close(); } catch {}
+        stream = null;
+        reconnectTimer = setTimeout(startRealtime, 6000);
+      };
+    } catch (err) {
+      console.error('SSE init failed', err);
+      startPollingFallback();
+    }
+  }
+
+  window.__openCase = function openCase(code) {
+    if (!code) return;
+    window.open(`${CASE_URL_BASE}?case_code=${encodeURIComponent(code)}`, '_blank');
+  };
+
+  window.__focusCase = function focusCase(code) {
+    selectCase(code, true);
+  };
+
+  els.searchInput.addEventListener('input', applyFilters);
+  els.statusFilter.addEventListener('change', () => loadMapData({ silent: true }));
+  els.priorityFilter.addEventListener('change', () => loadMapData({ silent: true }));
+  els.sortBy.addEventListener('change', applyFilters);
+  els.refreshBtn.addEventListener('click', () => loadMapData({ focusCaseCode: selectedCaseCode }));
+  els.fitAllBtn.addEventListener('click', fitAllMarkers);
+  els.clearBtn.addEventListener('click', () => {
+    els.searchInput.value = '';
+    els.statusFilter.value = '';
+    els.priorityFilter.value = '';
+    els.sortBy.value = 'updated_desc';
+    loadMapData({ silent: true });
+  });
+
+  loadMapData({ silent: true }).then(() => fitAllMarkers());
+  startPollingFallback();
+  startRealtime();
+})();
+</script>
 </body>
 </html>

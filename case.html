@@ -349,6 +349,7 @@ button:active{transform:translateY(0)}
         <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
         <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
         <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
+        <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
         <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
         <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
@@ -593,6 +594,29 @@ async function loadProjects(){
         document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
         document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
         document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
+
+        const locationTextEl = document.getElementById("location_text");
+
+if (locationTextEl) {
+  const locationText =
+    data.location_text ||
+    (data.latitude && data.longitude
+      ? `${data.latitude}, ${data.longitude}`
+      : "-");
+
+  if (data.case_code && locationText !== "-") {
+    locationTextEl.innerHTML = `
+      <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
+         target="_blank"
+         rel="noopener"
+         style="color:#0b7c86;font-weight:700;text-decoration:none;">
+        ${escapeHtml(locationText)}
+      </a>
+    `;
+  } else {
+    locationTextEl.innerHTML = escapeHtml(locationText);
+  }
+}
        
         document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
         document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));

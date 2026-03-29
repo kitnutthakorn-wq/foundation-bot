@@ -1840,6 +1840,60 @@ app.get("/api/recent-activity", async (req, res) => {
   }
 });
 
+// ===============================
+// MAP API (Golden Safe Patch - YOUR VERSION)
+// ===============================
+app.get("/api/cases/map", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select(`
+        case_code,
+        full_name,
+        phone,
+        status,
+        priority,
+        latitude,
+        longitude,
+        location_text,
+        updated_at
+      `)
+      .not("latitude", "is", null)
+      .not("longitude", "is", null)
+      .order("updated_at", { ascending: false });
+
+    if (error) {
+      console.error("MAP API ERROR:", error);
+      return res.status(500).json({
+        ok: false,
+        error: error.message
+      });
+    }
+
+    return res.json({
+      ok: true,
+      items: (data || []).map((row) => ({
+        case_code: row.case_code || "",
+        full_name: row.full_name || "-",
+        phone: row.phone || "-",
+        status: row.status || "new",
+        priority: row.priority || "normal",
+        latitude: row.latitude,
+        longitude: row.longitude,
+        location_text: row.location_text || "",
+        updated_at: row.updated_at || null
+      }))
+    });
+
+  } catch (err) {
+    console.error("GET /api/cases/map FAILED:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal error"
+    });
+  }
+});
+
 // =========================
 // TEAM CASE DETAIL (Golden Safe)
 // =========================

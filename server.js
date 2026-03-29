@@ -1892,7 +1892,7 @@ app.get("/api/cases/map", async (req, res) => {
       .select("*")
       .not("latitude", "is", null)
       .not("longitude", "is", null)
-      .order("updated_at", { ascending: false });
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("MAP API ERROR:", error);
@@ -1918,7 +1918,7 @@ app.get("/api/cases/map", async (req, res) => {
         longitude: row.longitude,
         location_text: row.location_text || "",
         latest_note: row.latest_note || "",
-        updated_at: row.updated_at || row.last_action_at || row.created_at || null
+        updated_at: row.last_action_at || row.created_at || null
       }))
     });
 

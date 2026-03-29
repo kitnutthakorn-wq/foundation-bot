@@ -219,12 +219,6 @@
     .badge.urgent { background: #fee2e2; color: #b91c1c; }
     .badge.normal { background: #e5e7eb; color: #374151; }
     .badge.high { background: #ffedd5; color: #c2410c; }
-    .badge.ok { background: #dcfce7; color: #166534; }
-    .badge.watch { background: #fef3c7; color: #92400e; }
-    .badge.risk { background: #ffedd5; color: #c2410c; }
-    .badge.critical { background: #fee2e2; color: #b91c1c; }
-    .badge.closed { background: #e5e7eb; color: #374151; }
-    .badge.unknown { background: #e0f2fe; color: #075985; }
     .action-row {
       display: flex;
       flex-wrap: wrap;
@@ -393,9 +387,6 @@
             <option value="delayed">เคสที่ล่าช้า</option>
             <option value="closed">เคสปิดแล้ว</option>
             <option value="followup_urgent">ติดตามด่วน</option>
-            <option value="sla_high">SLA วิกฤต</option>
-            <option value="sla_medium">SLA เสี่ยง</option>
-            <option value="sla_watch">SLA เริ่มช้า</option>
             <option value="latest">เคสล่าสุด</option>
           </select>
           <input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / พื้นที่" />
@@ -410,12 +401,11 @@
                 <th>พื้นที่</th>
                 <th>สถานะ</th>
                 <th>ระดับ</th>
-                <th>SLA</th>
                 <th>คำสั่ง</th>
               </tr>
             </thead>
             <tbody id="caseTableBody">
-              <tr><td colspan="7"><div class="empty">ยังไม่มีข้อมูล</div></td></tr>
+              <tr><td colspan="6"><div class="empty">ยังไม่มีข้อมูล</div></td></tr>
             </tbody>
           </table>
         </div>
@@ -554,7 +544,7 @@
       const rows = result.data || [];
       const body = document.getElementById('caseTableBody');
       if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="7"><div class="empty">ไม่พบรายการที่ตรงเงื่อนไข</div></td></tr>';
+        body.innerHTML = '<tr><td colspan="6"><div class="empty">ไม่พบรายการที่ตรงเงื่อนไข</div></td></tr>';
         return;
       }
       body.innerHTML = rows.map(row => `
@@ -566,7 +556,6 @@
           <td>${escapeHtml(row.location || '-')}</td>
           <td><span class="badge ${badgeClass(row.status)}">${escapeHtml(mapStatusThai(row.status))}</span></td>
           <td><span class="badge ${badgeClass(row.priority)}">${escapeHtml(mapPriorityThai(row.priority))}</span></td>
-          <td><span class="badge ${badgeClass(row.sla_level || 'unknown')}">${escapeHtml(row.sla_text || '-')}</span></td>
           <td>
             <div class="action-row">
               <button onclick="assignCase(${Number(row.id)}, '${escapeHtml((row.case_code || '').replace(/'/g, "\\'"))}')">รับเคส</button>

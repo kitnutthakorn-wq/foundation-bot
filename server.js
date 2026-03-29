@@ -3641,30 +3641,6 @@ function formatPriorityThaiForApi(priority = "") {
   }
 }
 
-function normalizeCaseUpdateRecord(row = {}) {
-  return {
-    ...row,
-    status: row.status || row.status_after || null,
-    note: row.note || row.latest_note || row.message || null,
-    latest_note: row.latest_note || row.note || row.message || null,
-    images: Array.isArray(row.images)
-      ? row.images
-      : String(row.images || "").trim()
-        ? (() => {
-            try {
-              const parsed = JSON.parse(String(row.images || ""));
-              return Array.isArray(parsed) ? parsed : [];
-            } catch (_) {
-              return String(row.images || "")
-                .split(",")
-                .map((item) => item.trim())
-                .filter(Boolean);
-            }
-          })()
-        : []
-  };
-}
-
 async function getLatestCaseUpdateByCaseCode(caseCode) {
   if (!caseCode) return null;
 
@@ -3672,16 +3648,14 @@ async function getLatestCaseUpdateByCaseCode(caseCode) {
     .from("case_updates")
     .select("*")
     .eq("case_code", caseCode)
-    .order("updated_at", { ascending: false })
-    .limit(1);
+    .single();
 
   if (error) {
     console.error("GET LATEST CASE UPDATE ERROR:", error);
     return null;
   }
 
-  const latest = Array.isArray(data) ? data[0] : null;
-  return latest ? normalizeCaseUpdateRecord(latest) : null;
+  return data || null;
 }
 
 async function getProjectNameFromProjectDb(caseItem = {}) {
@@ -3785,41 +3759,6 @@ app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
     return res.json({ ok: true, data: enriched });
   } catch (error) {
     console.error("CASE DETAIL ERROR:", error);
-    return res.status(500).json({ ok: false, error: error.message });
-  }
-});
-
-app.get("/api/case/:id/updates", checkDashboardAuth, async (req, res) => {
-  try {
-    const caseId = String(req.params.id || "").trim();
-
-    const { data: caseItem, error: caseError } = await supabase
-      .from("help_requests")
-      .select("id, case_code")
-      .or(`id.eq.${caseId},case_code.eq.${caseId}`)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (caseError) throw caseError;
-    if (!caseItem?.case_code) {
-      return res.json({ ok: true, data: [] });
-    }
-
-    const { data, error } = await supabase
-      .from("case_updates")
-      .select("*")
-      .eq("case_code", caseItem.case_code)
-      .order("updated_at", { ascending: false });
-
-    if (error) throw error;
-
-    return res.json({
-      ok: true,
-      data: (data || []).map((row) => normalizeCaseUpdateRecord(row))
-    });
-  } catch (error) {
-    console.error("CASE TIMELINE ERROR:", error);
     return res.status(500).json({ ok: false, error: error.message });
   }
 });

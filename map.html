@@ -1,613 +1,849 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Live Map Command Center | Realtime PRO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <meta charset="UTF-8" />
+  <title>Live Map Command Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <style>
     :root {
-      --brand:#0b7c86;
-      --brand-dark:#163c72;
-      --bg:#edf2f5;
-      --card:#fff;
-      --line:#dbe3ea;
-      --text:#0f172a;
-      --muted:#64748b;
-      --urgent:#dc2626;
-      --high:#ea580c;
-      --normal:#2563eb;
-      --low:#6b7280;
-      --success:#16a34a;
-      --shadow:0 12px 28px rgba(15,23,42,.10);
-      --radius:18px;
+      --brand: #0b7c86;
+      --brand-dark: #163c72;
+      --bg: #edf2f5;
+      --card: #ffffff;
+      --line: #dbe3ea;
+      --text: #0f172a;
+      --muted: #64748b;
+      --urgent: #dc2626;
+      --high: #ea580c;
+      --normal: #2563eb;
+      --low: #6b7280;
+      --success: #16a34a;
+      --shadow: 0 12px 28px rgba(15, 23, 42, 0.10);
     }
-    * { box-sizing:border-box; }
-    html, body { margin:0; height:100%; font-family:system-ui, -apple-system, Segoe UI, sans-serif; background:var(--bg); color:var(--text); }
-    body { overflow:hidden; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+    body { overflow: hidden; }
     .app {
-      display:grid;
-      grid-template-columns: 380px 1fr;
-      height:100vh;
-      gap:14px;
-      padding:14px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      height: 100vh;
     }
-    .panel, .map-wrap {
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
+    .sidebar {
+      background: linear-gradient(180deg, #f8fbfc 0%, #eef5f7 100%);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
-    .panel { display:flex; flex-direction:column; min-width:0; }
-    .panel-header {
-      padding:18px 18px 12px;
-      background:linear-gradient(135deg, var(--brand), var(--brand-dark));
-      color:#fff;
+    .sidebar-header {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .title { font-size:1.2rem; font-weight:800; letter-spacing:.2px; }
-    .subtitle { margin-top:4px; font-size:.88rem; opacity:.88; }
-    .status-row { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--brand-dark);
+      margin: 0 0 4px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .controls {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 0 12px;
+      font: inherit;
+      outline: none;
+    }
+    input:focus, select:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    button {
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+      box-shadow: 0 6px 16px rgba(15,23,42,.06);
+    }
+    button:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+      color: white;
+      border: none;
+    }
+    .btn-secondary {
+      background: white;
+      color: var(--brand-dark);
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 999px; background: #cbd5e1;
+      display: inline-block;
+    }
+    .dot.live { background: var(--success); box-shadow: 0 0 0 8px rgba(22,163,74,.10); }
+    .dot.warn { background: var(--high); }
+    .case-list {
+      overflow: auto;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .case-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .case-card:hover { transform: translateY(-2px); }
+    .case-card.active {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow);
+    }
+    .case-card.flash {
+      animation: pulseGlow 1.3s ease-in-out 2;
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(37,99,235,.0), var(--shadow); }
+      50% { box-shadow: 0 0 0 8px rgba(37,99,235,.16), var(--shadow); }
+      100% { box-shadow: 0 0 0 0 rgba(37,99,235,.0), var(--shadow); }
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .case-code {
+      font-weight: 800;
+      color: var(--brand-dark);
+      font-size: 14px;
+      word-break: break-word;
+    }
+    .case-name {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .case-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
     .pill {
-      border:none; border-radius:999px; padding:7px 10px; font-size:.76rem; font-weight:700;
-      background:rgba(255,255,255,.14); color:#fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 58px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: .02em;
     }
-    .toolbar { padding:14px; display:grid; gap:10px; border-bottom:1px solid var(--line); }
-    .toolbar-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .search {
-      width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--line); outline:none; font-size:.95rem;
-      transition:border-color .22s ease, box-shadow .22s ease, transform .18s ease;
+    .urgent { background: var(--urgent); }
+    .high { background: var(--high); }
+    .normal { background: var(--normal); }
+    .low { background: var(--low); }
+    .status {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .search:focus, select:focus { border-color:var(--brand); box-shadow:0 0 0 4px rgba(11,124,134,.12); transform:translateY(-1px); }
-    select, .btn {
-      width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--line); background:#fff; font-size:.92rem;
-      transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease, opacity .22s ease;
+    .status-chip {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
     }
-    .btn:hover, .case-item:hover { transform:translateY(-1px); box-shadow:0 10px 18px rgba(15,23,42,.08); }
-    .btn-primary { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:700; }
-    .btn-secondary { background:#f8fafc; color:var(--text); }
-    .btn:active { transform:translateY(0); }
-    .legend { display:flex; gap:8px; flex-wrap:wrap; padding:0 14px 14px; border-bottom:1px solid var(--line); }
-    .legend-item { display:flex; gap:6px; align-items:center; font-size:.78rem; color:var(--muted); }
-    .dot { width:10px; height:10px; border-radius:999px; }
-    .list-wrap { min-height:0; display:flex; flex-direction:column; }
-    .list-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; }
-    .list-title { font-weight:800; }
-    .list-meta { font-size:.78rem; color:var(--muted); }
-    .cases { overflow:auto; padding:0 10px 12px; display:grid; gap:10px; }
-    .case-item {
-      border:1px solid var(--line); border-radius:18px; padding:12px; background:#fff; cursor:pointer;
-      transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
-      position:relative;
+    .time-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 10px;
     }
-    .case-item.active { border-color:var(--brand); background:#f0fbfc; }
-    .case-item.flash {
-      animation: flashCard 1.35s ease 2;
-      border-color:#22c55e;
+    .map-wrap {
+      position: relative;
+      min-width: 0;
     }
-    @keyframes flashCard {
-      0% { box-shadow:0 0 0 0 rgba(34,197,94,.28); }
-      50% { box-shadow:0 0 0 8px rgba(34,197,94,0); }
-      100% { box-shadow:0 0 0 0 rgba(34,197,94,0); }
+    #map {
+      width: 100%;
+      height: 100%;
     }
-    .case-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
-    .case-code { font-weight:800; font-size:.94rem; }
-    .case-name { font-size:.9rem; margin-top:4px; }
-    .muted { color:var(--muted); }
-    .small { font-size:.78rem; }
-    .badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
-    .badge {
-      display:inline-flex; align-items:center; gap:5px; font-size:.72rem; padding:5px 8px; border-radius:999px; font-weight:700;
+    .topbar {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 700;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
-    .badge.status { background:#eff6ff; color:#1d4ed8; }
-    .badge.priority.urgent { background:#fee2e2; color:#b91c1c; }
-    .badge.priority.high { background:#ffedd5; color:#c2410c; }
-    .badge.priority.normal { background:#dbeafe; color:#1d4ed8; }
-    .badge.priority.low { background:#e5e7eb; color:#475569; }
-    .note { margin-top:10px; font-size:.82rem; color:#334155; line-height:1.35; }
-    .map-wrap { position:relative; min-width:0; }
-    .map-topbar {
-      position:absolute; top:14px; left:14px; right:14px; z-index:500;
-      display:flex; gap:10px; justify-content:space-between; align-items:center;
-      pointer-events:none;
-    }
-    .map-card {
-      background:rgba(255,255,255,.94); backdrop-filter: blur(10px);
-      border:1px solid rgba(219,227,234,.88); border-radius:18px; box-shadow:var(--shadow);
-      padding:10px 12px; pointer-events:auto;
-    }
-    .map-actions { display:flex; gap:8px; }
-    #map { height:100%; width:100%; }
-    .marker-core {
-      width:18px; height:18px; border-radius:999px; border:3px solid #fff; box-shadow:0 8px 18px rgba(15,23,42,.18);
-      position:relative; transform:translateZ(0);
-    }
-    .marker-core.urgent { background:var(--urgent); }
-    .marker-core.high { background:var(--high); }
-    .marker-core.normal { background:var(--normal); }
-    .marker-core.low { background:var(--low); }
-    .marker-core.pulse::after {
-      content:""; position:absolute; inset:-8px; border-radius:999px; border:2px solid currentColor; opacity:.65;
-      animation:pulseRing 1.7s ease-out infinite;
-    }
-    .marker-core.urgent { color:rgba(220,38,38,.6); }
-    .marker-core.high { color:rgba(234,88,12,.55); }
-    .marker-core.normal { color:rgba(37,99,235,.45); }
-    .marker-core.low { color:rgba(107,114,128,.45); }
-    @keyframes pulseRing {
-      0% { transform:scale(.55); opacity:.8; }
-      100% { transform:scale(1.5); opacity:0; }
+    .glass {
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      padding: 10px 12px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text);
     }
     .toast {
-      position:absolute; right:14px; bottom:14px; z-index:550; min-width:240px; max-width:360px;
-      background:rgba(15,23,42,.92); color:#fff; border-radius:16px; padding:12px 14px; box-shadow:var(--shadow);
-      transform:translateY(16px); opacity:0; pointer-events:none; transition:all .28s ease;
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(16px);
+      z-index: 800;
+      background: rgba(15,23,42,.92);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
     }
-    .toast.show { transform:translateY(0); opacity:1; }
-    .toast-title { font-weight:800; }
-    .toast-text { margin-top:4px; font-size:.84rem; opacity:.92; }
-    .popup-title { font-weight:800; font-size:.95rem; margin-bottom:6px; }
-    .popup-grid { display:grid; gap:6px; font-size:.84rem; color:#334155; }
-    .popup-actions { display:flex; gap:8px; margin-top:10px; }
-    .popup-btn {
-      border:none; border-radius:10px; padding:8px 10px; font-size:.8rem; font-weight:700; cursor:pointer;
-      background:var(--brand); color:#fff;
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
-    .popup-btn.secondary { background:#e2e8f0; color:#0f172a; }
-    @media (max-width: 1024px) {
-      .app { grid-template-columns: 1fr; grid-template-rows: 42vh 1fr; }
-      .panel { order:2; }
-      .map-wrap { order:1; min-height:42vh; }
-      .map-topbar { top:10px; left:10px; right:10px; flex-direction:column; align-items:stretch; }
-      .map-actions { width:100%; }
-      .toolbar-row { grid-template-columns:1fr; }
+    .legend {
+      display: grid;
+      gap: 6px;
+    }
+    .legend-item {
+      display: flex; gap: 8px; align-items: center;
+      font-size: 12px; color: var(--muted);
+    }
+    .swatch {
+      width: 12px; height: 12px; border-radius: 999px;
+    }
+    .leaflet-popup-content {
+      min-width: 240px;
+      line-height: 1.45;
+    }
+    .popup-title {
+      font-weight: 800;
+      color: var(--brand-dark);
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .popup-grid {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .popup-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .popup-actions button {
+      min-height: 34px;
+      border-radius: 10px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    @media (max-width: 980px) {
+      body { overflow: auto; }
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 70vh;
+        height: auto;
+        min-height: 100vh;
+      }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--line); }
+      .topbar {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+      }
+      .row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <aside class="panel">
-      <div class="panel-header">
-        <div class="title">🗺️ Live Map Command Center</div>
-        <div class="subtitle">Realtime SSE + Highlight Motion PRO</div>
-        <div class="status-row">
-          <span class="pill" id="conn-pill">กำลังเชื่อมต่อ…</span>
-          <span class="pill" id="refresh-pill">Auto refresh 20s</span>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="title">🗺️ Live Map Command Center</h1>
+        <p class="subtitle">Realtime SSE Map + Highlight Motion PRO</p>
+        <div class="controls">
+          <input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / พื้นที่" />
+          <div class="row">
+            <select id="statusFilter">
+              <option value="">ทุกสถานะ</option>
+              <option value="new">รับเรื่องแล้ว</option>
+              <option value="in_progress">กำลังดำเนินการ</option>
+              <option value="done">เสร็จสิ้นแล้ว</option>
+              <option value="cancelled">ยกเลิก</option>
+            </select>
+            <select id="priorityFilter">
+              <option value="">ทุกระดับ</option>
+              <option value="urgent">ด่วน</option>
+              <option value="high">สูง</option>
+              <option value="normal">ปกติ</option>
+              <option value="low">ต่ำ</option>
+            </select>
+          </div>
+          <div class="row">
+            <select id="sortBy">
+              <option value="updated_desc">อัปเดตล่าสุด</option>
+              <option value="priority_desc">ระดับความเร่งด่วน</option>
+              <option value="code_asc">เลขเคส A-Z</option>
+            </select>
+            <button id="refreshBtn" class="btn-secondary" type="button">รีเฟรชข้อมูล</button>
+          </div>
+          <div class="row">
+            <button id="fitAllBtn" class="btn-primary" type="button">แสดงทุกหมุด</button>
+            <button id="clearFocusBtn" class="btn-secondary" type="button">ล้างการโฟกัส</button>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="dot" id="liveDot"></span>
+          <span id="liveText">กำลังเชื่อมต่อ...</span>
+          <span>•</span>
+          <span id="caseCount">0 เคส</span>
         </div>
       </div>
-
-      <div class="toolbar">
-        <input id="searchInput" class="search" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่" />
-        <div class="toolbar-row">
-          <select id="statusFilter">
-            <option value="">ทุกสถานะ</option>
-            <option value="new">รับเรื่องแล้ว</option>
-            <option value="in_progress">กำลังดำเนินการ</option>
-            <option value="done">เสร็จสิ้นแล้ว</option>
-            <option value="cancelled">ยกเลิก</option>
-          </select>
-          <select id="priorityFilter">
-            <option value="">ทุกระดับ</option>
-            <option value="urgent">ด่วน</option>
-            <option value="high">สูง</option>
-            <option value="normal">ปกติ</option>
-            <option value="low">ต่ำ</option>
-          </select>
-        </div>
-        <div class="toolbar-row">
-          <select id="sortBy">
-            <option value="updated_desc">อัปเดตล่าสุดก่อน</option>
-            <option value="priority_desc">เรียงตามความด่วน</option>
-            <option value="name_asc">เรียงตามชื่อ</option>
-          </select>
-          <button class="btn btn-secondary" id="fitAllBtn">ซูมดูทุกหมุด</button>
-        </div>
-        <div class="toolbar-row">
-          <button class="btn btn-primary" id="refreshBtn">รีเฟรชตอนนี้</button>
-          <button class="btn btn-secondary" id="clearBtn">ล้างตัวกรอง</button>
-        </div>
-      </div>
-
-      <div class="legend">
-        <div class="legend-item"><span class="dot" style="background:var(--urgent)"></span> ด่วน</div>
-        <div class="legend-item"><span class="dot" style="background:var(--high)"></span> สูง</div>
-        <div class="legend-item"><span class="dot" style="background:var(--normal)"></span> ปกติ</div>
-        <div class="legend-item"><span class="dot" style="background:var(--low)"></span> ต่ำ</div>
-      </div>
-
-      <div class="list-wrap">
-        <div class="list-head">
-          <div class="list-title">รายการเคสบนแผนที่</div>
-          <div class="list-meta" id="caseCount">0 เคส</div>
-        </div>
-        <div class="cases" id="caseList"></div>
-      </div>
+      <div id="caseList" class="case-list"></div>
     </aside>
 
-    <section class="map-wrap">
-      <div class="map-topbar">
-        <div class="map-card">
-          <div style="font-weight:800">Command View</div>
-          <div class="small muted" id="lastUpdated">ยังไม่มีข้อมูล</div>
-        </div>
-        <div class="map-actions">
-          <div class="map-card small" id="liveBadge">Realtime: standby</div>
-        </div>
-      </div>
+    <main class="map-wrap">
       <div id="map"></div>
-      <div class="toast" id="toast">
-        <div class="toast-title" id="toastTitle">Realtime update</div>
-        <div class="toast-text" id="toastText">มีการอัปเดตใหม่</div>
+      <div class="topbar">
+        <div class="glass legend">
+          <div class="legend-item"><span class="swatch urgent"></span><span>Urgent</span></div>
+          <div class="legend-item"><span class="swatch high"></span><span>High</span></div>
+          <div class="legend-item"><span class="swatch normal"></span><span>Normal</span></div>
+          <div class="legend-item"><span class="swatch low"></span><span>Low</span></div>
+        </div>
+        <div class="glass" id="apiBaseBox"></div>
       </div>
-    </section>
+      <div id="toast" class="toast"></div>
+    </main>
   </div>
 
-<script>
-  (() => {
-  const qs = new URLSearchParams(window.location.search);
-  const DEFAULT_API_BASE =
-    qs.get('apiBase') ||
-    window.__API_BASE__ ||
-    localStorage.getItem('foundation_api_base') ||
-    "https://foundation-bot-p5wu.onrender.com";
+  <script>
+    (() => {
+      const qs = new URLSearchParams(window.location.search);
+      const DEFAULT_API_BASE =
+        qs.get('apiBase') ||
+        window.__API_BASE__ ||
+        localStorage.getItem('foundation_api_base') ||
+        "https://foundation-bot-p5wu.onrender.com";
 
-  if (DEFAULT_API_BASE) {
-    localStorage.setItem('foundation_api_base', DEFAULT_API_BASE);
-  }
-
-  const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
-  const API_URL = `${API_BASE}/api/cases/map`;
-  const STREAM_URL = `${API_BASE}/api/team/stream`;
-  const CASE_URL_BASE = `${API_BASE}/case`;
-
-  const map = L.map('map', { zoomControl: true }).setView([9.14, 99.33], 8);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(map);
-
-  const markerLayer = L.layerGroup().addTo(map);
-  const markersByCase = new Map();
-  let allItems = [];
-  let filteredItems = [];
-  let selectedCaseCode = '';
-  let stream = null;
-  let pollTimer = null;
-  let reconnectTimer = null;
-  let toastTimer = null;
-
-  const els = {
-    caseList: document.getElementById('caseList'),
-    caseCount: document.getElementById('caseCount'),
-    searchInput: document.getElementById('searchInput'),
-    statusFilter: document.getElementById('statusFilter'),
-    priorityFilter: document.getElementById('priorityFilter'),
-    sortBy: document.getElementById('sortBy'),
-    refreshBtn: document.getElementById('refreshBtn'),
-    fitAllBtn: document.getElementById('fitAllBtn'),
-    clearBtn: document.getElementById('clearBtn'),
-    lastUpdated: document.getElementById('lastUpdated'),
-    connPill: document.getElementById('conn-pill'),
-    liveBadge: document.getElementById('liveBadge'),
-    toast: document.getElementById('toast'),
-    toastTitle: document.getElementById('toastTitle'),
-    toastText: document.getElementById('toastText'),
-  };
-
-  function priorityRank(p) {
-    return ({ urgent: 4, high: 3, normal: 2, low: 1 }[String(p || '').toLowerCase()] || 0);
-  }
-
-  function getPriorityColor(priority) {
-    return ({ urgent: '#dc2626', high: '#ea580c', normal: '#2563eb', low: '#6b7280' }[String(priority || '').toLowerCase()] || '#6b7280');
-  }
-
-  function getStatusLabel(status) {
-    return ({ new:'รับเรื่องแล้ว', in_progress:'กำลังดำเนินการ', done:'เสร็จสิ้นแล้ว', cancelled:'ยกเลิก' }[String(status || '').toLowerCase()] || (status || '-'));
-  }
-
-  function getPriorityLabel(priority) {
-    return ({ urgent:'ด่วน', high:'สูง', normal:'ปกติ', low:'ต่ำ' }[String(priority || '').toLowerCase()] || (priority || '-'));
-  }
-
-  function formatDate(value) {
-    if (!value) return '-';
-    try {
-      return new Date(value).toLocaleString('th-TH', { dateStyle:'medium', timeStyle:'short' });
-    } catch {
-      return value;
-    }
-  }
-
-  function escapeHtml(value) {
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  function showToast(title, text) {
-    els.toastTitle.textContent = title;
-    els.toastText.textContent = text;
-    els.toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2600);
-  }
-
-  function setConnectionState(mode, text) {
-    els.connPill.textContent = text;
-    els.liveBadge.textContent = `Realtime: ${text}`;
-    if (mode === 'live') {
-      els.connPill.style.background = 'rgba(34,197,94,.22)';
-      els.liveBadge.style.color = '#166534';
-    } else if (mode === 'polling') {
-      els.connPill.style.background = 'rgba(245,158,11,.22)';
-      els.liveBadge.style.color = '#92400e';
-    } else {
-      els.connPill.style.background = 'rgba(255,255,255,.14)';
-      els.liveBadge.style.color = '#334155';
-    }
-  }
-
-  function markerHtml(priority, pulse = false) {
-    const cls = escapeHtml(String(priority || 'low').toLowerCase());
-    return `<div class="marker-core ${cls} ${pulse ? 'pulse' : ''}"></div>`;
-  }
-
-  function buildPopup(item) {
-    return `
-      <div class="popup-title">${escapeHtml(item.case_code || '-')}</div>
-      <div class="popup-grid">
-        <div>👤 ${escapeHtml(item.full_name || '-')}</div>
-        <div>📌 สถานะ: ${escapeHtml(getStatusLabel(item.status))}</div>
-        <div>⚡ ระดับ: ${escapeHtml(getPriorityLabel(item.priority))}</div>
-        <div>📍 ${escapeHtml(item.location_text || item.location || '-')}</div>
-        <div>📝 ${escapeHtml(item.latest_note || item.problem || '-')}</div>
-        <div>🕒 ${escapeHtml(formatDate(item.updated_at || item.created_at))}</div>
-      </div>
-      <div class="popup-actions">
-        <button class="popup-btn" onclick="window.__openCase('${escapeHtml(item.case_code || '')}')">ดูรายละเอียด</button>
-        <button class="popup-btn secondary" onclick="window.__focusCase('${escapeHtml(item.case_code || '')}')">โฟกัสรายการ</button>
-      </div>
-    `;
-  }
-
-  function clearMarkers() {
-    markerLayer.clearLayers();
-    markersByCase.clear();
-  }
-
-  function renderMarkers(items, focusCaseCode = '') {
-    clearMarkers();
-    items.forEach((item) => {
-      if (item.latitude == null || item.longitude == null) return;
-      const pulse = item.priority === 'urgent' || item.case_code === focusCaseCode;
-      const icon = L.divIcon({
-        html: markerHtml(item.priority, pulse),
-        className: 'custom-marker-wrap',
-        iconSize: [22, 22],
-        iconAnchor: [11, 11],
-        popupAnchor: [0, -10],
-      });
-      const marker = L.marker([Number(item.latitude), Number(item.longitude)], { icon, keyboard: false });
-      marker.bindPopup(buildPopup(item));
-      marker.on('click', () => selectCase(item.case_code, true));
-      marker.addTo(markerLayer);
-      markersByCase.set(item.case_code, marker);
-    });
-  }
-
-  function sortItems(items) {
-    const sortBy = els.sortBy.value;
-    const cloned = [...items];
-    if (sortBy === 'priority_desc') {
-      cloned.sort((a, b) => priorityRank(b.priority) - priorityRank(a.priority) || new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
-    } else if (sortBy === 'name_asc') {
-      cloned.sort((a, b) => String(a.full_name || '').localeCompare(String(b.full_name || ''), 'th'));
-    } else {
-      cloned.sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0));
-    }
-    return cloned;
-  }
-
-  function applyFilters() {
-    const q = els.searchInput.value.trim().toLowerCase();
-    const status = els.statusFilter.value;
-    const priority = els.priorityFilter.value;
-
-    filteredItems = sortItems(allItems.filter((item) => {
-      const hay = [item.case_code, item.full_name, item.phone, item.location, item.problem, item.location_text, item.latest_note].join(' ').toLowerCase();
-      if (status && item.status !== status) return false;
-      if (priority && item.priority !== priority) return false;
-      if (q && !hay.includes(q)) return false;
-      return true;
-    }));
-
-    renderCaseList();
-    renderMarkers(filteredItems, selectedCaseCode);
-    els.caseCount.textContent = `${filteredItems.length} เคส`;
-    els.lastUpdated.textContent = `อัปเดตข้อมูล: ${formatDate(new Date().toISOString())}`;
-  }
-
-  function renderCaseList() {
-    if (!filteredItems.length) {
-      els.caseList.innerHTML = `<div class="case-item"><div class="case-code">ยังไม่มีเคสที่มีพิกัด</div><div class="note muted">ลองส่งอัปเดตเคสพร้อมตำแหน่ง หรือปรับตัวกรอง</div></div>`;
-      return;
-    }
-
-    els.caseList.innerHTML = filteredItems.map((item) => `
-      <div class="case-item ${item.case_code === selectedCaseCode ? 'active' : ''}" data-case-code="${escapeHtml(item.case_code)}">
-        <div class="case-top">
-          <div>
-            <div class="case-code">${escapeHtml(item.case_code || '-')}</div>
-            <div class="case-name">${escapeHtml(item.full_name || '-')}</div>
-          </div>
-          <div class="small muted">${escapeHtml(formatDate(item.updated_at || item.created_at))}</div>
-        </div>
-        <div class="badges">
-          <span class="badge status">${escapeHtml(getStatusLabel(item.status))}</span>
-          <span class="badge priority ${escapeHtml(String(item.priority || 'low').toLowerCase())}">${escapeHtml(getPriorityLabel(item.priority))}</span>
-        </div>
-        <div class="note">${escapeHtml(item.location_text || item.location || '-')}</div>
-      </div>
-    `).join('');
-
-    els.caseList.querySelectorAll('.case-item[data-case-code]').forEach((el) => {
-      el.addEventListener('click', () => selectCase(el.dataset.caseCode, true));
-    });
-  }
-
-  function selectCase(caseCode, panToMarker = false) {
-    selectedCaseCode = caseCode || '';
-    renderCaseList();
-    renderMarkers(filteredItems, selectedCaseCode);
-    const marker = markersByCase.get(selectedCaseCode);
-    if (marker && panToMarker) {
-      map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 13), { duration: 0.7 });
-      marker.openPopup();
-    }
-  }
-
-  function fitAllMarkers() {
-    const bounds = [];
-    filteredItems.forEach((item) => {
-      if (item.latitude != null && item.longitude != null) bounds.push([Number(item.latitude), Number(item.longitude)]);
-    });
-    if (!bounds.length) return;
-    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 });
-  }
-
-  async function loadMapData({ silent = false, focusCaseCode = '' } = {}) {
-    try {
-      const params = new URLSearchParams();
-      if (els.statusFilter.value) params.set('status', els.statusFilter.value);
-      if (els.priorityFilter.value) params.set('priority', els.priorityFilter.value);
-      if (els.searchInput.value.trim()) params.set('search', els.searchInput.value.trim());
-      params.set('limit', '500');
-
-      const res = await fetch(`${API_URL}?${params.toString()}`, { headers: { 'Accept': 'application/json' } });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error || 'map api failed');
-      allItems = Array.isArray(json.items) ? json.items : [];
-      applyFilters();
-
-      if (focusCaseCode) {
-        requestAnimationFrame(() => selectCase(focusCaseCode, true));
+      if (DEFAULT_API_BASE) {
+        localStorage.setItem('foundation_api_base', DEFAULT_API_BASE);
       }
 
-      if (!silent) showToast('รีเฟรชข้อมูลสำเร็จ', `โหลด ${allItems.length} เคส`);
-    } catch (err) {
-      console.error('โหลด map ไม่สำเร็จ:', err);
-      showToast('โหลดข้อมูลไม่สำเร็จ', err.message || 'unknown error');
-    }
-  }
+      const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
+      const API_URL = `${API_BASE}/api/cases/map`;
+      const STREAM_URL = `${API_BASE}/api/team/stream`;
+      const CASE_URL_BASE = `${API_BASE}/case`;
 
-  function flashCase(caseCode) {
-    const el = els.caseList.querySelector(`[data-case-code="${CSS.escape(caseCode)}"]`);
-    if (!el) return;
-    el.classList.remove('flash');
-    void el.offsetWidth;
-    el.classList.add('flash');
-  }
+      const map = L.map('map', { zoomControl: true }).setView([9.14, 99.33], 8);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
 
-  function startPollingFallback() {
-    clearInterval(pollTimer);
-    setConnectionState('polling', 'Polling fallback');
-    pollTimer = setInterval(() => loadMapData({ silent: true }), 20000);
-  }
+      const markerLayer = L.layerGroup().addTo(map);
+      const markersByCase = new Map();
+      let allItems = [];
+      let filteredItems = [];
+      let selectedCaseCode = '';
+      let stream = null;
+      let pollTimer = null;
+      let reconnectTimer = null;
+      let toastTimer = null;
 
-  function startRealtime() {
-    if (stream) {
-      stream.close();
-      stream = null;
-    }
-    clearTimeout(reconnectTimer);
+      const els = {
+        caseList: document.getElementById('caseList'),
+        caseCount: document.getElementById('caseCount'),
+        searchInput: document.getElementById('searchInput'),
+        statusFilter: document.getElementById('statusFilter'),
+        priorityFilter: document.getElementById('priorityFilter'),
+        sortBy: document.getElementById('sortBy'),
+        refreshBtn: document.getElementById('refreshBtn'),
+        fitAllBtn: document.getElementById('fitAllBtn'),
+        clearFocusBtn: document.getElementById('clearFocusBtn'),
+        liveDot: document.getElementById('liveDot'),
+        liveText: document.getElementById('liveText'),
+        apiBaseBox: document.getElementById('apiBaseBox'),
+        toast: document.getElementById('toast')
+      };
 
-    try {
-      stream = new EventSource(STREAM_URL);
-      setConnectionState('connecting', 'กำลังเชื่อมต่อ SSE…');
+      els.apiBaseBox.textContent = `API: ${API_BASE}`;
 
-      stream.addEventListener('connected', () => {
-        setConnectionState('live', 'SSE live');
-      });
+      function showToast(message) {
+        if (!message) return;
+        els.toast.textContent = message;
+        els.toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          els.toast.classList.remove('show');
+        }, 2200);
+      }
 
-      stream.addEventListener('case_update', (event) => {
+      function priorityRank(priority) {
+        const value = String(priority || '').toLowerCase();
+        if (value === 'urgent') return 4;
+        if (value === 'high') return 3;
+        if (value === 'normal') return 2;
+        return 1;
+      }
+
+      function priorityClass(priority) {
+        const value = String(priority || '').toLowerCase();
+        if (value === 'urgent') return 'urgent';
+        if (value === 'high') return 'high';
+        if (value === 'normal') return 'normal';
+        return 'low';
+      }
+
+      function statusThai(status) {
+        const value = String(status || '').toLowerCase();
+        if (value === 'new') return 'รับเรื่องแล้ว';
+        if (value === 'in_progress') return 'กำลังดำเนินการ';
+        if (value === 'done') return 'เสร็จสิ้นแล้ว';
+        if (value === 'cancelled') return 'ยกเลิก';
+        return status || '-';
+      }
+
+      function priorityThai(priority) {
+        const value = String(priority || '').toLowerCase();
+        if (value === 'urgent') return 'ด่วน';
+        if (value === 'high') return 'สูง';
+        if (value === 'normal') return 'ปกติ';
+        if (value === 'low') return 'ต่ำ';
+        return priority || '-';
+      }
+
+      function formatDateTime(value) {
+        if (!value) return '-';
         try {
-          const data = JSON.parse(event.data || '{}');
-          const code = data?.item?.case_code || '';
-          showToast('มีอัปเดตเคส', code || 'case_update');
-          loadMapData({ silent: true, focusCaseCode: code });
-          if (code) flashCase(code);
+          return new Date(value).toLocaleString('th-TH', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
         } catch (err) {
-          console.error('case_update parse error', err);
+          return value;
         }
-      });
+      }
 
-      stream.addEventListener('case_geo_updated', (event) => {
+      function markerColor(priority) {
+        const value = String(priority || '').toLowerCase();
+        if (value === 'urgent') return '#dc2626';
+        if (value === 'high') return '#ea580c';
+        if (value === 'normal') return '#2563eb';
+        return '#6b7280';
+      }
+
+      function normalizeItem(item) {
+        return {
+          id: item?.id ?? null,
+          case_code: String(item?.case_code || '').trim(),
+          full_name: String(item?.full_name || '-').trim() || '-',
+          phone: String(item?.phone || '-').trim() || '-',
+          location: String(item?.location || '').trim(),
+          problem: String(item?.problem || '').trim(),
+          assigned_to: String(item?.assigned_to || '').trim(),
+          status: String(item?.status || 'new').trim() || 'new',
+          priority: String(item?.priority || 'normal').trim() || 'normal',
+          latitude: Number(item?.latitude),
+          longitude: Number(item?.longitude),
+          location_text: String(item?.location_text || '').trim(),
+          latest_note: String(item?.latest_note || '').trim(),
+          updated_at: item?.updated_at || null
+        };
+      }
+
+      function hasValidGeo(item) {
+        return Number.isFinite(item.latitude) && Number.isFinite(item.longitude);
+      }
+
+      function markerRadius(priority) {
+        const value = String(priority || '').toLowerCase();
+        if (value === 'urgent') return 11;
+        if (value === 'high') return 10;
+        return 9;
+      }
+
+      function buildPopup(item) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <div class="popup-title">${item.case_code || '-'}</div>
+          <div class="popup-grid">
+            <div>👤 ${item.full_name}</div>
+            <div>📌 สถานะ: ${statusThai(item.status)}</div>
+            <div>⚡ ระดับ: ${priorityThai(item.priority)}</div>
+            <div>📍 ${item.location_text || item.location || '-'}</div>
+            <div>🕒 ${formatDateTime(item.updated_at)}</div>
+            <div>📝 ${item.latest_note || item.problem || '-'}</div>
+          </div>
+        `;
+        const actions = document.createElement('div');
+        actions.className = 'popup-actions';
+
+        const detailBtn = document.createElement('button');
+        detailBtn.textContent = 'ดูรายละเอียด';
+        detailBtn.addEventListener('click', () => openCase(item.case_code));
+
+        const focusBtn = document.createElement('button');
+        focusBtn.textContent = 'โฟกัสเคส';
+        focusBtn.addEventListener('click', () => focusCase(item.case_code));
+
+        actions.appendChild(detailBtn);
+        actions.appendChild(focusBtn);
+        wrapper.appendChild(actions);
+        return wrapper;
+      }
+
+      function renderMarkers() {
+        markerLayer.clearLayers();
+        markersByCase.clear();
+
+        filteredItems.forEach((item) => {
+          if (!hasValidGeo(item)) return;
+
+          const marker = L.circleMarker([item.latitude, item.longitude], {
+            radius: markerRadius(item.priority),
+            color: markerColor(item.priority),
+            fillColor: markerColor(item.priority),
+            fillOpacity: 0.88,
+            weight: selectedCaseCode === item.case_code ? 4 : 2,
+            opacity: 0.98
+          });
+
+          marker.bindPopup(buildPopup(item));
+          marker.on('click', () => selectCase(item.case_code, true));
+          marker.addTo(markerLayer);
+          markersByCase.set(item.case_code, marker);
+        });
+      }
+
+      function renderList() {
+        els.caseList.innerHTML = '';
+        els.caseCount.textContent = `${filteredItems.length} เคส`;
+
+        if (!filteredItems.length) {
+          const empty = document.createElement('div');
+          empty.className = 'case-card';
+          empty.innerHTML = '<div class="case-code">ยังไม่มีเคสที่ตรงเงื่อนไข</div><div class="case-note">ลองล้าง filter หรือส่งพิกัดจากมือถือเข้าระบบอีกครั้ง</div>';
+          els.caseList.appendChild(empty);
+          return;
+        }
+
+        filteredItems.forEach((item) => {
+          const card = document.createElement('div');
+          card.className = 'case-card' + (selectedCaseCode === item.case_code ? ' active' : '');
+          card.dataset.caseCode = item.case_code;
+          card.innerHTML = `
+            <div class="card-top">
+              <div>
+                <div class="case-code">${item.case_code || '-'}</div>
+                <div class="case-name">${item.full_name}</div>
+              </div>
+              <span class="pill ${priorityClass(item.priority)}">${priorityThai(item.priority)}</span>
+            </div>
+            <div class="status">
+              <span class="status-chip">${statusThai(item.status)}</span>
+              <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
+            </div>
+            <div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
+            <div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
+          `;
+          card.addEventListener('click', () => selectCase(item.case_code, true));
+          els.caseList.appendChild(card);
+        });
+      }
+
+      function applyFilters() {
+        const search = String(els.searchInput.value || '').trim().toLowerCase();
+        const status = String(els.statusFilter.value || '').trim().toLowerCase();
+        const priority = String(els.priorityFilter.value || '').trim().toLowerCase();
+        const sortBy = String(els.sortBy.value || 'updated_desc');
+
+        filteredItems = allItems.filter((item) => {
+          const haystack = [
+            item.case_code,
+            item.full_name,
+            item.location,
+            item.location_text,
+            item.problem,
+            item.latest_note
+          ].join(' ').toLowerCase();
+
+          if (search && !haystack.includes(search)) return false;
+          if (status && String(item.status).toLowerCase() !== status) return false;
+          if (priority && String(item.priority).toLowerCase() !== priority) return false;
+          return true;
+        });
+
+        filteredItems.sort((a, b) => {
+          if (sortBy === 'priority_desc') {
+            return priorityRank(b.priority) - priorityRank(a.priority) ||
+              String(b.updated_at || '').localeCompare(String(a.updated_at || ''));
+          }
+          if (sortBy === 'code_asc') {
+            return String(a.case_code || '').localeCompare(String(b.case_code || ''));
+          }
+          return String(b.updated_at || '').localeCompare(String(a.updated_at || ''));
+        });
+
+        renderMarkers();
+        renderList();
+      }
+
+      function selectCase(caseCode, flyTo = false) {
+        selectedCaseCode = caseCode || '';
+        applyFilters();
+
+        document.querySelectorAll('.case-card').forEach((card) => {
+          card.classList.toggle('active', card.dataset.caseCode === selectedCaseCode);
+        });
+
+        if (!selectedCaseCode) return;
+
+        const marker = markersByCase.get(selectedCaseCode);
+        if (marker) {
+          if (flyTo) {
+            map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 14), { duration: 0.9 });
+          }
+          marker.openPopup();
+        }
+      }
+
+      function fitAllMarkers() {
+        const latLngs = filteredItems
+          .filter(hasValidGeo)
+          .map((item) => [item.latitude, item.longitude]);
+
+        if (!latLngs.length) return;
+        if (latLngs.length === 1) {
+          map.flyTo(latLngs[0], 14, { duration: 0.9 });
+          return;
+        }
+        map.fitBounds(latLngs, { padding: [40, 40] });
+      }
+
+      function flashCase(caseCode) {
+        const card = document.querySelector(`.case-card[data-case-code="${CSS.escape(caseCode)}"]`);
+        if (card) {
+          card.classList.remove('flash');
+          void card.offsetWidth;
+          card.classList.add('flash');
+        }
+      }
+
+      function mergeItems(items) {
+        const nextMap = new Map(allItems.map((item) => [item.case_code, item]));
+        items.forEach((raw) => {
+          const item = normalizeItem(raw);
+          if (!item.case_code || !hasValidGeo(item)) return;
+          nextMap.set(item.case_code, { ...nextMap.get(item.case_code), ...item });
+        });
+        allItems = Array.from(nextMap.values());
+        applyFilters();
+      }
+
+      async function loadMapData({ silent = false } = {}) {
         try {
-          const data = JSON.parse(event.data || '{}');
-          const code = data?.case_code || '';
-          showToast('ตำแหน่งเคสอัปเดต', code || 'case_geo_updated');
-          loadMapData({ silent: true, focusCaseCode: code });
-          if (code) flashCase(code);
-        } catch (err) {
-          console.error('case_geo_updated parse error', err);
-        }
-      });
+          const res = await fetch(API_URL, { headers: { Accept: 'application/json' } });
+          const json = await res.json();
+          if (!json?.ok) throw new Error(json?.error || 'load failed');
 
-      ['case_created', 'case_updated', 'recent_activity_refresh', 'dashboard_refresh'].forEach((name) => {
-        stream.addEventListener(name, (event) => {
+          allItems = (json.items || []).map(normalizeItem).filter((item) => item.case_code && hasValidGeo(item));
+          applyFilters();
+
+          if (!silent) {
+            showToast(`โหลดข้อมูลแล้ว ${allItems.length} เคส`);
+          }
+
+          if (allItems.length && !selectedCaseCode) {
+            fitAllMarkers();
+          }
+
+          setLiveState('polling');
+        } catch (err) {
+          console.error('loadMapData error:', err);
+          setLiveState('warn', 'เชื่อมต่อไม่สำเร็จ ใช้โหมด polling');
+          if (!silent) {
+            showToast('โหลดข้อมูลไม่สำเร็จ');
+          }
+        }
+      }
+
+      function setLiveState(mode, customText = '') {
+        els.liveDot.classList.remove('live', 'warn');
+        if (mode === 'live') {
+          els.liveDot.classList.add('live');
+          els.liveText.textContent = customText || 'Realtime SSE ทำงาน';
+          return;
+        }
+        if (mode === 'warn') {
+          els.liveDot.classList.add('warn');
+          els.liveText.textContent = customText || 'ใช้ polling สำรอง';
+          return;
+        }
+        els.liveText.textContent = customText || 'กำลังเชื่อมต่อ...';
+      }
+
+      function startPolling() {
+        clearInterval(pollTimer);
+        pollTimer = setInterval(() => {
+          loadMapData({ silent: true });
+        }, 20000);
+      }
+
+      function connectStream() {
+        if (!window.EventSource) {
+          setLiveState('warn', 'เบราว์เซอร์ไม่รองรับ SSE');
+          startPolling();
+          return;
+        }
+
+        try {
+          stream?.close?.();
+          stream = new EventSource(STREAM_URL);
+        } catch (err) {
+          console.error('SSE init error:', err);
+          setLiveState('warn', 'เปิด SSE ไม่สำเร็จ');
+          startPolling();
+          return;
+        }
+
+        stream.addEventListener('connected', () => {
+          setLiveState('live');
+          clearTimeout(reconnectTimer);
+        });
+
+        stream.addEventListener('heartbeat', () => {
+          setLiveState('live');
+        });
+
+        stream.addEventListener('case_update', (event) => {
           try {
-            const data = JSON.parse(event.data || '{}');
-            const code = data?.case_code || data?.item?.case_code || '';
-            loadMapData({ silent: true, focusCaseCode: code });
-            if (code) flashCase(code);
+            const payload = JSON.parse(event.data || '{}');
+            const item = payload?.item;
+            if (!item?.case_code) return;
+            mergeItems([item]);
+            flashCase(item.case_code);
+            showToast(`อัปเดตเคส ${item.case_code} แล้ว`);
           } catch (err) {
-            console.error(name, err);
+            console.error('case_update parse error:', err);
           }
         });
+
+        stream.addEventListener('case_geo_updated', (event) => {
+          try {
+            const payload = JSON.parse(event.data || '{}');
+            const item = payload?.item;
+            if (!item?.case_code) return;
+            mergeItems([item]);
+            flashCase(item.case_code);
+            showToast(`พิกัดเคส ${item.case_code} อัปเดตแล้ว`);
+          } catch (err) {
+            console.error('case_geo_updated parse error:', err);
+          }
+        });
+
+        stream.onerror = () => {
+          setLiveState('warn', 'SSE หลุด ใช้ polling สำรอง');
+          stream?.close?.();
+          startPolling();
+          clearTimeout(reconnectTimer);
+          reconnectTimer = setTimeout(() => {
+            connectStream();
+          }, 5000);
+        };
+      }
+
+      function openCase(code) {
+        if (!code) return;
+        window.open(`${CASE_URL_BASE}?case_code=${encodeURIComponent(code)}`, '_blank');
+      }
+
+      function focusCase(code) {
+        selectCase(code, true);
+      }
+
+      window.__openCase = openCase;
+      window.__focusCase = focusCase;
+
+      els.searchInput.addEventListener('input', applyFilters);
+      els.statusFilter.addEventListener('change', applyFilters);
+      els.priorityFilter.addEventListener('change', applyFilters);
+      els.sortBy.addEventListener('change', applyFilters);
+      els.refreshBtn.addEventListener('click', () => loadMapData());
+      els.fitAllBtn.addEventListener('click', fitAllMarkers);
+      els.clearFocusBtn.addEventListener('click', () => {
+        selectedCaseCode = '';
+        applyFilters();
+        fitAllMarkers();
       });
 
-      stream.onerror = () => {
-        setConnectionState('polling', 'SSE หลุด ใช้ polling');
-        startPollingFallback();
-        try { stream.close(); } catch {}
-        stream = null;
-        reconnectTimer = setTimeout(startRealtime, 6000);
-      };
-    } catch (err) {
-      console.error('SSE init failed', err);
-      startPollingFallback();
-    }
-  }
-
-  window.__openCase = function openCase(code) {
-    if (!code) return;
-    window.open(`${CASE_URL_BASE}?case_code=${encodeURIComponent(code)}`, '_blank');
-  };
-
-  window.__focusCase = function focusCase(code) {
-    selectCase(code, true);
-  };
-
-  els.searchInput.addEventListener('input', applyFilters);
-  els.statusFilter.addEventListener('change', () => loadMapData({ silent: true }));
-  els.priorityFilter.addEventListener('change', () => loadMapData({ silent: true }));
-  els.sortBy.addEventListener('change', applyFilters);
-  els.refreshBtn.addEventListener('click', () => loadMapData({ focusCaseCode: selectedCaseCode }));
-  els.fitAllBtn.addEventListener('click', fitAllMarkers);
-  els.clearBtn.addEventListener('click', () => {
-    els.searchInput.value = '';
-    els.statusFilter.value = '';
-    els.priorityFilter.value = '';
-    els.sortBy.value = 'updated_desc';
-    loadMapData({ silent: true });
-  });
-
-  loadMapData({ silent: true }).then(() => fitAllMarkers());
-  startPollingFallback();
-  startRealtime();
-})();
-</script>
+      loadMapData().then(() => {
+        startPolling();
+        connectStream();
+      });
+    })();
+  </script>
 </body>
 </html>

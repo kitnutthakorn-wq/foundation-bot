@@ -2,7 +2,6 @@
 require("dotenv").config();
 
 const express = require("express");
-const cors = require("cors");
 const crypto = require("crypto");
 const path = require("path");
 const multer = require("multer");
@@ -28,22 +27,35 @@ const fetch = (...args) => {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const ALLOWED_ORIGINS = [
+const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,
-  process.env.NETLIFY_URL ? `https://${process.env.NETLIFY_URL}` : null,
   process.env.PUBLIC_SITE_URL,
-  "https://foundation-bot.netlify.app",
+  process.env.NETLIFY_SITE_URL,
+  process.env.URL
 ].filter(Boolean);
 
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin) return callback(null, true);
-    if (!ALLOWED_ORIGINS.length || ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-    return callback(null, true);
-  },
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+function resolvePublicOrigin(req) {
+  const requestOrigin = String(req.headers.origin || "").trim();
+  if (!requestOrigin) {
+    return PUBLIC_WEB_ORIGINS[0] || "*";
+  }
+  if (!PUBLIC_WEB_ORIGINS.length || PUBLIC_WEB_ORIGINS.includes(requestOrigin)) {
+    return requestOrigin;
+  }
+  return PUBLIC_WEB_ORIGINS[0] || "*";
+}
+
+function applyPublicCors(req, res) {
+  const allowOrigin = resolvePublicOrigin(req);
+  res.setHeader("Access-Control-Allow-Origin", allowOrigin);
+  res.setHeader("Vary", "Origin");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, Cache-Control, Last-Event-ID, Accept"
+  );
+}
+
 
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
@@ -1858,52 +1870,36 @@ app.get("/api/recent-activity", async (req, res) => {
   }
 });
 
+app.options("/api/cases/map", (req, res) => {
+  applyPublicCors(req, res);
+  return res.status(204).end();
+});
+
+app.options("/api/team/stream", (req, res) => {
+  applyPublicCors(req, res);
+  return res.status(204).end();
+});
+
 // ===============================
 // MAP API (Golden Safe Patch - YOUR VERSION)
 // ===============================
 app.get("/api/cases/map", async (req, res) => {
   try {
-    const statusFilter = String(req.query.status || "").trim().toLowerCase();
-    const priorityFilter = String(req.query.priority || "").trim().toLowerCase();
-    const search = String(req.query.search || "").trim();
-    const limit = Math.min(Math.max(parseInt(req.query.limit || "500", 10) || 500, 1), 1000);
+    applyPublicCors(req, res);
 
-    let query = supabase
+    const { data, error } = await supabase
       .from("help_requests")
-      .select(`
-        id,
-        case_code,
-        full_name,
-        phone,
-        location,
-        problem,
-        status,
-        priority,
-        assigned_to,
-        latest_note,
-        latitude,
-        longitude,
-        location_text,
-        updated_at,
-        created_at
-      `)
+      .select("*")
       .not("latitude", "is", null)
       .not("longitude", "is", null)
-      .order("updated_at", { ascending: false })
-      .limit(limit);
-
-    if (statusFilter) query = query.eq("status", statusFilter);
-    if (priorityFilter) query = query.eq("priority", priorityFilter);
-    if (search) {
-      const safe = search.replace(/,/g, " ").trim();
-      query = query.or(`case_code.ilike.%${safe}%,full_name.ilike.%${safe}%,phone.ilike.%${safe}%,location.ilike.%${safe}%,problem.ilike.%${safe}%,location_text.ilike.%${safe}%`);
-    }
-
-    const { data, error } = await query;
+      .order("updated_at", { ascending: false });
 
     if (error) {
       console.error("MAP API ERROR:", error);
-      return res.status(500).json({ ok: false, error: error.message });
+      return res.status(500).json({
+        ok: false,
+        error: error.message
+      });
     }
 
     return res.json({
@@ -1916,20 +1912,22 @@ app.get("/api/cases/map", async (req, res) => {
         location: row.location || "",
         problem: row.problem || "",
         assigned_to: row.assigned_to || "",
-        latest_note: row.latest_note || "",
         status: row.status || "new",
         priority: row.priority || "normal",
         latitude: row.latitude,
         longitude: row.longitude,
-        location_text: row.location_text || row.location || "",
-        updated_at: row.updated_at || null,
-        created_at: row.created_at || null
+        location_text: row.location_text || "",
+        latest_note: row.latest_note || "",
+        updated_at: row.updated_at || row.last_action_at || row.created_at || null
       }))
     });
 
   } catch (err) {
     console.error("GET /api/cases/map FAILED:", err);
-    return res.status(500).json({ ok: false, error: err.message || "internal error" });
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal error"
+    });
   }
 });
 
@@ -2086,18 +2084,15 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       last_action_by: payload.updater_name || payload.updated_by || null
     };
 
-    if (typeof payload.latitude === "number" && !Number.isNaN(payload.latitude)) {
-      latestFields.latitude = payload.latitude;
-    }
-    if (typeof payload.longitude === "number" && !Number.isNaN(payload.longitude)) {
-      latestFields.longitude = payload.longitude;
-    }
-    if (payload.location_text) {
-      latestFields.location_text = payload.location_text;
-    }
-
     if (payload.status_after) {
       latestFields.status = payload.status_after;
+    }
+
+    if (Number.isFinite(payload.latitude) && Number.isFinite(payload.longitude)) {
+      latestFields.latitude = payload.latitude;
+      latestFields.longitude = payload.longitude;
+      latestFields.location_text = payload.location_text || null;
+      latestFields.updated_at = insertedUpdate?.updated_at || new Date().toISOString();
     }
 
     const { error: helpReqUpdateError } = await supabase
@@ -2126,20 +2121,26 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
         message: insertedUpdate.message,
         images: insertedUpdate.images || [],
         status_after: insertedUpdate.status_after,
-        latitude: insertedUpdate.latitude,
-        longitude: insertedUpdate.longitude,
+        latitude: insertedUpdate.latitude ?? null,
+        longitude: insertedUpdate.longitude ?? null,
         location_text: insertedUpdate.location_text || ""
       }
     });
 
-    broadcastSse("case_geo_updated", {
-      scope: "team_workspace",
-      case_code: insertedUpdate.case_code,
-      latitude: insertedUpdate.latitude,
-      longitude: insertedUpdate.longitude,
-      location_text: insertedUpdate.location_text || "",
-      updated_at: insertedUpdate.updated_at
-    });
+    if (Number.isFinite(insertedUpdate.latitude) && Number.isFinite(insertedUpdate.longitude)) {
+      broadcastSse("case_geo_updated", {
+        scope: "team_workspace",
+        item: {
+          case_code: insertedUpdate.case_code,
+          latitude: insertedUpdate.latitude,
+          longitude: insertedUpdate.longitude,
+          location_text: insertedUpdate.location_text || "",
+          updated_at: insertedUpdate.updated_at,
+          status: payload.status_after || null,
+          latest_note: insertedUpdate.latest_note || ""
+        }
+      });
+    }
 
     broadcastSse("recent_activity_refresh", {
       scope: "team_workspace",
@@ -2236,6 +2237,7 @@ app.get("/api/stream", checkDashboardAuth, (req, res) => {
 });
 
 app.get("/api/team/stream", (req, res) => {
+  applyPublicCors(req, res);
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache, no-transform");
   res.setHeader("Connection", "keep-alive");

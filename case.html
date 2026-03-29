@@ -465,6 +465,18 @@ button:active{transform:translateY(0)}
   </div>
   <div class="toast-wrap" id="toastWrap"></div>
 
+function statusThai(status) {
+  const s = String(status || '').trim().toLowerCase();
+
+  if (s === 'progress') return 'กำลังดำเนินการ';
+  if (s === 'in_progress') return 'กำลังดำเนินการ';
+  if (s === 'new') return 'รับเรื่องแล้ว';
+  if (s === 'done') return 'เสร็จสิ้นแล้ว';
+  if (s === 'cancelled') return 'ยกเลิก';
+
+  return status || '-';
+}
+  
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get("id");
@@ -625,7 +637,10 @@ if (locationTextEl) {
 document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
 
 // ✅ เปลี่ยนสถานะเป็นไทย
-document.getElementById("status").innerHTML = statusBadge(data.status, data.status_th);
+document.getElementById("status").innerHTML = statusBadge(
+  data.status,
+  statusThai(data.status)
+);
 
 // ✅ เปลี่ยนระดับเป็นไทย
 document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);

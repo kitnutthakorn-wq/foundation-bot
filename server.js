@@ -2089,11 +2089,15 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
     }
 
     if (Number.isFinite(payload.latitude) && Number.isFinite(payload.longitude)) {
-      latestFields.latitude = payload.latitude;
-      latestFields.longitude = payload.longitude;
-      latestFields.location_text = payload.location_text || null;
-      latestFields.updated_at = insertedUpdate?.updated_at || new Date().toISOString();
-    }
+  latestFields.latitude = payload.latitude;
+  latestFields.longitude = payload.longitude;
+  latestFields.location_text =
+    payload.location_text ||
+    `${payload.latitude}, ${payload.longitude}`;
+
+  latestFields.last_action_at =
+    insertedUpdate?.updated_at || new Date().toISOString();
+}
 
     const { error: helpReqUpdateError } = await supabase
       .from("help_requests")

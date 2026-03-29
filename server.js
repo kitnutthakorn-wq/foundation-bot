@@ -3771,15 +3771,15 @@ async function getLatestCaseUpdateByCaseCode(caseCode) {
     .select("*")
     .eq("case_code", caseCode)
     .order("updated_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
 
   if (error) {
     console.error("GET LATEST CASE UPDATE ERROR:", error);
     return null;
   }
 
-  return data ? normalizeCaseUpdateRecord(data) : null;
+  const latest = Array.isArray(data) ? data[0] : null;
+  return latest ? normalizeCaseUpdateRecord(latest) : null;
 }
 
 async function getProjectNameFromProjectDb(caseItem = {}) {

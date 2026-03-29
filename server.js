@@ -4954,35 +4954,6 @@ app.get("/api/team/ui-stream", async (req, res) => {
  */
 
 
-/* =========================
-   COMMAND CENTER (ADD ONLY / SAFE PATCH)
-   วางบล็อกนี้ก่อน app.listen(...) ตัวสุดท้าย
-========================= */
-
-function buildCommandCenterSummaryText(summary = {}, days = 7) {
-  return `ช่วง ${days} วันล่าสุด มีเคสด่วนที่ยังเปิด ${summary.urgent_open_cases || 0} เคส, เคสล่าช้า ${summary.delayed_cases || 0} เคส, ปิดแล้ว ${summary.done_cases || 0} เคส และติดตามด่วน ${summary.followup_urgent_cases || 0} เคส`;
-}
-
-function applyCommandCenterSearch(rows = [], q = "") {
-  const keyword = String(q || "").trim().toLowerCase();
-  if (!keyword) return rows;
-
-  return rows.filter((row) => {
-    return [
-      row.case_code,
-      row.full_name,
-      row.phone,
-      row.location,
-      row.problem,
-      row.status,
-      row.priority,
-      row.assigned_to,
-    ]
-      .map((value) => String(value || "").toLowerCase())
-      .some((value) => value.includes(keyword));
-  });
-}
-
 function normalizeStatusForSla(status = "") {
   const s = String(status || "").trim().toLowerCase();
   if (s === "progress") return "in_progress";
@@ -4990,86 +4961,54 @@ function normalizeStatusForSla(status = "") {
   return s;
 }
 
+function normalizeCaseUpdateRecord(row = {}) {
+  return {
+    ...row,
+    status: row.status || row.status_after || null,
+    note: row.note || row.latest_note || row.message || null,
+    latest_note: row.latest_note || row.note || row.message || null,
+    images: Array.isArray(row.images) ? row.images : (() => {
+      if (!row.images) return [];
+      if (typeof row.images === "string") {
+        try {
+          const parsed = JSON.parse(row.images);
+          if (Array.isArray(parsed)) return parsed.filter(Boolean).map(String);
+        } catch (_) {}
+        return row.images.split(",").map((s) => s.trim()).filter(Boolean);
+      }
+      return [];
+    })(),
+  };
+}
+
 function getSlaHoursFromRow(row = {}) {
-  const base =
-    row.last_update_at ||
-    row.last_action_at ||
-    row.updated_at ||
-    row.created_at ||
-    null;
-
+  const base = row.last_update_at || row.last_action_at || row.updated_at || row.created_at || null;
   if (!base) return null;
-
   const ms = Date.now() - new Date(base).getTime();
   if (!Number.isFinite(ms)) return null;
-
   return ms / (1000 * 60 * 60);
 }
 
 function getSlaStateFromHours(hours, status = "") {
   const normalizedStatus = normalizeStatusForSla(status);
-
   if (["done", "cancelled"].includes(normalizedStatus)) {
-    return {
-      sla_level: "closed",
-      sla_text: "ปิดเคสแล้ว",
-      sla_color: "closed",
-      overdue: false
-    };
+    return { sla_level: "closed", sla_text: "ปิดเคสแล้ว", overdue: false };
   }
-
   if (hours === null || hours === undefined) {
-    return {
-      sla_level: "unknown",
-      sla_text: "ไม่ทราบ SLA",
-      sla_color: "unknown",
-      overdue: false
-    };
+    return { sla_level: "unknown", sla_text: "ไม่ทราบ SLA", overdue: false };
   }
-
-  if (hours >= 24) {
-    return {
-      sla_level: "critical",
-      sla_text: "วิกฤต > 24 ชม",
-      sla_color: "critical",
-      overdue: true
-    };
-  }
-
-  if (hours >= 12) {
-    return {
-      sla_level: "risk",
-      sla_text: "เสี่ยง > 12 ชม",
-      sla_color: "risk",
-      overdue: true
-    };
-  }
-
-  if (hours >= 6) {
-    return {
-      sla_level: "watch",
-      sla_text: "เริ่มช้า > 6 ชม",
-      sla_color: "watch",
-      overdue: false
-    };
-  }
-
-  return {
-    sla_level: "ok",
-    sla_text: "ปกติ",
-    sla_color: "ok",
-    overdue: false
-  };
+  if (hours >= 24) return { sla_level: "critical", sla_text: "วิกฤต > 24 ชม", overdue: true };
+  if (hours >= 12) return { sla_level: "risk", sla_text: "เสี่ยง > 12 ชม", overdue: true };
+  if (hours >= 6) return { sla_level: "watch", sla_text: "เริ่มช้า > 6 ชม", overdue: false };
+  return { sla_level: "ok", sla_text: "ปกติ", overdue: false };
 }
 
 function enrichCaseWithSla(row = {}) {
   const hours = getSlaHoursFromRow(row);
-  const sla = getSlaStateFromHours(hours, row.status);
-
   return {
     ...row,
     sla_hours: hours === null ? null : Math.floor(hours * 10) / 10,
-    ...sla
+    ...getSlaStateFromHours(hours, row.status),
   };
 }
 
@@ -5090,16 +5029,29 @@ async function getLatestCaseUpdatesMap(caseCodes = []) {
   if (error) throw error;
 
   const map = new Map();
-
   for (const row of data || []) {
     const code = row.case_code;
     if (!code) continue;
-    if (!map.has(code)) {
-      map.set(code, normalizeCaseUpdateRecord(row));
-    }
+    if (!map.has(code)) map.set(code, normalizeCaseUpdateRecord(row));
   }
-
   return map;
+}
+
+/* =========================
+   COMMAND CENTER (ADD ONLY / SAFE PATCH)
+   วางบล็อกนี้ก่อน app.listen(...) ตัวสุดท้าย
+========================= */
+
+function buildCommandCenterSummaryText(summary = {}, days = 7) {
+  return `ช่วง ${days} วันล่าสุด มีเคสด่วนที่ยังเปิด ${summary.urgent_open_cases || 0} เคส, เคสเข้า SLA เสี่ยง/วิกฤต ${summary.delayed_cases || 0} เคส, ปิดแล้ว ${summary.done_cases || 0} เคส และเคสด่วนที่ต้องติดตาม ${summary.followup_urgent_cases || 0} เคส`;
+}
+
+function applyCommandCenterSearch(rows = [], q = "") {
+  const keyword = String(q || "").trim().toLowerCase();
+  if (!keyword) return rows;
+  return rows.filter((row) => [
+    row.case_code, row.full_name, row.phone, row.location, row.problem, row.status, row.priority, row.assigned_to, row.latest_note
+  ].map((value) => String(value || "").toLowerCase()).some((value) => value.includes(keyword)));
 }
 
 async function getCommandCenterRows(limit = 100) {
@@ -5112,50 +5064,26 @@ async function getCommandCenterRows(limit = 100) {
   if (error) throw error;
 
   const rows = data || [];
-  const caseCodes = rows.map((row) => row.case_code).filter(Boolean);
-  const latestMap = await getLatestCaseUpdatesMap(caseCodes);
+  const latestMap = await getLatestCaseUpdatesMap(rows.map((r) => r.case_code).filter(Boolean));
 
   return rows.map((row) => {
     const latest = latestMap.get(row.case_code) || null;
-
     const merged = {
       ...row,
       latest_update: latest,
-      last_update_at:
-        latest?.updated_at ||
-        row.last_action_at ||
-        row.created_at ||
-        null,
-      current_step:
-        latest?.current_step ||
-        row.current_step ||
-        null,
-      waiting_for:
-        latest?.waiting_for ||
-        row.waiting_for ||
-        null,
-      progress_percent:
-        latest?.progress_percent ??
-        row.progress_percent ??
-        0,
+      last_update_at: latest?.updated_at || row.last_action_at || row.created_at || null,
+      current_step: latest?.current_step || row.current_step || null,
+      waiting_for: latest?.waiting_for || row.waiting_for || null,
+      progress_percent: latest?.progress_percent ?? row.progress_percent ?? 0,
       latest_note: pickLatestNote(latest || row),
-      updated_by:
-        latest?.updater_name ||
-        latest?.updated_by ||
-        row.assigned_to ||
-        null
+      updated_by: latest?.updater_name || latest?.updated_by || row.assigned_to || null,
     };
-
     return enrichCaseWithSla(merged);
   });
 }
 
 function filterDelayedCases(rows = []) {
-  return rows.filter((row) => {
-    const status = normalizeStatusForSla(row.status);
-    if (["done", "cancelled"].includes(status)) return false;
-    return ["risk", "critical"].includes(row.sla_level);
-  });
+  return rows.filter((row) => !["done", "cancelled"].includes(normalizeStatusForSla(row.status)) && ["risk", "critical"].includes(row.sla_level));
 }
 
 function filterUrgentOpenCases(rows = []) {
@@ -5172,196 +5100,70 @@ function filterClosedCases(rows = []) {
 
 async function getCommandCenterSummary(days = 7) {
   const rows = await getCommandCenterRows(300);
-
-  const now = Date.now();
-  const cutoff = now - days * 24 * 60 * 60 * 1000;
-
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
   const filtered = rows.filter((row) => {
     const t = new Date(row.created_at || row.last_update_at || 0).getTime();
     return Number.isFinite(t) && t >= cutoff;
   });
 
-  const urgent_open_cases = filtered.filter((r) =>
-    r.priority === "urgent" &&
-    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
-  ).length;
-
-  const delayed_cases = filtered.filter((r) =>
-    ["risk", "critical"].includes(r.sla_level) &&
-    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
-  ).length;
-
-  const done_cases = filtered.filter((r) =>
-    normalizeStatusForSla(r.status) === "done"
-  ).length;
-
-  const followup_urgent_cases = filtered.filter((r) =>
-    r.priority === "urgent" &&
-    ["watch", "risk", "critical"].includes(r.sla_level) &&
-    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
-  ).length;
+  const urgent_open_cases = filtered.filter((r) => r.priority === "urgent" && !["done", "cancelled"].includes(normalizeStatusForSla(r.status))).length;
+  const delayed_cases = filtered.filter((r) => ["risk", "critical"].includes(r.sla_level) && !["done", "cancelled"].includes(normalizeStatusForSla(r.status))).length;
+  const done_cases = filtered.filter((r) => normalizeStatusForSla(r.status) === "done").length;
+  const followup_urgent_cases = filtered.filter((r) => r.priority === "urgent" && ["watch", "risk", "critical"].includes(r.sla_level) && !["done", "cancelled"].includes(normalizeStatusForSla(r.status))).length;
 
   return {
-    urgent_open_cases,
-    delayed_cases,
-    done_cases,
-    followup_urgent_cases,
-    summary_text: buildCommandCenterSummaryText({
-      urgent_open_cases,
-      delayed_cases,
-      done_cases,
-      followup_urgent_cases,
-    }, days)
+    urgent_open_cases, delayed_cases, done_cases, followup_urgent_cases,
+    summary_text: buildCommandCenterSummaryText({ urgent_open_cases, delayed_cases, done_cases, followup_urgent_cases }, days),
   };
 }
 
 async function getCommandCenterList(type = "urgent_open", q = "", limit = 30) {
-  let rows = await getCommandCenterRows(Math.max(limit, 400));
-
+  let rows = await getCommandCenterRows(Math.max(limit, 200));
   rows = applyCommandCenterSearch(rows, q);
 
-  if (type === "urgent_open") {
-    rows = filterUrgentOpenCases(rows);
-  } else if (type === "delayed") {
-    rows = filterDelayedCases(rows);
-  } else if (type === "closed") {
-    rows = filterClosedCases(rows);
-  } else if (type === "followup_urgent") {
-    rows = rows.filter((r) =>
-      r.priority === "urgent" &&
-      ["watch", "risk", "critical"].includes(r.sla_level) &&
-      !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
-    );
-  } else if (type === "sla_high") {
-    rows = rows.filter((r) => r.sla_level === "critical");
-  } else if (type === "sla_medium") {
-    rows = rows.filter((r) => r.sla_level === "risk");
-  } else if (type === "sla_watch") {
-    rows = rows.filter((r) => r.sla_level === "watch");
-  } else {
-    rows = rows.sort((a, b) =>
-      new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
-    );
+  switch (type) {
+    case "closed": rows = filterClosedCases(rows); break;
+    case "delayed": rows = filterDelayedCases(rows); break;
+    case "followup_urgent": rows = rows.filter((r) => r.priority === "urgent" && ["watch", "risk", "critical"].includes(r.sla_level) && !["done", "cancelled"].includes(normalizeStatusForSla(r.status))); break;
+    case "sla_high": rows = rows.filter((r) => r.sla_level === "critical"); break;
+    case "sla_medium": rows = rows.filter((r) => r.sla_level === "risk"); break;
+    case "sla_watch": rows = rows.filter((r) => r.sla_level === "watch"); break;
+    case "latest": rows = rows.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()); break;
+    case "urgent_open":
+    default: rows = filterUrgentOpenCases(rows); break;
   }
 
-  return rows.slice(0, limit).map((row) => ({
-    id: row.id,
-    case_code: row.case_code,
-    full_name: row.full_name,
-    location: row.location,
-    status: row.status,
-    priority: row.priority,
-    sla_level: row.sla_level,
-    sla_text: row.sla_text,
-    sla_hours: row.sla_hours,
-    current_step: row.current_step,
-    waiting_for: row.waiting_for,
-    latest_note: row.latest_note,
-    progress_percent: row.progress_percent
-  }));
+  return rows.slice(0, limit);
 }
 
 async function getCommandCenterActivity(limit = 12) {
-  const rows = await getCommandCenterRows(Math.max(limit, 50));
-
-  return rows.slice(0, limit).map((row) => {
-    let activityText = `สถานะ ${formatCaseStatusThai(row.status)} / ระดับ ${formatPriorityThai(row.priority)}`;
-    let eventTime = row.created_at;
-
-    if (row.closed_at) {
-      activityText = `ปิดเคสแล้ว${row.assigned_to ? ` โดย ${row.assigned_to}` : ""}`;
-      eventTime = row.closed_at;
-    } else if (row.last_update_at) {
-      activityText = `${row.latest_note || `สถานะ ${formatCaseStatusThai(row.status)}`}${row.updated_by ? ` โดย ${row.updated_by}` : ""}`;
-      eventTime = row.last_update_at;
-    } else if (row.assigned_at) {
-      activityText = `รับเคสแล้ว${row.assigned_to ? ` โดย ${row.assigned_to}` : ""}`;
-      eventTime = row.assigned_at;
-    }
-
-    return {
+  const rows = await getCommandCenterRows(Math.max(limit, 40));
+  return rows
+    .sort((a, b) => new Date(b.last_update_at || b.created_at || 0).getTime() - new Date(a.last_update_at || a.created_at || 0).getTime())
+    .slice(0, limit)
+    .map((row) => ({
       ...row,
-      activity_text: activityText,
-      event_time: eventTime,
-    };
-  });
+      activity_text: row.latest_note || `สถานะ ${formatCaseStatusThai(row.status)} / ระดับ ${formatPriorityThai(row.priority)}`,
+      event_time: row.last_update_at || row.created_at || null,
+    }));
 }
 
 function buildSmartAlerts(rows = []) {
   const alerts = [];
-  const urgentOpen = filterUrgentOpenCases(rows);
-  const delayed = filterDelayedCases(rows);
-  const closed = filterClosedCases(rows);
+  const urgentCritical = rows.filter((r) => r.priority === "urgent" && r.sla_level === "critical" && !["done", "cancelled"].includes(normalizeStatusForSla(r.status)));
+  const delayed = rows.filter((r) => ["risk", "critical"].includes(r.sla_level) && !["done", "cancelled"].includes(normalizeStatusForSla(r.status)));
+  const closed = rows.filter((r) => normalizeStatusForSla(r.status) === "done").slice(0, 5);
 
-  const urgentCritical = urgentOpen.filter((row) => row.sla_level === "critical");
-  const urgentRisk = urgentOpen.filter((row) => row.sla_level === "risk");
-  const unassignedUrgent = urgentOpen.filter((row) => !String(row.assigned_to || "").trim());
+  if (urgentCritical.length) alerts.push({ severity: "high", title: "เคสด่วนค้างเกิน 24 ชั่วโมง", detail: `พบ ${urgentCritical.length} เคสที่ยังไม่ปิดและไม่มีอัปเดตภายในเกณฑ์วิกฤต`, recommendation: "ควรติดตามสถานะและเร่งปิดเคสทันที", filter_key: "sla_high" });
+  if (delayed.length) alerts.push({ severity: "medium", title: "เคสล่าช้าสะสมสูง", detail: `พบเคสเข้า SLA เสี่ยง/วิกฤต ${delayed.length} เคส`, recommendation: "ควรดึงรายการเข้ามาตรวจสอบทันที", filter_key: "delayed" });
+  if (closed.length) alerts.push({ severity: "low", title: "มีเคสปิดล่าสุดพร้อมตรวจผลลัพธ์", detail: `พบเคสปิดแล้ว ${closed.length} เคส`, recommendation: "ใช้ติดตาม output และคุณภาพการปิดเคส", filter_key: "closed" });
+  if (!alerts.length) alerts.push({ severity: "low", title: "ยังไม่พบสัญญาณเตือนสำคัญ", detail: "ทุกเคสยังอยู่ในระดับที่ควบคุมได้", recommendation: "ติดตามต่อเนื่องตามรอบปกติ", filter_key: "latest" });
 
-  if (urgentCritical.length > 0) {
-    alerts.push({
-      severity: "high",
-      title: "เคสด่วนค้างเกิน 24 ชั่วโมง",
-      detail: `พบ ${urgentCritical.length} เคสที่ยังไม่ปิดและไม่มีอัปเดตภายในเกณฑ์วิกฤต`,
-      recommendation: "ควรติดตามสถานะและเร่งปิดเคสทันที",
-      filter_key: "sla_high"
-    });
-  }
-
-  if (urgentRisk.length > 0) {
-    alerts.push({
-      severity: "medium",
-      title: "เคสด่วนเสี่ยงค้างเกิน 12 ชั่วโมง",
-      detail: `พบ ${urgentRisk.length} เคสที่เริ่มเข้าเขตเสี่ยง SLA`,
-      recommendation: "ควรเรียกตรวจสถานะและกระตุ้นทีมภาคสนาม",
-      filter_key: "sla_medium"
-    });
-  }
-
-  if (delayed.length > 0) {
-    alerts.push({
-      severity: "medium",
-      title: "เคสล่าช้าสะสมสูง",
-      detail: `พบเคสเข้า SLA เสี่ยง/วิกฤต ${delayed.length} เคส`,
-      recommendation: "ควรดึงรายการเข้ามาตรวจสอบทันที",
-      filter_key: "delayed"
-    });
-  }
-
-  if (unassignedUrgent.length > 0) {
-    alerts.push({
-      severity: "high",
-      title: "เคสด่วนยังไม่มีผู้รับเคส",
-      detail: `พบ ${unassignedUrgent.length} เคสที่ยังไม่มีผู้รับผิดชอบ`,
-      recommendation: "ควรมอบหมายผู้รับเคสทันที",
-      filter_key: "urgent_open"
-    });
-  }
-
-  if (closed.length > 0) {
-    alerts.push({
-      severity: "low",
-      title: "มีเคสปิดล่าสุดพร้อมตรวจผลลัพธ์",
-      detail: `พบเคสปิดแล้ว ${closed.length} เคส`,
-      recommendation: "ใช้ติดตาม output และคุณภาพการปิดเคส",
-      filter_key: "closed"
-    });
-  }
-
-  if (!alerts.length) {
-    alerts.push({
-      severity: "low",
-      title: "ยังไม่พบสัญญาณเตือนสำคัญ",
-      detail: "ทุกเคสยังอยู่ในระดับที่ควบคุมได้",
-      recommendation: "ติดตามต่อเนื่องตามรอบปกติ",
-      filter_key: "latest"
-    });
-  }
-
-  return alerts.slice(0, 5);
+  return alerts.slice(0, 4);
 }
 
 async function getCommandCenterAlerts() {
-  const rows = await getCommandCenterRows(300);
+  const rows = await getCommandCenterRows(200);
   return buildSmartAlerts(rows);
 }
 

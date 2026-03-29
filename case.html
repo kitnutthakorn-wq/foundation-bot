@@ -300,24 +300,6 @@ button:active{transform:translateY(0)}
   .panel-title{font-size:18px}
 }
 
-
-/* ===== TIMELINE SAFE PATCH ===== */
-.timeline-list{display:flex;flex-direction:column;gap:14px}
-.timeline-item{border:1px solid #e5e7eb;border-left:6px solid #0b7c86;border-radius:18px;background:#fff;padding:16px}
-.timeline-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.timeline-title{font-size:20px;font-weight:800;color:#16304e}
-.timeline-time{color:#6b7280;font-size:13px;font-weight:700}
-.timeline-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.timeline-note{line-height:1.6;margin-bottom:12px;white-space:pre-wrap;word-break:break-word}
-.timeline-mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
-.timeline-mini-card{background:#f8fafc;border:1px solid #e5e7eb;border-radius:14px;padding:12px}
-.timeline-mini-label{color:#6b7280;font-size:12px;margin-bottom:6px}
-.timeline-mini-value{font-size:16px;font-weight:700;color:#16304e;word-break:break-word}
-.timeline-images{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.timeline-images img{width:100%;height:180px;object-fit:cover;border-radius:16px;border:1px solid #e5e7eb;display:block}
-@media (max-width:780px){.timeline-mini-grid,.timeline-images{grid-template-columns:1fr}}
-
-
   </style>
 </head>
 <body>
@@ -367,6 +349,7 @@ button:active{transform:translateY(0)}
         <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
         <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
         <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
+        <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
         <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
         <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
@@ -420,16 +403,6 @@ button:active{transform:translateY(0)}
         <div class="field-progress-stat-value" id="latest_at">-</div>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="card panel-card">
-  <div class="panel-header">
-    <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-    <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
-  </div>
-  <div id="case_updates_timeline" class="timeline-list">
-    <div class="value">กำลังโหลดข้อมูล...</div>
   </div>
 </div>
 
@@ -490,11 +463,29 @@ button:active{transform:translateY(0)}
     <button onclick="assignCase()">รับเคส</button>
     <button onclick="closeCase()" class="secondary">ปิดเคส</button>
   </div>
-  <div class="toast-wrap" id="toastWrap"></div>
-
+  <div class="toast-wrap" id="toastWrap"></div>  
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get("id");
+    
+function statusThai(status) {
+  const s = String(status || '').trim().toLowerCase();
+
+  if (s === 'progress') return 'กำลังดำเนินการ';
+  if (s === 'in_progress') return 'กำลังดำเนินการ';
+  if (s === 'new') return 'รับเรื่องแล้ว';
+  if (s === 'done') return 'เสร็จสิ้นแล้ว';
+  if (s === 'cancelled') return 'ยกเลิก';
+
+  return status || '-';
+}
+
+function priorityThai(priority) {
+  const p = String(priority || '').toLowerCase();
+  if (p === 'urgent') return 'ด่วน';
+  if (p === 'normal') return 'ปกติ';
+  return priority || '-';
+} 
     let eventSource = null;
 
     const formState = {
@@ -556,58 +547,6 @@ function priorityBadge(priority, label){
   const cls = value === "urgent" ? "urgent" : "normal";
   const text = label || value || "-";
   return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
-}
-
-function renderTimelineItem(item){
-  const progress = Number(item.progress_percent || 0);
-  const images = Array.isArray(item.images) ? item.images : [];
-  const who = item.updater_name || item.updated_by || '-';
-  const note = item.note || item.latest_note || item.message || '-';
-  const statusText = item.status_after || item.status || 'progress';
-
-  return `
-    <div class="timeline-item">
-      <div class="timeline-head">
-        <div class="timeline-title">อัปเดตโดย ${escapeHtml(who)}</div>
-        <div class="timeline-time">${escapeHtml(item.updated_at ? formatThaiDateTime(item.updated_at) : '-')}</div>
-      </div>
-      <div class="timeline-badges">
-        ${statusBadge(statusText === 'progress' ? 'in_progress' : statusText, statusText)}
-        <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(progress)}%</span>
-      </div>
-      <div class="timeline-note">${escapeHtml(note)}</div>
-      <div class="timeline-mini-grid">
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
-          <div class="timeline-mini-value">${escapeHtml(item.current_step || '-')}</div>
-        </div>
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">กำลังรอ</div>
-          <div class="timeline-mini-value">${escapeHtml(item.waiting_for || '-')}</div>
-        </div>
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-          <div class="timeline-mini-value">${escapeHtml(item.location_text || '-')}</div>
-        </div>
-      </div>
-      ${images.length ? `<div class="timeline-images">${images.map(src => `<img src="${escapeHtml(src)}" alt="ภาพอัปเดตภาคสนาม">`).join('')}</div>` : ''}
-    </div>`;
-}
-
-async function loadCaseTimeline(){
-  const wrap = document.getElementById('case_updates_timeline');
-  if (!wrap || !caseId) return;
-  try{
-    const updates = await fetchJSON(`/api/case/${caseId}/updates`);
-    if (!updates || !updates.length){
-      wrap.innerHTML = '<div class="value">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>';
-      return;
-    }
-    wrap.innerHTML = updates.map(renderTimelineItem).join('');
-  }catch(err){
-    console.error('LOAD TIMELINE ERROR:', err);
-    wrap.innerHTML = '<div class="value">โหลด Timeline ไม่สำเร็จ</div>';
-  }
 }
     function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
     async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
@@ -673,6 +612,29 @@ async function loadProjects(){
         document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
         document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
         document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
+
+        const locationTextEl = document.getElementById("location_text");
+
+if (locationTextEl) {
+  const locationText =
+    data.location_text ||
+    (data.latitude && data.longitude
+      ? `${data.latitude}, ${data.longitude}`
+      : "-");
+
+  if (data.case_code && locationText !== "-") {
+    locationTextEl.innerHTML = `
+      <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
+         target="_blank"
+         rel="noopener"
+         style="color:#0b7c86;font-weight:700;text-decoration:none;">
+        ${escapeHtml(locationText)}
+      </a>
+    `;
+  } else {
+    locationTextEl.innerHTML = escapeHtml(locationText);
+  }
+}
        
         document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
         document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
@@ -681,7 +643,10 @@ async function loadProjects(){
 document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
 
 // ✅ เปลี่ยนสถานะเป็นไทย
-document.getElementById("status").innerHTML = statusBadge(data.status, data.status_th);
+document.getElementById("status").innerHTML = statusBadge(
+  data.status,
+  statusThai(data.status)
+);
 
 // ✅ เปลี่ยนระดับเป็นไทย
 document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);
@@ -691,7 +656,7 @@ const summaryCaseCodeEl = document.getElementById("summary_case_code");
 if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 
 const summaryStatusEl = document.getElementById("summary_status");
-if (summaryStatusEl) summaryStatusEl.innerText = data.status_th || data.status || "-";
+if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 
 const summaryPriorityEl = document.getElementById("summary_priority");
 if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.priority || "-";
@@ -727,8 +692,6 @@ const stepHelpMap = {
 const latestStepHelpEl = document.getElementById("latest_step_help");
 if (latestStepHelpEl) latestStepHelpEl.innerText = stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
 
-document.getElementById("latest_note").innerHTML = escapeHtml(latest.latest_note || latest.note || latest.message || "-");
-
 // ✅ progress bar
 const percent = Number(latest.progress_percent || 0);
 document.getElementById("progress_bar").style.width = percent + "%";
@@ -751,7 +714,6 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
         resetFormLocking();
         await loadCase();
-        await loadCaseTimeline();
       }catch(err){ alert("บันทึกไม่สำเร็จ: " + err.message); }
     }
 
@@ -771,7 +733,6 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("รับเคสเรียบร้อย", "ระบบอัปเดตผู้รับเคสและสถานะแล้ว");
         resetFormLocking();
         await loadCase();
-        await loadCaseTimeline();
       }catch(err){ alert("รับเคสไม่สำเร็จ: " + err.message); }
     }
 
@@ -782,7 +743,6 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
         resetFormLocking();
         await loadCase();
-        await loadCaseTimeline();
       }catch(err){ alert("ปิดเคสไม่สำเร็จ: " + err.message); }
     }
 
@@ -802,7 +762,7 @@ document.getElementById("progress_text").innerText = percent + "%";
       eventSource.addEventListener("heartbeat", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
-        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); loadCaseTimeline().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
+        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
       };
       eventSource.addEventListener("case_updated", onChange);
       eventSource.addEventListener("case_created", onChange);
@@ -810,10 +770,7 @@ document.getElementById("progress_text").innerText = percent + "%";
     }
 
     registerFormLocking();
-loadProjects().then(async () => {
-  await loadCase();
-  await loadCaseTimeline();
-});
+loadProjects().then(loadCase);
 connectRealtime();
   </script>  
 </body>

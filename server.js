@@ -3641,6 +3641,30 @@ function formatPriorityThaiForApi(priority = "") {
   }
 }
 
+function normalizeCaseUpdateRecord(row = {}) {
+  return {
+    ...row,
+    status: row.status || row.status_after || null,
+    note: row.note || row.latest_note || row.message || null,
+    latest_note: row.latest_note || row.note || row.message || null,
+    images: Array.isArray(row.images)
+      ? row.images
+      : String(row.images || "").trim()
+        ? (() => {
+            try {
+              const parsed = JSON.parse(String(row.images || ""));
+              return Array.isArray(parsed) ? parsed : [];
+            } catch (_) {
+              return String(row.images || "")
+                .split(",")
+                .map((item) => item.trim())
+                .filter(Boolean);
+            }
+          })()
+        : []
+  };
+}
+
 async function getLatestCaseUpdateByCaseCode(caseCode) {
   if (!caseCode) return null;
 
@@ -3657,7 +3681,7 @@ async function getLatestCaseUpdateByCaseCode(caseCode) {
   }
 
   const latest = Array.isArray(data) ? data[0] : null;
-  return latest || null;
+  return latest ? normalizeCaseUpdateRecord(latest) : null;
 }
 
 async function getProjectNameFromProjectDb(caseItem = {}) {
@@ -3792,22 +3816,11 @@ app.get("/api/case/:id/updates", checkDashboardAuth, async (req, res) => {
 
     return res.json({
       ok: true,
-      data: (data || []).map((row) => {
-        const normalized = typeof normalizeCaseUpdateRecord === "function"
-          ? normalizeCaseUpdateRecord(row)
-          : row;
-        return {
-          ...normalized,
-          note: normalized.note || normalized.latest_note || normalized.message || "-",
-          latest_note: normalized.latest_note || normalized.note || normalized.message || "-",
-          updated_by: normalized.updater_name || normalized.updated_by || "-",
-          images: Array.isArray(normalized.images) ? normalized.images : []
-        };
-      })
+      data: (data || []).map((row) => normalizeCaseUpdateRecord(row))
     });
   } catch (error) {
     console.error("CASE TIMELINE ERROR:", error);
-    return res.status(500).json({ ok: false, error: error.message || "case timeline failed" });
+    return res.status(500).json({ ok: false, error: error.message });
   }
 });
 

@@ -373,115 +373,6 @@ function clearCaseUpdateState(userId) {
   }
 }
 
-function cleanText(value) {
-  return String(value ?? "").trim();
-}
-
-function toNullableText(value) {
-  const s = cleanText(value);
-  return s || null;
-}
-
-function toNumberOrNull(value) {
-  if (value === null || value === undefined || value === "") return null;
-  const n = Number(value);
-  return Number.isFinite(n) ? n : null;
-}
-
-function toImageArray(input) {
-  if (!input) return [];
-  if (Array.isArray(input)) {
-    return input.map((item) => String(item || "").trim()).filter(Boolean);
-  }
-  if (typeof input === "string") {
-    const raw = input.trim();
-    if (!raw) return [];
-    try {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed.map((item) => String(item || "").trim()).filter(Boolean);
-      }
-    } catch (_) {}
-    return raw.split(",").map((item) => item.trim()).filter(Boolean);
-  }
-  return [];
-}
-
-function normalizeCaseUpdateRecord(row = {}) {
-  return {
-    ...row,
-    status: row.status || row.status_after || null,
-    note: row.note || row.latest_note || row.message || null,
-    images: Array.isArray(row.images) ? row.images : toImageArray(row.images),
-  };
-}
-
-async function getHelpRequestByIdOrCode(caseIdOrCode = "") {
-  const lookup = String(caseIdOrCode || "").trim();
-  if (!lookup) return null;
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .or(`id.eq.${lookup},case_code.eq.${lookup}`)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data || null;
-}
-
-async function getHelpRequestByCaseCode(caseCode = "") {
-  const lookup = cleanText(caseCode);
-  if (!lookup) return null;
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("case_code", lookup)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data || null;
-}
-
-async function insertCaseUpdateLog(payload = {}) {
-  const row = {
-    case_id: payload.case_id || null,
-    case_code: toNullableText(payload.case_code),
-    status: toNullableText(payload.status),
-    status_after: toNullableText(payload.status_after || payload.status),
-    current_step: toNullableText(payload.current_step),
-    waiting_for: toNullableText(payload.waiting_for),
-    progress_percent: toNumberOrNull(payload.progress_percent),
-    note: toNullableText(payload.note),
-    latest_note: toNullableText(payload.latest_note || payload.note || payload.message),
-    message: toNullableText(payload.message),
-    updated_by: toNullableText(payload.updated_by),
-    updated_by_user_id: toNullableText(payload.updated_by_user_id),
-    updated_by_role: toNullableText(payload.updated_by_role),
-    updater_name: toNullableText(payload.updater_name),
-    updater_user_id: toNullableText(payload.updater_user_id),
-    location_text: toNullableText(payload.location_text),
-    latitude: toNumberOrNull(payload.latitude),
-    longitude: toNumberOrNull(payload.longitude),
-    images: toImageArray(payload.images),
-    updated_at: new Date().toISOString()
-  };
-
-  const { data, error } = await supabase
-    .from("case_updates")
-    .insert([row])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return normalizeCaseUpdateRecord(data || row);
-}
-
 async function upsertCaseUpdateLegacy({
   caseCode,
   updateStage,
@@ -490,39 +381,25 @@ async function upsertCaseUpdateLegacy({
 }) {
   const progressPercent = CASE_UPDATE_PROGRESS_MAP[updateStage] || 0;
   const waitingFor = CASE_UPDATE_WAITING_FOR_MAP[updateStage] || "รอการอัปเดต";
-  const helpRequest = await getHelpRequestByCaseCode(caseCode);
 
-  const inserted = await insertCaseUpdateLog({
-    case_id: helpRequest?.id || null,
+  const payload = {
     case_code: caseCode,
-    status: helpRequest?.status || "in_progress",
+    progress_percent: progressPercent,
     current_step: updateStage,
     waiting_for: waitingFor,
-    progress_percent: progressPercent,
-    note: detail,
     latest_note: detail,
-    message: detail,
     updated_by: updatedBy,
-    updated_by_user_id: updatedBy,
-    updater_name: updatedBy
-  });
-
-  const syncPatch = {
-    last_action_at: inserted.updated_at || new Date().toISOString(),
-    latest_note: inserted.latest_note || detail || null,
-    last_action_by: inserted.updater_name || inserted.updated_by || updatedBy || null
+    updated_at: new Date().toISOString()
   };
 
-  const { error: syncError } = await supabase
-    .from("help_requests")
-    .update(syncPatch)
-    .eq("case_code", cleanText(caseCode));
+  const { data, error } = await supabase
+    .from("case_updates")
+    .upsert(payload, { onConflict: "case_code" })
+    .select()
+    .single();
 
-  if (syncError) {
-    console.error("LEGACY CASE UPDATE SYNC ERROR:", syncError);
-  }
-
-  return inserted;
+  if (error) throw error;
+  return data;
 }
 
 function buildCaseUpdateStageQuickReply() {
@@ -2113,35 +1990,41 @@ app.get("/api/team/case-detail", async (req, res) => {
 // =========================
 app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
   try {
-    const body = req.body || {};
-    const case_code = cleanText(body.case_code || body.caseCode);
+    const {
+      case_code: rawCaseCode,
+      message: rawMessage,
+      updater_name: rawUpdaterName,
+      updater_user_id: rawUpdaterUserId,
+      latitude,
+      longitude,
+      location_text: rawLocationText,
+      status_after: rawStatusAfter,
+      title,
+      progressStatus,
+      senderName,
+      senderUserId,
+      locationText
+    } = req.body;
+
+    const case_code = String(rawCaseCode || req.body.caseCode || "").trim();
+    const updater_name = String(rawUpdaterName || senderName || "").trim() || null;
+    const updater_user_id = String(rawUpdaterUserId || senderUserId || "").trim() || null;
+    const status_after = String(rawStatusAfter || progressStatus || "").trim() || null;
+    const location_text = String(rawLocationText || locationText || "").trim() || null;
+
+    const trimmedTitle = String(title || "").trim();
+    const trimmedMessage = String(rawMessage || "").trim();
+    const message = [trimmedTitle ? `[${trimmedTitle}]` : "", trimmedMessage]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || null;
 
     if (!case_code) {
       return res.status(400).json({ ok: false, error: "case_code is required" });
     }
 
-    const helpRequest = await getHelpRequestByCaseCode(case_code);
-    const case_id = body.case_id || body.caseId || helpRequest?.id || null;
-
-    const rawStatus = cleanText(body.status || body.status_after || body.rawStatusAfter || body.progressStatus);
-    const status_after = rawStatus || null;
-    const current_step = cleanText(body.current_step || body.currentStep || body.title);
-    const waiting_for = cleanText(body.waiting_for || body.waitingFor) || CASE_UPDATE_WAITING_FOR_MAP[current_step] || null;
-    const progress_percent = toNumberOrNull(body.progress_percent ?? body.progressPercent) ?? CASE_UPDATE_PROGRESS_MAP[current_step] ?? null;
-
-    const updater_name = toNullableText(body.updater_name || body.senderName || body.updated_by_name || body.staff_name || body.staffName || body.updated_by || body.updater_user_id);
-    const updater_user_id = toNullableText(body.updater_user_id || body.senderUserId || body.updated_by_user_id || body.updated_by);
-    const updated_by = toNullableText(body.updated_by || updater_user_id || updater_name);
-    const location_text = toNullableText(body.location_text || body.locationText);
-    const latitude = toNumberOrNull(body.latitude);
-    const longitude = toNumberOrNull(body.longitude);
-
-    const trimmedTitle = cleanText(body.title);
-    const trimmedMessage = cleanText(body.message || body.note || body.latest_note);
-    const composedMessage = [trimmedTitle ? `[${trimmedTitle}]` : "", trimmedMessage].filter(Boolean).join(" ").trim();
-    const note = trimmedMessage || composedMessage || current_step || null;
-
     const imageUrls = [];
+
     if (req.files?.length) {
       for (const file of req.files) {
         const ext = (file.mimetype || "image/jpeg").split("/")[1] || "jpg";
@@ -2163,79 +2046,77 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           .createSignedUrl(fileName, 60 * 60 * 24 * 7);
 
         if (signedUrlError) throw signedUrlError;
+
         imageUrls.push(data?.signedUrl || "");
       }
     }
 
-    const incomingImages = toImageArray(body.images);
-    const mergedImages = [...incomingImages, ...imageUrls].filter(Boolean);
+    const payload = {
+  case_code,
+  message,
+  updater_name,
+  updater_user_id,
+  updated_by: updater_user_id,
+  updated_by_user_id: updater_user_id,
+  updated_by_role: null,
+  progress_percent: null,
+  current_step: null,
+  waiting_for: null,
+  latest_note: message,
+  latitude: latitude ? Number(latitude) : null,
+  longitude: longitude ? Number(longitude) : null,
+  location_text,
+  status_after,
+  images: imageUrls,
+  updated_at: new Date().toISOString()
+};
 
-    const insertedUpdate = await insertCaseUpdateLog({
-      case_id,
-      case_code,
-      status: status_after,
-      status_after,
-      current_step,
-      waiting_for,
-      progress_percent,
-      note,
-      latest_note: note,
-      message: composedMessage || note,
-      updated_by,
-      updated_by_user_id: updater_user_id,
-      updated_by_role: toNullableText(body.updated_by_role),
-      updater_name,
-      updater_user_id,
-      location_text,
-      latitude,
-      longitude,
-      images: mergedImages
-    });
+    const { data: insertedUpdate, error } = await supabase
+      .from("case_updates")
+      .insert([payload])
+      .select()
+      .single();
+    if (error) throw error;
 
     const latestFields = {
-      latest_note: insertedUpdate.latest_note || note || null,
-      last_action_at: insertedUpdate.updated_at || new Date().toISOString(),
-      last_action_by: insertedUpdate.updater_name || insertedUpdate.updated_by || null
+      latest_note: payload.latest_note || null,
+      last_action_at: insertedUpdate?.updated_at || new Date().toISOString(),
+      last_action_by: payload.updater_name || payload.updated_by || null
     };
 
-    if (insertedUpdate.status_after) {
-      latestFields.status = insertedUpdate.status_after;
+    if (payload.status_after) {
+      latestFields.status = payload.status_after;
     }
 
-    if (Number.isFinite(insertedUpdate.latitude) && Number.isFinite(insertedUpdate.longitude)) {
-      latestFields.latitude = insertedUpdate.latitude;
-      latestFields.longitude = insertedUpdate.longitude;
-      latestFields.location_text =
-        insertedUpdate.location_text || `${insertedUpdate.latitude}, ${insertedUpdate.longitude}`;
-    } else if (insertedUpdate.location_text) {
-      latestFields.location_text = insertedUpdate.location_text;
-    }
+    if (Number.isFinite(payload.latitude) && Number.isFinite(payload.longitude)) {
+  latestFields.latitude = payload.latitude;
+  latestFields.longitude = payload.longitude;
+  latestFields.location_text =
+    payload.location_text ||
+    `${payload.latitude}, ${payload.longitude}`;
 
-    if (case_id || case_code) {
-      let updateQuery = supabase.from("help_requests").update(latestFields);
-      if (case_id) {
-        updateQuery = updateQuery.eq("id", case_id);
-      } else {
-        updateQuery = updateQuery.eq("case_code", case_code);
-      }
+  latestFields.last_action_at =
+    insertedUpdate?.updated_at || new Date().toISOString();
+}
 
-      const { error: helpReqUpdateError } = await updateQuery;
-      if (helpReqUpdateError) {
-        console.error("help_requests sync error:", helpReqUpdateError);
-      }
+    const { error: helpReqUpdateError } = await supabase
+      .from("help_requests")
+      .update(latestFields)
+      .eq("case_code", payload.case_code);
+
+    if (helpReqUpdateError) {
+      console.error("help_requests sync error:", helpReqUpdateError);
     }
 
     broadcastSse("case_update", {
       scope: "team_workspace",
       item: {
         id: insertedUpdate.id,
-        case_id: insertedUpdate.case_id || case_id || null,
         case_code: insertedUpdate.case_code,
         progress_percent: insertedUpdate.progress_percent,
         current_step: insertedUpdate.current_step,
         waiting_for: insertedUpdate.waiting_for,
         latest_note: insertedUpdate.latest_note,
-        note: insertedUpdate.note || insertedUpdate.latest_note,
         updated_at: insertedUpdate.updated_at,
         updated_by: insertedUpdate.updated_by,
         updated_by_user_id: insertedUpdate.updated_by_user_id,
@@ -2244,7 +2125,6 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
         message: insertedUpdate.message,
         images: insertedUpdate.images || [],
         status_after: insertedUpdate.status_after,
-        status: insertedUpdate.status || insertedUpdate.status_after || null,
         latitude: insertedUpdate.latitude ?? null,
         longitude: insertedUpdate.longitude ?? null,
         location_text: insertedUpdate.location_text || ""
@@ -2260,7 +2140,7 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           longitude: insertedUpdate.longitude,
           location_text: insertedUpdate.location_text || "",
           updated_at: insertedUpdate.updated_at,
-          status: insertedUpdate.status_after || insertedUpdate.status || null,
+          status: payload.status_after || null,
           latest_note: insertedUpdate.latest_note || ""
         }
       });
@@ -2272,6 +2152,7 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       updated_at: insertedUpdate.updated_at
     });
 
+    // 🔥 LINE notify
     if (CHANNEL_ACCESS_TOKEN && EFFECTIVE_TEAM_GROUP_ID) {
       await fetch("https://api.line.me/v2/bot/message/push", {
         method: "POST",
@@ -2284,24 +2165,21 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           messages: [{
             type: "text",
             text:
-              `📢 อัปเดตเคส
-` +
-              `เลขเคส: ${case_code}
-` +
-              `ผู้ส่ง: ${updater_name || updated_by || "-"}
-` +
-              `รายละเอียด: ${note || composedMessage || "-"}
-` +
-              `${mergedImages.length ? `แนบรูป ${mergedImages.length} รูป` : "ไม่มีรูป"}`
+              `📢 อัปเดตเคส\n` +
+              `เลขเคส: ${case_code}\n` +
+              `ผู้ส่ง: ${updater_name || "-"}\n` +
+              `รายละเอียด: ${message || "-"}\n` +
+              `${imageUrls.length ? `แนบรูป ${imageUrls.length} รูป` : "ไม่มีรูป"}`
           }]
         })
       });
     }
 
-    return res.json({ ok: true, data: insertedUpdate });
+    res.json({ ok: true });
+
   } catch (err) {
     console.error("CASE UPDATE ERROR:", err);
-    return res.status(500).json({ ok: false, error: err.message });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
@@ -3770,16 +3648,14 @@ async function getLatestCaseUpdateByCaseCode(caseCode) {
     .from("case_updates")
     .select("*")
     .eq("case_code", caseCode)
-    .order("updated_at", { ascending: false })
-    .limit(1);
+    .single();
 
   if (error) {
     console.error("GET LATEST CASE UPDATE ERROR:", error);
     return null;
   }
 
-  const latest = Array.isArray(data) ? data[0] : null;
-  return latest ? normalizeCaseUpdateRecord(latest) : null;
+  return data || null;
 }
 
 async function getProjectNameFromProjectDb(caseItem = {}) {
@@ -3827,33 +3703,6 @@ app.get("/api/projects/options", checkDashboardAuth, async (req, res) => {
   }
 });
 
-app.get("/api/case/:id/updates", checkDashboardAuth, async (req, res) => {
-  try {
-    const caseLookup = String(req.params.id || "").trim();
-    const caseItem = await getHelpRequestByIdOrCode(caseLookup);
-
-    if (!caseItem) {
-      return res.status(404).json({ ok: false, error: "Case not found" });
-    }
-
-    const { data, error } = await supabase
-      .from("case_updates")
-      .select("*")
-      .eq("case_code", caseItem.case_code)
-      .order("updated_at", { ascending: false });
-
-    if (error) throw error;
-
-    return res.json({
-      ok: true,
-      data: (data || []).map((row) => normalizeCaseUpdateRecord(row))
-    });
-  } catch (error) {
-    console.error("CASE TIMELINE ERROR:", error);
-    return res.status(500).json({ ok: false, error: error.message });
-  }
-});
-
 app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
   try {
     const caseId = String(req.params.id || "").trim();
@@ -3893,9 +3742,8 @@ app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
             progress_percent: latestUpdate.progress_percent ?? 0,
             current_step: latestUpdate.current_step || "-",
             waiting_for: latestUpdate.waiting_for || "-",
-            latest_note: latestUpdate.latest_note || latestUpdate.note || latestUpdate.message || "-",
-            note: latestUpdate.note || latestUpdate.latest_note || latestUpdate.message || "-",
-            updated_by: latestUpdate.updater_name || latestUpdate.updated_by || "-",
+            latest_note: latestUpdate.latest_note || "-",
+            updated_by: latestUpdate.updated_by || "-",
             updated_at: latestUpdate.updated_at || null
           }
         : {
@@ -3903,7 +3751,6 @@ app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
             current_step: "-",
             waiting_for: "-",
             latest_note: "-",
-            note: "-",
             updated_by: "-",
             updated_at: null
           }
@@ -3929,7 +3776,6 @@ app.post("/api/case/:id/assign", checkDashboardAuth, async (req, res) => {
     const payload = {
   assigned_to: staffName,
   assigned_at: new Date().toISOString(),
-  last_action_at: new Date().toISOString(),
   status: nextStatus,
   priority: nextPriority,
 };
@@ -3972,7 +3818,6 @@ Object.assign(payload, buildProjectPatchForHelpRequest(req.body.project_ref));
 
     if (allowedStatus.includes(req.body.status)) {
       payload.status = req.body.status;
-      payload.last_action_at = new Date().toISOString();
       if (req.body.status === "done") {
         payload.closed_at = new Date().toISOString();
       }
@@ -4011,7 +3856,6 @@ app.post("/api/case/:id/close", checkDashboardAuth, async (req, res) => {
       .update({
         status: "done",
         closed_at: new Date().toISOString(),
-        last_action_at: new Date().toISOString(),
       })
       .eq("id", id)
       .select()
@@ -5139,6 +4983,125 @@ function applyCommandCenterSearch(rows = [], q = "") {
   });
 }
 
+function normalizeStatusForSla(status = "") {
+  const s = String(status || "").trim().toLowerCase();
+  if (s === "progress") return "in_progress";
+  if (s === "closed") return "done";
+  return s;
+}
+
+function getSlaHoursFromRow(row = {}) {
+  const base =
+    row.last_update_at ||
+    row.last_action_at ||
+    row.updated_at ||
+    row.created_at ||
+    null;
+
+  if (!base) return null;
+
+  const ms = Date.now() - new Date(base).getTime();
+  if (!Number.isFinite(ms)) return null;
+
+  return ms / (1000 * 60 * 60);
+}
+
+function getSlaStateFromHours(hours, status = "") {
+  const normalizedStatus = normalizeStatusForSla(status);
+
+  if (["done", "cancelled"].includes(normalizedStatus)) {
+    return {
+      sla_level: "closed",
+      sla_text: "ปิดเคสแล้ว",
+      sla_color: "closed",
+      overdue: false
+    };
+  }
+
+  if (hours === null || hours === undefined) {
+    return {
+      sla_level: "unknown",
+      sla_text: "ไม่ทราบ SLA",
+      sla_color: "unknown",
+      overdue: false
+    };
+  }
+
+  if (hours >= 24) {
+    return {
+      sla_level: "critical",
+      sla_text: "วิกฤต > 24 ชม",
+      sla_color: "critical",
+      overdue: true
+    };
+  }
+
+  if (hours >= 12) {
+    return {
+      sla_level: "risk",
+      sla_text: "เสี่ยง > 12 ชม",
+      sla_color: "risk",
+      overdue: true
+    };
+  }
+
+  if (hours >= 6) {
+    return {
+      sla_level: "watch",
+      sla_text: "เริ่มช้า > 6 ชม",
+      sla_color: "watch",
+      overdue: false
+    };
+  }
+
+  return {
+    sla_level: "ok",
+    sla_text: "ปกติ",
+    sla_color: "ok",
+    overdue: false
+  };
+}
+
+function enrichCaseWithSla(row = {}) {
+  const hours = getSlaHoursFromRow(row);
+  const sla = getSlaStateFromHours(hours, row.status);
+
+  return {
+    ...row,
+    sla_hours: hours === null ? null : Math.floor(hours * 10) / 10,
+    ...sla
+  };
+}
+
+function pickLatestNote(row = {}) {
+  return row.latest_note || row.note || row.message || row.problem || "-";
+}
+
+async function getLatestCaseUpdatesMap(caseCodes = []) {
+  const uniqueCaseCodes = [...new Set((caseCodes || []).filter(Boolean))];
+  if (!uniqueCaseCodes.length) return new Map();
+
+  const { data, error } = await supabase
+    .from("case_updates")
+    .select("*")
+    .in("case_code", uniqueCaseCodes)
+    .order("updated_at", { ascending: false });
+
+  if (error) throw error;
+
+  const map = new Map();
+
+  for (const row of data || []) {
+    const code = row.case_code;
+    if (!code) continue;
+    if (!map.has(code)) {
+      map.set(code, normalizeCaseUpdateRecord(row));
+    }
+  }
+
+  return map;
+}
+
 async function getCommandCenterRows(limit = 100) {
   const { data, error } = await supabase
     .from("help_requests")
@@ -5147,89 +5110,170 @@ async function getCommandCenterRows(limit = 100) {
     .limit(limit);
 
   if (error) throw error;
-  return data || [];
+
+  const rows = data || [];
+  const caseCodes = rows.map((row) => row.case_code).filter(Boolean);
+  const latestMap = await getLatestCaseUpdatesMap(caseCodes);
+
+  return rows.map((row) => {
+    const latest = latestMap.get(row.case_code) || null;
+
+    const merged = {
+      ...row,
+      latest_update: latest,
+      last_update_at:
+        latest?.updated_at ||
+        row.last_action_at ||
+        row.created_at ||
+        null,
+      current_step:
+        latest?.current_step ||
+        row.current_step ||
+        null,
+      waiting_for:
+        latest?.waiting_for ||
+        row.waiting_for ||
+        null,
+      progress_percent:
+        latest?.progress_percent ??
+        row.progress_percent ??
+        0,
+      latest_note: pickLatestNote(latest || row),
+      updated_by:
+        latest?.updater_name ||
+        latest?.updated_by ||
+        row.assigned_to ||
+        null
+    };
+
+    return enrichCaseWithSla(merged);
+  });
 }
 
 function filterDelayedCases(rows = []) {
-  const now = Date.now();
   return rows.filter((row) => {
-    if (["done", "cancelled"].includes(String(row.status || "").toLowerCase())) return false;
-    const createdAt = new Date(row.created_at).getTime();
-    if (Number.isNaN(createdAt)) return false;
-    const ageDays = (now - createdAt) / (1000 * 60 * 60 * 24);
-    return ageDays >= 2;
+    const status = normalizeStatusForSla(row.status);
+    if (["done", "cancelled"].includes(status)) return false;
+    return ["risk", "critical"].includes(row.sla_level);
   });
 }
 
 function filterUrgentOpenCases(rows = []) {
   return rows.filter((row) => {
-    const status = String(row.status || "").toLowerCase();
+    const status = normalizeStatusForSla(row.status);
     const priority = String(row.priority || "").toLowerCase();
     return priority === "urgent" && ["new", "in_progress"].includes(status);
   });
 }
 
 function filterClosedCases(rows = []) {
-  return rows.filter((row) => String(row.status || "").toLowerCase() === "done");
+  return rows.filter((row) => normalizeStatusForSla(row.status) === "done");
 }
 
 async function getCommandCenterSummary(days = 7) {
-  const dashboardSummary = await getDashboardSummary();
+  const rows = await getCommandCenterRows(300);
+
+  const now = Date.now();
+  const cutoff = now - days * 24 * 60 * 60 * 1000;
+
+  const filtered = rows.filter((row) => {
+    const t = new Date(row.created_at || row.last_update_at || 0).getTime();
+    return Number.isFinite(t) && t >= cutoff;
+  });
+
+  const urgent_open_cases = filtered.filter((r) =>
+    r.priority === "urgent" &&
+    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
+  ).length;
+
+  const delayed_cases = filtered.filter((r) =>
+    ["risk", "critical"].includes(r.sla_level) &&
+    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
+  ).length;
+
+  const done_cases = filtered.filter((r) =>
+    normalizeStatusForSla(r.status) === "done"
+  ).length;
+
+  const followup_urgent_cases = filtered.filter((r) =>
+    r.priority === "urgent" &&
+    ["watch", "risk", "critical"].includes(r.sla_level) &&
+    !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
+  ).length;
 
   return {
-    ...dashboardSummary,
-    urgent_open_cases: dashboardSummary.urgent_cases || 0,
+    urgent_open_cases,
+    delayed_cases,
+    done_cases,
+    followup_urgent_cases,
     summary_text: buildCommandCenterSummaryText({
-      urgent_open_cases: dashboardSummary.urgent_cases || 0,
-      delayed_cases: dashboardSummary.delayed_cases || 0,
-      done_cases: dashboardSummary.done_cases || 0,
-      followup_urgent_cases: dashboardSummary.followup_urgent_cases || 0,
-    }, days),
+      urgent_open_cases,
+      delayed_cases,
+      done_cases,
+      followup_urgent_cases,
+    }, days)
   };
 }
 
 async function getCommandCenterList(type = "urgent_open", q = "", limit = 30) {
-  const rows = await getCommandCenterRows(Math.max(limit, 100));
-  let filtered = rows;
+  let rows = await getCommandCenterRows(Math.max(limit, 400));
 
-  switch (type) {
-    case "closed":
-      filtered = filterClosedCases(rows);
-      break;
-    case "delayed":
-      filtered = filterDelayedCases(rows);
-      break;
-    case "followup_urgent":
-      filtered = filterUrgentOpenCases(rows);
-      break;
-    case "latest":
-      filtered = rows;
-      break;
-    case "urgent_open":
-    default:
-      filtered = filterUrgentOpenCases(rows);
-      break;
+  rows = applyCommandCenterSearch(rows, q);
+
+  if (type === "urgent_open") {
+    rows = filterUrgentOpenCases(rows);
+  } else if (type === "delayed") {
+    rows = filterDelayedCases(rows);
+  } else if (type === "closed") {
+    rows = filterClosedCases(rows);
+  } else if (type === "followup_urgent") {
+    rows = rows.filter((r) =>
+      r.priority === "urgent" &&
+      ["watch", "risk", "critical"].includes(r.sla_level) &&
+      !["done", "cancelled"].includes(normalizeStatusForSla(r.status))
+    );
+  } else if (type === "sla_high") {
+    rows = rows.filter((r) => r.sla_level === "critical");
+  } else if (type === "sla_medium") {
+    rows = rows.filter((r) => r.sla_level === "risk");
+  } else if (type === "sla_watch") {
+    rows = rows.filter((r) => r.sla_level === "watch");
+  } else {
+    rows = rows.sort((a, b) =>
+      new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime()
+    );
   }
 
-  return applyCommandCenterSearch(filtered, q).slice(0, limit);
+  return rows.slice(0, limit).map((row) => ({
+    id: row.id,
+    case_code: row.case_code,
+    full_name: row.full_name,
+    location: row.location,
+    status: row.status,
+    priority: row.priority,
+    sla_level: row.sla_level,
+    sla_text: row.sla_text,
+    sla_hours: row.sla_hours,
+    current_step: row.current_step,
+    waiting_for: row.waiting_for,
+    latest_note: row.latest_note,
+    progress_percent: row.progress_percent
+  }));
 }
 
 async function getCommandCenterActivity(limit = 12) {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("id, case_code, full_name, status, priority, assigned_to, created_at, assigned_at, closed_at")
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const rows = await getCommandCenterRows(Math.max(limit, 50));
 
-  if (error) throw error;
-
-  return (data || []).map((row) => {
+  return rows.slice(0, limit).map((row) => {
     let activityText = `สถานะ ${formatCaseStatusThai(row.status)} / ระดับ ${formatPriorityThai(row.priority)}`;
     let eventTime = row.created_at;
 
     if (row.closed_at) {
       activityText = `ปิดเคสแล้ว${row.assigned_to ? ` โดย ${row.assigned_to}` : ""}`;
       eventTime = row.closed_at;
+    } else if (row.last_update_at) {
+      activityText = `${row.latest_note || `สถานะ ${formatCaseStatusThai(row.status)}`}${row.updated_by ? ` โดย ${row.updated_by}` : ""}`;
+      eventTime = row.last_update_at;
     } else if (row.assigned_at) {
       activityText = `รับเคสแล้ว${row.assigned_to ? ` โดย ${row.assigned_to}` : ""}`;
       eventTime = row.assigned_at;
@@ -5243,19 +5287,45 @@ async function getCommandCenterActivity(limit = 12) {
   });
 }
 
-
 function buildSmartAlerts(rows = []) {
   const alerts = [];
   const urgentOpen = filterUrgentOpenCases(rows);
   const delayed = filterDelayedCases(rows);
   const closed = filterClosedCases(rows);
+
+  const urgentCritical = urgentOpen.filter((row) => row.sla_level === "critical");
+  const urgentRisk = urgentOpen.filter((row) => row.sla_level === "risk");
   const unassignedUrgent = urgentOpen.filter((row) => !String(row.assigned_to || "").trim());
-  const staleUrgent = urgentOpen.filter((row) => {
-    const createdAt = new Date(row.created_at).getTime();
-    if (Number.isNaN(createdAt)) return false;
-    const ageHours = (Date.now() - createdAt) / (1000 * 60 * 60);
-    return ageHours >= 12;
-  });
+
+  if (urgentCritical.length > 0) {
+    alerts.push({
+      severity: "high",
+      title: "เคสด่วนค้างเกิน 24 ชั่วโมง",
+      detail: `พบ ${urgentCritical.length} เคสที่ยังไม่ปิดและไม่มีอัปเดตภายในเกณฑ์วิกฤต`,
+      recommendation: "ควรติดตามสถานะและเร่งปิดเคสทันที",
+      filter_key: "sla_high"
+    });
+  }
+
+  if (urgentRisk.length > 0) {
+    alerts.push({
+      severity: "medium",
+      title: "เคสด่วนเสี่ยงค้างเกิน 12 ชั่วโมง",
+      detail: `พบ ${urgentRisk.length} เคสที่เริ่มเข้าเขตเสี่ยง SLA`,
+      recommendation: "ควรเรียกตรวจสถานะและกระตุ้นทีมภาคสนาม",
+      filter_key: "sla_medium"
+    });
+  }
+
+  if (delayed.length > 0) {
+    alerts.push({
+      severity: "medium",
+      title: "เคสล่าช้าสะสมสูง",
+      detail: `พบเคสเข้า SLA เสี่ยง/วิกฤต ${delayed.length} เคส`,
+      recommendation: "ควรดึงรายการเข้ามาตรวจสอบทันที",
+      filter_key: "delayed"
+    });
+  }
 
   if (unassignedUrgent.length > 0) {
     alerts.push({
@@ -5264,26 +5334,6 @@ function buildSmartAlerts(rows = []) {
       detail: `พบ ${unassignedUrgent.length} เคสที่ยังไม่มีผู้รับผิดชอบ`,
       recommendation: "ควรมอบหมายผู้รับเคสทันที",
       filter_key: "urgent_open"
-    });
-  }
-
-  if (staleUrgent.length > 0) {
-    alerts.push({
-      severity: "high",
-      title: "เคสด่วนค้างเกิน 12 ชั่วโมง",
-      detail: `พบ ${staleUrgent.length} เคสที่ยังไม่ปิดและค้างนานผิดปกติ`,
-      recommendation: "ควรติดตามสถานะและเร่งปิดเคส",
-      filter_key: "followup_urgent"
-    });
-  }
-
-  if (delayed.length >= 10) {
-    alerts.push({
-      severity: "medium",
-      title: "เคสล่าช้าสะสมสูง",
-      detail: `พบเคสล่าช้า ${delayed.length} เคส`,
-      recommendation: "ควรดึงรายการล่าช้ามาตรวจสอบทันที",
-      filter_key: "delayed"
     });
   }
 
@@ -5300,18 +5350,18 @@ function buildSmartAlerts(rows = []) {
   if (!alerts.length) {
     alerts.push({
       severity: "low",
-      title: "ไม่พบสัญญาณเตือนสำคัญ",
-      detail: "ระบบยังไม่พบเหตุผิดปกติที่ต้องเร่งจัดการ",
-      recommendation: "ติดตามภาพรวมตามปกติ",
+      title: "ยังไม่พบสัญญาณเตือนสำคัญ",
+      detail: "ทุกเคสยังอยู่ในระดับที่ควบคุมได้",
+      recommendation: "ติดตามต่อเนื่องตามรอบปกติ",
       filter_key: "latest"
     });
   }
 
-  return alerts.slice(0, 4);
+  return alerts.slice(0, 5);
 }
 
 async function getCommandCenterAlerts() {
-  const rows = await getCommandCenterRows(200);
+  const rows = await getCommandCenterRows(300);
   return buildSmartAlerts(rows);
 }
 

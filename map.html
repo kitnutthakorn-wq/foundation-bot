@@ -379,6 +379,7 @@
   <script>
     (() => {
       const qs = new URLSearchParams(window.location.search);
+      const focusCaseCode = qs.get("case_code") || "";
       const DEFAULT_API_BASE =
         qs.get('apiBase') ||
         window.__API_BASE__ ||
@@ -670,6 +671,19 @@
         }
       }
 
+      function focusCaseByCode(code) {
+  if (!code) return;
+
+  const found =
+    (filteredItems || []).find((x) => x.case_code === code) ||
+    (allItems || []).find((x) => x.case_code === code);
+
+  if (!found) return;
+  if (!hasValidGeo(found)) return;
+
+  selectCase(found.case_code, true);
+}
+      
       function fitAllMarkers() {
         const latLngs = filteredItems
           .filter(hasValidGeo)
@@ -716,9 +730,11 @@
             showToast(`โหลดข้อมูลแล้ว ${allItems.length} เคส`);
           }
 
-          if (allItems.length && !selectedCaseCode) {
-            fitAllMarkers();
-          }
+        if (focusCaseCode) {
+  focusCaseByCode(focusCaseCode);
+} else if (allItems.length && !selectedCaseCode) {
+  fitAllMarkers();
+}
 
           setLiveState('polling');
         } catch (err) {

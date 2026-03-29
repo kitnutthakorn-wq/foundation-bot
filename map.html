@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Map Command Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --brand:#0b7c86;
+      --bg:#edf2f5;
+      --card:#fff;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: var(--bg);
+    }
+
+    header {
+      padding: 14px 18px;
+      background: var(--brand);
+      color: white;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #map {
+      height: calc(100vh - 56px);
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: white;
+    }
+
+    .urgent { background: red; }
+    .high { background: orange; }
+    .normal { background: blue; }
+    .low { background: gray; }
+  </style>
+</head>
+<body>
+
+<header>
+  🗺️ Live Map Command Center
+  <button onclick="loadMapData()">รีเฟรช</button>
+</header>
+
+<div id="map"></div>
+
+<script>
+const API_URL = "/api/cases/map";
+
+// ตั้งค่า map เริ่มต้น (สุราษฎร์)
+const map = L.map('map').setView([9.14, 99.33], 8);
+
+// base map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 18
+}).addTo(map);
+
+// layer marker
+let markersLayer = L.layerGroup().addTo(map);
+
+// สีตาม priority
+function getColor(priority) {
+  if (priority === "urgent") return "red";
+  if (priority === "high") return "orange";
+  if (priority === "normal") return "blue";
+  return "gray";
+}
+
+// badge html
+function badge(priority) {
+  return `<span class="badge ${priority}">${priority}</span>`;
+}
+
+// โหลดข้อมูล
+async function loadMapData() {
+  try {
+    const res = await fetch(API_URL);
+    const json = await res.json();
+
+    markersLayer.clearLayers();
+
+    (json.items || []).forEach(c => {
+      if (!c.latitude || !c.longitude) return;
+
+      const marker = L.circleMarker([c.latitude, c.longitude], {
+        radius: 9,
+        color: getColor(c.priority),
+        fillOpacity: 0.9
+      });
+
+      marker.bindPopup(`
+        <b>${c.case_code}</b><br><br>
+        👤 ${c.full_name}<br>
+        📌 สถานะ: ${c.status}<br>
+        ⚡ ระดับ: ${badge(c.priority)}<br><br>
+        📍 ${c.location_text || "-"}<br>
+        🕒 ${c.updated_at || "-"}<br><br>
+        <button onclick="openCase('${c.case_code}')">ดูรายละเอียด</button>
+      `);
+
+      markersLayer.addLayer(marker);
+    });
+
+  } catch (err) {
+    console.error("โหลด map ไม่สำเร็จ:", err);
+  }
+}
+
+// ไปหน้าเคส
+function openCase(code) {
+  window.open(`/case.html?case_code=${code}`, "_blank");
+}
+
+// โหลดครั้งแรก
+loadMapData();
+
+// auto refresh ทุก 20 วิ
+setInterval(loadMapData, 20000);
+</script>
+
+</body>
+</html>

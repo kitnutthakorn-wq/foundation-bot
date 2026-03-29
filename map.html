@@ -249,6 +249,7 @@
   const DEFAULT_API_BASE = qs.get('apiBase') || window.__API_BASE__ || localStorage.getItem('foundation_api_base') || 'https://foundation-bot-p5wu.onrender.com';
   if (DEFAULT_API_BASE) localStorage.setItem('foundation_api_base', DEFAULT_API_BASE);
 
+  const DEFAULT_API_BASE = "https://foundation-bot-p5wu.onrender.com";
   const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
   const API_URL = `${API_BASE}/api/cases/map`;
   const STREAM_URL = `${API_BASE}/api/team/stream`;

@@ -467,7 +467,7 @@ button:active{transform:translateY(0)}
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get("id");
-
+    
 function statusThai(status) {
   const s = String(status || '').trim().toLowerCase();
 
@@ -479,8 +479,13 @@ function statusThai(status) {
 
   return status || '-';
 }
-    
-    
+
+function priorityThai(priority) {
+  const p = String(priority || '').toLowerCase();
+  if (p === 'urgent') return 'ด่วน';
+  if (p === 'normal') return 'ปกติ';
+  return priority || '-';
+} 
     let eventSource = null;
 
     const formState = {

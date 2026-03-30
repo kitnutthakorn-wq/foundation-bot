@@ -2343,22 +2343,12 @@ async function callLinePushApi(to, messages) {
   return resultText;
 }
 
-async function safeReply(replyToken, messages, fallbackMessages = null) {
+async function safeReply(replyToken, messages) {
   try {
     await callLineReplyApi(replyToken, messages);
   } catch (error) {
-    console.error("Primary reply failed:", error.message);
-
-    if (fallbackMessages) {
-      try {
-        await callLineReplyApi(replyToken, fallbackMessages);
-      } catch (fallbackError) {
-        console.error("Fallback reply failed:", fallbackError.message);
-        throw fallbackError;
-      }
-    } else {
-      throw error;
-    }
+    console.error("Reply failed:", error.message || error);
+    // ❌ ห้าม reply ซ้ำด้วย token เดิม
   }
 }
 

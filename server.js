@@ -1503,10 +1503,10 @@ function buildAdminMenuFlex() {
         buildMenuBubble(
           "https://img1.pic.in.th/images/26272da5848ec9a47.png",
           [
-            uriButton("Dashboard", "https://foundation-bot-p5wu.onrender.com/dashboard"),
-            uriButton("รายงานผู้บริหาร", "https://foundation-bot-p5wu.onrender.com/report"),
+            uriButton("Dashboard", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
+            uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
             messageButton("Smart Alert", "Smart Alert"),
-            uriButton("เปิดศูนย์ปฏิบัติการ", "https://foundation-bot-p5wu.onrender.com/command-center")
+            uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
           ]
         ),
 

@@ -1502,7 +1502,7 @@ function buildAdminMenuFlex() {
           "https://img1.pic.in.th/images/26272da5848ec9a47.png",
           [
             uriButton("Dashboard", "https://foundation-bot-p5wu.onrender.com/dashboard"),
-            messageButton("รายงานผู้บริหาร", "รายงาน"),
+            uriButton("รายงานผู้บริหาร", "https://foundation-bot-p5wu.onrender.com/report")
             messageButton("Smart Alert", "Smart Alert"),
             uriButton("เปิดศูนย์ปฏิบัติการ", "https://foundation-bot-p5wu.onrender.com/command-center")
           ]

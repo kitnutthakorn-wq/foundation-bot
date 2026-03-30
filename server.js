@@ -1548,15 +1548,7 @@ function buildSmartAlertFlex() {
         aspectRatio: "1:1",
         aspectMode: "cover"
       },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "12px",
-        paddingAll: "16px",
-        contents: [
-          
-        ]
-      },
+    
       footer: {
         type: "box",
         layout: "vertical",

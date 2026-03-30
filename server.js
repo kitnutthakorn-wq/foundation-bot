@@ -4268,12 +4268,16 @@ if (text === "Smart Alert") {
     {
       type: "text",
       text:
-        "Smart Alert\n\n" +
+        "🚨 Smart Alert\n\n" +
         "ดูเคสที่ต้องติดตามเร่งด่วนได้ที่ Command Center"
     },
     {
       type: "text",
-      text: "เปิดศูนย์ปฏิบัติการ"
+      text: "👉 เปิดศูนย์ปฏิบัติการ",
+      action: {
+        type: "uri",
+        uri: "https://foundation-bot-p5wu.onrender.com/command-center"
+      }
     }
   ]);
   continue;

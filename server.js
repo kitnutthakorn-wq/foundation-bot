@@ -1378,7 +1378,7 @@ async function findLatestCaseByCaseCodeOrPhone(input = "") {
 function buildAdminMenuFlex() {
   return {
     type: "flex",
-    altText: "เมนูแอดมิน",
+    altText: "เมนูแอดมิน v2.1 FINAL",
     contents: {
       type: "carousel",
       contents: [

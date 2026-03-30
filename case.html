@@ -300,8 +300,8 @@ button:active{transform:translateY(0)}
   .panel-title{font-size:18px}
 }
 
-<<<<<<< HEAD
-=======
+
+
 /* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
 .timeline-list{
   display:flex;
@@ -411,7 +411,7 @@ button:active{transform:translateY(0)}
 }
 
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
   </style>
 </head>
 <body>
@@ -428,11 +428,11 @@ button:active{transform:translateY(0)}
         <div class="live"><span class="live-dot"></span><span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
         <div class="actions">
           <button class="secondary" onclick="window.location.href='/dashboard'">กลับ Dashboard</button>
-<<<<<<< HEAD
+
           <button class="secondary" onclick="loadCase()">รีเฟรช</button>
-=======
+
           <button class="secondary" onclick="refreshCaseView()">รีเฟรช</button>
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
         </div>
       </div>
     </div>
@@ -465,10 +465,10 @@ button:active{transform:translateY(0)}
         <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
         <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
         <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-<<<<<<< HEAD
-=======
+
+
         <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
         <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
         <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
@@ -525,9 +525,9 @@ button:active{transform:translateY(0)}
   </div>
 </div>
 
-<<<<<<< HEAD
+
   
-=======
+
 
 <div class="card panel-card">
   <div class="panel-header">
@@ -539,7 +539,7 @@ button:active{transform:translateY(0)}
   </div>
 </div>
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
     <div class="card panel-card">
       <div class="panel-header">
         <h2 class="panel-title">จัดการเคส</h2>
@@ -596,7 +596,7 @@ button:active{transform:translateY(0)}
     <button onclick="assignCase()">รับเคส</button>
     <button onclick="closeCase()" class="secondary">ปิดเคส</button>
   </div>
-<<<<<<< HEAD
+
   <div class="toast-wrap" id="toastWrap"></div>
 
   <script>
@@ -604,7 +604,7 @@ button:active{transform:translateY(0)}
     const caseId = params.get("id");
     let eventSource = null;
 
-=======
+
   <div class="toast-wrap" id="toastWrap"></div>  
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -630,7 +630,7 @@ function priorityThai(priority) {
 } 
     let eventSource = null;
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
     const formState = {
       initialized: false,
       editing: {
@@ -684,7 +684,7 @@ dirty: {
   const text = label || value || "-";
   return `<span class="badge status-${cls}">${escapeHtml(text)}</span>`;
 }
-<<<<<<< HEAD
+
 
 function priorityBadge(priority, label){
   const value = priority || "normal";
@@ -709,7 +709,7 @@ function priorityBadge(priority, label){
         staffNameEl.value = data.assigned_to || "";
       }
 
-=======
+
 
 function priorityBadge(priority, label){
   const value = priority || "normal";
@@ -856,7 +856,7 @@ function priorityBadge(priority, label){
         staffNameEl.value = data.assigned_to || "";
       }
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
       if (!formState.initialized || (!formState.editing.statusSelect && !formState.dirty.statusSelect)) {
         statusEl.value = nextStatus;
       }
@@ -904,8 +904,8 @@ async function loadProjects(){
         document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
         document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
         document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-<<<<<<< HEAD
-=======
+
+
 
         const locationTextEl = document.getElementById("location_text");
 
@@ -929,7 +929,7 @@ if (locationTextEl) {
     locationTextEl.innerHTML = escapeHtml(locationText);
   }
 }
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
        
         document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
         document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
@@ -938,12 +938,12 @@ if (locationTextEl) {
 document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
 
 // ✅ เปลี่ยนสถานะเป็นไทย
-<<<<<<< HEAD
+
 document.getElementById("status").innerHTML = statusBadge(data.status, data.status_th);
 
 // ✅ เปลี่ยนระดับเป็นไทย
 document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);
-=======
+
 document.getElementById("status").innerHTML = statusBadge(
   data.status,
   statusThai(data.status)
@@ -951,24 +951,24 @@ document.getElementById("status").innerHTML = statusBadge(
 
 // ✅ เปลี่ยนระดับเป็นไทย
 document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 
 // ✅ summary strip ด้านบน
 const summaryCaseCodeEl = document.getElementById("summary_case_code");
 if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 
 const summaryStatusEl = document.getElementById("summary_status");
-<<<<<<< HEAD
+
 if (summaryStatusEl) summaryStatusEl.innerText = data.status_th || data.status || "-";
 
 const summaryPriorityEl = document.getElementById("summary_priority");
 if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.priority || "-";
-=======
+
 if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 
 const summaryPriorityEl = document.getElementById("summary_priority");
 if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 
 const summaryAssignedToEl = document.getElementById("summary_assigned_to");
 if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
@@ -989,11 +989,11 @@ document.getElementById("latest_at").innerHTML = escapeHtml(
   latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
 );
 
-<<<<<<< HEAD
-=======
+
+
 document.getElementById("latest_note").innerHTML = escapeHtml(latest.note || latest.message || latest.update_note || "-");
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 const stepHelpMap = {
   "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
   "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
@@ -1070,26 +1070,26 @@ document.getElementById("progress_text").innerText = percent + "%";
   formState.initialized = true;
 }
 
-<<<<<<< HEAD
-=======
+
+
 
     async function refreshCaseView(){
       await loadCase();
       await loadCaseTimeline();
     }
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
       eventSource.addEventListener("connected", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
       eventSource.addEventListener("heartbeat", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
-<<<<<<< HEAD
+
         if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
-=======
+
         if(String(data.case_id) === String(caseId)){ refreshCaseView().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
       };
       eventSource.addEventListener("case_updated", onChange);
       eventSource.addEventListener("case_created", onChange);
@@ -1097,11 +1097,11 @@ document.getElementById("progress_text").innerText = percent + "%";
     }
 
     registerFormLocking();
-<<<<<<< HEAD
+
 loadProjects().then(loadCase);
-=======
+
 loadProjects().then(refreshCaseView);
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 connectRealtime();
   </script>  
 </body>

@@ -17,12 +17,7 @@ const supabase = createClient(
 
 const userStates = {};
 const caseFollowupTracker = {};
-const fetch = (...args) => {
-  if (typeof globalThis.fetch === "function") {
-    return globalThis.fetch(...args);
-  }
-  return import("node-fetch").then(({ default: fetch }) => fetch(...args));
-};
+const fetch = globalThis.fetch;
 
 const app = express();
 const PORT = process.env.PORT || 3000;

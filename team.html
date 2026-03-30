@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Workspace KCK FD</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root{
+      --brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--panel:#f7fbfc;
+      --card:#ffffff;--line:#dbe3ea;--text:#1f2937;--muted:#6b7280;--warn:#c56608;--danger:#b91c1c;
+      --shadow:0 14px 35px rgba(18,36,58,.08);--radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);
+      background:radial-gradient(circle at top left, rgba(11,124,134,.10), transparent 25%),linear-gradient(180deg,#f8fbfc 0%,var(--bg) 100%)}
+    .app{max-width:1240px;margin:0 auto;padding:18px 14px 40px}.hidden{display:none!important}
+    .loading{min-height:40vh;display:grid;place-items:center;color:var(--muted);font-weight:700}
+    .topbar,.workspace,.hero{display:grid;gap:16px}.topbar{grid-template-columns:1fr auto;align-items:center;margin-bottom:16px}
+    .hero{grid-template-columns:1.5fr .95fr;margin-bottom:16px}.workspace{grid-template-columns:1.45fr .95fr;align-items:start}
+    .card,.profile-card,.toolbar,.case-item,.activity-item,.role-chip{background:var(--card);border:1px solid rgba(219,227,234,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .brand-wrap{display:flex;align-items:center;gap:12px}.brand-badge{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;font-weight:800}
+    .brand-wrap h1{margin:0;font-size:1.16rem}.brand-wrap p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .profile-card{display:flex;align-items:center;gap:12px;padding:12px 14px;min-width:280px}.avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#dbe3ea;border:2px solid #fff}
+    .profile-meta strong{display:block}.profile-meta span{font-size:.86rem;color:var(--muted)}
+    .card{padding:18px}.headline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}
+    .headline h2{margin:0;font-size:1.06rem}.headline p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+    .hero-card{background:linear-gradient(135deg,var(--brand),#138a96);border:2px solid var(--accent);color:#fff}.hero-card p{color:#dff8fb}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+    .stat{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px}
+    .stat-label{font-size:.82rem;color:#dff8fb}.stat-value{font-size:1.5rem;font-weight:800;line-height:1;margin:8px 0}.stat-note{font-size:.83rem;color:#dff8fb}
+    .quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+    .qa-full{grid-column:span 2}
+    button{border:0;border-radius:14px;cursor:pointer;font:inherit;transition:transform .15s ease}.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;padding:12px 14px}.btn-secondary{background:#fff;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}.btn-accent{background:linear-gradient(135deg,var(--accent),#2ea95f);color:#fff;padding:12px 14px}
+    .btn-update{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:12px 14px}
+    .btn-ghost{background:#f8fbfc;color:var(--brand-dark);border:1px solid var(--line);padding:12px 14px}
+    .toolbar{padding:12px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;background:var(--panel)} .toolbar input,.toolbar select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff}
+    .grow{flex:1 1 240px}.fixed{width:180px}.case-list,.activity-list,.panel-stack,.role-row{display:grid;gap:12px}
+    .case-item{padding:14px;position:relative;overflow:hidden}.case-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--brand)}
+    .case-item.urgent::before{background:var(--danger)}.case-item.progress::before{background:var(--warn)}.case-item.done::before{background:var(--accent)}
+    .case-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.case-code{font-weight:800;font-size:.95rem}.case-title{font-size:1rem;font-weight:700;margin:4px 0}.case-desc,.meta-row{font-size:.9rem;color:var(--muted);line-height:1.45}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:.78rem;font-weight:700;white-space:nowrap}
+    .badge.new{background:rgba(11,124,134,.12);color:var(--brand-dark)} .badge.progress{background:rgba(197,102,8,.12);color:var(--warn)} .badge.urgent{background:rgba(185,28,28,.10);color:var(--danger)} .badge.done{background:rgba(31,143,77,.12);color:var(--accent)}
+    .meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.meta-box{background:#f8fbfc;border:1px solid #edf2f5;border-radius:12px;padding:10px}
+    .meta-box strong{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px}.meta-box span{font-size:.9rem;font-weight:700}
+    .case-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .case-actions button{padding:9px 12px;background:#fff;border:1px solid var(--line);color:var(--brand-dark);font-weight:700}
+    .case-actions .btn-progress{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .case-actions .btn-update-case{background:#eefaf3;border-color:#b7ebc9;color:#166534}
+    .case-actions .is-disabled{opacity:.58;cursor:not-allowed;pointer-events:none}
+    .activity-item{padding:12px;background:var(--panel)}.activity-item strong{display:block;margin-bottom:6px}.composer{display:grid;gap:10px;margin-top:12px}
+    textarea{min-height:110px;resize:vertical}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:24px}
+    .pulse-urgent{animation:pulseUrgent 1.8s infinite}@keyframes pulseUrgent{0%{box-shadow:0 0 0 0 rgba(185,28,28,.24)}70%{box-shadow:0 0 0 12px rgba(185,28,28,0)}100%{box-shadow:0 0 0 0 rgba(185,28,28,0)}}
+    .role-chip{padding:10px 12px;background:var(--panel);border-radius:16px}.role-chip strong{display:block;font-size:.88rem}.role-chip span{font-size:.8rem;color:var(--muted)}
+    @media (max-width:980px){.topbar,.hero,.workspace{grid-template-columns:1fr}.stats,.meta-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.stats,.meta-grid,.quick-actions{grid-template-columns:1fr}.qa-full{grid-column:auto}.profile-card{min-width:unset}}
+  </style>
+</head>
+<body>
+<div id="loading" class="loading">กำลังเปิด Team Workspace KCK FD...</div>
+<div id="app" class="app hidden">
+  <div class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-badge">TK</div>
+      <div><h1>Team Workspace KCK FD</h1><p>Role-based • Realtime • Unified Theme • Golden-safe flow</p></div>
+    </div>
+    <div class="profile-card">
+      <img id="avatar" class="avatar" alt="profile" />
+      <div class="profile-meta"><strong id="displayName">กำลังโหลด...</strong><span id="userRole">กำลังตรวจสอบสิทธิ์ทีมงาน</span></div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="card hero-card">
+      <div class="headline"><div><h2>ภาพรวมการทำงานวันนี้</h2><p>ธีมเดียวกับ dashboard / report / team workspace</p></div><span class="badge new" id="todayDate">วันนี้</span></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-label">เคสใหม่</div><div class="stat-value" id="statNew">0</div><div class="stat-note">รอรับเคส</div></div>
+        <div class="stat"><div class="stat-label">กำลังดำเนินการ</div><div class="stat-value" id="statProgress">0</div><div class="stat-note">กำลังติดตาม</div></div>
+        <div class="stat pulse-urgent" id="urgentStatCard"><div class="stat-label">เคสด่วน</div><div class="stat-value" id="statUrgent">0</div><div class="stat-note">ต้องจัดการก่อน</div></div>
+        <div class="stat"><div class="stat-label">ปิดเคสแล้ว</div><div class="stat-value" id="statDone">0</div><div class="stat-note">สำเร็จในรอบนี้</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="headline"><div><h2>Quick Actions</h2><p>โหมดทีมงานแบบ PRO MAX</p></div></div>
+      <div class="quick-actions">
+        <button class="btn-primary" onclick="refreshCases()">รีเฟรชเคส</button>
+        <button class="btn-secondary" onclick="applyPresetFilter('urgent')">ดูเฉพาะเคสด่วน</button>
+        <button class="btn-secondary" onclick="applyPresetFilter('new')">ดูเฉพาะเคสใหม่</button>
+        <button class="btn-ghost" onclick="filterTodayCases()">เคสวันนี้</button>
+        <button class="btn-update qa-full" onclick="openCaseUpdateCenter()">อัปเดตเคส</button>
+      </div>
+      <div class="role-row" style="margin-top:14px">
+        <div class="role-chip"><strong>Environment</strong><span id="envChip">Demo</span></div>
+        <div class="role-chip"><strong>Menu Version</strong><span id="menuVersionChip">v-next</span></div>
+        <div class="role-chip"><strong>Realtime</strong><span id="realtimeStatus">กำลังเชื่อมต่อ...</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <div>
+      <div class="toolbar">
+        <div class="grow"><input id="searchInput" type="text" placeholder="ค้นหาเลขเคส / ชื่อ / จังหวัด / ประเภทปัญหา" oninput="renderCases()" /></div>
+        <div class="fixed"><select id="statusFilter" onchange="renderCases()"><option value="all">ทุกสถานะ</option><option value="new">เคสใหม่</option><option value="progress">กำลังดำเนินการ</option><option value="urgent">เคสด่วน</option><option value="done">ปิดเคสแล้ว</option></select></div>
+        <div class="fixed"><select id="roleView" onchange="handleTeamViewModeChange()">
+          <option value="field">ทีมงานภาคสนาม</option>
+         <option value="readonly">ดูได้อย่างเดียว</option></select></div>
+      </div>
+      <div class="card">
+        <div class="headline"><div><h2>รายการเคส</h2><p id="casePanelSubtitle">กรองแบบ role-based และ realtime sync</p></div><span class="badge progress"><span id="caseCount">0</span> เคส</span></div>
+        <div id="caseList" class="case-list"></div>
+      </div>
+    </div>
+
+    <div class="panel-stack">
+      <div class="card">
+        <div class="headline"><div><h2>กิจกรรมล่าสุด</h2><p>ถ้ามี event ใหม่ ส่วนนี้จะ refresh สด</p></div></div>
+        <div id="activityList" class="activity-list"></div>
+      </div>
+      <div class="card">
+        <div class="headline"><div><h2>ส่งอัปเดตกลับไปที่ LINE</h2><p>ใช้สำหรับแจ้งทีม หรือผู้ขอความช่วยเหลือ</p></div></div>
+        <div class="composer">
+          <select id="messageType"><option value="team">แจ้งในกลุ่มทีม</option><option value="requester">แจ้งผู้ขอความช่วยเหลือ</option></select>
+          <input id="messageCaseCode" type="text" placeholder="กรอกเลขเคส (จำเป็นเมื่อส่งถึง requester หากไม่ใส่ targetUserId)" />
+          <input id="messageTargetUserId" type="text" placeholder="หรือใส่ LINE User ID ปลายทางโดยตรง" />
+          <textarea id="messageBox" placeholder="พิมพ์ข้อความอัปเดต เช่น เคส KC-20260326-001 ทีมภาคสนามลงพื้นที่แล้ว เวลา 14:30 น."></textarea>
+          <button class="btn-primary" onclick="sendUpdate()">ส่งข้อความอัปเดต</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Phase PRO MAX UI: role-based menu • urgent highlight • realtime feel • golden-safe</div>
+</div>
+
+<script>
+const CONFIG = {
+  LIFF_ID: "2009446483-2q6biMUk",
+  API_BASE_URL: "https://foundation-bot-p5wu.onrender.com",
+  TEAM_ROLE_ENDPOINT: "/api/team/me",
+  CASES_ENDPOINT: "/api/team/cases",
+  ACTIVITY_ENDPOINT: "/api/team/activities",
+  ASSIGN_CASE_ENDPOINT: "/api/team/cases/assign",
+  UPDATE_STATUS_ENDPOINT: "/api/team/cases/status",
+  SEND_UPDATE_ENDPOINT: "/api/team/send-update",
+  TEAM_STREAM_ENDPOINT: "/api/team/stream",
+  DASHBOARD_URL: "/dashboard",
+  MENU_VERSION: "PRO-MAX-UI-v1"
+};
+
+let allCases = [], activities = [], currentProfile = null, eventSource = null;
+let currentPresetFilter = "all";
+const demoCases = [
+  {case_code:"KC-20260326-001",title:"ครอบครัวขาดรายได้และค่าเช่าค้างหลายเดือน",description:"ผู้ร้องขออยู่ในภาวะเสี่ยงถูกไล่ออกจากที่พัก ต้องการประสานช่วยเหลือเร่งด่วน",status:"urgent",province:"สงขลา",owner:"ทีมภาคสนาม A",updated_at:"26 มี.ค. 2026 10:20",category:"ที่อยู่อาศัย",role_hint:"field"},
+  {case_code:"KC-20260326-002",title:"ขอทุนการศึกษาเด็กกำพร้าเรียนดี",description:"รอเอกสารยืนยันผลการเรียนและการเยี่ยมบ้าน",status:"progress",province:"นราธิวาส",owner:"ฝ่ายประสานทุน",updated_at:"26 มี.ค. 2026 09:35",category:"การศึกษา",role_hint:"admin"},
+  {case_code:"KC-20260325-003",title:"ซ่อมหลังคาบ้านผู้สูงอายุ",description:"ทีมช่างประเมินหน้างานแล้ว รออนุมัติงบวัสดุ",status:"new",province:"ปัตตานี",owner:"แอดมินกลาง",updated_at:"25 มี.ค. 2026 18:10",category:"ซ่อมบ้าน",role_hint:"readonly"},
+  {case_code:"KC-20260324-004",title:"ช่วยค่ารักษาและเดินทางผู้ป่วยติดเตียง",description:"ดำเนินการเสร็จแล้วและแจ้งผลกลับครอบครัวเรียบร้อย",status:"done",province:"ยะลา",owner:"ทีมช่วยเหลือด่วน",updated_at:"24 มี.ค. 2026 15:05",category:"การแพทย์",role_hint:"field"}
+];
+const demoActivities = [
+  {title:"ทีมภาคสนามรับเคส KC-20260326-001",detail:"กำหนดลงพื้นที่ภายใน 2 ชั่วโมง",time:"10:25"},
+  {title:"อัปเดตเอกสารทุนการศึกษา",detail:"เคส KC-20260326-002 รอใบรับรองโรงเรียน",time:"09:40"},
+  {title:"เคส KC-20260324-004 ปิดเคส",detail:"ส่งข้อความแจ้งครอบครัวเรียบร้อย",time:"08:55"}
+];
+const statusClass = s => ({new:'new',progress:'progress',urgent:'urgent',done:'done'})[s] || 'new';
+const statusLabel = s => ({new:'เคสใหม่',progress:'กำลังดำเนินการ',urgent:'ด่วน',done:'ปิดเคสแล้ว'})[s] || s;
+const escapeHtml = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+
+async function safeFetchJson(url, options={}) {
+  const res = await fetch(url, options), text = await res.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { ok:false, error:text || `HTTP ${res.status}` }; }
+  if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+  return data;
+}
+function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
+function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
+function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
+async function initLiff(){
+  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');document.getElementById('envChip').textContent='Demo mode';return;}
+  await liff.init({ liffId: CONFIG.LIFF_ID });
+  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='LIFF in LINE'; return; }
+  if (!liff.isLoggedIn()) { liff.login(); return; }
+  currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='External browser';
+}
+async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
+async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
+async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
+
+function normalizeStatus(item = {}) {
+  const s = String(item.status || "").toLowerCase().trim();
+
+  if (
+    s === "in_progress" ||
+    s === "progress" ||
+    s === "assigned" ||
+    s === "รับเคสแล้ว" ||
+    s === "กำลังดำเนินการ" ||
+    s.includes("ดำเนิน")
+  ) {
+    return "in_progress";
+  }
+
+  if (
+    s === "done" ||
+    s === "closed" ||
+    s === "completed" ||
+    s === "ปิดเคส" ||
+    s.includes("ปิด")
+  ) {
+    return "done";
+  }
+
+  if (
+    s === "cancelled" ||
+    s === "canceled" ||
+    s === "ยกเลิก"
+  ) {
+    return "cancelled";
+  }
+
+  return "new";
+}
+
+function normalizePriority(item = {}) {
+  const p = String(item.priority || item.case_priority || "").toLowerCase().trim();
+
+  if (
+    p === "urgent" ||
+    p === "ด่วน" ||
+    item.urgent === true ||
+    item.urgent_flag === true ||
+    item.is_urgent === true
+  ) {
+    return "urgent";
+  }
+
+  return "normal";
+}
+
+function isDoneCase(item = {}) {
+  return normalizeStatus(item) === "done";
+}
+
+function isInProgressCase(item = {}) {
+  return normalizeStatus(item) === "in_progress";
+}
+
+function isNewCase(item = {}) {
+  return normalizeStatus(item) === "new";
+}
+
+function isUrgentCase(item = {}) {
+  return normalizePriority(item) === "urgent";
+}
+
+function isOpenUrgentCase(item = {}) {
+  const s = normalizeStatus(item);
+  return normalizePriority(item) === "urgent" && (s === "new" || s === "in_progress");
+}
+
+function workflowStatusClass(item = {}) {
+  const s = normalizeStatus(item);
+  if (s === "in_progress") return "progress";
+  if (s === "done") return "done";
+  return "new";
+}
+
+function workflowStatusLabel(item = {}) {
+  const s = normalizeStatus(item);
+  if (s === "in_progress") return "กำลังดำเนินการ";
+  if (s === "done") return "ปิดเคสแล้ว";
+  return "เคสใหม่";
+}
+
+function priorityLabel(item = {}) {
+  return normalizePriority(item) === "urgent" ? "ด่วน" : "ปกติ";
+}
+
+function priorityClass(item = {}) {
+  return normalizePriority(item) === "urgent" ? "urgent" : "new";
+}
+
+function updateStats() {
+  const c = {
+    new: allCases.filter(x => isNewCase(x)).length,
+    progress: allCases.filter(x => isInProgressCase(x)).length,
+    urgent: allCases.filter(x => isOpenUrgentCase(x)).length,
+    done: allCases.filter(x => isDoneCase(x)).length
+  };
+
+  document.getElementById('statNew').textContent = c.new;
+  document.getElementById('statProgress').textContent = c.progress;
+  document.getElementById('statUrgent').textContent = c.urgent;
+  document.getElementById('statDone').textContent = c.done;
+
+  document.getElementById('urgentStatCard')
+    .classList.toggle('pulse-urgent', c.urgent > 0);
+}
+
+
+function getSelectedRoleLabel() {
+  const roleSelect = document.getElementById('roleView');
+  return roleSelect?.selectedOptions?.[0]?.textContent || 'ทีมงานภาคสนาม';
+}
+
+// 🔒 Global state (ใช้ตัวเดียวให้ชัด)
+let TEAM_VIEW_MODE = "field";
+
+// 🔁 เปลี่ยนโหมดจาก dropdown
+function handleTeamViewModeChange() {
+  const roleSelect = document.getElementById('roleView');
+  TEAM_VIEW_MODE = roleSelect ? roleSelect.value : "field";
+
+  // debug (แนะนำเปิดไว้ช่วงนี้)
+  console.log("TEAM_VIEW_MODE:", TEAM_VIEW_MODE);
+
+  renderCases();
+}
+
+// 🔍 เช็คว่าเป็นโหมดดูอย่างเดียวหรือไม่
+function isReadOnlyMode() {
+  return TEAM_VIEW_MODE === "readonly";
+}
+
+// 🏷️ label แสดงผล (กันสลับอีกในอนาคต)
+function getViewLabel() {
+  return TEAM_VIEW_MODE === "readonly"
+    ? "ดูได้อย่างเดียว"
+    : "ทีมงานภาคสนาม";
+}
+
+function isTodayCase(item = {}) {
+  const raw = String(item.created_at || item.updated_at || '').trim();
+  if (!raw) return false;
+
+  const parsed = new Date(raw);
+  if (!Number.isNaN(parsed.getTime())) {
+    const now = new Date();
+    return parsed.getFullYear() === now.getFullYear()
+      && parsed.getMonth() === now.getMonth()
+      && parsed.getDate() === now.getDate();
+  }
+
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const iso = `${yyyy}-${mm}-${dd}`;
+  return raw.startsWith(iso);
+}
+
+function filteredCases() {
+  const k = document.getElementById('searchInput').value.trim().toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+
+  return allCases.filter(item => {
+    const hay = [
+      item.case_code,
+      item.title,
+      item.description,
+      item.province,
+      item.category,
+      item.owner
+    ].join(' ').toLowerCase();
+
+    const matchKeyword = !k || hay.includes(k);
+
+    let matchStatus = true;
+    if (status === 'urgent') {
+      matchStatus = isOpenUrgentCase(item);
+    } else if (status === 'progress') {
+      matchStatus = isInProgressCase(item);
+    } else if (status === 'new') {
+      matchStatus = isNewCase(item);
+    } else if (status === 'done') {
+      matchStatus = isDoneCase(item);
+    }
+
+    const matchPreset = currentPresetFilter === 'today'
+      ? isTodayCase(item)
+      : true;
+
+    return matchKeyword && matchStatus && matchPreset;
+  });
+}
+
+function renderCases() {
+  const filtered = filteredCases();
+  const readOnly = isReadOnlyMode();
+
+  document.getElementById('caseCount').textContent = filtered.length;
+  document.getElementById('casePanelSubtitle').textContent =
+  `มุมมองปัจจุบัน: ${getViewLabel()}`;
+
+  const root = document.getElementById('caseList');
+
+  if (!filtered.length) {
+    root.innerHTML = '<div class="case-item"><div class="case-desc">ไม่พบเคสตามเงื่อนไขที่ค้นหา</div></div>';
+    return;
+  }
+
+  root.innerHTML = filtered.map(item => `
+    <div class="case-item ${workflowStatusClass(item)}">
+      <div class="case-top">
+        <div>
+          <div class="case-code">${escapeHtml(item.case_code)}</div>
+          <div class="case-title">${escapeHtml(item.title)}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <span class="badge ${workflowStatusClass(item)}">${escapeHtml(workflowStatusLabel(item))}</span>
+          <span class="badge ${priorityClass(item)}">${escapeHtml(priorityLabel(item))}</span>
+        </div>
+      </div>
+
+      <div class="case-desc">${escapeHtml(item.description)}</div>
+
+      <div class="meta-grid">
+        <div class="meta-box">
+          <strong>จังหวัด</strong>
+          <span>${escapeHtml(item.province || '-')}</span>
+        </div>
+        <div class="meta-box">
+          <strong>ผู้รับผิดชอบ</strong>
+          <span>${escapeHtml(item.owner || '-')}</span>
+        </div>
+        <div class="meta-box">
+          <strong>หมวดปัญหา</strong>
+          <span>${escapeHtml(item.category || '-')}</span>
+        </div>
+      </div>
+
+      <div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at || '-')}</div>
+
+      <div class="case-actions">
+        <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
+        <button class="btn-progress ${readOnly ? 'is-disabled' : ''}" onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
+        <button class="btn-update-case ${readOnly ? 'is-disabled' : ''}" onclick="openCaseUpdateLiff('${escapeHtml(item.case_code)}')">อัปเดตเคส</button>
+      </div>
+    </div>
+  `).join('');
+}
+function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
+function applyPresetFilter(s){currentPresetFilter='all';document.getElementById('statusFilter').value=s; renderCases();}
+function filterTodayCases(){currentPresetFilter='today';document.getElementById('statusFilter').value='all';renderCases();}
+function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}
+function viewCase(code){alert(`ดูรายละเอียดเคส: ${code}\n\nPhase ถัดไปสามารถต่อหน้า case-detail.html หรือ modal ได้`);}
+function openCaseUpdateLiff(caseCode){
+  const target = `update-case.html?caseCode=${encodeURIComponent(caseCode)}`;
+  window.location.href = target;
+}
+
+async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
+async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
+function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
+async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
+async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+bootstrap();
+</script>
+</body>
+</html>

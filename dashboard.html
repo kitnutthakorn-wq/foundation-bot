@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard ผู้บริหาร V15 | คนช่วยฅน</title>
+  <title>Dashboard Hybrid v17 | คนช่วยฅน</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root{
@@ -15,28 +15,35 @@
       --muted:#6b7280;
       --line:#dbe3ea;
       --shadow:0 10px 24px rgba(18,36,58,.08);
+      --danger:#c62828;
+      --warn:#f59e0b;
+      --ok:#16a34a;
+      --radius:20px;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#16304e}
-    .container{max-width:1340px;margin:0 auto;padding:18px}
+    .container{max-width:1480px;margin:0 auto;padding:18px}
     .brandbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
     .brand{display:flex;align-items:center;gap:14px}
     .brand img{width:70px;height:70px;object-fit:contain;border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:6px}
-    .brand h1{margin:0;font-size:32px;line-height:1.1}
+    .brand h1{margin:0;font-size:34px;line-height:1.1}
     .brand .subtitle{margin:6px 0 0;color:var(--muted);font-size:15px}
     .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:#fff;padding:10px 14px;color:#24415f;box-shadow:var(--shadow);font-size:14px}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .toolbar,.exec-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     input,select,button{height:42px;border-radius:12px;border:1px solid var(--line);padding:0 12px;font-size:14px;background:#fff}
     input{min-width:260px}
     button{background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer;padding:0 18px}
     button.secondary{background:#fff;color:#16304e;border:1px solid var(--line)}
-    .cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
+    .cards,.exec-cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-bottom:16px}
     .card,.panel{background:var(--card);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
     .card-title{color:#4b5563;margin-bottom:8px}
     .card-value{font-size:38px;font-weight:800}
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-bottom:16px}
+    .exec-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:16px;margin-bottom:16px}
+    .split-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
     .panel h2{margin:0 0 14px;font-size:20px}
     .chart-wrap{position:relative;height:310px}
+    .chart-wrap.small{height:280px}
     .tips{line-height:1.9;color:#586272}
     .table-wrap{overflow:auto}
     table{width:100%;border-collapse:collapse}
@@ -50,7 +57,16 @@
     .status-cancelled,.status-unknown{background:#e5e7eb;color:#4b5563}
     .priority-normal{background:#f3f4f6;color:#374151}
     .priority-urgent{background:#fee2e2;color:#b91c1c}
+    .severity-critical{background:#fee2e2;color:#b91c1c}
+    .severity-high{background:#fff3cd;color:#92400e}
+    .severity-medium{background:#e0f2fe;color:#075985}
+    .severity-info{background:#eef2ff;color:#3730a3}
     .footer-note{color:var(--muted);font-size:13px;margin-top:10px}
+
+    .error-banner{display:none;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow)}
+    .error-banner.show{display:block}
+    .error-title{font-weight:800;margin-bottom:6px}
+    .error-meta{font-size:13px;color:#7c2d12}
     .live-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}
     .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 1.6s infinite}
     @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
@@ -58,21 +74,31 @@
     .toast{background:#163c72;color:#fff;padding:14px 16px;border-radius:16px;box-shadow:var(--shadow);min-width:260px;max-width:360px}
     .toast strong{display:block;margin-bottom:4px}
     .mobile-actions{display:none}
-    @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
+    .summary-box{background:linear-gradient(135deg,#0b7c86,#163c72);color:#fff;padding:18px;border-radius:18px;line-height:1.8;font-size:15px;font-weight:700;min-height:140px}
+    .summary-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:12px}
+    .item-list{display:flex;flex-direction:column;gap:12px}
+    .mini-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+    .mini-card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
+    .mini-title{font-size:26px;font-weight:800;margin-top:4px}
+    .section-label{font-size:12px;color:var(--muted);margin-bottom:8px}
+    @media (max-width:1200px){
+      .cards,.exec-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .grid,.exec-grid,.split-grid{grid-template-columns:1fr}
+    }
     @media (max-width:780px){
       .container{padding:12px 12px 96px}
       .brand img{width:58px;height:58px}
       .brand h1{font-size:26px}
       input,select,button{width:100%}
-      .toolbar{width:100%}
-      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .toolbar,.exec-tools{width:100%}
+      .cards,.exec-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
       .chart-wrap{height:250px}
       .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}
       .mobile-actions button{width:100%}
     }
     @media (max-width:480px){
-      .cards{grid-template-columns:1fr}
-      .card-value{font-size:34px}
+      .cards,.exec-cards{grid-template-columns:1fr}
+      .card-value,.mini-title{font-size:34px}
       .toast{min-width:auto;max-width:calc(100vw - 32px)}
       .brandbar{align-items:flex-start}
     }
@@ -84,11 +110,88 @@
       <div class="brand">
         <img src="/logo.png" alt="โลโก้มูลนิธิคนช่วยฅน">
         <div>
-          <h1>Dashboard ผู้บริหาร</h1>
-          <div class="subtitle">มูลนิธิคนช่วยฅน • หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+          <h1>AI Command Center v17</h1>
+          <div class="subtitle">Hybrid Dashboard • Executive View + Operational Control</div>
         </div>
       </div>
       <div class="pill"><span class="live-dot"></span> <span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
+    </div>
+
+
+    <div id="errorBanner" class="error-banner">
+      <div class="error-title">กำลังมีปัญหาในการโหลดข้อมูลบางส่วน</div>
+      <div id="errorMessage">ระบบจะพยายามโหลดใหม่ให้อัตโนมัติ</div>
+      <div id="errorMeta" class="error-meta"></div>
+    </div>
+
+    <div class="exec-tools" style="margin-bottom:16px">
+      <button class="secondary" id="recalcBtn">Recalculate Scores</button>
+      <button class="secondary" id="genAlertsBtn">Generate Alerts</button>
+      <button id="refreshBtn">Refresh Dashboard</button>
+      <button class="secondary" id="reportTopBtn">Executive Report</button>
+    </div>
+
+    <div class="exec-cards">
+      <div class="card"><div class="section-label">เคสทั้งหมด</div><div class="mini-title" id="totalCases">0</div><div class="footer-note">ภาพรวมเคสในระบบ</div></div>
+      <div class="card"><div class="section-label">เคสใหม่</div><div class="mini-title" id="newCases">0</div><div class="footer-note">รอทีมงานเริ่มเรื่อง</div></div>
+      <div class="card"><div class="section-label">เคสด่วน</div><div class="mini-title" id="urgentCases">0</div><div class="footer-note">priority = urgent</div></div>
+      <div class="card"><div class="section-label">กำลังดำเนินการ</div><div class="mini-title" id="inProgressCases">0</div><div class="footer-note">ทีมงานกำลังทำงาน</div></div>
+      <div class="card"><div class="section-label">ปิดแล้ว</div><div class="mini-title" id="doneCases">0</div><div class="footer-note">สถานะ done</div></div>
+      <div class="card"><div class="section-label">Open Alerts</div><div class="mini-title" id="openAlerts">0</div><div class="footer-note">แจ้งเตือนที่ยังไม่ปิด</div></div>
+    </div>
+
+    <div class="exec-grid">
+      <div class="panel">
+        <h2>AI Executive Summary</h2>
+        <div class="summary-box" id="aiSummary">กำลังโหลดสรุป AI...</div>
+        <div class="summary-meta">
+          <div id="updatedAt">อัปเดตล่าสุด: -</div>
+          <div>ระบบ: v17 AI Insight + Alert + Smart Decision</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Top Alerts</h2>
+        <div class="item-list" id="alertsList"><div class="footer-note">กำลังโหลด...</div></div>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="panel">
+        <h2>Recommended Actions</h2>
+        <div class="item-list" id="actionsList"><div class="footer-note">กำลังโหลด...</div></div>
+      </div>
+      <div class="panel">
+        <h2>High Priority Cases</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>CASE</th>
+                <th>ชื่อ</th>
+                <th>พื้นที่</th>
+                <th>PRIORITY</th>
+                <th>RISK</th>
+                <th>ACTION</th>
+              </tr>
+            </thead>
+            <tbody id="highPriorityBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="split-grid">
+      <div class="panel">
+        <div class="live-row">
+          <h2>Case Trend (7 วัน)</h2>
+          <div class="footer-note">ภาพรวมแนวโน้มเคสล่าสุด</div>
+        </div>
+        <div class="chart-wrap small"><canvas id="casesChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h2>Case Status Snapshot</h2>
+        <div class="chart-wrap small"><canvas id="statusChart"></canvas></div>
+      </div>
     </div>
 
     <div class="toolbar" style="margin-bottom:16px">
@@ -111,34 +214,6 @@
       <button id="resetBtn" class="secondary">ล้างค่า</button>
     </div>
 
-    <div class="cards">
-      <div class="card"><div class="card-title">เคสทั้งหมด</div><div class="card-value" id="totalCases">0</div></div>
-      <div class="card"><div class="card-title">เคสใหม่</div><div class="card-value" id="newCases">0</div></div>
-      <div class="card"><div class="card-title">เคสด่วน</div><div class="card-value" id="urgentCases">0</div></div>
-      <div class="card"><div class="card-title">เคสวันนี้</div><div class="card-value" id="todayCases">0</div></div>
-      <div class="card"><div class="card-title">กำลังดำเนินการ</div><div class="card-value" id="inProgressCases">0</div></div>
-      <div class="card"><div class="card-title">ปิดแล้ว</div><div class="card-value" id="doneCases">0</div></div>
-    </div>
-
-    <div class="grid">
-      <div class="panel">
-        <div class="live-row">
-          <h2>ภาพรวมเคส 7 วันล่าสุด</h2>
-          <div class="footer-note" id="updatedAt">อัปเดตล่าสุด: -</div>
-        </div>
-        <div class="chart-wrap"><canvas id="casesChart"></canvas></div>
-      </div>
-      <div class="panel">
-        <h2>คำแนะนำการใช้งาน</h2>
-        <div class="tips">
-          - ใช้ช่องค้นหาเพื่อหาเลขเคส ชื่อ เบอร์ พื้นที่ หรือคำในรายละเอียด<br>
-          - ใช้ตัวกรองสถานะและระดับเพื่อโฟกัสเฉพาะเคสที่ต้องการ<br>
-          - คลิกที่รายการเคสเพื่อเปิดรายละเอียดและจัดการจากหน้าเว็บได้ทันที<br>
-          - หน้านี้เชื่อมข้อมูลแบบสด เมื่อมีเคสใหม่หรือมีการอัปเดต ระบบจะรีเฟรชให้อัตโนมัติ
-        </div>
-      </div>
-    </div>
-
     <div class="panel">
       <h2>รายการเคสล่าสุด</h2>
       <div class="table-wrap">
@@ -157,7 +232,7 @@
           <tbody id="casesTableBody"></tbody>
         </table>
       </div>
-      <div class="footer-note">คลิกที่แถวเพื่อเปิดรายละเอียดเคส</div>
+      <div class="footer-note">คลิกที่แถวเพื่อเปิดรายละเอียดเคส • ใช้ filter และ export ได้เหมือน v15</div>
     </div>
   </div>
 
@@ -169,6 +244,7 @@
 
   <script>
     let chartInstance = null;
+    let statusChartInstance = null;
     let lastTotal = null;
     let eventSource = null;
 
@@ -176,12 +252,36 @@
     function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}
     function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
     function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
+    function severityBadge(severity){const value=(severity||"info").toLowerCase();const cls=["critical","high","medium","info"].includes(value)?value:"info";return `<span class="badge severity-${cls}">${escapeHtml(value)}</span>`}
 
-    async function fetchJSON(url, options={}){
+    function showErrorBanner(message, meta = "") {
+      const banner = document.getElementById("errorBanner");
+      const messageEl = document.getElementById("errorMessage");
+      const metaEl = document.getElementById("errorMeta");
+      messageEl.textContent = message || "ระบบจะพยายามโหลดใหม่ให้อัตโนมัติ";
+      metaEl.textContent = meta || "";
+      banner.classList.add("show");
+    }
+
+    function hideErrorBanner() {
+      document.getElementById("errorBanner").classList.remove("show");
+      document.getElementById("errorMessage").textContent = "";
+      document.getElementById("errorMeta").textContent = "";
+    }
+
+    async function fetchJSON(url, options = {}){
       const res = await fetch(url, options);
+      const contentType = res.headers.get("content-type") || "";
+
+      if (!contentType.includes("application/json")) {
+        const text = await res.text();
+        console.error("API ไม่ได้ส่ง JSON:", url, text.slice(0, 300));
+        throw new Error(`API response ไม่ใช่ JSON: ${url}`);
+      }
+
       const data = await res.json();
-      if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");
-      return data.data;
+      if (!res.ok || data?.ok === false) throw new Error(data?.error || "Request failed");
+      return data.data ?? data;
     }
 
     function setUpdatedAt(){document.getElementById("updatedAt").textContent = "อัปเดตล่าสุด: " + formatThaiDateTime(new Date().toISOString())}
@@ -216,10 +316,10 @@
       document.getElementById("totalCases").textContent = data.total_cases || 0;
       document.getElementById("newCases").textContent = data.new_cases || 0;
       document.getElementById("urgentCases").textContent = data.urgent_cases || 0;
-      document.getElementById("todayCases").textContent = data.today_cases || 0;
       document.getElementById("inProgressCases").textContent = data.in_progress_cases || 0;
       document.getElementById("doneCases").textContent = data.done_cases || 0;
       await maybeNotify(data);
+      return data;
     }
 
     function renderCases(rows){
@@ -246,25 +346,160 @@
       if(priority) params.set("priority", priority);
       const rows = await fetchJSON("/api/dashboard/cases?" + params.toString());
       renderCases(rows);
+      return rows;
     }
 
-    async function loadStats(){
+    async function loadStats(summary){
       const rows = await fetchJSON("/api/dashboard/stats?days=7");
       const labels = rows.map(r => r.date);
       const counts = rows.map(r => r.count);
       const ctx = document.getElementById("casesChart");
       if(chartInstance) chartInstance.destroy();
       chartInstance = new Chart(ctx, {
+        type:"line",
+        data:{labels,datasets:[{label:"จำนวนเคส",data:counts,borderColor:"rgba(11,124,134,1)",backgroundColor:"rgba(11,124,134,0.15)",fill:false,tension:.35}]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+      });
+
+      const sctx = document.getElementById("statusChart");
+      if(statusChartInstance) statusChartInstance.destroy();
+      statusChartInstance = new Chart(sctx, {
         type:"bar",
-        data:{labels,datasets:[{label:"จำนวนเคส",data:counts,backgroundColor:"rgba(11,124,134,0.65)",borderColor:"rgba(22,60,114,1)",borderWidth:1,borderRadius:8}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+        data:{
+          labels:["ใหม่","ด่วน","กำลังทำ","ปิดแล้ว"],
+          datasets:[{label:"จำนวน",data:[summary.new_cases||0, summary.urgent_cases||0, summary.in_progress_cases||0, summary.done_cases||0],backgroundColor:"rgba(54,162,235,0.55)"}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
       });
     }
 
+    function buildAiSummary(summary, alerts, board){
+      const lines = [];
+      const topAlert = alerts[0];
+      const topCase = (board.cases || [])[0];
+
+      lines.push(`วันนี้ระบบมีเคสใหม่ ${summary.new_cases || 0} เคส และมีเคสด่วน ${summary.urgent_cases || 0} เคส`);
+      lines.push(`ขณะนี้มี open alerts ${alerts.length} รายการที่ผู้บริหารควรติดตาม`);
+
+      if(topAlert){
+        lines.push(`แจ้งเตือนสำคัญที่สุดตอนนี้คือ “${topAlert.title || "-"}” ระดับ ${topAlert.severity || "-"}`);
+      }
+
+      if(topCase && topCase.case){
+        lines.push(`เคสที่ควรเร่งที่สุดคือ ${topCase.case.case_code || "-"} ของ ${topCase.case.full_name || "-"} โดยคำแนะนำคือ “${topCase.recommended_action || "ติดตามเคส"}”`);
+      }
+
+      lines.push(`ข้อเสนอเชิงบริหาร: ให้ทีมงานเร่งติดตามเคส priority สูงก่อน และเคลียร์เคสค้างที่ยังไม่มีผู้รับผิดชอบ`);
+      return lines.join(" • ");
+    }
+
+    function renderAlerts(alerts){
+      document.getElementById("openAlerts").textContent = alerts.length;
+      const box = document.getElementById("alertsList");
+      if(!alerts.length){
+        box.innerHTML = '<div class="footer-note">ยังไม่มี alerts</div>';
+        return;
+      }
+      box.innerHTML = alerts.slice(0,5).map(a => `
+        <div class="mini-card">
+          <div class="top">
+            <strong>${escapeHtml(a.title || "-")}</strong>
+            ${severityBadge(a.severity)}
+          </div>
+          <div style="font-weight:700;margin-bottom:6px">${escapeHtml(a.message || "-")}</div>
+          <div class="footer-note">source: ${escapeHtml(a.source_type || "-")} #${escapeHtml(a.source_id || "-")} • ${escapeHtml(formatThaiDateTime(a.created_at))}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderActions(cases){
+      const box = document.getElementById("actionsList");
+      if(!cases.length){
+        box.innerHTML = '<div class="footer-note">ยังไม่มีคำแนะนำ</div>';
+        return;
+      }
+      box.innerHTML = cases.slice(0,5).map(item => `
+        <div class="mini-card">
+          <div style="font-size:16px;font-weight:800">${escapeHtml(item.case?.case_code || "-")}</div>
+          <div style="font-size:14px;font-weight:800;margin:8px 0">${escapeHtml(item.recommended_action || "ปกติ")}</div>
+          <div class="footer-note">
+            Priority Score: ${escapeHtml(item.priority_score || 0)} •
+            Risk Score: ${escapeHtml(item.risk_score || 0)} •
+            ผู้รับผิดชอบ: ${escapeHtml(item.case?.assigned_to || "ยังไม่มี")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderHighPriorityCases(cases){
+      const body = document.getElementById("highPriorityBody");
+      body.innerHTML = cases.length ? cases.slice(0,5).map(item => `
+        <tr>
+          <td>${escapeHtml(item.case?.case_code || "-")}</td>
+          <td>${escapeHtml(item.case?.full_name || "-")}</td>
+          <td>${escapeHtml(item.case?.location || "-")}</td>
+          <td>${escapeHtml(item.priority_score || 0)}</td>
+          <td>${escapeHtml(item.risk_score || 0)}</td>
+          <td>${escapeHtml(item.recommended_action || "ปกติ")}</td>
+        </tr>
+      `).join("") : `<tr><td colspan="6" class="footer-note">ยังไม่มีข้อมูล</td></tr>`;
+    }
+
+    async function loadExecutive(){
+      const [alertsRes, boardRes] = await Promise.all([
+        fetchJSON("/api/alerts?status=open").catch(err => ({ __error: err.message, data: [] })),
+        fetchJSON("/api/executive/decision-board").catch(err => ({ __error: err.message, cases: [], alerts: [] }))
+      ]);
+
+      const alerts = alertsRes.data || alertsRes.alerts || alertsRes || [];
+      const board = boardRes || { cases: [], alerts: [] };
+
+      renderAlerts(Array.isArray(alerts) ? alerts : []);
+      renderActions(Array.isArray(board.cases) ? board.cases : []);
+      renderHighPriorityCases(Array.isArray(board.cases) ? board.cases : []);
+
+      return {
+        alerts: Array.isArray(alerts) ? alerts : [],
+        board: { ...board, cases: Array.isArray(board.cases) ? board.cases : [] },
+        errors: [alertsRes.__error, boardRes.__error].filter(Boolean)
+      };
+    }
+
     async function refreshAll(silent=false){
-      await Promise.all([loadSummary(), loadCases(), loadStats()]);
+      const errors = [];
+      let summary = null;
+
+      try {
+        summary = await loadSummary();
+      } catch (err) {
+        errors.push(`Summary: ${err.message}`);
+      }
+
+      try {
+        const tasks = [loadCases()];
+        if (summary) tasks.push(loadStats(summary));
+        await Promise.all(tasks);
+      } catch (err) {
+        errors.push(`Cases/Stats: ${err.message}`);
+      }
+
+      try {
+        const exec = await loadExecutive();
+        document.getElementById("aiSummary").textContent = buildAiSummary(summary || {}, exec.alerts || [], exec.board || { cases: [] });
+        if (exec.errors?.length) errors.push(...exec.errors.map(msg => `Executive: ${msg}`));
+      } catch (err) {
+        errors.push(`Executive: ${err.message}`);
+      }
+
       setUpdatedAt();
-      if(!silent) showToast("รีเฟรชข้อมูลแล้ว", "Dashboard อัปเดตข้อมูลล่าสุดเรียบร้อย");
+
+      if (errors.length) {
+        showErrorBanner("โหลดข้อมูลได้ไม่ครบทุกส่วน แต่ระบบยังใช้งานต่อได้", errors.join(" | "));
+        if (!silent) showToast("โหลดข้อมูลบางส่วนไม่สำเร็จ", "ระบบยังทำงานต่อได้ และจะลองใหม่อัตโนมัติ");
+      } else {
+        hideErrorBanner();
+        if (!silent) showToast("รีเฟรชข้อมูลแล้ว", "Dashboard อัปเดตข้อมูลล่าสุดเรียบร้อย");
+      }
     }
 
     function connectRealtime(){
@@ -285,6 +520,7 @@
         };
         eventSource.addEventListener("case_created", onChange);
         eventSource.addEventListener("case_updated", onChange);
+        eventSource.addEventListener("alerts_generated", () => refreshAll(true).catch(console.error));
         eventSource.onerror = () => {
           document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
         };
@@ -293,12 +529,32 @@
       }
     }
 
-    document.getElementById("searchBtn").onclick = () => refreshAll(true).catch(err => alert(err.message));
+    async function runRecalculate(){
+      try{
+        const result = await fetchJSON("/api/ai/recalculate-scores");
+        showToast("Recalculate สำเร็จ", `อัปเดต ${result.updated || 0} เคส`);
+        refreshAll(true).catch(console.error);
+      }catch(err){
+        alert("Recalculate ไม่สำเร็จ: " + err.message);
+      }
+    }
+
+    async function runGenerateAlerts(){
+      try{
+        const result = await fetchJSON("/api/alerts/generate");
+        showToast("Generate Alerts สำเร็จ", `สร้าง ${result.created || 0} รายการ`);
+        refreshAll(true).catch(console.error);
+      }catch(err){
+        alert("Generate Alerts ไม่สำเร็จ: " + err.message);
+      }
+    }
+
+    document.getElementById("searchBtn").onclick = () => refreshAll(true);
     document.getElementById("resetBtn").onclick = () => {
       document.getElementById("searchInput").value = "";
       document.getElementById("statusFilter").value = "";
       document.getElementById("priorityFilter").value = "";
-      refreshAll(true).catch(err => alert(err.message));
+      refreshAll(true);
     };
     document.getElementById("exportBtn").onclick = () => {
       const params = new URLSearchParams();
@@ -311,12 +567,17 @@
       window.location.href = "/api/dashboard/export.csv?" + params.toString();
     };
     document.getElementById("reportBtn").onclick = () => window.location.href = "/report";
+    document.getElementById("reportTopBtn").onclick = () => window.location.href = "/report";
     document.getElementById("mobileReportBtn").onclick = () => window.location.href = "/report";
     document.getElementById("mobileExportBtn").onclick = () => document.getElementById("exportBtn").click();
+    document.getElementById("recalcBtn").onclick = runRecalculate;
+    document.getElementById("genAlertsBtn").onclick = runGenerateAlerts;
+    document.getElementById("refreshBtn").onclick = () => refreshAll(false);
     document.getElementById("searchInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter") document.getElementById("searchBtn").click(); });
 
-    refreshAll(true).catch(err => alert("โหลดข้อมูลไม่สำเร็จ: " + err.message));
+    refreshAll(true);
     connectRealtime();
+    setInterval(() => refreshAll(true).catch(console.error), 30000);
   </script>
 </body>
 </html>

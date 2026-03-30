@@ -196,7 +196,6 @@
   }
 }
     
-
 /* ===== FULL UI PRO MAX FIX ===== */
 .card{margin-bottom:18px}
 .panel-card{
@@ -299,8 +298,6 @@ button:active{transform:translateY(0)}
   .summary-item{min-height:auto}
   .panel-title{font-size:18px}
 }
-
-
 
 /* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
 .timeline-list{
@@ -410,8 +407,6 @@ button:active{transform:translateY(0)}
   }
 }
 
-
-
   </style>
 </head>
 <body>
@@ -465,10 +460,7 @@ button:active{transform:translateY(0)}
         <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
         <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
         <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-
-
         <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
-
         <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
         <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
@@ -524,11 +516,7 @@ button:active{transform:translateY(0)}
     </div>
   </div>
 </div>
-
-
-  
-
-
+    
 <div class="card panel-card">
   <div class="panel-header">
     <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
@@ -538,8 +526,7 @@ button:active{transform:translateY(0)}
     <div class="timeline-empty">กำลังโหลด Timeline...</div>
   </div>
 </div>
-
-
+    
     <div class="card panel-card">
       <div class="panel-header">
         <h2 class="panel-title">จัดการเคส</h2>
@@ -604,7 +591,6 @@ button:active{transform:translateY(0)}
     const caseId = params.get("id");
     let eventSource = null;
 
-
   <div class="toast-wrap" id="toastWrap"></div>  
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -629,8 +615,6 @@ function priorityThai(priority) {
   return priority || '-';
 } 
     let eventSource = null;
-
-
     const formState = {
       initialized: false,
       editing: {
@@ -685,7 +669,6 @@ dirty: {
   return `<span class="badge status-${cls}">${escapeHtml(text)}</span>`;
 }
 
-
 function priorityBadge(priority, label){
   const value = priority || "normal";
   const cls = value === "urgent" ? "urgent" : "normal";
@@ -708,8 +691,6 @@ function priorityBadge(priority, label){
       if (!formState.initialized || (!formState.editing.staffName && !formState.dirty.staffName)) {
         staffNameEl.value = data.assigned_to || "";
       }
-
-
 
 function priorityBadge(priority, label){
   const value = priority || "normal";
@@ -904,9 +885,6 @@ async function loadProjects(){
         document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
         document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
         document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-
-
-
         const locationTextEl = document.getElementById("location_text");
 
 if (locationTextEl) {
@@ -928,9 +906,7 @@ if (locationTextEl) {
   } else {
     locationTextEl.innerHTML = escapeHtml(locationText);
   }
-}
-
-       
+}      
         document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
         document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
         document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
@@ -989,10 +965,7 @@ document.getElementById("latest_at").innerHTML = escapeHtml(
   latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
 );
 
-
-
 document.getElementById("latest_note").innerHTML = escapeHtml(latest.note || latest.message || latest.update_note || "-");
-
 
 const stepHelpMap = {
   "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
@@ -1069,16 +1042,11 @@ document.getElementById("progress_text").innerText = percent + "%";
   resetFormLocking();
   formState.initialized = true;
 }
-
-
-
-
     async function refreshCaseView(){
       await loadCase();
       await loadCaseTimeline();
     }
-
-
+      
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
       eventSource.addEventListener("connected", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
@@ -1087,7 +1055,6 @@ document.getElementById("progress_text").innerText = percent + "%";
         const data = JSON.parse(ev.data || "{}");
 
         if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
-
         if(String(data.case_id) === String(caseId)){ refreshCaseView().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
 
       };

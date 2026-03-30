@@ -1437,274 +1437,95 @@ async function findLatestCaseByCaseCodeOrPhone(input = "") {
 }
 
 
-
-
 function buildAdminMenuFlex() {
+  function messageButton(label, text, color = "#20C44A") {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "message",
+        label,
+        text
+      }
+    };
+  }
+
+  function uriButton(label, uri, color = "#20C44A") {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "uri",
+        label,
+        uri
+      }
+    };
+  }
+
+  function buildMenuBubble(heroImage, buttons) {
+    return {
+      type: "bubble",
+      size: "mega",
+      hero: {
+        type: "image",
+        url: heroImage,
+        size: "full",
+        aspectRatio: "1:1",
+        aspectMode: "cover"
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "10px",
+        paddingAll: "14px",
+        contents: buttons
+      }
+    };
+  }
+
   return {
     type: "flex",
-    altText: "เมนูแอดมิน",
+    altText: "เมนูแอดมิน | ศูนย์ควบคุมระบบ",
     contents: {
       type: "carousel",
       contents: [
-        {
-          type: "bubble",
-          size: "mega",
-          header: {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#0B7C86",
-            paddingAll: "16px",
-            contents: [
-              {
-                type: "text",
-                text: "🛠 เมนูแอดมิน",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "lg"
-              },
-              {
-                type: "text",
-                text: "จัดการเคส",
-                color: "#DDF7FA",
-                size: "sm",
-                margin: "sm"
-              }
-            ]
-          },
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            contents: [
-              {
-                type: "text",
-                text: "คำสั่งที่ใช้บ่อยสำหรับติดตามและจัดการเคส",
-                wrap: true,
-                size: "sm",
-                color: "#666666"
-              }
-            ]
-          },
-        footer: {
-  type: "box",
-  layout: "vertical",
-  spacing: "sm",
-  contents: [
-    {
-      type: "button",
-      style: "primary",
-      color: "#0B7C86",
-      action: {
-        type: "message",
-        label: "📌 ดูเคสใหม่",
-        text: "ดูเคสใหม่"
-      }
-    },
-    {
-      type: "button",
-      style: "primary",
-      color: "#E65100",
-      action: {
-        type: "message",
-        label: "🚨 ดูเคสด่วน",
-        text: "ดูเคสด่วน"
-      }
-    },
-    {
-      type: "button",
-      style: "secondary",
-      action: {
-        type: "message",
-        label: "📅 เคสวันนี้",
-        text: "เคสวันนี้"
-      }
-    },
-    {
-  type: "button",
-  style: "secondary",
-  action: {
-    type: "message",
-    label: "🔎 ค้นหาด้วยเลขเคส",
-    text: "ดูเคส "
-  }
-},
-{
-  type: "button",
-  style: "secondary",
-  action: {
-    type: "message",
-    label: "📞 ค้นหาด้วยเบอร์",
-    text: "เช็คสถานะ "
-  }
-}
-  ]
-}
-        },
-        {
-          type: "bubble",
-          size: "mega",
-          header: {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#1F8F4D",
-            paddingAll: "16px",
-            contents: [
-              {
-                type: "text",
-                text: "📊 รายงานผู้บริหาร",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "lg"
-              },
-              {
-                type: "text",
-                text: "รายงานและภาพรวม",
-                color: "#DDF7E7",
-                size: "sm",
-                margin: "sm"
-              }
-            ]
-          },
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            contents: [
-              {
-                type: "text",
-                text: "ดูรายงาน สรุปรายวัน และเข้า dashboard",
-                wrap: true,
-                size: "sm",
-                color: "#666666"
-              }
-            ]
-          },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#1F8F4D",
-                action: {
-                  type: "message",
-                  label: "📊 รายงาน",
-                  text: "รายงาน"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#2E7D32",
-                action: {
-                  type: "message",
-                  label: "🗓 สรุปรายวัน",
-                  text: "สรุปรายวัน"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "uri",
-                  label: "📈 Dashboard",
-                  uri: "https://foundation-bot-p5wu.onrender.com/dashboard"
-                }
-              }
-            ]
-          }
-        },
-        {
-          type: "bubble",
-          size: "mega",
-          header: {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#C98A00",
-            paddingAll: "16px",
-            contents: [
-              {
-                type: "text",
-                text: "👑 จัดการทีม",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "lg"
-              },
-              {
-                type: "text",
-                text: "สิทธิ์และบทบาท",
-                color: "#FFF5D6",
-                size: "sm",
-                margin: "sm"
-              }
-            ]
-          },
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            contents: [
-              {
-                type: "text",
-                text: "ตรวจสอบสมาชิกทีมและสิทธิ์การใช้งาน",
-                wrap: true,
-                size: "sm",
-                color: "#666666"
-              }
-            ]
-          },
-         footer: {
-  type: "box",
-  layout: "vertical",
-  spacing: "sm",
-  contents: [
-    {
-      type: "button",
-      style: "primary",
-      color: "#C98A00",
-      action: {
-        type: "message",
-        label: "👥 ดูทีม",
-        text: "ดูทีม"
-      }
-    },
-    {
-      type: "button",
-      style: "secondary",
-      action: {
-        type: "message",
-        label: "🔍 ดูสิทธิ์",
-        text: "ดูสิทธิ์ USER_ID"
-      }
-    },
-    {
-      type: "button",
-      style: "secondary",
-      action: {
-        type: "message",
-        label: "⚙️ ตั้งเป็น staff",
-        text: "ตั้งสิทธิ์ USER_ID staff"
-      }
-    },
-    {
-      type: "button",
-      style: "secondary",
-      action: {
-        type: "message",
-        label: "👑 ตั้งเป็น admin",
-        text: "ตั้งสิทธิ์ USER_ID admin"
-      }
-    }
-  ]
-}
-        }
+        buildMenuBubble(
+          "https://img2.pic.in.th/116d0b84e95b08306.png",
+          [
+            messageButton("ดูเคสใหม่", "ดูเคสใหม่"),
+            messageButton("ดูเคสด่วน", "ดูเคสด่วน"),
+            messageButton("เคสวันนี้", "เคสวันนี้"),
+            messageButton("ค้นหาเคส", "ค้นหาเคส")
+          ]
+        ),
+
+        buildMenuBubble(
+          "https://img1.pic.in.th/images/26272da5848ec9a47.png",
+          [
+            uriButton("Dashboard", "https://foundation-bot-p5wu.onrender.com/dashboard"),
+            messageButton("รายงานผู้บริหาร", "รายงาน"),
+            messageButton("Smart Alert", "Smart Alert"),
+            uriButton("เปิดศูนย์ปฏิบัติการ", "https://foundation-bot-p5wu.onrender.com/command-center")
+          ]
+        ),
+
+        buildMenuBubble(
+          "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
+          [
+            messageButton("ดูทีม", "ดูทีม"),
+            messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
+            messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
+            messageButton("ลบทีม", "คำสั่งลบทีม")
+          ]
+        )
       ]
     }
   };
 }
-
 function buildHelpRequestChoiceFlex() {
   return {
     type: "flex",

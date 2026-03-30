@@ -1577,9 +1577,9 @@ function buildSmartAlertFlex() {
         spacing: "10px",
         paddingAll: "16px",
         contents: [
-          bigButton("🚨 ดูทีม", "#EF4444", "ดูทีม"),
-          bigButton("🔐 ดูสิทธิ์", "#F97316", "คำสั่งดูสิทธิ์"),
-          bigButton("➕ เพิ่มทีม", "#1D4ED8", "คำสั่งเพิ่มทีม"),
+          bigButton("🚨 เคสด่วน", "#EF4444", "เคสด่วน"),
+          bigButton("🔐 เคสค้าง", "#F97316", "เคสค้าง"),
+          bigButton("➕ เคสต้องติดตาม", "#1D4ED8", "เคสต้องติดตาม"),
           bigButton(
             "🧭 เปิดศูนย์ปฏิบัติการ",
             "#22C55E",

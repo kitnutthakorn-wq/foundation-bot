@@ -1527,7 +1527,7 @@ function buildSmartAlertFlex() {
     return {
       type: "button",
       style: "primary",
-      height: "lg",
+     
       color,
       action: uri
         ? { type: "uri", label, uri }

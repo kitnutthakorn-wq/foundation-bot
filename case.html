@@ -685,28 +685,23 @@ dirty: {
 }
 
 
-function priorityBadge(priority, label){
-  const value = priority || "normal";
-  const cls = value === "urgent" ? "urgent" : "normal";
-  const text = label || value || "-";
-  return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
-}
+
   
   
 
    
-      const staffNameEl = document.getElementById("staffName");
-      const statusEl = document.getElementById("statusSelect");
-      const priorityEl = document.getElementById("prioritySelect");
-      const projectEl = document.getElementById("projectSelect");
+      
+      
+      
+      
 
-      const nextStatus = ["new","in_progress","done","cancelled"].includes(data.status) ? data.status : "new";
-      const nextPriority = data.priority === "urgent" ? "urgent" : "normal";
-      const nextProject = data.project_id || data.project_code || data.project_slug || data.project || data.category || "";
+      
+      
+      
 
-      if (!formState.initialized || (!formState.editing.staffName && !formState.dirty.staffName)) {
-        staffNameEl.value = data.assigned_to || "";
-      }
+      
+       
+      
 
 
 

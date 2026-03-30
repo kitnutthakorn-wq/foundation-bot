@@ -22,6 +22,8 @@ const fetch = globalThis.fetch;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,
   process.env.PUBLIC_SITE_URL,
@@ -5678,6 +5680,7 @@ app.post("/api/team/send-update", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("✅ Server started on port " + PORT);
 });
+

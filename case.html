@@ -429,7 +429,7 @@ button:active{transform:translateY(0)}
         <div class="actions">
           <button class="secondary" onclick="window.location.href='/dashboard'">กลับ Dashboard</button>
 
-          <button class="secondary" onclick="loadCase()">รีเฟรช</button>
+          
 
           <button class="secondary" onclick="refreshCaseView()">รีเฟรช</button>
 
@@ -598,13 +598,13 @@ button:active{transform:translateY(0)}
 
   <div class="toast-wrap" id="toastWrap"></div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("id");
-    let eventSource = null;
+  
+    
+    
+   
 
 
-  <div class="toast-wrap" id="toastWrap"></div>  
+  
   <script>
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get("id");
@@ -691,10 +691,10 @@ function priorityBadge(priority, label){
   const text = label || value || "-";
   return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
 }
-    function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
-    async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
+  
+  
 
-    function populateForm(data){
+   
       const staffNameEl = document.getElementById("staffName");
       const statusEl = document.getElementById("statusSelect");
       const priorityEl = document.getElementById("prioritySelect");
@@ -838,46 +838,45 @@ function priorityBadge(priority, label){
       }
     }
 
-    function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
-    async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
+   
+    
 
-    function populateForm(data){
-      const staffNameEl = document.getElementById("staffName");
-      const statusEl = document.getElementById("statusSelect");
-      const priorityEl = document.getElementById("prioritySelect");
-      const projectEl = document.getElementById("projectSelect");
-
-      const nextStatus = ["new","in_progress","done","cancelled"].includes(data.status) ? data.status : "new";
-      const nextPriority = data.priority === "urgent" ? "urgent" : "normal";
-      const nextProject = data.project_id || data.project_code || data.project_slug || data.project || data.category || "";
-
-      if (!formState.initialized || (!formState.editing.staffName && !formState.dirty.staffName)) {
-        staffNameEl.value = data.assigned_to || "";
-      }
-
-
-      if (!formState.initialized || (!formState.editing.statusSelect && !formState.dirty.statusSelect)) {
-        statusEl.value = nextStatus;
-      }
-
-      if (!formState.initialized || (!formState.editing.prioritySelect && !formState.dirty.prioritySelect)) {
-        priorityEl.value = nextPriority;
-      }
-
-if (projectEl && (!formState.initialized || (!formState.editing.projectSelect && !formState.dirty.projectSelect))) {
-  projectEl.value = nextProject;
-}
+  
       
-      formState.initialized = true;
-    }
+      
+      
+     
 
-async function loadProjects(){
-  try{
-    const projects = await fetchJSON("/api/projects/options");
-    const select = document.getElementById("projectSelect");
-    if(!select) return;
+      
+      
 
-    const currentValue = select.value;
+    
+        
+      
+
+
+      
+      
+      
+
+     
+        
+    
+
+
+ 
+
+      
+      
+   
+
+
+
+    
+    
+    
+
+    
     select.innerHTML = '<option value="">- เลือกโครงการ -</option>';
 
     (projects || []).forEach(item => {
@@ -964,8 +963,8 @@ if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.pr
 
 if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 
-const summaryPriorityEl = document.getElementById("summary_priority");
-if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
+
+
 
 
 const summaryAssignedToEl = document.getElementById("summary_assigned_to");
@@ -1078,12 +1077,11 @@ document.getElementById("progress_text").innerText = percent + "%";
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
       eventSource.addEventListener("connected", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
-      eventSource.addEventListener("heartbeat", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
+      
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
 
-        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
-
+        
         if(String(data.case_id) === String(caseId)){ refreshCaseView().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
 
       };
@@ -1094,7 +1092,7 @@ document.getElementById("progress_text").innerText = percent + "%";
 
     registerFormLocking();
 
-loadProjects().then(loadCase);
+
 
 loadProjects().then(refreshCaseView);
 

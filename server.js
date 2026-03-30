@@ -1554,21 +1554,7 @@ function buildSmartAlertFlex() {
         spacing: "12px",
         paddingAll: "16px",
         contents: [
-          {
-            type: "text",
-            text: "SMART ALERT",
-            weight: "bold",
-            size: "xl",
-            align: "center"
-          },
-          {
-            type: "text",
-            text: "ศูนย์ติดตามเคสด่วน / เคสที่ต้องเฝ้าระวัง",
-            size: "sm",
-            color: "#666666",
-            align: "center",
-            wrap: true
-          }
+          
         ]
       },
       footer: {

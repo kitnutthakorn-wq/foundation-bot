@@ -17,7 +17,12 @@ const supabase = createClient(
 
 const userStates = {};
 const caseFollowupTracker = {};
-const fetch = globalThis.fetch;
+const fetch = (...args) => {
+  if (typeof globalThis.fetch === "function") {
+    return globalThis.fetch(...args);
+  }
+  return import("node-fetch").then(({ default: fetch }) => fetch(...args));
+};
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -173,6 +178,65 @@ setInterval(() => {
   }
 }, 60 * 1000);
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientDbError(err) {
+  const msg = String(err?.message || err || "").toLowerCase();
+  return (
+    msg.includes("fetch failed") ||
+    msg.includes("timeout") ||
+    msg.includes("network") ||
+    msg.includes("connect") ||
+    msg.includes("terminated")
+  );
+}
+
+async function withDbRetry(label, fn, options = {}) {
+  const retries = Number(options.retries ?? 2);
+  const delayMs = Number(options.delayMs ?? 700);
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      console.error(`${label} ERROR (attempt ${attempt + 1}/${retries + 1}):`, err?.message || err);
+
+      if (!isTransientDbError(err) || attempt === retries) {
+        throw err;
+      }
+
+      await sleep(delayMs * (attempt + 1));
+    }
+  }
+
+  throw lastError;
+}
+
+async function safeSupabaseQuery(label, queryRunner, fallbackValue) {
+  try {
+    const result = await withDbRetry(label, queryRunner, { retries: 2, delayMs: 800 });
+    if (result?.error) throw result.error;
+    return result?.data ?? fallbackValue;
+  } catch (err) {
+    console.error(`${label} FINAL FALLBACK:`, err?.message || err);
+    return fallbackValue;
+  }
+}
+
+async function safeSupabaseSingle(label, queryRunner, fallbackValue = null) {
+  try {
+    const result = await withDbRetry(label, queryRunner, { retries: 2, delayMs: 800 });
+    if (result?.error) throw result.error;
+    return result?.data ?? fallbackValue;
+  } catch (err) {
+    console.error(`${label} FINAL FALLBACK:`, err?.message || err);
+    return fallbackValue;
+  }
+}
 
 async function getUserRole(userId) {
   try {
@@ -197,25 +261,25 @@ async function getUserRole(userId) {
       return "viewer";
     }
 
-   const { data, error } = await supabase
-  .from("line_user_roles")
-  .select("role, is_active")
-  .eq("line_user_id", userId)
-  .maybeSingle();
+    const data = await safeSupabaseSingle(
+      "GET ROLE",
+      () =>
+        supabase
+          .from("line_user_roles")
+          .select("role, is_active")
+          .eq("line_user_id", userId)
+          .maybeSingle(),
+      null
+    );
 
-if (error) {
-  console.error("GET ROLE ERROR:", error);
-  return "guest";
-}
+    if (!data || data.is_active === false) {
+      roleCache.set(userId, { role: "guest", ts: Date.now() });
+      return "guest";
+    }
 
-if (!data || data.is_active === false) {
-  roleCache.set(userId, { role: "guest", ts: Date.now() });
-  return "guest";
-}
-
-const role = data.role || "guest";
-roleCache.set(userId, { role, ts: Date.now() });
-return role;
+    const role = data.role || "guest";
+    roleCache.set(userId, { role, ts: Date.now() });
+    return role;
   } catch (err) {
     console.error("GET ROLE CATCH:", err);
     return "guest";
@@ -368,115 +432,6 @@ function clearCaseUpdateState(userId) {
   }
 }
 
-function cleanText(value) {
-  return String(value ?? "").trim();
-}
-
-function toNullableText(value) {
-  const s = cleanText(value);
-  return s || null;
-}
-
-function toNumberOrNull(value) {
-  if (value === null || value === undefined || value === "") return null;
-  const n = Number(value);
-  return Number.isFinite(n) ? n : null;
-}
-
-function toImageArray(input) {
-  if (!input) return [];
-  if (Array.isArray(input)) {
-    return input.map((item) => String(item || "").trim()).filter(Boolean);
-  }
-  if (typeof input === "string") {
-    const raw = input.trim();
-    if (!raw) return [];
-    try {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed.map((item) => String(item || "").trim()).filter(Boolean);
-      }
-    } catch (_) {}
-    return raw.split(",").map((item) => item.trim()).filter(Boolean);
-  }
-  return [];
-}
-
-function normalizeCaseUpdateRecord(row = {}) {
-  return {
-    ...row,
-    status: row.status || row.status_after || null,
-    note: row.note || row.latest_note || row.message || null,
-    images: Array.isArray(row.images) ? row.images : toImageArray(row.images),
-  };
-}
-
-async function getHelpRequestByIdOrCode(caseIdOrCode = "") {
-  const lookup = String(caseIdOrCode || "").trim();
-  if (!lookup) return null;
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .or(`id.eq.${lookup},case_code.eq.${lookup}`)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data || null;
-}
-
-async function getHelpRequestByCaseCode(caseCode = "") {
-  const lookup = cleanText(caseCode);
-  if (!lookup) return null;
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("case_code", lookup)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data || null;
-}
-
-async function insertCaseUpdateLog(payload = {}) {
-  const row = {
-    case_id: payload.case_id || null,
-    case_code: toNullableText(payload.case_code),
-    status: toNullableText(payload.status),
-    status_after: toNullableText(payload.status_after || payload.status),
-    current_step: toNullableText(payload.current_step),
-    waiting_for: toNullableText(payload.waiting_for),
-    progress_percent: toNumberOrNull(payload.progress_percent),
-    note: toNullableText(payload.note),
-    latest_note: toNullableText(payload.latest_note || payload.note || payload.message),
-    message: toNullableText(payload.message),
-    updated_by: toNullableText(payload.updated_by),
-    updated_by_user_id: toNullableText(payload.updated_by_user_id),
-    updated_by_role: toNullableText(payload.updated_by_role),
-    updater_name: toNullableText(payload.updater_name),
-    updater_user_id: toNullableText(payload.updater_user_id),
-    location_text: toNullableText(payload.location_text),
-    latitude: toNumberOrNull(payload.latitude),
-    longitude: toNumberOrNull(payload.longitude),
-    images: toImageArray(payload.images),
-    updated_at: new Date().toISOString()
-  };
-
-  const { data, error } = await supabase
-    .from("case_updates")
-    .insert([row])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return normalizeCaseUpdateRecord(data || row);
-}
-
 async function upsertCaseUpdateLegacy({
   caseCode,
   updateStage,
@@ -485,39 +440,25 @@ async function upsertCaseUpdateLegacy({
 }) {
   const progressPercent = CASE_UPDATE_PROGRESS_MAP[updateStage] || 0;
   const waitingFor = CASE_UPDATE_WAITING_FOR_MAP[updateStage] || "รอการอัปเดต";
-  const helpRequest = await getHelpRequestByCaseCode(caseCode);
 
-  const inserted = await insertCaseUpdateLog({
-    case_id: helpRequest?.id || null,
+  const payload = {
     case_code: caseCode,
-    status: helpRequest?.status || "in_progress",
+    progress_percent: progressPercent,
     current_step: updateStage,
     waiting_for: waitingFor,
-    progress_percent: progressPercent,
-    note: detail,
     latest_note: detail,
-    message: detail,
     updated_by: updatedBy,
-    updated_by_user_id: updatedBy,
-    updater_name: updatedBy
-  });
-
-  const syncPatch = {
-    last_action_at: inserted.updated_at || new Date().toISOString(),
-    latest_note: inserted.latest_note || detail || null,
-    last_action_by: inserted.updater_name || inserted.updated_by || updatedBy || null
+    updated_at: new Date().toISOString()
   };
 
-  const { error: syncError } = await supabase
-    .from("help_requests")
-    .update(syncPatch)
-    .eq("case_code", cleanText(caseCode));
+  const { data, error } = await supabase
+    .from("case_updates")
+    .upsert(payload, { onConflict: "case_code" })
+    .select()
+    .single();
 
-  if (syncError) {
-    console.error("LEGACY CASE UPDATE SYNC ERROR:", syncError);
-  }
-
-  return inserted;
+  if (error) throw error;
+  return data;
 }
 
 function buildCaseUpdateStageQuickReply() {
@@ -1432,95 +1373,274 @@ async function findLatestCaseByCaseCodeOrPhone(input = "") {
 }
 
 
+
+
 function buildAdminMenuFlex() {
-  function messageButton(label, text, color = "#20C44A") {
-    return {
-      type: "button",
-      style: "primary",
-      height: "sm",
-      color,
-      action: {
-        type: "message",
-        label,
-        text
-      }
-    };
-  }
-
-  function uriButton(label, uri, color = "#20C44A") {
-    return {
-      type: "button",
-      style: "primary",
-      height: "sm",
-      color,
-      action: {
-        type: "uri",
-        label,
-        uri
-      }
-    };
-  }
-
-  function buildMenuBubble(heroImage, buttons) {
-    return {
-      type: "bubble",
-      size: "mega",
-      hero: {
-        type: "image",
-        url: heroImage,
-        size: "full",
-        aspectRatio: "1:1",
-        aspectMode: "cover"
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "10px",
-        paddingAll: "14px",
-        contents: buttons
-      }
-    };
-  }
-
   return {
     type: "flex",
-    altText: "เมนูแอดมิน | ศูนย์ควบคุมระบบ",
+    altText: "เมนูแอดมิน",
     contents: {
       type: "carousel",
       contents: [
-        buildMenuBubble(
-          "https://img2.pic.in.th/116d0b84e95b08306.png",
-          [
-            messageButton("ดูเคสใหม่", "ดูเคสใหม่"),
-            messageButton("ดูเคสด่วน", "ดูเคสด่วน"),
-            messageButton("เคสวันนี้", "เคสวันนี้"),
-            messageButton("ค้นหาเคส", "ค้นหาเคส")
-          ]
-        ),
-
-        buildMenuBubble(
-          "https://img1.pic.in.th/images/26272da5848ec9a47.png",
-          [
-            uriButton("Dashboard", "https://foundation-bot-p5wu.onrender.com/dashboard"),
-            uriButton("รายงานผู้บริหาร", "https://foundation-bot-p5wu.onrender.com/report"),
-            messageButton("Smart Alert", "Smart Alert"),
-            uriButton("เปิดศูนย์ปฏิบัติการ", "https://foundation-bot-p5wu.onrender.com/command-center")
-          ]
-        ),
-
-        buildMenuBubble(
-          "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
-          [
-            messageButton("ดูทีม", "ดูทีม"),
-            messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
-            messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
-            messageButton("ลบทีม", "คำสั่งลบทีม")
-          ]
-        )
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#0B7C86",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "🛠 เมนูแอดมิน",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "จัดการเคส",
+                color: "#DDF7FA",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "คำสั่งที่ใช้บ่อยสำหรับติดตามและจัดการเคส",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+        footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#0B7C86",
+      action: {
+        type: "message",
+        label: "📌 ดูเคสใหม่",
+        text: "ดูเคสใหม่"
+      }
+    },
+    {
+      type: "button",
+      style: "primary",
+      color: "#E65100",
+      action: {
+        type: "message",
+        label: "🚨 ดูเคสด่วน",
+        text: "ดูเคสด่วน"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "📅 เคสวันนี้",
+        text: "เคสวันนี้"
+      }
+    },
+    {
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "🔎 ค้นหาด้วยเลขเคส",
+    text: "ดูเคส "
+  }
+},
+{
+  type: "button",
+  style: "secondary",
+  action: {
+    type: "message",
+    label: "📞 ค้นหาด้วยเบอร์",
+    text: "เช็คสถานะ "
+  }
+}
+  ]
+}
+        },
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#1F8F4D",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "📊 รายงานผู้บริหาร",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "รายงานและภาพรวม",
+                color: "#DDF7E7",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "ดูรายงาน สรุปรายวัน และเข้า dashboard",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+          footer: {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#1F8F4D",
+                action: {
+                  type: "message",
+                  label: "📊 รายงาน",
+                  text: "รายงาน"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#2E7D32",
+                action: {
+                  type: "message",
+                  label: "🗓 สรุปรายวัน",
+                  text: "สรุปรายวัน"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "📈 Dashboard",
+                  uri: "https://foundation-bot-p5wu.onrender.com/dashboard"
+                }
+              }
+            ]
+          }
+        },
+        {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#C98A00",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "👑 จัดการทีม",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg"
+              },
+              {
+                type: "text",
+                text: "สิทธิ์และบทบาท",
+                color: "#FFF5D6",
+                size: "sm",
+                margin: "sm"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "ตรวจสอบสมาชิกทีมและสิทธิ์การใช้งาน",
+                wrap: true,
+                size: "sm",
+                color: "#666666"
+              }
+            ]
+          },
+         footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      color: "#C98A00",
+      action: {
+        type: "message",
+        label: "👥 ดูทีม",
+        text: "ดูทีม"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "🔍 ดูสิทธิ์",
+        text: "ดูสิทธิ์ USER_ID"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "⚙️ ตั้งเป็น staff",
+        text: "ตั้งสิทธิ์ USER_ID staff"
+      }
+    },
+    {
+      type: "button",
+      style: "secondary",
+      action: {
+        type: "message",
+        label: "👑 ตั้งเป็น admin",
+        text: "ตั้งสิทธิ์ USER_ID admin"
+      }
+    }
+  ]
+}
+        }
       ]
     }
   };
 }
+
 function buildHelpRequestChoiceFlex() {
   return {
     type: "flex",
@@ -1773,28 +1893,31 @@ app.get("/api/recent-activity", async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit || "20", 10), 50);
 
-    const { data, error } = await supabase
-      .from("case_updates")
-      .select(`
-        id,
-        case_code,
-        progress_percent,
-        current_step,
-        waiting_for,
-        latest_note,
-        updated_at,
-        updated_by,
-        updated_by_user_id,
-        updated_by_role,
-        updater_name,
-        message,
-        images,
-        status_after
-      `)
-      .order("updated_at", { ascending: false })
-      .limit(limit);
-
-    if (error) throw error;
+    const data = await safeSupabaseQuery(
+      "RECENT ACTIVITY",
+      () =>
+        supabase
+          .from("case_updates")
+          .select(`
+            id,
+            case_code,
+            progress_percent,
+            current_step,
+            waiting_for,
+            latest_note,
+            updated_at,
+            updated_by,
+            updated_by_user_id,
+            updated_by_role,
+            updater_name,
+            message,
+            images,
+            status_after
+          `)
+          .order("updated_at", { ascending: false })
+          .limit(limit),
+      []
+    );
 
     return res.json({
       ok: true,
@@ -1802,9 +1925,9 @@ app.get("/api/recent-activity", async (req, res) => {
     });
   } catch (err) {
     console.error("recent-activity error:", err);
-    return res.status(500).json({
-      ok: false,
-      error: err.message || "recent-activity failed",
+    return res.status(200).json({
+      ok: true,
+      items: [],
     });
   }
 });
@@ -1929,35 +2052,41 @@ app.get("/api/team/case-detail", async (req, res) => {
 // =========================
 app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
   try {
-    const body = req.body || {};
-    const case_code = cleanText(body.case_code || body.caseCode);
+    const {
+      case_code: rawCaseCode,
+      message: rawMessage,
+      updater_name: rawUpdaterName,
+      updater_user_id: rawUpdaterUserId,
+      latitude,
+      longitude,
+      location_text: rawLocationText,
+      status_after: rawStatusAfter,
+      title,
+      progressStatus,
+      senderName,
+      senderUserId,
+      locationText
+    } = req.body;
+
+    const case_code = String(rawCaseCode || req.body.caseCode || "").trim();
+    const updater_name = String(rawUpdaterName || senderName || "").trim() || null;
+    const updater_user_id = String(rawUpdaterUserId || senderUserId || "").trim() || null;
+    const status_after = String(rawStatusAfter || progressStatus || "").trim() || null;
+    const location_text = String(rawLocationText || locationText || "").trim() || null;
+
+    const trimmedTitle = String(title || "").trim();
+    const trimmedMessage = String(rawMessage || "").trim();
+    const message = [trimmedTitle ? `[${trimmedTitle}]` : "", trimmedMessage]
+      .filter(Boolean)
+      .join(" ")
+      .trim() || null;
 
     if (!case_code) {
       return res.status(400).json({ ok: false, error: "case_code is required" });
     }
 
-    const helpRequest = await getHelpRequestByCaseCode(case_code);
-    const case_id = body.case_id || body.caseId || helpRequest?.id || null;
-
-    const rawStatus = cleanText(body.status || body.status_after || body.rawStatusAfter || body.progressStatus);
-    const status_after = rawStatus || null;
-    const current_step = cleanText(body.current_step || body.currentStep || body.title);
-    const waiting_for = cleanText(body.waiting_for || body.waitingFor) || CASE_UPDATE_WAITING_FOR_MAP[current_step] || null;
-    const progress_percent = toNumberOrNull(body.progress_percent ?? body.progressPercent) ?? CASE_UPDATE_PROGRESS_MAP[current_step] ?? null;
-
-    const updater_name = toNullableText(body.updater_name || body.senderName || body.updated_by_name || body.staff_name || body.staffName || body.updated_by || body.updater_user_id);
-    const updater_user_id = toNullableText(body.updater_user_id || body.senderUserId || body.updated_by_user_id || body.updated_by);
-    const updated_by = toNullableText(body.updated_by || updater_user_id || updater_name);
-    const location_text = toNullableText(body.location_text || body.locationText);
-    const latitude = toNumberOrNull(body.latitude);
-    const longitude = toNumberOrNull(body.longitude);
-
-    const trimmedTitle = cleanText(body.title);
-    const trimmedMessage = cleanText(body.message || body.note || body.latest_note);
-    const composedMessage = [trimmedTitle ? `[${trimmedTitle}]` : "", trimmedMessage].filter(Boolean).join(" ").trim();
-    const note = trimmedMessage || composedMessage || current_step || null;
-
     const imageUrls = [];
+
     if (req.files?.length) {
       for (const file of req.files) {
         const ext = (file.mimetype || "image/jpeg").split("/")[1] || "jpg";
@@ -1979,79 +2108,77 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           .createSignedUrl(fileName, 60 * 60 * 24 * 7);
 
         if (signedUrlError) throw signedUrlError;
+
         imageUrls.push(data?.signedUrl || "");
       }
     }
 
-    const incomingImages = toImageArray(body.images);
-    const mergedImages = [...incomingImages, ...imageUrls].filter(Boolean);
+    const payload = {
+  case_code,
+  message,
+  updater_name,
+  updater_user_id,
+  updated_by: updater_user_id,
+  updated_by_user_id: updater_user_id,
+  updated_by_role: null,
+  progress_percent: null,
+  current_step: null,
+  waiting_for: null,
+  latest_note: message,
+  latitude: latitude ? Number(latitude) : null,
+  longitude: longitude ? Number(longitude) : null,
+  location_text,
+  status_after,
+  images: imageUrls,
+  updated_at: new Date().toISOString()
+};
 
-    const insertedUpdate = await insertCaseUpdateLog({
-      case_id,
-      case_code,
-      status: status_after,
-      status_after,
-      current_step,
-      waiting_for,
-      progress_percent,
-      note,
-      latest_note: note,
-      message: composedMessage || note,
-      updated_by,
-      updated_by_user_id: updater_user_id,
-      updated_by_role: toNullableText(body.updated_by_role),
-      updater_name,
-      updater_user_id,
-      location_text,
-      latitude,
-      longitude,
-      images: mergedImages
-    });
+    const { data: insertedUpdate, error } = await supabase
+      .from("case_updates")
+      .insert([payload])
+      .select()
+      .single();
+    if (error) throw error;
 
     const latestFields = {
-      latest_note: insertedUpdate.latest_note || note || null,
-      last_action_at: insertedUpdate.updated_at || new Date().toISOString(),
-      last_action_by: insertedUpdate.updater_name || insertedUpdate.updated_by || null
+      latest_note: payload.latest_note || null,
+      last_action_at: insertedUpdate?.updated_at || new Date().toISOString(),
+      last_action_by: payload.updater_name || payload.updated_by || null
     };
 
-    if (insertedUpdate.status_after) {
-      latestFields.status = insertedUpdate.status_after;
+    if (payload.status_after) {
+      latestFields.status = payload.status_after;
     }
 
-    if (Number.isFinite(insertedUpdate.latitude) && Number.isFinite(insertedUpdate.longitude)) {
-      latestFields.latitude = insertedUpdate.latitude;
-      latestFields.longitude = insertedUpdate.longitude;
-      latestFields.location_text =
-        insertedUpdate.location_text || `${insertedUpdate.latitude}, ${insertedUpdate.longitude}`;
-    } else if (insertedUpdate.location_text) {
-      latestFields.location_text = insertedUpdate.location_text;
-    }
+    if (Number.isFinite(payload.latitude) && Number.isFinite(payload.longitude)) {
+  latestFields.latitude = payload.latitude;
+  latestFields.longitude = payload.longitude;
+  latestFields.location_text =
+    payload.location_text ||
+    `${payload.latitude}, ${payload.longitude}`;
 
-    if (case_id || case_code) {
-      let updateQuery = supabase.from("help_requests").update(latestFields);
-      if (case_id) {
-        updateQuery = updateQuery.eq("id", case_id);
-      } else {
-        updateQuery = updateQuery.eq("case_code", case_code);
-      }
+  latestFields.last_action_at =
+    insertedUpdate?.updated_at || new Date().toISOString();
+}
 
-      const { error: helpReqUpdateError } = await updateQuery;
-      if (helpReqUpdateError) {
-        console.error("help_requests sync error:", helpReqUpdateError);
-      }
+    const { error: helpReqUpdateError } = await supabase
+      .from("help_requests")
+      .update(latestFields)
+      .eq("case_code", payload.case_code);
+
+    if (helpReqUpdateError) {
+      console.error("help_requests sync error:", helpReqUpdateError);
     }
 
     broadcastSse("case_update", {
       scope: "team_workspace",
       item: {
         id: insertedUpdate.id,
-        case_id: insertedUpdate.case_id || case_id || null,
         case_code: insertedUpdate.case_code,
         progress_percent: insertedUpdate.progress_percent,
         current_step: insertedUpdate.current_step,
         waiting_for: insertedUpdate.waiting_for,
         latest_note: insertedUpdate.latest_note,
-        note: insertedUpdate.note || insertedUpdate.latest_note,
         updated_at: insertedUpdate.updated_at,
         updated_by: insertedUpdate.updated_by,
         updated_by_user_id: insertedUpdate.updated_by_user_id,
@@ -2060,7 +2187,6 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
         message: insertedUpdate.message,
         images: insertedUpdate.images || [],
         status_after: insertedUpdate.status_after,
-        status: insertedUpdate.status || insertedUpdate.status_after || null,
         latitude: insertedUpdate.latitude ?? null,
         longitude: insertedUpdate.longitude ?? null,
         location_text: insertedUpdate.location_text || ""
@@ -2076,7 +2202,7 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           longitude: insertedUpdate.longitude,
           location_text: insertedUpdate.location_text || "",
           updated_at: insertedUpdate.updated_at,
-          status: insertedUpdate.status_after || insertedUpdate.status || null,
+          status: payload.status_after || null,
           latest_note: insertedUpdate.latest_note || ""
         }
       });
@@ -2088,6 +2214,7 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       updated_at: insertedUpdate.updated_at
     });
 
+    // 🔥 LINE notify
     if (CHANNEL_ACCESS_TOKEN && EFFECTIVE_TEAM_GROUP_ID) {
       await fetch("https://api.line.me/v2/bot/message/push", {
         method: "POST",
@@ -2100,24 +2227,21 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
           messages: [{
             type: "text",
             text:
-              `📢 อัปเดตเคส
-` +
-              `เลขเคส: ${case_code}
-` +
-              `ผู้ส่ง: ${updater_name || updated_by || "-"}
-` +
-              `รายละเอียด: ${note || composedMessage || "-"}
-` +
-              `${mergedImages.length ? `แนบรูป ${mergedImages.length} รูป` : "ไม่มีรูป"}`
+              `📢 อัปเดตเคส\n` +
+              `เลขเคส: ${case_code}\n` +
+              `ผู้ส่ง: ${updater_name || "-"}\n` +
+              `รายละเอียด: ${message || "-"}\n` +
+              `${imageUrls.length ? `แนบรูป ${imageUrls.length} รูป` : "ไม่มีรูป"}`
           }]
         })
       });
     }
 
-    return res.json({ ok: true, data: insertedUpdate });
+    res.json({ ok: true });
+
   } catch (err) {
     console.error("CASE UPDATE ERROR:", err);
-    return res.status(500).json({ ok: false, error: err.message });
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
@@ -2897,35 +3021,48 @@ async function getDashboardSummary() {
   start.setHours(0, 0, 0, 0);
 
   const [
-    { count: totalCases },
-    { count: newCases },
-    { count: urgentCases },
-    { count: todayCases },
-    { count: inProgressCases },
-    { count: doneCases },
-    delayedRes,
-    followupRes,
+    totalRes,
+    newRes,
+    urgentRes,
+    todayRes,
+    inProgressRes,
+    doneRes,
+    delayedRows,
+    followupRows,
   ] = await Promise.all([
-    supabase.from("help_requests").select("*", { count: "exact", head: true }),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "new"),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("priority", "urgent").in("status", ["new", "in_progress"]),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).gte("created_at", start.toISOString()),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "in_progress"),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "done"),
-
-    // เคสที่อาจล่าช้า
-    supabase.from("help_requests").select("created_at,status"),
-
-    // เคสที่ต้องติดตามด่วน
-    supabase.from("help_requests").select("priority,status"),
+    withDbRetry("DB SUMMARY TOTAL", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true })
+    ).catch(() => ({ count: 0 })),
+    withDbRetry("DB SUMMARY NEW", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true }).eq("status", "new")
+    ).catch(() => ({ count: 0 })),
+    withDbRetry("DB SUMMARY URGENT", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true }).eq("priority", "urgent").in("status", ["new", "in_progress"])
+    ).catch(() => ({ count: 0 })),
+    withDbRetry("DB SUMMARY TODAY", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true }).gte("created_at", start.toISOString())
+    ).catch(() => ({ count: 0 })),
+    withDbRetry("DB SUMMARY IN_PROGRESS", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true }).eq("status", "in_progress")
+    ).catch(() => ({ count: 0 })),
+    withDbRetry("DB SUMMARY DONE", () =>
+      supabase.from("help_requests").select("id", { count: "exact", head: true }).eq("status", "done")
+    ).catch(() => ({ count: 0 })),
+    safeSupabaseQuery(
+      "DB SUMMARY DELAYED ROWS",
+      () => supabase.from("help_requests").select("created_at,status"),
+      []
+    ),
+    safeSupabaseQuery(
+      "DB SUMMARY FOLLOWUP ROWS",
+      () => supabase.from("help_requests").select("priority,status"),
+      []
+    ),
   ]);
-
-  if (delayedRes.error) throw delayedRes.error;
-  if (followupRes.error) throw followupRes.error;
 
   const now = Date.now();
 
-  const delayedCases = (delayedRes.data || []).filter((row) => {
+  const delayedCases = (delayedRows || []).filter((row) => {
     if (row.status === "done" || row.status === "cancelled") return false;
 
     const created = new Date(row.created_at).getTime();
@@ -2935,7 +3072,7 @@ async function getDashboardSummary() {
     return ageDays >= 2;
   }).length;
 
-  const followupUrgentCases = (followupRes.data || []).filter((row) => {
+  const followupUrgentCases = (followupRows || []).filter((row) => {
     if (row.status === "done" || row.status === "cancelled") return false;
 
     const priority = String(row.priority || "").toLowerCase();
@@ -2943,12 +3080,12 @@ async function getDashboardSummary() {
   }).length;
 
   return {
-    total_cases: totalCases || 0,
-    new_cases: newCases || 0,
-    urgent_cases: urgentCases || 0,
-    today_cases: todayCases || 0,
-    in_progress_cases: inProgressCases || 0,
-    done_cases: doneCases || 0,
+    total_cases: totalRes?.count || 0,
+    new_cases: newRes?.count || 0,
+    urgent_cases: urgentRes?.count || 0,
+    today_cases: todayRes?.count || 0,
+    in_progress_cases: inProgressRes?.count || 0,
+    done_cases: doneRes?.count || 0,
     delayed_cases: delayedCases || 0,
     followup_urgent_cases: followupUrgentCases || 0,
   };
@@ -3431,7 +3568,7 @@ app.get("/api/dashboard/cases", checkDashboardAuth, async (req, res) => {
 
     let query = supabase
       .from("help_requests")
-      .select("*")
+      .select("id,case_code,full_name,phone,location,problem,status,priority,assigned_to,created_at,last_action_at,latest_note")
       .order("created_at", { ascending: false })
       .limit(limit);
 
@@ -3441,13 +3578,11 @@ app.get("/api/dashboard/cases", checkDashboardAuth, async (req, res) => {
       search: req.query.search || "",
     });
 
-    const { data, error } = await query;
-    if (error) throw error;
-
+    const data = await safeSupabaseQuery("DASHBOARD CASES", () => query, []);
     res.json({ ok: true, data: data || [] });
   } catch (error) {
     console.error("DASHBOARD CASES ERROR:", error);
-    res.status(500).json({ ok: false, error: error.message });
+    res.status(200).json({ ok: true, data: [] });
   }
 });
 
@@ -3456,19 +3591,17 @@ app.get("/api/dashboard/search", checkDashboardAuth, async (req, res) => {
     const q = req.query.q || "";
     let query = supabase
       .from("help_requests")
-      .select("*")
+      .select("id,case_code,full_name,phone,location,problem,status,priority,assigned_to,created_at,last_action_at,latest_note")
       .order("created_at", { ascending: false })
       .limit(50);
 
     query = applyDashboardFilters(query, { search: q });
 
-    const { data, error } = await query;
-    if (error) throw error;
-
+    const data = await safeSupabaseQuery("DASHBOARD SEARCH", () => query, []);
     res.json({ ok: true, data: data || [] });
   } catch (error) {
     console.error("DASHBOARD SEARCH ERROR:", error);
-    res.status(500).json({ ok: false, error: error.message });
+    res.status(200).json({ ok: true, data: [] });
   }
 });
 
@@ -3586,16 +3719,14 @@ async function getLatestCaseUpdateByCaseCode(caseCode) {
     .from("case_updates")
     .select("*")
     .eq("case_code", caseCode)
-    .order("updated_at", { ascending: false })
-    .limit(1);
+    .single();
 
   if (error) {
     console.error("GET LATEST CASE UPDATE ERROR:", error);
     return null;
   }
 
-  const latest = Array.isArray(data) ? data[0] : null;
-  return latest ? normalizeCaseUpdateRecord(latest) : null;
+  return data || null;
 }
 
 async function getProjectNameFromProjectDb(caseItem = {}) {
@@ -3643,33 +3774,6 @@ app.get("/api/projects/options", checkDashboardAuth, async (req, res) => {
   }
 });
 
-app.get("/api/case/:id/updates", checkDashboardAuth, async (req, res) => {
-  try {
-    const caseLookup = String(req.params.id || "").trim();
-    const caseItem = await getHelpRequestByIdOrCode(caseLookup);
-
-    if (!caseItem) {
-      return res.status(404).json({ ok: false, error: "Case not found" });
-    }
-
-    const { data, error } = await supabase
-      .from("case_updates")
-      .select("*")
-      .eq("case_code", caseItem.case_code)
-      .order("updated_at", { ascending: false });
-
-    if (error) throw error;
-
-    return res.json({
-      ok: true,
-      data: (data || []).map((row) => normalizeCaseUpdateRecord(row))
-    });
-  } catch (error) {
-    console.error("CASE TIMELINE ERROR:", error);
-    return res.status(500).json({ ok: false, error: error.message });
-  }
-});
-
 app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
   try {
     const caseId = String(req.params.id || "").trim();
@@ -3709,9 +3813,8 @@ app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
             progress_percent: latestUpdate.progress_percent ?? 0,
             current_step: latestUpdate.current_step || "-",
             waiting_for: latestUpdate.waiting_for || "-",
-            latest_note: latestUpdate.latest_note || latestUpdate.note || latestUpdate.message || "-",
-            note: latestUpdate.note || latestUpdate.latest_note || latestUpdate.message || "-",
-            updated_by: latestUpdate.updater_name || latestUpdate.updated_by || "-",
+            latest_note: latestUpdate.latest_note || "-",
+            updated_by: latestUpdate.updated_by || "-",
             updated_at: latestUpdate.updated_at || null
           }
         : {
@@ -3719,7 +3822,6 @@ app.get("/api/case/:id", checkDashboardAuth, async (req, res) => {
             current_step: "-",
             waiting_for: "-",
             latest_note: "-",
-            note: "-",
             updated_by: "-",
             updated_at: null
           }
@@ -3745,7 +3847,6 @@ app.post("/api/case/:id/assign", checkDashboardAuth, async (req, res) => {
     const payload = {
   assigned_to: staffName,
   assigned_at: new Date().toISOString(),
-  last_action_at: new Date().toISOString(),
   status: nextStatus,
   priority: nextPriority,
 };
@@ -3788,7 +3889,6 @@ Object.assign(payload, buildProjectPatchForHelpRequest(req.body.project_ref));
 
     if (allowedStatus.includes(req.body.status)) {
       payload.status = req.body.status;
-      payload.last_action_at = new Date().toISOString();
       if (req.body.status === "done") {
         payload.closed_at = new Date().toISOString();
       }
@@ -3827,7 +3927,6 @@ app.post("/api/case/:id/close", checkDashboardAuth, async (req, res) => {
       .update({
         status: "done",
         closed_at: new Date().toISOString(),
-        last_action_at: new Date().toISOString(),
       })
       .eq("id", id)
       .select()
@@ -4217,67 +4316,6 @@ if (text === "เมนูแอดมิน" || text === "เปิดเมน
   continue;
 }
 
-if (text === "คำสั่งดูสิทธิ์") {
-  await safeReply(replyToken, [{
-    type: "text",
-    text:
-      "คำสั่งดูสิทธิ์ทีมงาน\n\n" +
-      "ใช้รูปแบบ:\n" +
-      "ดูสิทธิ์ USER_ID\n\n" +
-      "ตัวอย่าง:\n" +
-      "ดูสิทธิ์ U1234567890abcdef"
-  }]);
-  continue;
-}
-
-if (text === "คำสั่งเพิ่มทีม") {
-  await safeReply(replyToken, [{
-    type: "text",
-    text:
-      "คำสั่งเพิ่มทีม\n\n" +
-      "ใช้รูปแบบ:\n" +
-      "เพิ่มทีม USER_ID role\n\n" +
-      "role ที่ใช้ได้:\n" +
-      "- admin\n- staff\n- viewer\n\n" +
-      "ตัวอย่าง:\n" +
-      "เพิ่มทีม U1234567890abcdef staff"
-  }]);
-  continue;
-}
-
-if (text === "คำสั่งลบทีม") {
-  await safeReply(replyToken, [{
-    type: "text",
-    text:
-      "คำสั่งลบทีม\n\n" +
-      "ใช้รูปแบบ:\n" +
-      "ลบทีม USER_ID\n\n" +
-      "ตัวอย่าง:\n" +
-      "ลบทีม U1234567890abcdef"
-  }]);
-  continue;
-}
-
-if (text === "Smart Alert") {
-  await safeReply(replyToken, [
-    {
-      type: "text",
-      text:
-        "🚨 Smart Alert\n\n" +
-        "ดูเคสที่ต้องติดตามเร่งด่วนได้ที่ Command Center"
-    },
-    {
-      type: "text",
-      text: "👉 เปิดศูนย์ปฏิบัติการ",
-      action: {
-        type: "uri",
-        uri: "https://foundation-bot-p5wu.onrender.com/command-center"
-      }
-    }
-  ]);
-  continue;
-}
-      
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);

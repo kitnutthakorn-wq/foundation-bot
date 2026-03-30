@@ -1798,14 +1798,11 @@ app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook endpoint is ready ✅");
 });
 
-<<<<<<< HEAD
-=======
 app.post("/webhook", (req, res) => {
   console.log("🔥 WEBHOOK HIT FROM LINE");
   return res.sendStatus(200);
 });
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
 app.get("/dashboard", checkDashboardAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "dashboard.html"));
 });

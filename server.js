@@ -4329,12 +4329,7 @@ if (text === "คำสั่งลบทีม") {
 }
 
 if (text === "Smart Alert") {
-  await safeReply(replyToken, [buildSmartAlertFlex()], [
-    {
-      type: "text",
-      text: "Smart Alert\nhttps://foundation-bot-p5wu.onrender.com/command-center"
-    }
-  ]);
+  await safeReply(replyToken, [buildSmartAlertFlex()]);
   continue;
 }
       

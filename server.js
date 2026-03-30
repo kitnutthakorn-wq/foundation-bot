@@ -4264,14 +4264,24 @@ if (text === "Smart Alert") {
       type: "text",
       text:
         "🚨 Smart Alert\n\n" +
-        "ดูเคสที่ต้องติดตามเร่งด่วนได้ที่ Command Center"
+        "• เคสค้าง\n" +
+        "• เคสด่วน\n" +
+        "• เคสต้องติดตาม\n\n" +
+        "ระบบจะรวมเคสสำคัญไว้ในศูนย์ควบคุม"
     },
     {
-      type: "text",
-      text: "👉 เปิดศูนย์ปฏิบัติการ",
-      action: {
-        type: "uri",
-        uri: "https://foundation-bot-p5wu.onrender.com/command-center"
+      type: "template",
+      altText: "เปิดศูนย์ปฏิบัติการ",
+      template: {
+        type: "buttons",
+        text: "ไปยัง Command Center",
+        actions: [
+          {
+            type: "uri",
+            label: "👉 เปิดศูนย์ปฏิบัติการ",
+            uri: "https://foundation-bot-p5wu.onrender.com/command-center"
+          }
+        ]
       }
     }
   ]);

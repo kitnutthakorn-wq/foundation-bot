@@ -1521,6 +1521,118 @@ function buildAdminMenuFlex() {
     }
   };
 }
+
+function buildSmartAlertFlex() {
+  function alertCard(title, subtitle, color, bgColor) {
+    return {
+      type: "box",
+      layout: "vertical",
+      backgroundColor: bgColor,
+      borderColor: color,
+      borderWidth: "3px",
+      cornerRadius: "16px",
+      paddingAll: "14px",
+      spacing: "6px",
+      contents: [
+        {
+          type: "text",
+          text: title,
+          weight: "bold",
+          size: "md",
+          color: color,
+          wrap: true
+        },
+        {
+          type: "text",
+          text: subtitle,
+          size: "sm",
+          color: "#374151",
+          wrap: true
+        }
+      ]
+    };
+  }
+
+  return {
+    type: "flex",
+    altText: "Smart Alert | ศูนย์ควบคุมเคสสำคัญ",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#163C72",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "🚨 Smart Alert",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "xl",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: "ศูนย์ติดตามเคสด่วนและเคสที่ต้องเฝ้าระวัง",
+            color: "#DDE7F5",
+            size: "sm",
+            wrap: true,
+            align: "center",
+            margin: "sm"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "16px",
+        spacing: "12px",
+        contents: [
+          alertCard(
+            "เคสด่วน",
+            "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการทันที",
+            "#DC2626",
+            "#FEF2F2"
+          ),
+          alertCard(
+            "เคสค้าง",
+            "ติดตามเคสที่เปิดไว้นานและยังต้องขยับต่อ",
+            "#D97706",
+            "#FFF7ED"
+          ),
+          alertCard(
+            "เคสต้องติดตาม",
+            "รวมเคสที่ผู้บริหารควรเห็นและติดตามต่อเนื่อง",
+            "#1D4ED8",
+            "#EFF6FF"
+          )
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            height: "md",
+            color: "#163C72",
+            action: {
+              type: "uri",
+              label: "เปิดศูนย์ปฏิบัติการ",
+              uri: "https://foundation-bot-p5wu.onrender.com/command-center"
+            }
+          }
+        ]
+      }
+    }
+  };
+}
+
 function buildHelpRequestChoiceFlex() {
   return {
     type: "flex",
@@ -4259,30 +4371,10 @@ if (text === "คำสั่งลบทีม") {
 }
 
 if (text === "Smart Alert") {
-  await safeReply(replyToken, [
+  await safeReply(replyToken, [buildSmartAlertFlex()], [
     {
       type: "text",
-      text:
-        "🚨 Smart Alert\n\n" +
-        "• เคสค้าง\n" +
-        "• เคสด่วน\n" +
-        "• เคสต้องติดตาม\n\n" +
-        "ระบบจะรวมเคสสำคัญไว้ในศูนย์ควบคุม"
-    },
-    {
-      type: "template",
-      altText: "เปิดศูนย์ปฏิบัติการ",
-      template: {
-        type: "buttons",
-        text: "ไปยัง Command Center",
-        actions: [
-          {
-            type: "uri",
-            label: "👉 เปิดศูนย์ปฏิบัติการ",
-            uri: "https://foundation-bot-p5wu.onrender.com/command-center"
-          }
-        ]
-      }
+      text: "Smart Alert\nhttps://foundation-bot-p5wu.onrender.com/command-center"
     }
   ]);
   continue;

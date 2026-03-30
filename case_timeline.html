@@ -300,61 +300,48 @@ button:active{transform:translateY(0)}
   .panel-title{font-size:18px}
 }
 
-<<<<<<< HEAD
-=======
-/* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
+  
 .timeline-list{
   display:flex;
   flex-direction:column;
-  gap:16px;
-}
-.timeline-empty{
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:16px;
-  color:#6b7280;
+  gap:14px;
 }
 .timeline-item{
-  border:1px solid #e5e7eb;
+  border:1px solid #dbe3ea;
   border-left:6px solid #0b7c86;
-  border-radius:20px;
+  border-radius:18px;
   background:#fff;
   padding:16px;
-  box-shadow:none;
 }
 .timeline-head{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
   gap:12px;
   flex-wrap:wrap;
   margin-bottom:10px;
 }
 .timeline-title{
   font-size:18px;
-  line-height:1.35;
   font-weight:800;
   color:#16304e;
+  word-break:break-word;
 }
 .timeline-time{
   color:#6b7280;
   font-size:13px;
   font-weight:700;
-  white-space:nowrap;
 }
 .timeline-badges{
   display:flex;
   flex-wrap:wrap;
   gap:8px;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 .timeline-note{
-  line-height:1.65;
+  line-height:1.7;
   margin-bottom:12px;
   white-space:pre-wrap;
   word-break:break-word;
-  color:#16304e;
 }
 .timeline-mini-grid{
   display:grid;
@@ -365,7 +352,7 @@ button:active{transform:translateY(0)}
 .timeline-mini-card{
   background:#f8fafc;
   border:1px solid #e5e7eb;
-  border-radius:16px;
+  border-radius:14px;
   padding:12px;
 }
 .timeline-mini-label{
@@ -375,7 +362,6 @@ button:active{transform:translateY(0)}
 }
 .timeline-mini-value{
   font-size:15px;
-  line-height:1.55;
   font-weight:700;
   color:#16304e;
   word-break:break-word;
@@ -385,9 +371,6 @@ button:active{transform:translateY(0)}
   grid-template-columns:repeat(3,1fr);
   gap:10px;
 }
-.timeline-images a{
-  display:block;
-}
 .timeline-images img{
   width:100%;
   height:180px;
@@ -395,24 +378,15 @@ button:active{transform:translateY(0)}
   border-radius:16px;
   border:1px solid #e5e7eb;
   display:block;
-  background:#f8fafc;
 }
-@media (max-width:900px){
-  .timeline-mini-grid,
-  .timeline-images{
-    grid-template-columns:1fr 1fr;
-  }
-}
-@media (max-width:640px){
+@media (max-width:780px){
   .timeline-mini-grid,
   .timeline-images{
     grid-template-columns:1fr;
   }
 }
 
-
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
-  </style>
+</style>
 </head>
 <body>
   <div class="container">
@@ -428,11 +402,7 @@ button:active{transform:translateY(0)}
         <div class="live"><span class="live-dot"></span><span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
         <div class="actions">
           <button class="secondary" onclick="window.location.href='/dashboard'">กลับ Dashboard</button>
-<<<<<<< HEAD
           <button class="secondary" onclick="loadCase()">รีเฟรช</button>
-=======
-          <button class="secondary" onclick="refreshCaseView()">รีเฟรช</button>
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
         </div>
       </div>
     </div>
@@ -465,10 +435,7 @@ button:active{transform:translateY(0)}
         <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
         <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
         <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-<<<<<<< HEAD
-=======
         <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
         <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
         <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
@@ -525,21 +492,17 @@ button:active{transform:translateY(0)}
   </div>
 </div>
 
-<<<<<<< HEAD
-  
-=======
-
 <div class="card panel-card">
   <div class="panel-header">
     <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
     <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
   </div>
   <div id="case_updates_timeline" class="timeline-list">
-    <div class="timeline-empty">กำลังโหลด Timeline...</div>
+    <div class="value">กำลังโหลดรายการอัปเดตภาคสนาม...</div>
   </div>
 </div>
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
     <div class="card panel-card">
       <div class="panel-header">
         <h2 class="panel-title">จัดการเคส</h2>
@@ -596,15 +559,6 @@ button:active{transform:translateY(0)}
     <button onclick="assignCase()">รับเคส</button>
     <button onclick="closeCase()" class="secondary">ปิดเคส</button>
   </div>
-<<<<<<< HEAD
-  <div class="toast-wrap" id="toastWrap"></div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("id");
-    let eventSource = null;
-
-=======
   <div class="toast-wrap" id="toastWrap"></div>  
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -630,7 +584,6 @@ function priorityThai(priority) {
 } 
     let eventSource = null;
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
     const formState = {
       initialized: false,
       editing: {
@@ -684,7 +637,6 @@ dirty: {
   const text = label || value || "-";
   return `<span class="badge status-${cls}">${escapeHtml(text)}</span>`;
 }
-<<<<<<< HEAD
 
 function priorityBadge(priority, label){
   const value = priority || "normal";
@@ -695,152 +647,70 @@ function priorityBadge(priority, label){
     function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
     async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
 
-    function populateForm(data){
-      const staffNameEl = document.getElementById("staffName");
-      const statusEl = document.getElementById("statusSelect");
-      const priorityEl = document.getElementById("prioritySelect");
-      const projectEl = document.getElementById("projectSelect");
-
-      const nextStatus = ["new","in_progress","done","cancelled"].includes(data.status) ? data.status : "new";
-      const nextPriority = data.priority === "urgent" ? "urgent" : "normal";
-      const nextProject = data.project_id || data.project_code || data.project_slug || data.project || data.category || "";
-
-      if (!formState.initialized || (!formState.editing.staffName && !formState.dirty.staffName)) {
-        staffNameEl.value = data.assigned_to || "";
-      }
-
-=======
-
-function priorityBadge(priority, label){
-  const value = priority || "normal";
-  const cls = value === "urgent" ? "urgent" : "normal";
-  const text = label || value || "-";
-  return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
-}
-
-    function normalizeTimelineStatus(status){
-      const s = String(status || "").trim().toLowerCase();
-      if (s === "progress") return "in_progress";
-      if (s === "closed") return "done";
-      return s || "in_progress";
+    function timelineReporterName(update = {}) {
+      return update.updater_name || update.updated_by || update.updated_by_user_id || 'ทีมงาน';
     }
 
-    function normalizeTimelineImages(item){
-      const candidates = [
-        item.images,
-        item.image_urls,
-        item.photo_urls,
-        item.photos,
-        item.attachments
-      ];
-
-      for (const candidate of candidates) {
-        if (Array.isArray(candidate)) {
-          return candidate.filter(Boolean).map(String);
-        }
-        if (typeof candidate === "string" && candidate.trim()) {
-          try {
-            const parsed = JSON.parse(candidate);
-            if (Array.isArray(parsed)) {
-              return parsed.filter(Boolean).map(String);
-            }
-          } catch (_) {}
-          return candidate.split(",").map(s => s.trim()).filter(Boolean);
-        }
-      }
-
-      const singleFields = [item.image_url, item.photo_url, item.attachment_url];
-      return singleFields.filter(Boolean).map(String);
+    function timelineNote(update = {}) {
+      return update.latest_note || update.note || update.message || '-';
     }
 
-    function renderTimelineItem(item){
-      const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
-      const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
-      const note = item.note || item.message || item.update_note || "-";
-      const currentStep = item.current_step || item.step_label || item.step_name || "-";
-      const waitingFor = item.waiting_for || item.pending_on || item.waiting_on || "-";
-      const locationText = item.location_text || item.geo_text || item.area || "-";
-      const progress = Number(item.progress_percent ?? item.progress ?? 0);
-      const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
-      const statusLabel = statusThai(statusRaw);
-      const images = normalizeTimelineImages(item);
+    function renderTimelineItem(update) {
+      const statusValue = update.status || update.status_after || 'in_progress';
+      const statusLabel = statusThai(statusValue === 'progress' ? 'in_progress' : statusValue);
+      const progressPercent = Number(update.progress_percent || 0);
+      const images = Array.isArray(update.images) ? update.images : [];
+      const reporter = timelineReporterName(update);
+      const note = timelineNote(update);
+      const positionText = update.location_text || (update.latitude && update.longitude ? `${update.latitude}, ${update.longitude}` : '-');
 
       return `
         <div class="timeline-item">
           <div class="timeline-head">
-            <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
-            <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
+            <div class="timeline-title">อัปเดตโดย ${escapeHtml(reporter)}</div>
+            <div class="timeline-time">${escapeHtml(update.updated_at ? formatThaiDateTime(update.updated_at) : '-')}</div>
           </div>
-
           <div class="timeline-badges">
-            ${statusBadge(statusRaw, statusLabel)}
-            <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
+            ${statusBadge(statusValue === 'progress' ? 'in_progress' : statusValue, statusLabel)}
+            <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(progressPercent)}%</span>
           </div>
-
           <div class="timeline-note">${escapeHtml(note)}</div>
-
           <div class="timeline-mini-grid">
             <div class="timeline-mini-card">
               <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
-              <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
+              <div class="timeline-mini-value">${escapeHtml(update.current_step || '-')}</div>
             </div>
             <div class="timeline-mini-card">
               <div class="timeline-mini-label">กำลังรอ</div>
-              <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
+              <div class="timeline-mini-value">${escapeHtml(update.waiting_for || '-')}</div>
             </div>
             <div class="timeline-mini-card">
               <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-              <div class="timeline-mini-value">${escapeHtml(locationText)}</div>
+              <div class="timeline-mini-value">${escapeHtml(positionText)}</div>
             </div>
           </div>
-
-          ${images.length ? `
-            <div class="timeline-images">
-              ${images.map(src => `
-                <a href="${escapeHtml(src)}" target="_blank" rel="noopener">
-                  <img src="${escapeHtml(src)}" alt="ภาพอัปเดตภาคสนาม">
-                </a>
-              `).join("")}
-            </div>
-          ` : ""}
+          ${images.length ? `<div class="timeline-images">${images.map((src) => `<img src="${escapeHtml(src)}" alt="ภาพอัปเดตภาคสนาม">`).join('')}</div>` : ''}
         </div>
       `;
     }
 
-    async function loadCaseTimeline(){
-      const wrap = document.getElementById("case_updates_timeline");
+    async function loadCaseTimeline() {
+      const wrap = document.getElementById('case_updates_timeline');
       if (!wrap) return;
-      if (!caseId) {
-        wrap.innerHTML = `<div class="timeline-empty">ไม่พบ id ของเคส</div>`;
-        return;
-      }
 
-      wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
-
-      try{
-        let updates = [];
-        try{
-          updates = await fetchJSON(`/api/case/${caseId}/updates`);
-        }catch(primaryErr){
-          console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
-          const caseData = await fetchJSON(`/api/case/${caseId}`);
-          updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
-        }
-
-        if (!Array.isArray(updates) || updates.length === 0){
-          wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>`;
+      try {
+        const updates = await fetchJSON(`/api/case/${caseId}/updates`);
+        if (!updates || !updates.length) {
+          wrap.innerHTML = '<div class="value">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>';
           return;
         }
-
-        wrap.innerHTML = updates.map(renderTimelineItem).join("");
-      }catch(err){
-        console.error("LOAD TIMELINE ERROR:", err);
-        wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
+        wrap.innerHTML = updates.map(renderTimelineItem).join('');
+      } catch (err) {
+        console.error('LOAD TIMELINE ERROR:', err);
+        wrap.innerHTML = '<div class="value">โหลด Timeline ไม่สำเร็จ</div>';
       }
     }
 
-    function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
-    async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
 
     function populateForm(data){
       const staffNameEl = document.getElementById("staffName");
@@ -856,7 +726,6 @@ function priorityBadge(priority, label){
         staffNameEl.value = data.assigned_to || "";
       }
 
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
       if (!formState.initialized || (!formState.editing.statusSelect && !formState.dirty.statusSelect)) {
         statusEl.value = nextStatus;
       }
@@ -904,8 +773,6 @@ async function loadProjects(){
         document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
         document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
         document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-<<<<<<< HEAD
-=======
 
         const locationTextEl = document.getElementById("location_text");
 
@@ -929,7 +796,6 @@ if (locationTextEl) {
     locationTextEl.innerHTML = escapeHtml(locationText);
   }
 }
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
        
         document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
         document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
@@ -938,49 +804,37 @@ if (locationTextEl) {
 document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
 
 // ✅ เปลี่ยนสถานะเป็นไทย
-<<<<<<< HEAD
-document.getElementById("status").innerHTML = statusBadge(data.status, data.status_th);
-
-// ✅ เปลี่ยนระดับเป็นไทย
-document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);
-=======
 document.getElementById("status").innerHTML = statusBadge(
   data.status,
   statusThai(data.status)
 );
 
 // ✅ เปลี่ยนระดับเป็นไทย
-document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);
 
 // ✅ summary strip ด้านบน
 const summaryCaseCodeEl = document.getElementById("summary_case_code");
 if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 
 const summaryStatusEl = document.getElementById("summary_status");
-<<<<<<< HEAD
-if (summaryStatusEl) summaryStatusEl.innerText = data.status_th || data.status || "-";
-
-const summaryPriorityEl = document.getElementById("summary_priority");
-if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.priority || "-";
-=======
 if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 
 const summaryPriorityEl = document.getElementById("summary_priority");
-if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.priority || "-";
 
 const summaryAssignedToEl = document.getElementById("summary_assigned_to");
 if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
 
 // ✅ latest update
 const latest = data.latest_update || data || {};
-
+const latestNoteText = latest.latest_note || latest.note || latest.message || '-';
+document.getElementById("latest_note").innerHTML = escapeHtml(latestNoteText);
 document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
 document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
 
-const latestByText = escapeHtml(latest.updated_by || "-");
-const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
+const latestReporter = latest.updater_name || latest.updated_by || latest.updated_by_user_id || "-";
+const latestByText = escapeHtml(latestReporter);
+const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latestReporter || "").trim());
 document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
   ? latestByText
   : `${latestByText}<span class="line-badge">LINE</span>`;
@@ -989,11 +843,6 @@ document.getElementById("latest_at").innerHTML = escapeHtml(
   latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
 );
 
-<<<<<<< HEAD
-=======
-document.getElementById("latest_note").innerHTML = escapeHtml(latest.note || latest.message || latest.update_note || "-");
-
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
 const stepHelpMap = {
   "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
   "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
@@ -1028,6 +877,7 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
         resetFormLocking();
         await loadCase();
+        await loadCaseTimeline();
       }catch(err){ alert("บันทึกไม่สำเร็จ: " + err.message); }
     }
 
@@ -1047,6 +897,7 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("รับเคสเรียบร้อย", "ระบบอัปเดตผู้รับเคสและสถานะแล้ว");
         resetFormLocking();
         await loadCase();
+        await loadCaseTimeline();
       }catch(err){ alert("รับเคสไม่สำเร็จ: " + err.message); }
     }
 
@@ -1057,6 +908,7 @@ document.getElementById("progress_text").innerText = percent + "%";
         showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
         resetFormLocking();
         await loadCase();
+        await loadCaseTimeline();
       }catch(err){ alert("ปิดเคสไม่สำเร็จ: " + err.message); }
     }
 
@@ -1070,26 +922,13 @@ document.getElementById("progress_text").innerText = percent + "%";
   formState.initialized = true;
 }
 
-<<<<<<< HEAD
-=======
-
-    async function refreshCaseView(){
-      await loadCase();
-      await loadCaseTimeline();
-    }
-
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
       eventSource.addEventListener("connected", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
       eventSource.addEventListener("heartbeat", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
-<<<<<<< HEAD
-        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
-=======
-        if(String(data.case_id) === String(caseId)){ refreshCaseView().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); loadCaseTimeline().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
       };
       eventSource.addEventListener("case_updated", onChange);
       eventSource.addEventListener("case_created", onChange);
@@ -1097,11 +936,10 @@ document.getElementById("progress_text").innerText = percent + "%";
     }
 
     registerFormLocking();
-<<<<<<< HEAD
-loadProjects().then(loadCase);
-=======
-loadProjects().then(refreshCaseView);
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+loadProjects().then(async () => {
+  await loadCase();
+  await loadCaseTimeline();
+});
 connectRealtime();
   </script>  
 </body>

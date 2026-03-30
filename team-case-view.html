@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รายงานเคสภาคสนาม | KCK FD</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root{--brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--panel:#f7fbfc;--card:#ffffff;--line:#dbe3ea;--text:#1f2937;--muted:#6b7280;--warn:#c56608;--danger:#b91c1c;--info:#2563eb;--shadow:0 14px 35px rgba(18,36,58,.08);--radius:22px}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left, rgba(11,124,134,.10), transparent 25%),linear-gradient(180deg,#f8fbfc 0%,var(--bg) 100%)}
+    .hidden{display:none!important}.loading{min-height:40vh;display:grid;place-items:center;color:var(--muted);font-weight:700}
+    .app{max-width:1240px;margin:0 auto;padding:18px 14px 40px;display:grid;gap:16px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.brand-wrap{display:flex;align-items:center;gap:14px}
+    .brand-logo{width:64px;height:64px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);object-fit:contain;padding:6px}.brand-title h1{margin:0;font-size:2rem;line-height:1.1;color:#102a43}.brand-title p{margin:6px 0 0;color:var(--muted);font-size:1rem}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-items:center}.status-pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:10px 14px;box-shadow:var(--shadow);color:#234;font-weight:700}.dot{width:10px;height:10px;border-radius:50%;background:#6b7280}.dot.live{background:#22c55e}
+    button{border:0;border-radius:14px;cursor:pointer;font:inherit;transition:transform .15s ease;padding:12px 16px;font-weight:700}button:hover{transform:translateY(-1px)}.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff}.btn-secondary{background:#fff;color:var(--brand-dark);border:1px solid var(--line)}
+    .layout{display:grid;grid-template-columns:1.2fr .85fr;gap:16px;align-items:start}.stack{display:grid;gap:16px}.card{background:var(--card);border:1px solid rgba(219,227,234,.9);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.headline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:14px}.headline h2{margin:0;font-size:1.12rem;color:#102a43}.headline p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+    .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.summary-box{background:#f8fbfc;border:1px solid #e8eef3;border-radius:16px;padding:14px}.summary-box strong{display:block;color:var(--muted);font-size:.82rem;margin-bottom:8px;font-weight:700}.summary-box span{display:block;font-size:1.05rem;font-weight:800;color:#102a43;line-height:1.35;word-break:break-word}
+    .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1 / -1}.field label{font-size:.9rem;color:#49566a;font-weight:700}.value-box{min-height:50px;background:#f8fbfc;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;color:#102a43;font-weight:700;line-height:1.5;word-break:break-word}.value-box.multiline{align-items:flex-start;white-space:pre-wrap}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;font-size:.84rem;font-weight:800;white-space:nowrap}.badge.status-new{background:#dbeafe;color:#1d4ed8}.badge.status-progress{background:#fef3c7;color:#b45309}.badge.status-done{background:#dcfce7;color:#15803d}.badge.status-cancelled{background:#e5e7eb;color:#4b5563}.badge.priority-urgent{background:#fee2e2;color:#b91c1c}.badge.priority-normal{background:#e0f2fe;color:#0369a1}
+    .progress-wrap{display:grid;gap:10px}.progress-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.progress-number{font-size:1.9rem;font-weight:900;color:#1d4ed8}.progress-bar{width:100%;height:14px;border-radius:999px;background:#e9eef3;overflow:hidden}.progress-bar>div{height:100%;border-radius:999px;background:linear-gradient(135deg,#2563eb,#0b7c86);width:0%;transition:width .25s ease}
+    .mini-grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr);margin-top:10px}.timeline{display:grid;gap:14px}.timeline-item{display:grid;gap:12px;background:#f8fbfc;border:1px solid var(--line);border-radius:18px;padding:14px;position:relative}.timeline-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;border-radius:18px 0 0 18px;background:var(--brand)}
+    .timeline-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.timeline-title{font-size:1rem;font-weight:800;color:#123}.timeline-time{color:var(--muted);font-size:.86rem;font-weight:700;white-space:nowrap}.timeline-meta{display:flex;flex-wrap:wrap;gap:8px}.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#fff;border:1px solid var(--line);padding:6px 10px;font-size:.82rem;font-weight:700;color:#334155}
+    .timeline-note{color:#243447;font-size:.95rem;line-height:1.6;white-space:pre-wrap}.timeline-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.timeline-box{background:#fff;border:1px solid #e8eef3;border-radius:14px;padding:10px 12px}.timeline-box strong{display:block;font-size:.78rem;color:var(--muted);margin-bottom:5px}.timeline-box span{display:block;font-size:.9rem;font-weight:800;color:#102a43;line-height:1.45;word-break:break-word}
+    .image-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.image-grid a{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}.image-grid img{width:100%;height:180px;object-fit:cover;display:block}.empty-state{padding:18px;border-radius:16px;background:#f8fbfc;border:1px dashed #d7e3ea;color:#6b7280;text-align:center;font-weight:700}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:6px}
+    @media (max-width:1024px){.layout{grid-template-columns:1fr}.summary-grid{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}.mini-grid{grid-template-columns:1fr}.timeline-grid{grid-template-columns:1fr}.image-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.topbar{grid-template-columns:1fr}.top-actions{justify-content:flex-start}.summary-grid{grid-template-columns:1fr}.image-grid{grid-template-columns:1fr}.brand-title h1{font-size:1.5rem}}
+  </style>
+</head>
+<body>
+<div id="loading" class="loading">กำลังเปิดรายงานเคสภาคสนาม...</div>
+<div id="app" class="app hidden">
+  <div class="topbar">
+    <div class="brand-wrap"><img class="brand-logo" src="/logo.png" alt="logo" /><div class="brand-title"><h1>รายละเอียดเคสภาคสนาม</h1><p>มูลนิธิคนช่วยฅน • หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</p></div></div>
+    <div class="top-actions"><div class="status-pill"><span class="dot live"></span><span id="liveStatusText">เชื่อมต่อข้อมูลล่าสุดแล้ว</span></div><button class="btn-secondary" onclick="goBack()">กลับรายการเคส</button><button class="btn-secondary" onclick="refreshPageData()">รีเฟรช</button></div>
+  </div>
+  <div class="layout">
+    <div class="stack">
+      <div class="card">
+        <div class="headline"><div><h2>ข้อมูลเคส</h2><p>ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</p></div></div>
+        <div class="summary-grid">
+          <div class="summary-box"><strong>เลขเคส</strong><span id="sumCaseCode">-</span></div>
+          <div class="summary-box"><strong>สถานะล่าสุด</strong><span id="sumStatus">-</span></div>
+          <div class="summary-box"><strong>ระดับความเร่งด่วน</strong><span id="sumPriority">-</span></div>
+          <div class="summary-box"><strong>ผู้รับเคส</strong><span id="sumAssignedTo">-</span></div>
+        </div>
+        <div class="detail-grid" style="margin-top:14px;">
+          <div class="field"><label>ชื่อผู้ขอความช่วยเหลือ</label><div id="fullName" class="value-box">-</div></div>
+          <div class="field"><label>เบอร์โทร</label><div id="phone" class="value-box">-</div></div>
+          <div class="field"><label>พื้นที่</label><div id="location" class="value-box">-</div></div>
+          <div class="field"><label>หมวดปัญหา</label><div id="problemCategory" class="value-box">-</div></div>
+          <div class="field"><label>สถานะ</label><div id="statusBox" class="value-box">-</div></div>
+          <div class="field"><label>ระดับ</label><div id="priorityBox" class="value-box">-</div></div>
+          <div class="field"><label>ผู้รับเคส</label><div id="assignedTo" class="value-box">-</div></div>
+          <div class="field"><label>โครงการของเคส</label><div id="projectName" class="value-box">-</div></div>
+          <div class="field full"><label>รายละเอียดปัญหา</label><div id="problemDetail" class="value-box multiline">-</div></div>
+          <div class="field"><label>สร้างเมื่อ</label><div id="createdAt" class="value-box">-</div></div>
+          <div class="field"><label>อัปเดตล่าสุด</label><div id="lastActionAt" class="value-box">-</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="headline"><div><h2>Timeline การอัปเดตภาคสนาม</h2><p>แสดงลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้</p></div><span id="timelineCount" class="badge status-progress">0 รายการ</span></div>
+        <div id="timelineList" class="timeline"></div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="card">
+        <div class="headline"><div><h2>ความคืบหน้าภาคสนาม</h2><p>สรุปล่าสุดจากการอัปเดตของทีมงาน</p></div></div>
+        <div class="progress-wrap">
+          <div class="progress-top"><div><div style="font-size:.88rem;color:var(--muted);font-weight:700;">ความคืบหน้า</div><div id="progressPercent" class="progress-number">0%</div></div><div id="latestUpdater" class="chip">ผู้บันทึกล่าสุด: -</div></div>
+          <div class="progress-bar"><div id="progressBarFill"></div></div>
+          <div class="mini-grid">
+            <div class="summary-box"><strong>ขั้นตอนล่าสุด</strong><span id="currentStep">-</span></div>
+            <div class="summary-box"><strong>กำลังรอ</strong><span id="waitingFor">-</span></div>
+            <div class="summary-box"><strong>สถานะหลังอัปเดต</strong><span id="statusAfter">-</span></div>
+            <div class="summary-box"><strong>พื้นที่ที่อัปเดต</strong><span id="locationText">-</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="headline"><div><h2>สรุปภาพภาคสนาม</h2><p>รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส</p></div></div>
+        <div id="latestImages" class="image-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-note">Team Case Report View • Read-only • Timeline-ready • Golden Version Safe</div>
+</div>
+<script>
+const CONFIG = { LIFF_ID:"2009446483-2q6biMUk", API_BASE_URL:"https://foundation-bot-p5wu.onrender.com", TEAM_STREAM_ENDPOINT:"/api/team/stream", TEAM_CASE_DETAIL_ENDPOINT:"/api/team/case-detail", MENU_VERSION:"TEAM-CASE-VIEW-v1" };
+let currentCaseCode = ""; let eventSource = null; let refreshTimer = null;
+function qs(name){ return new URLSearchParams(window.location.search).get(name) || ""; }
+function escapeHtml(str){ return String(str ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;"); }
+function formatThaiDateTime(value){ if(!value) return "-"; const d = new Date(value); if(Number.isNaN(d.getTime())) return String(value); return d.toLocaleString("th-TH",{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"}); }
+function setLoading(v){ document.getElementById("loading").classList.toggle("hidden", !v); document.getElementById("app").classList.toggle("hidden", v); }
+function safeText(id, value){ const el = document.getElementById(id); if(el) el.textContent = value ?? "-"; }
+function formatStatusThai(status=""){ switch(String(status).toLowerCase()){ case "new": return "รับเรื่องแล้ว"; case "in_progress": return "กำลังดำเนินการ"; case "done": return "เสร็จสิ้นแล้ว"; case "cancelled": return "ยกเลิก"; default: return status || "-"; } }
+function formatPriorityThai(priority=""){ switch(String(priority).toLowerCase()){ case "urgent": return "ด่วน"; case "high": return "สูง"; case "normal": return "ปกติ"; case "low": return "ต่ำ"; default: return priority || "-"; } }
+function getStatusBadgeClass(status=""){ switch(String(status).toLowerCase()){ case "new": return "status-new"; case "in_progress": return "status-progress"; case "done": return "status-done"; case "cancelled": return "status-cancelled"; default: return "status-new"; } }
+function getPriorityBadgeClass(priority=""){ return String(priority).toLowerCase() === "urgent" ? "priority-urgent" : "priority-normal"; }
+async function safeFetchJson(url, options={}){ const res = await fetch(url, options); const text = await res.text(); let data={}; try{ data = text ? JSON.parse(text) : {}; } catch { data = { ok:false, error:text || `HTTP ${res.status}` }; } if(!res.ok) throw new Error(data?.error || `HTTP ${res.status}`); return data; }
+function renderSummary(caseItem={}){ safeText("sumCaseCode", caseItem.case_code || "-"); safeText("sumAssignedTo", caseItem.assigned_to || "-"); safeText("fullName", caseItem.full_name || "-"); safeText("phone", caseItem.phone || "-"); safeText("location", caseItem.location || "-"); safeText("problemCategory", caseItem.problem_category || caseItem.problem_group || caseItem.problem_type || "-"); safeText("assignedTo", caseItem.assigned_to || "-"); safeText("projectName", caseItem.project_name || "-"); safeText("problemDetail", caseItem.problem || "-"); safeText("createdAt", formatThaiDateTime(caseItem.created_at)); safeText("lastActionAt", formatThaiDateTime(caseItem.last_action_at || caseItem.created_at)); const statusText = formatStatusThai(caseItem.status); const priorityText = formatPriorityThai(caseItem.priority); safeText("sumStatus", statusText); safeText("sumPriority", priorityText); document.getElementById("statusBox").innerHTML = `<span class="badge ${getStatusBadgeClass(caseItem.status)}">${escapeHtml(statusText)}</span>`; document.getElementById("priorityBox").innerHTML = `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`; }
+function renderProgress(caseItem={}, updates=[]){ const latest = updates[0] || {}; const progress = Number(latest.progress_percent ?? caseItem.progress_percent ?? 0); const currentStep = latest.current_step || caseItem.current_step || "-"; const waitingFor = latest.waiting_for || caseItem.waiting_for || "-"; const statusAfter = latest.status_after || caseItem.status || "-"; const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-"; const locationText = latest.location_text || "-"; safeText("progressPercent", `${progress}%`); safeText("currentStep", currentStep); safeText("waitingFor", waitingFor); safeText("statusAfter", formatStatusThai(statusAfter)); safeText("locationText", locationText); safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`); document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`; }
+function renderLatestImages(updates=[]){ const latestWithImages = updates.find(item => Array.isArray(item.images) && item.images.length > 0); const root = document.getElementById("latestImages"); if(!latestWithImages){ root.innerHTML = `<div class="empty-state" style="grid-column:1 / -1;">ยังไม่มีรูปภาพภาคสนาม</div>`; return; } root.innerHTML = latestWithImages.images.map((src, idx) => `<a href="${escapeHtml(src)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(src)}" alt="field image ${idx+1}" /></a>`).join(""); }
+function renderTimeline(updates=[]){ const root = document.getElementById("timelineList"); document.getElementById("timelineCount").textContent = `${updates.length} รายการ`; if(!updates.length){ root.innerHTML = `<div class="empty-state">ยังไม่มีประวัติการอัปเดตภาคสนาม</div>`; return; } root.innerHTML = updates.map(item => { const images = Array.isArray(item.images) ? item.images : []; return `<div class="timeline-item"><div class="timeline-head"><div><div class="timeline-title">อัปเดตโดย ${escapeHtml(item.updater_name || item.updated_by || "-")}</div><div class="timeline-meta" style="margin-top:8px;"><span class="chip">สถานะ ${escapeHtml(formatStatusThai(item.status_after || "-"))}</span><span class="chip">ความคืบหน้า ${escapeHtml(String(item.progress_percent ?? 0))}%</span></div></div><div class="timeline-time">${escapeHtml(formatThaiDateTime(item.updated_at))}</div></div><div class="timeline-note">${escapeHtml(item.latest_note || item.message || "-")}</div><div class="timeline-grid"><div class="timeline-box"><strong>ขั้นตอนล่าสุด</strong><span>${escapeHtml(item.current_step || "-")}</span></div><div class="timeline-box"><strong>กำลังรอ</strong><span>${escapeHtml(item.waiting_for || "-")}</span></div><div class="timeline-box"><strong>ตำแหน่ง/พื้นที่</strong><span>${escapeHtml(item.location_text || "-")}</span></div></div>${images.length ? `<div class="image-grid">${images.map((src,idx)=>`<a href="${escapeHtml(src)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(src)}" alt="timeline image ${idx+1}" /></a>`).join("")}</div>` : ""}</div>`; }).join(""); }
+async function loadCaseReport(){ if(!currentCaseCode) throw new Error("ไม่พบเลขเคส"); const url = `${CONFIG.API_BASE_URL}${CONFIG.TEAM_CASE_DETAIL_ENDPOINT}?case_code=${encodeURIComponent(currentCaseCode)}`; const data = await safeFetchJson(url); const caseItem = data?.case || {}; const updates = Array.isArray(data?.updates) ? data.updates : []; renderSummary(caseItem); renderProgress(caseItem, updates); renderLatestImages(updates); renderTimeline(updates); }
+function goBack(){ if(document.referrer && document.referrer.includes("team")){ history.back(); return; } window.location.href = "team.html"; }
+async function refreshPageData(){ try{ document.getElementById("liveStatusText").textContent = "กำลังรีเฟรชข้อมูล..."; await loadCaseReport(); document.getElementById("liveStatusText").textContent = "เชื่อมต่อข้อมูลล่าสุดแล้ว"; } catch(err){ console.error(err); document.getElementById("liveStatusText").textContent = "รีเฟรชไม่สำเร็จ"; alert(`โหลดข้อมูลไม่สำเร็จ: ${err.message}`); } }
+function queueSoftRefresh(){ if(refreshTimer) clearTimeout(refreshTimer); refreshTimer = setTimeout(async()=>{ try{ document.getElementById("liveStatusText").textContent = "กำลังซิงก์ข้อมูลล่าสุด..."; await loadCaseReport(); document.getElementById("liveStatusText").textContent = "เชื่อมต่อข้อมูลล่าสุดแล้ว"; } catch(err){ console.error("queueSoftRefresh error", err); } }, 350); }
+function connectRealtime(){ try{ if(eventSource){ eventSource.close(); eventSource = null; } eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.addEventListener("connected", ()=>{ document.getElementById("liveStatusText").textContent = "เชื่อมต่อข้อมูลล่าสุดแล้ว"; }); eventSource.addEventListener("heartbeat", ()=>{}); eventSource.addEventListener("case_update", async (event)=>{ try{ const payload = JSON.parse(event.data || "{}"); const code = payload?.item?.case_code || payload?.case_code || ""; if(code && code === currentCaseCode){ document.getElementById("liveStatusText").textContent = "พบการอัปเดตใหม่ กำลังซิงก์..."; queueSoftRefresh(); } } catch(err){ console.error("case_update parse error", err); } }); eventSource.addEventListener("case_updated", async (event)=>{ try{ const payload = JSON.parse(event.data || "{}"); const code = payload?.item?.case_code || payload?.case_code || ""; if(code && code === currentCaseCode){ document.getElementById("liveStatusText").textContent = "พบการอัปเดตใหม่ กำลังซิงก์..."; queueSoftRefresh(); } } catch(err){ console.error("case_updated parse error", err); } }); eventSource.addEventListener("recent_activity_refresh", async (event)=>{ try{ const payload = JSON.parse(event.data || "{}"); const code = payload?.case_code || payload?.item?.case_code || ""; if(code && code === currentCaseCode){ document.getElementById("liveStatusText").textContent = "พบกิจกรรมใหม่ กำลังซิงก์..."; queueSoftRefresh(); } } catch(err){ console.error("recent_activity_refresh parse error", err); } }); eventSource.onerror = ()=>{ document.getElementById("liveStatusText").textContent = "กำลังเชื่อมต่อใหม่..."; }; } catch(err){ console.error("connectRealtime error", err); document.getElementById("liveStatusText").textContent = "ไม่สามารถเชื่อม realtime"; } }
+async function bootstrap(){ try{ currentCaseCode = qs("case_code").trim(); if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL"); await liff.init({ liffId: CONFIG.LIFF_ID }).catch(()=>{}); await loadCaseReport(); connectRealtime(); setInterval(()=>{ if(!document.hidden){ loadCaseReport().catch(err=>console.error("fallback refresh error", err)); } }, 45000); } catch(err){ console.error(err); alert(`เปิดรายงานเคสไม่สำเร็จ: ${err.message}`); } finally { setLoading(false); } }
+bootstrap();
+</script>
+</body>
+</html>

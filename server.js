@@ -4222,6 +4222,63 @@ if (text === "เมนูแอดมิน" || text === "เปิดเมน
   continue;
 }
 
+if (text === "คำสั่งดูสิทธิ์") {
+  await safeReply(replyToken, [{
+    type: "text",
+    text:
+      "คำสั่งดูสิทธิ์ทีมงาน\n\n" +
+      "ใช้รูปแบบ:\n" +
+      "ดูสิทธิ์ USER_ID\n\n" +
+      "ตัวอย่าง:\n" +
+      "ดูสิทธิ์ U1234567890abcdef"
+  }]);
+  continue;
+}
+
+if (text === "คำสั่งเพิ่มทีม") {
+  await safeReply(replyToken, [{
+    type: "text",
+    text:
+      "คำสั่งเพิ่มทีม\n\n" +
+      "ใช้รูปแบบ:\n" +
+      "เพิ่มทีม USER_ID role\n\n" +
+      "role ที่ใช้ได้:\n" +
+      "- admin\n- staff\n- viewer\n\n" +
+      "ตัวอย่าง:\n" +
+      "เพิ่มทีม U1234567890abcdef staff"
+  }]);
+  continue;
+}
+
+if (text === "คำสั่งลบทีม") {
+  await safeReply(replyToken, [{
+    type: "text",
+    text:
+      "คำสั่งลบทีม\n\n" +
+      "ใช้รูปแบบ:\n" +
+      "ลบทีม USER_ID\n\n" +
+      "ตัวอย่าง:\n" +
+      "ลบทีม U1234567890abcdef"
+  }]);
+  continue;
+}
+
+if (text === "Smart Alert") {
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text:
+        "Smart Alert\n\n" +
+        "ดูเคสที่ต้องติดตามเร่งด่วนได้ที่ Command Center"
+    },
+    {
+      type: "text",
+      text: "เปิดศูนย์ปฏิบัติการ"
+    }
+  ]);
+  continue;
+}
+      
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);

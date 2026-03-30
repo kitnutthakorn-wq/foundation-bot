@@ -1564,7 +1564,7 @@ function buildSmartAlertFlex() {
             "🧭 เปิดศูนย์ปฏิบัติการ",
             "#22C55E",
             null,
-            "https://foundation-bot-p5wu.onrender.com/command-center"
+            "https://satisfied-stillness-production-7942.up.railway.app/command-center"
           )
         ]
       }

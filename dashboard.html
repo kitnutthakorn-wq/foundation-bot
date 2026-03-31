@@ -669,6 +669,10 @@ document.getElementById("slaFilterAllBtn").onclick = ()=>{
 document.getElementById("slaFilterBreachedBtn").onclick = ()=>{
   currentSlaFilter="breached";
   applySlaFilterButtons();
+
+  // 👉 render ทันที (UX ดีขึ้นทันที)
+  const rows = document.querySelectorAll("#casesTableBody tr");
+  
   refreshAll(true);
 };
 

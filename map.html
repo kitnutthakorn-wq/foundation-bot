@@ -848,7 +848,7 @@ function normalizeStatus(status) {
         clearInterval(pollTimer);
         pollTimer = setInterval(() => {
           loadMapData({ silent: true });
-        }, 20000);
+        }, 8000);
       }
 
       function connectStream() {

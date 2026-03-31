@@ -752,17 +752,23 @@ function normalizeStatus(status) {
       
 
       function fitAllMarkers() {
-        const latLngs = filteredItems
-          .filter(hasValidGeo)
-          .map((item) => [item.latitude, item.longitude]);
+  const latLngs = filteredItems
+    .filter(hasValidGeo)
+    .map((item) => [item.latitude, item.longitude]);
 
-        if (!latLngs.length) return;
-        if (latLngs.length === 1) {
-          map.flyTo(latLngs[0], 14, { duration: 0.9 });
-          return;
-        }
-        map.fitBounds(latLngs, { padding: [40, 40] });
-      }
+  if (!latLngs.length) return;
+
+  if (latLngs.length === 1) {
+    map.flyTo(latLngs[0], 12, { duration: 0.9 });
+    return;
+  }
+
+  map.fitBounds(latLngs, {
+    paddingTopLeft: [60, 60],
+    paddingBottomRight: [60, 60],
+    maxZoom: 13
+  });
+}
 
       function flashCase(caseCode) {
         const card = document.querySelector(`.case-card[data-case-code="${CSS.escape(caseCode)}"]`);

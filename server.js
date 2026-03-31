@@ -1974,8 +1974,8 @@ async function processSlaAlertsNow() {
 
   cleanupSlaAlertCooldownMap();
 
- const candidates = (await getSlaAlertCandidates(200))
-  .slice(0, 5); // ยิงแค่ 5 เคสพอ
+const candidates = (await getSlaAlertCandidates(200))
+  .slice(0, 5);
 
 for (const item of candidates) {
   if (!shouldSendSlaAlert(item)) {
@@ -1989,6 +1989,7 @@ for (const item of candidates) {
   sent += 1;
 }
 
+// ✅ return ต้องอยู่นอก loop เท่านั้น
 return {
   ok: true,
   sent,

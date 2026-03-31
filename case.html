@@ -686,13 +686,6 @@ function priorityBadge(priority, label){
         staffNameEl.value = data.assigned_to || "";
       }
 
-function priorityBadge(priority, label){
-  const value = priority || "normal";
-  const cls = value === "urgent" ? "urgent" : "normal";
-  const text = label || value || "-";
-  return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
-}
-
     function normalizeTimelineStatus(status){
       const s = String(status || "").trim().toLowerCase();
       if (s === "progress") return "in_progress";

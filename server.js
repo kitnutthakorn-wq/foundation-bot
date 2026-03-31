@@ -1984,11 +1984,12 @@ for (const item of candidates) {
   }
 
   const text = buildSlaAlertText(item);
-  await pushTeamNotification(text);
-  markSlaAlertSent(item);
+
+  await pushTeamNotification(text);   // ยิง 1 ครั้ง
+  markSlaAlertSent(item);             // กัน spam
+
   sent += 1;
 }
-
 // ✅ return ต้องอยู่นอก loop เท่านั้น
 return {
   ok: true,

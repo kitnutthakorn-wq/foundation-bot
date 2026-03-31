@@ -454,8 +454,10 @@ function filterRowsBySla(rows){
     };
   });
 
-  renderCases(mergedRows);
-  return mergedRows;
+  const filteredRows = filterRowsBySla(mergedRows);
+
+renderCases(filteredRows);
+return filteredRows;
 }
 
     async function loadStats(summary){
@@ -658,6 +660,30 @@ await Promise.all(tasks);
       }
     }
 
+document.getElementById("slaFilterAllBtn").onclick = ()=>{
+  currentSlaFilter="all";
+  applySlaFilterButtons();
+  refreshAll(true);
+};
+
+document.getElementById("slaFilterBreachedBtn").onclick = ()=>{
+  currentSlaFilter="breached";
+  applySlaFilterButtons();
+  refreshAll(true);
+};
+
+document.getElementById("slaFilterWarningBtn").onclick = ()=>{
+  currentSlaFilter="warning";
+  applySlaFilterButtons();
+  refreshAll(true);
+};
+
+document.getElementById("slaFilterNormalBtn").onclick = ()=>{
+  currentSlaFilter="normal";
+  applySlaFilterButtons();
+  refreshAll(true);
+};
+    
     document.getElementById("searchBtn").onclick = () => refreshAll(true);
     document.getElementById("resetBtn").onclick = () => {
       document.getElementById("searchInput").value = "";
@@ -684,6 +710,7 @@ await Promise.all(tasks);
     document.getElementById("refreshBtn").onclick = () => refreshAll(false);
     document.getElementById("searchInput").addEventListener("keydown", (e)=>{ if(e.key === "Enter") document.getElementById("searchBtn").click(); });
 
+    applySlaFilterButtons();
     refreshAll(true);
     connectRealtime();
     setInterval(() => refreshAll(true).catch(console.error), 30000);

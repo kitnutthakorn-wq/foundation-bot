@@ -672,27 +672,23 @@ function normalizeStatus(status) {
           const card = document.createElement('div');
           card.className = 'case-card' + (selectedCaseCode === item.case_code ? ' active' : '');
           card.dataset.caseCode = item.case_code;
-          card.innerHTML = `
-            <div class="card-top">
-              <div>
-                <div class="case-code">${item.case_code || '-'}</div>
-                <div class="case-name">${item.full_name}</div>
-              </div>
-              <span class="pill ${priorityClass(item.priority)}">${priorityThai(item.priority)}</span>
-            </div>
-            <div class="status">
+         card.innerHTML = `
+  <div class="card-top">
+    <div>
+      <div class="case-code">${item.case_code || '-'}</div>
+      <div class="case-name">${item.full_name}</div>
+    </div>
+    <span class="pill ${priorityClass(item.priority)}">${priorityThai(item.priority)}</span>
+  </div>
 
-              <span class="status-chip">${statusThai(item.status)}</span>
-              <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
-            </div>
-            <div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
-            <div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
+  <div class="status">
+    <span class="status-chip status-${item.status}">${statusThai(item.status)}</span>
+    <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
+  </div>
 
-  <span class="status-chip status-${item.status}">${statusThai(item.status)}</span>
-  <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
-</div>
-<div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
-<div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
+  <div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
+  <div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
+`;
 
           `;
           card.addEventListener('click', () => selectCase(item.case_code, true));

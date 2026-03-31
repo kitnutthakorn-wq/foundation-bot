@@ -580,8 +580,6 @@ function normalizeStatus(status) {
           problem: String(item?.problem || '').trim(),
           assigned_to: String(item?.assigned_to || '').trim(),
 
-          status: String(item?.status || 'new').trim() || 'new',
-
           status: normalizeStatus(item?.status),
 
           priority: String(item?.priority || 'normal').trim() || 'normal',

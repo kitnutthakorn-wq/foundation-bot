@@ -276,8 +276,11 @@
   <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
   <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
 </div> 
-    <div class="panel" id="slaTopRiskPanel">
-  <h2>Top 5 เคสเสี่ยง SLA</h2>
+        <div class="panel" id="slaTopRiskPanel">
+      <div class="live-row">
+        <h2>Top 5 เคสเสี่ยง SLA</h2>
+        <button type="button" class="secondary" id="openBreachedCasesBtn">เปิดเคสเกิน SLA ทั้งหมด</button>
+      </div>
   <div id="slaTopRiskList" class="sla-top-risk-list">
     <div class="footer-note">กำลังโหลดเคสเสี่ยง SLA...</div>
   </div>
@@ -356,7 +359,7 @@
       <button id="resetBtn" class="secondary">ล้างค่า</button>
     </div>
 
-    <div class="panel">
+     <div class="panel" id="casesPanel">
       <h2>รายการเคสล่าสุด</h2>
       <div class="table-wrap">
         <table>
@@ -410,7 +413,16 @@ function applySlaFilterButtons(){
   const el = document.getElementById(activeId);
   if(el) el.classList.add("active");
 }
+function openBreachedCasesShortcut(){
+  currentSlaFilter = "breached";
+  applySlaFilterButtons();
+  renderCases(filterRowsBySla(lastMergedRows));
 
+  const panel = document.getElementById("casesPanel");
+  if (panel) {
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 function filterRowsBySla(rows){
   if(currentSlaFilter==="all") return rows;
   return rows.filter(r=>String(r.sla_level||"").toLowerCase()===currentSlaFilter);
@@ -867,7 +879,7 @@ document.getElementById("slaFilterNormalBtn").onclick = ()=>{
 
  
 };
-    
+    document.getElementById("openBreachedCasesBtn").onclick = openBreachedCasesShortcut;
     document.getElementById("searchBtn").onclick = () => refreshAll(true);
     document.getElementById("resetBtn").onclick = () => {
       document.getElementById("searchInput").value = "";

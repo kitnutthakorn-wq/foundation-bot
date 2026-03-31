@@ -426,11 +426,15 @@
       const STREAM_URL = `${API_BASE}/api/team/stream`;
       const CASE_URL_BASE = `${API_BASE}/case`;
 
-      const map = L.map('map', { zoomControl: true }).setView([9.14, 99.33], 8);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
+      const map = L.map('map', {
+  zoomControl: true,
+  minZoom: 5
+}).setView([9.14, 99.33], 7);
+     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  minZoom: 5,
+  maxZoom: 18,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
       const markerLayer = L.layerGroup().addTo(map);
       const markersByCase = new Map();

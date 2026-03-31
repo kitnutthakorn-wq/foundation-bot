@@ -4806,11 +4806,7 @@ if (text === "Smart Alert" || text === "ดู Smart Alert") {
   const slaCounts = await getSlaMenuCounts();
   await safeReply(replyToken, [buildSmartAlertFlex(slaCounts)]);
   continue;
-} 
-// =========================
-// SLA FLEX COMMAND (GOLDEN)
-// =========================
-
+}
 if (text === "ดู SLA วิกฤต") {
   const slaCounts = await getSlaMenuCounts();
 
@@ -4879,8 +4875,6 @@ if (text === "ดูเคสเปิดทั้งหมด") {
     text: "ไม่พบเคสเปิด"
   }]);
 
-  continue;
-}
   continue;
 }
   await safeReply(replyToken, items);

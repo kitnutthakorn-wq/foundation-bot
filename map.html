@@ -577,9 +577,9 @@ function normalizeStatus(status) {
 
       function markerRadius(priority) {
         const value = String(priority || '').toLowerCase();
-        if (value === 'urgent') return 11;
-        if (value === 'high') return 10;
-        return 9;
+        if (value === 'urgent') return 9;
+        if (value === 'high') return 8;
+        return 7;
       }
 
       function buildPopup(item) {

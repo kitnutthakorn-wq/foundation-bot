@@ -666,6 +666,9 @@ await Promise.all(tasks);
 document.getElementById("slaFilterAllBtn").onclick = ()=>{
   currentSlaFilter="all";
   applySlaFilterButtons();
+
+  renderCases(filterRowsBySla(lastMergedRows)); // ⭐ เพิ่มบรรทัดนี้
+
   refreshAll(true);
 };
 
@@ -673,21 +676,26 @@ document.getElementById("slaFilterBreachedBtn").onclick = ()=>{
   currentSlaFilter="breached";
   applySlaFilterButtons();
 
-  // 👉 render ทันที (UX ดีขึ้นทันที)
-  const rows = document.querySelectorAll("#casesTableBody tr");
-  
+  renderCases(filterRowsBySla(lastMergedRows)); // ⭐
+
   refreshAll(true);
 };
 
 document.getElementById("slaFilterWarningBtn").onclick = ()=>{
   currentSlaFilter="warning";
   applySlaFilterButtons();
+
+  renderCases(filterRowsBySla(lastMergedRows)); // ⭐
+
   refreshAll(true);
 };
 
 document.getElementById("slaFilterNormalBtn").onclick = ()=>{
   currentSlaFilter="normal";
   applySlaFilterButtons();
+
+  renderCases(filterRowsBySla(lastMergedRows)); // ⭐
+
   refreshAll(true);
 };
     

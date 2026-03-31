@@ -1859,7 +1859,145 @@ function mergeCaseWithSla(row = {}) {
     ...computeSlaState(row)
   };
 }
+/* =========================
+   SLA ALERT (GOLDEN SAFE PATCH)
+========================= */
+const SLA_ALERT_ENABLED = true;
+const SLA_ALERT_INTERVAL_MS = 10 * 60 * 1000; // 10 นาที
 
+const SLA_ALERT_COOLDOWN_MS = {
+  warning: 6 * 60 * 60 * 1000,
+  breached: 12 * 60 * 60 * 1000,
+};
+
+const slaAlertCooldownMap = new Map();
+
+function getSlaAlertKey(item = {}) {
+  return `${item.case_code || "unknown"}:${item.sla_level || "normal"}`;
+}
+
+function shouldSendSlaAlert(item = {}) {
+  const level = String(item.sla_level || "").toLowerCase();
+  if (!["warning", "breached"].includes(level)) return false;
+
+  const key = getSlaAlertKey(item);
+  const found = slaAlertCooldownMap.get(key);
+  if (!found) return true;
+
+  const cooldownMs = SLA_ALERT_COOLDOWN_MS[level] || (6 * 60 * 60 * 1000);
+  return (Date.now() - found.sentAt) >= cooldownMs;
+}
+
+function markSlaAlertSent(item = {}) {
+  const key = getSlaAlertKey(item);
+  slaAlertCooldownMap.set(key, { sentAt: Date.now() });
+}
+
+function cleanupSlaAlertCooldownMap() {
+  const now = Date.now();
+  const maxAge = 24 * 60 * 60 * 1000;
+  for (const [key, value] of slaAlertCooldownMap.entries()) {
+    if (!value?.sentAt || (now - value.sentAt) > maxAge) {
+      slaAlertCooldownMap.delete(key);
+    }
+  }
+}
+
+function buildSlaAlertText(item = {}) {
+  const level = String(item.sla_level || "").toLowerCase();
+  const icon = level === "breached" ? "🚨" : "⚠️";
+  const levelTh = item.sla_label_th || (level === "breached" ? "เกิน SLA" : "ใกล้เกิน SLA");
+  const caseCode = item.case_code || "-";
+  const fullName = item.full_name || "-";
+  const location = item.location || "-";
+  const assignedTo = item.assigned_to || "ยังไม่มีผู้รับเคส";
+  const hours = Number(item.sla_hours_since_action || 0);
+  const priority = formatPriorityThai(item.priority || "normal");
+
+  return [
+    `${icon} SLA ALERT`,
+    `เลขเคส: ${caseCode}`,
+    `ชื่อ: ${fullName}`,
+    `พื้นที่: ${location}`,
+    `ระดับ SLA: ${levelTh}`,
+    `ค้างมาแล้ว: ${hours} ชั่วโมง`,
+    `ความเร่งด่วน: ${priority}`,
+    `ผู้รับเคส: ${assignedTo}`,
+    `กรุณาเข้าไปติดตามเคสนี้ทันที`
+  ].join("\n");
+}
+
+async function getSlaAlertCandidates(limit = 200) {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select(`
+      id,
+      case_code,
+      full_name,
+      phone,
+      problem,
+      location,
+      status,
+      priority,
+      assigned_to,
+      created_at,
+      last_action_at,
+      closed_at
+    `)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+
+  const rows = Array.isArray(data) ? data : [];
+  return rows
+    .map(mergeCaseWithSla)
+    .filter(item => !item.sla_excluded)
+    .filter(item => ["warning", "breached"].includes(String(item.sla_level || "").toLowerCase()))
+    .sort((a, b) => {
+      const rank = { breached: 2, warning: 1 };
+      const ra = rank[a.sla_level] || 0;
+      const rb = rank[b.sla_level] || 0;
+      if (rb !== ra) return rb - ra;
+      return Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0);
+    });
+}
+
+async function processSlaAlertsNow() {
+  if (!SLA_ALERT_ENABLED) {
+    return { ok: true, sent: 0, skipped: 0, reason: "disabled" };
+  }
+
+  if (!CHANNEL_ACCESS_TOKEN || !EFFECTIVE_TEAM_GROUP_ID) {
+    return { ok: false, sent: 0, skipped: 0, reason: "missing_line_config" };
+  }
+
+  cleanupSlaAlertCooldownMap();
+
+  const candidates = await getSlaAlertCandidates(200);
+  let sent = 0;
+  let skipped = 0;
+
+  for (const item of candidates) {
+    if (!shouldSendSlaAlert(item)) {
+      skipped += 1;
+      continue;
+    }
+
+    const text = buildSlaAlertText(item);
+    await pushTeamNotification(text);
+    markSlaAlertSent(item);
+    sent += 1;
+  }
+
+  return {
+    ok: true,
+    sent,
+    skipped,
+    total_candidates: candidates.length,
+    checked_at: new Date().toISOString()
+  };
+}
 /* =========================
    ENV CHECK
 ========================= */

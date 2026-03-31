@@ -1863,6 +1863,87 @@ function mergeCaseWithSla(row = {}) {
     ...computeSlaState(row)
   };
 }
+
+async function getSlaMenuCounts() {
+  try {
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("case_code, full_name, status, priority, created_at, last_action_at, assigned_to")
+      .order("created_at", { ascending: false })
+      .limit(500);
+
+    if (error) throw error;
+
+    const rows = Array.isArray(data) ? data : [];
+    const merged = rows.map(mergeCaseWithSla);
+
+    const activeRows = merged.filter(
+      (row) => !row.sla_excluded && !["done", "cancelled"].includes(normalizeSlaStatus(row.status))
+    );
+
+    const overdueRows = activeRows.filter((row) => row.sla_level === "breached");
+    const nearDueRows = activeRows.filter((row) => row.sla_level === "warning");
+
+    const smartAlertRows = activeRows
+      .filter((row) => row.sla_level === "breached" || row.sla_level === "warning")
+      .sort((a, b) => {
+        const levelScore = (item) => (item.sla_level === "breached" ? 2 : item.sla_level === "warning" ? 1 : 0);
+        const priorityScore = (item) => {
+          const p = normalizeSlaPriority(item.priority);
+          if (p === "urgent") return 3;
+          if (p === "high") return 2;
+          if (p === "normal") return 1;
+          return 0;
+        };
+
+        return (
+          levelScore(b) - levelScore(a) ||
+          priorityScore(b) - priorityScore(a) ||
+          (Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0))
+        );
+      });
+
+    return {
+      overdue: overdueRows.length,
+      near_due: nearDueRows.length,
+      open_cases: activeRows.length,
+      smart_alert: smartAlertRows.length,
+      overdue_rows: overdueRows.slice(0, 10),
+      near_due_rows: nearDueRows.slice(0, 10),
+      smart_alert_rows: smartAlertRows.slice(0, 10)
+    };
+  } catch (err) {
+    console.error("getSlaMenuCounts error:", err);
+    return {
+      overdue: 0,
+      near_due: 0,
+      open_cases: 0,
+      smart_alert: 0,
+      overdue_rows: [],
+      near_due_rows: [],
+      smart_alert_rows: []
+    };
+  }
+}
+
+function formatMenuBadgeLabel(label, count) {
+  const n = Number(count || 0);
+  return n > 0 ? `${label} (${n})` : label;
+}
+
+function buildSlaPreviewText(title, rows = []) {
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return `${title}\n\nไม่พบรายการ`;
+  }
+
+  return [
+    title,
+    "",
+    ...rows.slice(0, 10).map((row, index) => {
+      return `${index + 1}. ${row.case_code || "-"} | ${row.full_name || "-"} | ${formatPriorityThai(row.priority)} | ${row.sla_label_th || "-"}`;
+    })
+  ].join("\n");
+}
 /* =========================
    SLA ALERT (GOLDEN SAFE PATCH)
 ========================= */

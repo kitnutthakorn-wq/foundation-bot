@@ -2,10 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-
   <title>Live Map KCK_FD Center</title>
-  
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -200,30 +197,10 @@
       font-size: 11px;
       font-weight: 700;
     }
-
-
-
-.status-new {
-  background: #ecfeff;
-  color: #0891b2;
-}
-
-.status-in_progress {
-  background: #eff6ff;
-  color: #1d4ed8;
-}
-
-.status-done {
-  background: #ecfdf5;
-  color: #059669;
-}
-
-.status-cancelled {
-  background: #fef2f2;
-  color: #dc2626;
-}
-    
-
+    .status-new { background: #ecfeff; color: #0891b2; }
+    .status-in_progress { background: #eff6ff; color: #1d4ed8; }
+    .status-done { background: #ecfdf5; color: #059669; }
+    .status-cancelled { background: #fef2f2; color: #dc2626; }
     .time-text {
       font-size: 11px;
       color: var(--muted);
@@ -406,53 +383,36 @@
   <script>
     (() => {
       const qs = new URLSearchParams(window.location.search);
-
-
       const focusCaseCode = qs.get("case_code") || "";
 
-    // ===== GOLDEN FIX: FORCE API BASE TO RAILWAY =====
-(function(){
-  const RAILWAY_BASE = "https://satisfied-stillness-production-7942.up.railway.app";
+      const RAILWAY_BASE = "https://satisfied-stillness-production-7942.up.railway.app";
+      const DEFAULT_API_BASE =
+        qs.get('apiBase') ||
+        window.__API_BASE__ ||
+        localStorage.getItem('foundation_api_base') ||
+        RAILWAY_BASE;
 
-  const qs = new URLSearchParams(window.location.search);
-
-  const DEFAULT_API_BASE =
-    qs.get('apiBase') ||
-    window.__API_BASE__ ||
-    RAILWAY_BASE;
-
-  const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
-
-  const API_BASE = window.API_BASE;
-const API_URL = window.API_URL;
-const STREAM_URL = window.STREAM_URL;
-const CASE_URL_BASE = window.CASE_URL_BASE;
-
-  try {
-    localStorage.setItem('foundation_api_base', API_BASE);
-  } catch(e){}
-
-  console.log("✅ API BASE LOCKED:", API_BASE);
-
-  // 👉 expose ให้โค้ดเดิมใช้ต่อได้
-  window.API_BASE = API_BASE;
-  window.API_URL = API_URL;
-  window.STREAM_URL = STREAM_URL;
-  window.CASE_URL_BASE = CASE_URL_BASE;
-})();
+      const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
       const API_URL = `${API_BASE}/api/cases/map`;
       const STREAM_URL = `${API_BASE}/api/team/stream`;
       const CASE_URL_BASE = `${API_BASE}/case`;
 
-     const map = L.map('map', {
-  zoomControl: true,
-  minZoom: 3   // 👈 จาก 5 → 3
-}).setView([9.14, 99.33], 6);
-     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  minZoom: 3,   // 👈 ต้องตรงกัน
-  maxZoom: 18,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+      try {
+        localStorage.setItem('foundation_api_base', API_BASE);
+      } catch(e) {}
+
+      console.log("✅ API BASE LOCKED:", API_BASE);
+
+      const map = L.map('map', {
+        zoomControl: true,
+        minZoom: 3
+      }).setView([9.14, 99.33], 6);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 3,
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
 
       const markerLayer = L.layerGroup().addTo(map);
       const markersByCase = new Map();
@@ -508,35 +468,21 @@ const CASE_URL_BASE = window.CASE_URL_BASE;
         return 'low';
       }
 
+      function normalizeStatus(status) {
+        const s = String(status || '').trim().toLowerCase();
+        if (s === 'progress') return 'in_progress';
+        if (['new', 'in_progress', 'done', 'cancelled'].includes(s)) return s;
+        return 'new';
+      }
 
       function statusThai(status) {
-        const value = String(status || '').toLowerCase();
+        const value = normalizeStatus(status);
         if (value === 'new') return 'รับเรื่องแล้ว';
         if (value === 'in_progress') return 'กำลังดำเนินการ';
         if (value === 'done') return 'เสร็จสิ้นแล้ว';
         if (value === 'cancelled') return 'ยกเลิก';
         return status || '-';
       }
-
-
-     function statusThai(status) {
-  const value = normalizeStatus(status);
-
-  if (value === 'new') return 'รับเรื่องแล้ว';
-  if (value === 'in_progress') return 'กำลังดำเนินการ';
-  if (value === 'done') return 'เสร็จสิ้นแล้ว';
-  if (value === 'cancelled') return 'ยกเลิก';
-
-  return status || '-';
-}
-
-function normalizeStatus(status) {
-  const s = String(status || '').trim().toLowerCase();
-  if (s === 'progress') return 'in_progress';
-  if (['new', 'in_progress', 'done', 'cancelled'].includes(s)) return s;
-  return 'new';
-}
-      
 
       function priorityThai(priority) {
         const value = String(priority || '').toLowerCase();
@@ -579,9 +525,7 @@ function normalizeStatus(status) {
           location: String(item?.location || '').trim(),
           problem: String(item?.problem || '').trim(),
           assigned_to: String(item?.assigned_to || '').trim(),
-
           status: normalizeStatus(item?.status),
-
           priority: String(item?.priority || 'normal').trim() || 'normal',
           latitude: Number(item?.latitude),
           longitude: Number(item?.longitude),
@@ -615,6 +559,7 @@ function normalizeStatus(status) {
             <div>📝 ${item.latest_note || item.problem || '-'}</div>
           </div>
         `;
+
         const actions = document.createElement('div');
         actions.className = 'popup-actions';
 
@@ -671,25 +616,21 @@ function normalizeStatus(status) {
           const card = document.createElement('div');
           card.className = 'case-card' + (selectedCaseCode === item.case_code ? ' active' : '');
           card.dataset.caseCode = item.case_code;
-         card.innerHTML = `
-  <div class="card-top">
-    <div>
-      <div class="case-code">${item.case_code || '-'}</div>
-      <div class="case-name">${item.full_name}</div>
-    </div>
-    <span class="pill ${priorityClass(item.priority)}">${priorityThai(item.priority)}</span>
-  </div>
-
-  <div class="status">
-    <span class="status-chip status-${item.status}">${statusThai(item.status)}</span>
-    <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
-  </div>
-
-  <div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
-  <div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
-`;
-
-       
+          card.innerHTML = `
+            <div class="card-top">
+              <div>
+                <div class="case-code">${item.case_code || '-'}</div>
+                <div class="case-name">${item.full_name}</div>
+              </div>
+              <span class="pill ${priorityClass(item.priority)}">${priorityThai(item.priority)}</span>
+            </div>
+            <div class="status">
+              <span class="status-chip status-${item.status}">${statusThai(item.status)}</span>
+              <span class="status-chip">${item.location_text || item.location || 'ไม่มีตำแหน่งข้อความ'}</span>
+            </div>
+            <div class="case-note">${item.latest_note || item.problem || 'ยังไม่มีรายละเอียดเพิ่มเติม'}</div>
+            <div class="time-text">อัปเดตล่าสุด: ${formatDateTime(item.updated_at)}</div>
+          `;
           card.addEventListener('click', () => selectCase(item.case_code, true));
           els.caseList.appendChild(card);
         });
@@ -751,40 +692,37 @@ function normalizeStatus(status) {
         }
       }
 
-
-
       function focusCaseByCode(code) {
-  if (!code) return;
+        if (!code) return;
 
-  const found =
-    (filteredItems || []).find((x) => x.case_code === code) ||
-    (allItems || []).find((x) => x.case_code === code);
+        const found =
+          (filteredItems || []).find((x) => x.case_code === code) ||
+          (allItems || []).find((x) => x.case_code === code);
 
-  if (!found) return;
-  if (!hasValidGeo(found)) return;
+        if (!found) return;
+        if (!hasValidGeo(found)) return;
 
-  selectCase(found.case_code, true);
-}
-      
+        selectCase(found.case_code, true);
+      }
 
       function fitAllMarkers() {
-  const latLngs = filteredItems
-    .filter(hasValidGeo)
-    .map((item) => [item.latitude, item.longitude]);
+        const latLngs = filteredItems
+          .filter(hasValidGeo)
+          .map((item) => [item.latitude, item.longitude]);
 
-  if (!latLngs.length) return;
+        if (!latLngs.length) return;
 
-  if (latLngs.length === 1) {
-    map.flyTo(latLngs[0], 12, { duration: 0.9 });
-    return;
-  }
+        if (latLngs.length === 1) {
+          map.flyTo(latLngs[0], 12, { duration: 0.9 });
+          return;
+        }
 
-  map.fitBounds(latLngs, {
-    paddingTopLeft: [60, 60],
-    paddingBottomRight: [60, 60],
-    maxZoom: 13
-  });
-}
+        map.fitBounds(latLngs, {
+          paddingTopLeft: [60, 60],
+          paddingBottomRight: [60, 60],
+          maxZoom: 13
+        });
+      }
 
       function flashCase(caseCode) {
         const card = document.querySelector(`.case-card[data-case-code="${CSS.escape(caseCode)}"]`);
@@ -812,24 +750,25 @@ function normalizeStatus(status) {
           const json = await res.json();
           if (!json?.ok) throw new Error(json?.error || 'load failed');
 
-          allItems = (json.items || []).map(normalizeItem).filter((item) => item.case_code && hasValidGeo(item));
+          const unique = new Map();
+          (json.items || []).forEach((raw) => {
+            const item = normalizeItem(raw);
+            if (!item.case_code || !hasValidGeo(item)) return;
+            unique.set(item.case_code, item);
+          });
+
+          allItems = Array.from(unique.values());
           applyFilters();
 
           if (!silent) {
             showToast(`โหลดข้อมูลแล้ว ${allItems.length} เคส`);
           }
 
-
-          if (allItems.length && !selectedCaseCode) {
+          if (focusCaseCode) {
+            focusCaseByCode(focusCaseCode);
+          } else if (allItems.length && !selectedCaseCode) {
             fitAllMarkers();
           }
-
-        if (focusCaseCode) {
-  focusCaseByCode(focusCaseCode);
-} else if (allItems.length && !selectedCaseCode) {
-  fitAllMarkers();
-}
-
 
           setLiveState('polling');
         } catch (err) {
@@ -927,19 +866,9 @@ function normalizeStatus(status) {
       }
 
       function openCase(caseCode) {
-  if (!caseCode) return;
-
-  const found =
-    (filteredItems || []).find((x) => x.case_code === caseCode) ||
-    (allItems || []).find((x) => x.case_code === caseCode);
-
-  if (!found?.id) {
-    showToast('ไม่พบ id ของเคสนี้');
-    return;
-  }
-
-  window.open(`${CASE_URL_BASE}?id=${encodeURIComponent(found.id)}`, '_blank');
-}
+        if (!caseCode) return;
+        window.open(`${CASE_URL_BASE}?id=${encodeURIComponent(caseCode)}`, '_blank');
+      }
 
       function focusCase(code) {
         selectCase(code, true);

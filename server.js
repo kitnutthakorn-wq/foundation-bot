@@ -662,21 +662,21 @@ const progressText = `${item.progress_percent ?? 0}%`;
             align: "center",
           },
           {
-            type: "text",
-            text: item.case_code || "-",
-            color: "#d9f3f5",
-            size: "sm",
-            margin: "sm",
-            align: "center",
-          }
-         {
+  type: "text",
+  text: item.case_code || "-",
+  color: "#d9f3f5",
+  size: "sm",
+  margin: "sm",
+  align: "center",
+},
+{
   type: "text",
   text: `ระดับการตอบสนอง: ${headerTheme.label}`,
   color: "#d9f3f5",
   size: "xs",
   margin: "sm",
   align: "center",
-} 
+}
         ]
       },
       body: {

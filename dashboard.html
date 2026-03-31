@@ -767,24 +767,29 @@ const sorted = [...rows].sort((a,b)=>{
   }).join("");
 }
     
-    function renderAlerts(alerts){
-      document.getElementById("openAlerts").textContent = alerts.length;
-      const box = document.getElementById("alertsList");
-      if(!alerts.length){
-        box.innerHTML = '<div class="footer-note">ยังไม่มี alerts</div>';
-        return;
-      }
-      box.innerHTML = alerts.slice(0,5).map(a => `
-        <div class="mini-card">
-          <div class="top">
-            <strong>${escapeHtml(a.title || "-")}</strong>
-            ${severityBadge(a.severity)}
-          </div>
-          <div style="font-weight:700;margin-bottom:6px">${escapeHtml(a.message || "-")}</div>
-          <div class="footer-note">source: ${escapeHtml(a.source_type || "-")} #${escapeHtml(a.source_id || "-")} • ${escapeHtml(formatThaiDateTime(a.created_at))}</div>
-        </div>
-      `).join("");
-    }
+   function renderAlerts(alerts){
+  const openAlertsEl = document.getElementById("openAlerts");
+  if (openAlertsEl) {
+    openAlertsEl.textContent = alerts.length;
+  }
+
+  const box = document.getElementById("alertsList");
+  if(!alerts.length){
+    box.innerHTML = '<div class="footer-note">ยังไม่มี alerts</div>';
+    return;
+  }
+
+  box.innerHTML = alerts.slice(0,5).map(a => `
+    <div class="mini-card">
+      <div class="top">
+        <strong>${escapeHtml(a.title || "-")}</strong>
+        ${severityBadge(a.severity)}
+      </div>
+      <div style="font-weight:700;margin-bottom:6px">${escapeHtml(a.message || "-")}</div>
+      <div class="footer-note">source: ${escapeHtml(a.source_type || "-")} #${escapeHtml(a.source_id || "-")} • ${escapeHtml(formatThaiDateTime(a.created_at))}</div>
+    </div>
+  `).join("");
+}
 
     function renderActions(cases){
       const box = document.getElementById("actionsList");

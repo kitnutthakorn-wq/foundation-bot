@@ -1434,7 +1434,12 @@ async function findLatestCaseByCaseCodeOrPhone(input = "") {
 }
 
 
-function buildAdminMenuFlex() {
+function buildAdminMenuFlex(sla = {}) {
+  const overdue = Number(sla.overdue || 0);
+  const nearDue = Number(sla.near_due || 0);
+  const openCases = Number(sla.open_cases || 0);
+  const smartAlert = Number(sla.smart_alert || 0);
+
   function messageButton(label, text, color = "#20C44A") {
     return {
       type: "button",
@@ -1443,7 +1448,7 @@ function buildAdminMenuFlex() {
       color,
       action: {
         type: "message",
-        label,
+        label: label.slice(0, 20),
         text
       }
     };
@@ -1457,7 +1462,7 @@ function buildAdminMenuFlex() {
       color,
       action: {
         type: "uri",
-        label,
+        label: label.slice(0, 20),
         uri
       }
     };
@@ -1503,20 +1508,20 @@ function buildAdminMenuFlex() {
         buildMenuBubble(
           "https://img1.pic.in.th/images/26272da5848ec9a47.png",
           [
-            uriButton("Dashboard", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
-            uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
-            messageButton("Smart Alert", "Smart Alert"),
-            uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
+            messageButton(formatMenuBadgeLabel("SLA วิกฤต", overdue), "ดู SLA วิกฤต", "#EF4444"),
+            messageButton(formatMenuBadgeLabel("ใกล้หลุด SLA", nearDue), "ดูใกล้หลุด SLA", "#F97316"),
+            messageButton(formatMenuBadgeLabel("เคสเปิดทั้งหมด", openCases), "ดูเคสเปิดทั้งหมด", "#1D4ED8"),
+            messageButton(formatMenuBadgeLabel("Smart Alert", smartAlert), "ดู Smart Alert", "#16A34A")
           ]
         ),
 
         buildMenuBubble(
           "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
           [
+            uriButton("Dashboard", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
+            uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
             messageButton("ดูทีม", "ดูทีม"),
-            messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
-            messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
-            messageButton("ลบทีม", "คำสั่งลบทีม")
+            uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
           ]
         )
       ]
@@ -1524,16 +1529,20 @@ function buildAdminMenuFlex() {
   };
 }
 
-function buildSmartAlertFlex() {
+function buildSmartAlertFlex(sla = {}) {
+  const overdue = Number(sla.overdue || 0);
+  const nearDue = Number(sla.near_due || 0);
+  const openCases = Number(sla.open_cases || 0);
+  const smartAlert = Number(sla.smart_alert || 0);
+
   function bigButton(label, color, text = null, uri = null) {
     return {
       type: "button",
       style: "primary",
-     
       color,
       action: uri
-        ? { type: "uri", label, uri }
-        : { type: "message", label, text: text || label }
+        ? { type: "uri", label: label.slice(0, 20), uri }
+        : { type: "message", label: label.slice(0, 20), text: text || label }
     };
   }
 
@@ -1545,27 +1554,21 @@ function buildSmartAlertFlex() {
       size: "mega",
       hero: {
         type: "image",
-        url: "https://img1.pic.in.th/images/479c5c6f6459b101f.png", // 👉 เปลี่ยนเป็นภาพ Smart Alert ของคุณ
+        url: "https://img1.pic.in.th/images/479c5c6f6459b101f.png",
         size: "full",
         aspectRatio: "1:1",
         aspectMode: "cover"
       },
-    
       footer: {
         type: "box",
         layout: "vertical",
         spacing: "10px",
         paddingAll: "16px",
         contents: [
-          bigButton("🚨 เคสด่วน", "#EF4444", "เคสด่วน"),
-          bigButton("🔐 เคสค้าง", "#F97316", "เคสค้าง"),
-          bigButton("➕ เคสต้องติดตาม", "#1D4ED8", "เคสต้องติดตาม"),
-          bigButton(
-            "🧭 เปิดศูนย์ปฏิบัติการ",
-            "#22C55E",
-            null,
-            "https://satisfied-stillness-production-7942.up.railway.app/command-center"
-          )
+          bigButton(`🚨 SLA วิกฤต (${overdue})`, "#EF4444", "ดู SLA วิกฤต"),
+          bigButton(`⚠️ ใกล้หลุด SLA (${nearDue})`, "#F97316", "ดูใกล้หลุด SLA"),
+          bigButton(`📋 เคสเปิดทั้งหมด (${openCases})`, "#1D4ED8", "ดูเคสเปิดทั้งหมด"),
+          bigButton(`🧠 Smart Alert (${smartAlert})`, "#22C55E", "ดู Smart Alert")
         ]
       }
     }
@@ -4613,22 +4616,21 @@ if (text === "เมนูแอดมิน" || text === "เปิดเมน
     continue;
   }
 
-  await safeReply(replyToken, [buildAdminMenuFlex()], [
+  const slaCounts = await getSlaMenuCounts();
+
+  await safeReply(replyToken, [buildAdminMenuFlex(slaCounts)], [
     {
       type: "text",
       text:
-        "เมนูแอดมิน\n\n" +
-        "- ดูเคสใหม่\n" +
-        "- ดูเคสด่วน\n" +
-        "- เคสวันนี้\n" +
-        "- รายงาน\n" +
-        "- สรุปรายวัน\n" +
-        "- ดูทีม"
+        "เมนูแอดมิน SLA PRO\n\n" +
+        `SLA วิกฤต (${slaCounts.overdue})\n` +
+        `ใกล้หลุด SLA (${slaCounts.near_due})\n` +
+        `เคสเปิดทั้งหมด (${slaCounts.open_cases})\n` +
+        `Smart Alert (${slaCounts.smart_alert})`
     },
   ]);
   continue;
 }
-
 if (text === "คำสั่งดูสิทธิ์") {
   await safeReply(replyToken, [{
     type: "text",
@@ -4670,11 +4672,42 @@ if (text === "คำสั่งลบทีม") {
   continue;
 }
 
-if (text === "Smart Alert") {
-  await safeReply(replyToken, [buildSmartAlertFlex()]);
+if (text === "Smart Alert" || text === "ดู Smart Alert") {
+  const slaCounts = await getSlaMenuCounts();
+  await safeReply(replyToken, [buildSmartAlertFlex(slaCounts)]);
   continue;
 }
-      
+ if (text === "ดู SLA วิกฤต") {
+  const slaCounts = await getSlaMenuCounts();
+  await safeReply(replyToken, [{
+    type: "text",
+    text: buildSlaPreviewText("🚨 รายการ SLA วิกฤต", slaCounts.overdue_rows)
+  }]);
+  continue;
+}
+
+if (text === "ดูใกล้หลุด SLA") {
+  const slaCounts = await getSlaMenuCounts();
+  await safeReply(replyToken, [{
+    type: "text",
+    text: buildSlaPreviewText("⚠️ รายการใกล้หลุด SLA", slaCounts.near_due_rows)
+  }]);
+  continue;
+}
+
+if (text === "ดูเคสเปิดทั้งหมด") {
+  const slaCounts = await getSlaMenuCounts();
+  await safeReply(replyToken, [{
+    type: "text",
+    text:
+      "📋 เคสเปิดทั้งหมด\n\n" +
+      `จำนวนเคสเปิด: ${slaCounts.open_cases}\n` +
+      `SLA วิกฤต: ${slaCounts.overdue}\n` +
+      `ใกล้หลุด SLA: ${slaCounts.near_due}\n` +
+      `Smart Alert: ${slaCounts.smart_alert}`
+  }]);
+  continue;
+}     
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);

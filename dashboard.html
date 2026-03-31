@@ -434,7 +434,7 @@ function filterRowsBySla(rows){
     function renderCases(rows){
   const body = document.getElementById("casesTableBody");
   body.innerHTML = rows.length ? rows.map(row => `
-    <tr onclick="window.location.href='/case?id=${row.id}'">
+       <tr class="${getSlaRowClass(row.sla_level)}" onclick="window.location.href='/case?id=${row.id}'">
       <td>${escapeHtml(row.case_code || "-")}</td>
       <td>${escapeHtml(row.full_name || "-")}</td>
       <td>${escapeHtml(row.location || "-")}</td>

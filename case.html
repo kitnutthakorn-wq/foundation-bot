@@ -795,8 +795,7 @@ function priorityBadge(priority, label){
       }
     }
 
-    function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
-    async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
+
 
     function populateForm(data){
       const staffNameEl = document.getElementById("staffName");
@@ -889,11 +888,6 @@ if (locationTextEl) {
 document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
 
 // ✅ เปลี่ยนสถานะเป็นไทย
-
-document.getElementById("status").innerHTML = statusBadge(data.status, data.status_th);
-
-// ✅ เปลี่ยนระดับเป็นไทย
-document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th);
 
 document.getElementById("status").innerHTML = statusBadge(
   data.status,
@@ -1029,8 +1023,16 @@ document.getElementById("progress_text").innerText = percent + "%";
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
 
-        if(String(data.case_id) === String(caseId)){ loadCase().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
-        if(String(data.case_id) === String(caseId)){ refreshCaseView().catch(console.error); showToast("มีอัปเดตจากระบบ", (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" : (data.case_code || "เคสนี้ถูกอัปเดต")); }
+        
+        if(String(data.case_id) === String(caseId)){ 
+          refreshCaseView().catch(console.error); 
+          showToast(
+          "มีอัปเดตจากระบบ",
+          (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) 
+          ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" 
+          : (data.case_code || "เคสนี้ถูกอัปเดต")
+          );
+        }
 
       };
       eventSource.addEventListener("case_updated", onChange);
@@ -1038,9 +1040,7 @@ document.getElementById("progress_text").innerText = percent + "%";
       eventSource.onerror = ()=> document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
     }
 
-    registerFormLocking();
-
-loadProjects().then(loadCase);
+registerFormLocking();
 
 loadProjects().then(refreshCaseView);
 

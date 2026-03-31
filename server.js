@@ -5876,6 +5876,17 @@ app.post("/api/team/send-update", async (req, res) => {
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
+// 🔥 SLA AUTO ALERT
+setInterval(async () => {
+  try {
+    const result = await processSlaAlertsNow();
+    if (result?.sent > 0) {
+      console.log("SLA AUTO ALERT SENT:", result);
+    }
+  } catch (error) {
+    console.error("SLA AUTO ALERT ERROR:", error);
+  }
+}, SLA_ALERT_INTERVAL_MS);
 app.listen(PORT, "0.0.0.0", () => {
   console.log("✅ Server started on port " + PORT);
 });

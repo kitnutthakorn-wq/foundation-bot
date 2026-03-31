@@ -549,11 +549,18 @@ if (!totals.breached && !totals.warning) {
   titleEl.textContent = "สถานะ SLA ปกติ";
   textEl.textContent = `ขณะนี้ยังไม่พบเคสเกิน SLA และไม่มีเคสใกล้เกิน SLA เคส active ปกติ ${normal} เคส`;
 }
-  async function loadSlaSummary(){
+ async function loadSlaSummary(){
   const data = await fetchJSON("/api/sla/summary?limit=200");
   const totals = data.totals || {};
 
-  document.getElementById("slaNormalCount").textContent = totals.normal || 0;
+  lastSlaTotals = {
+    normal: Number(totals.normal || 0),
+    warning: Number(totals.warning || 0),
+    breached: Number(totals.breached || 0)
+  };
+
+  const slaNormalEl = document.getElementById("slaNormalCount");
+  if (slaNormalEl) slaNormalEl.textContent = totals.normal || 0;
   document.getElementById("slaWarningCount").textContent = totals.warning || 0;
   document.getElementById("slaBreachedCount").textContent = totals.breached || 0;
   updateSlaSummaryBanner(totals);

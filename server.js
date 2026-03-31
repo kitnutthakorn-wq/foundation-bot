@@ -1745,6 +1745,121 @@ function buildContactOfficerFlex() {
   };
 }
 
+// =========================
+// GOLDEN SAFE PATCH: SLA HELPERS (READ ONLY)
+// =========================
+
+function normalizeSlaStatus(status) {
+  const s = String(status || "").trim().toLowerCase();
+  if (s === "progress") return "in_progress";
+  if (s.includes("กำลัง")) return "in_progress";
+  if (s.includes("เสร็จ")) return "done";
+  if (s.includes("ยกเลิก")) return "cancelled";
+  return s || "new";
+}
+
+function normalizeSlaPriority(priority) {
+  const p = String(priority || "").trim().toLowerCase();
+  if (p === "urgent") return "urgent";
+  if (p === "high") return "high";
+  if (p === "low") return "low";
+  return "normal";
+}
+
+function getSlaThresholdHours(priority = "normal") {
+  const p = normalizeSlaPriority(priority);
+
+  if (p === "urgent") {
+    return { warningHours: 2, breachHours: 4 };
+  }
+  if (p === "high") {
+    return { warningHours: 6, breachHours: 12 };
+  }
+  if (p === "low") {
+    return { warningHours: 48, breachHours: 72 };
+  }
+
+  return { warningHours: 24, breachHours: 48 };
+}
+
+function formatSlaLabelTh(level) {
+  if (level === "breached") return "เกิน SLA";
+  if (level === "warning") return "ใกล้เกิน SLA";
+  return "ปกติ";
+}
+
+function formatSlaColor(level) {
+  if (level === "breached") return "#dc2626";
+  if (level === "warning") return "#d97706";
+  return "#16a34a";
+}
+
+function roundSlaHours(value) {
+  const num = Number(value || 0);
+  return Math.round(num * 10) / 10;
+}
+
+function computeSlaState(row = {}) {
+  const status = normalizeSlaStatus(row.status);
+  const priority = normalizeSlaPriority(row.priority);
+
+  // เคสปิดแล้ว / ยกเลิกแล้ว ไม่นับ SLA active
+  if (status === "done" || status === "cancelled") {
+    return {
+      sla_level: "normal",
+      sla_label_th: "ไม่คิด SLA",
+      sla_color: "#6b7280",
+      sla_excluded: true,
+      sla_priority: priority,
+      sla_target_warning_hours: null,
+      sla_target_breach_hours: null,
+      sla_hours_since_action: 0,
+      sla_hours_remaining_to_warning: null,
+      sla_hours_remaining_to_breach: null
+    };
+  }
+
+  const { warningHours, breachHours } = getSlaThresholdHours(priority);
+
+  const baseTimeRaw = row.last_action_at || row.created_at || null;
+  const baseTime = baseTimeRaw ? new Date(baseTimeRaw) : null;
+  const now = new Date();
+
+  let hoursSinceAction = 0;
+
+  if (baseTime && !Number.isNaN(baseTime.getTime())) {
+    hoursSinceAction = (now.getTime() - baseTime.getTime()) / (1000 * 60 * 60);
+    if (hoursSinceAction < 0) hoursSinceAction = 0;
+  }
+
+  let level = "normal";
+  if (hoursSinceAction >= breachHours) {
+    level = "breached";
+  } else if (hoursSinceAction >= warningHours) {
+    level = "warning";
+  }
+
+  return {
+    sla_level: level,
+    sla_label_th: formatSlaLabelTh(level),
+    sla_color: formatSlaColor(level),
+    sla_excluded: false,
+    sla_priority: priority,
+    sla_target_warning_hours: warningHours,
+    sla_target_breach_hours: breachHours,
+    sla_hours_since_action: roundSlaHours(hoursSinceAction),
+    sla_hours_remaining_to_warning: roundSlaHours(Math.max(0, warningHours - hoursSinceAction)),
+    sla_hours_remaining_to_breach: roundSlaHours(Math.max(0, breachHours - hoursSinceAction))
+  };
+}
+
+function mergeCaseWithSla(row = {}) {
+  return {
+    ...row,
+    ...computeSlaState(row)
+  };
+}
+
 /* =========================
    ENV CHECK
 ========================= */

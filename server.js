@@ -2048,39 +2048,22 @@ app.get("/health", (req, res) => {
 app.get("/version", (req, res) => {
   res.status(200).send("server version: production-locked-phaseA-final");
 });
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
-});
+
 // =========================
 // SLA ALERT (MANUAL TRIGGER)
 // =========================
 app.get("/api/sla/alerts/run", async (req, res) => {
   try {
     const result = await processSlaAlertsNow();
-    res.json(result);
+    return res.json(result);
   } catch (err) {
     console.error("SLA ALERT RUN ERROR:", err);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
-      error: err.message
+      error: err.message || "SLA alert run failed"
     });
   }
 });
-+ // =========================
-+ // SLA ALERT (MANUAL TRIGGER)
-+ // =========================
-+ app.get("/api/sla/alerts/run", async (req, res) => {
-+   try {
-+     const result = await processSlaAlertsNow();
-+     res.json(result);
-+   } catch (err) {
-+     console.error("SLA ALERT RUN ERROR:", err);
-+     res.status(500).json({
-+       ok: false,
-+       error: err.message
-+     });
-+   }
-+ });
 
 app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook endpoint is ready ✅");

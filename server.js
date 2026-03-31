@@ -1616,7 +1616,103 @@ function buildTeamManageFlex() {
     }
   };
 }
+function getTeamRoleTheme(role = "") {
+  const r = String(role || "").toLowerCase();
 
+  if (r === "admin") {
+    return { color: "#DC2626", label: "ผู้ดูแลระบบ" };
+  }
+  if (r === "staff") {
+    return { color: "#F97316", label: "ทีมงาน" };
+  }
+  if (r === "viewer") {
+    return { color: "#0B7C86", label: "ดูได้อย่างเดียว" };
+  }
+
+  return { color: "#6B7280", label: role || "ไม่ระบุ" };
+}
+
+function buildTeamMemberFlex(item = {}) {
+  const theme = getTeamRoleTheme(item.role);
+  const activeText = item.is_active === false ? "ปิดการใช้งาน" : "ใช้งานอยู่";
+
+  return {
+    type: "flex",
+    altText: `ข้อมูลทีม ${item.line_user_id || "-"}`,
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: theme.color,
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "ข้อมูลทีมงาน",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: theme.label,
+            color: "#F9FAFB",
+            size: "sm",
+            margin: "sm",
+            align: "center"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: `LINE USER ID: ${item.line_user_id || "-"}`,
+            wrap: true,
+            size: "sm"
+          },
+          {
+            type: "text",
+            text: `สิทธิ์: ${item.role || "-"}`,
+            wrap: true,
+            size: "sm"
+          },
+          {
+            type: "text",
+            text: `สถานะ: ${activeText}`,
+            wrap: true,
+            size: "sm"
+          }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        paddingAll: "14px",
+        contents: [
+          {
+            type: "button",
+            style: "secondary",
+            height: "sm",
+            action: {
+              type: "message",
+              label: "ดูสิทธิ์",
+              text: `ดูสิทธิ์ ${item.line_user_id || ""}`
+            }
+          }
+        ]
+      }
+    }
+  };
+}
 function buildSmartAlertFlex(sla = {}) {
   const overdue = Number(sla.overdue || 0);
   const nearDue = Number(sla.near_due || 0);

@@ -1974,6 +1974,93 @@ app.get("/api/recent-activity", async (req, res) => {
   }
 });
 
+// =========================
+// GOLDEN SAFE PATCH: SLA SUMMARY API (READ ONLY)
+// =========================
+app.get("/api/sla/summary", async (req, res) => {
+  try {
+    const limitRaw = Number(req.query.limit || 200);
+    const limit = Math.max(1, Math.min(limitRaw, 1000));
+    const levelFilter = String(req.query.level || "").trim().toLowerCase();
+
+    const db = supabase
+      .from("help_requests")
+      .select(`
+        id,
+        case_code,
+        full_name,
+        phone,
+        problem,
+        location,
+        status,
+        priority,
+        assigned_to,
+        created_at,
+        last_action_at,
+        closed_at
+      `)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    const { data, error } = await db;
+
+    if (error) {
+      console.error("SLA summary query error:", error);
+      return res.status(500).json({
+        ok: false,
+        error: error.message || "Failed to load SLA summary"
+      });
+    }
+
+    const rows = Array.isArray(data) ? data : [];
+    const enriched = rows.map(mergeCaseWithSla);
+
+    // active SLA = ยังไม่ done/cancelled
+    const activeItems = enriched.filter(item => !item.sla_excluded);
+
+    const totals = {
+      all: activeItems.length,
+      normal: activeItems.filter(item => item.sla_level === "normal").length,
+      warning: activeItems.filter(item => item.sla_level === "warning").length,
+      breached: activeItems.filter(item => item.sla_level === "breached").length
+    };
+
+    let items = activeItems;
+
+    if (["normal", "warning", "breached"].includes(levelFilter)) {
+      items = activeItems.filter(item => item.sla_level === levelFilter);
+    }
+
+    items = items
+      .sort((a, b) => {
+        const rank = { breached: 3, warning: 2, normal: 1 };
+        const ra = rank[a.sla_level] || 0;
+        const rb = rank[b.sla_level] || 0;
+
+        if (rb !== ra) return rb - ra;
+
+        return (Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0));
+      });
+
+    return res.json({
+      ok: true,
+      generated_at: new Date().toISOString(),
+      filters: {
+        limit,
+        level: levelFilter || null
+      },
+      totals,
+      items
+    });
+  } catch (err) {
+    console.error("SLA summary fatal error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "Unexpected SLA summary error"
+    });
+  }
+});
+
 app.options("/api/cases/map", (req, res) => {
   applyPublicCors(req, res);
   return res.status(204).end();

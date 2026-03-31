@@ -1559,15 +1559,15 @@ function buildAdminMenuFlex(sla = {}) {
   ]
 ),
 
-        buildMenuBubble(
-          "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
-          [
-            uriButton("Dashboard", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
-            uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
-            messageButton("ดูทีม", "ดูทีม"),
-            uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
-          ]
-        )
+       buildMenuBubble(
+  "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
+  [
+    messageButton("ดูทีม", "เปิดเมนูจัดการทีม"),
+    messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
+    messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
+    messageButton("ลบทีม", "คำสั่งลบทีม")
+  ]
+)
       ]
     }
   };

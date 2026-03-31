@@ -2002,6 +2002,7 @@ return {
   total_candidates: candidates.length,
   checked_at: new Date().toISOString()
 };
+}
 /* =========================
    ENV CHECK
 ========================= */

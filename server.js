@@ -1377,7 +1377,11 @@ function buildTeamFollowupText(item = {}, followupCount = 1) {
 }
 
 async function pushTeamFollowupNotification(item = {}, followupCount = 1) {
+  // ✅ เติม SLA เข้า item
+  const sla = computeSlaState(item);
+  item.sla_level = sla.sla_level;
   const flex = buildTeamFollowupFlex(item, followupCount);
+  
   try {
     await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
   } catch (error) {

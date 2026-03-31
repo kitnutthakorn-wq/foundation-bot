@@ -391,11 +391,12 @@
 
   <script>
     let chartInstance = null;
-    let statusChartInstance = null;
-    let lastTotal = null;
-    let eventSource = null;
-    let currentSlaFilter = "all";
-    let lastMergedRows = [];
+let statusChartInstance = null;
+let lastTotal = null;
+let eventSource = null;
+let currentSlaFilter = "all";
+let lastMergedRows = [];
+let lastSlaTotals = { normal: 0, warning: 0, breached: 0 };
 
 function applySlaFilterButtons(){
   const map = {

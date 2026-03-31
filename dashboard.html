@@ -68,6 +68,24 @@
 .sla-warning{background:#fef3c7;color:#92400e}
 .sla-breached{background:#fee2e2;color:#b91c1c}
 .sla-unknown{background:#e5e7eb;color:#4b5563}
+
+/* ===== SLA FILTER ===== */
+.sla-filter-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin:-4px 0 16px;
+}
+.sla-filter-btn{
+  background:#fff;
+  color:#16304e;
+  border:1px solid var(--line);
+}
+.sla-filter-btn.active{
+  background:var(--brand);
+  color:#fff;
+  border-color:var(--brand);
+}
     
     .error-banner{display:none;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow)}
     .error-banner.show{display:block}
@@ -162,6 +180,13 @@
     <div class="mini-title" id="slaBreachedCount">0</div>
   </div>
 </div> 
+
+<div class="sla-filter-row">
+  <button class="secondary sla-filter-btn active" id="slaFilterAllBtn">ทั้งหมด</button>
+  <button class="secondary sla-filter-btn" id="slaFilterBreachedBtn">เกิน SLA</button>
+  <button class="secondary sla-filter-btn" id="slaFilterWarningBtn">ใกล้เกิน</button>
+  <button class="secondary sla-filter-btn" id="slaFilterNormalBtn">ปกติ</button>
+</div>
     
     <div class="exec-grid">
       <div class="panel">
@@ -271,6 +296,30 @@
     let statusChartInstance = null;
     let lastTotal = null;
     let eventSource = null;
+    let currentSlaFilter = "all";
+
+function applySlaFilterButtons(){
+  const map = {
+    all: "slaFilterAllBtn",
+    breached: "slaFilterBreachedBtn",
+    warning: "slaFilterWarningBtn",
+    normal: "slaFilterNormalBtn"
+  };
+
+  Object.values(map).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.remove("active");
+  });
+
+  const activeId = map[currentSlaFilter] || map.all;
+  const el = document.getElementById(activeId);
+  if(el) el.classList.add("active");
+}
+
+function filterRowsBySla(rows){
+  if(currentSlaFilter==="all") return rows;
+  return rows.filter(r=>String(r.sla_level||"").toLowerCase()===currentSlaFilter);
+}
 
     function escapeHtml(value){return String(value ?? "-").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
     function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}

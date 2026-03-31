@@ -1849,10 +1849,11 @@ function computeSlaState(row = {}) {
     sla_target_breach_hours: breachHours,
     sla_hours_since_action: roundSlaHours(hoursSinceAction),
     sla_hours_remaining_to_warning: roundSlaHours(Math.max(0, warningHours - hoursSinceAction)),
-    sla_hours_remaining_to_breach: roundSlaHours(Math.max(0, breachHours - hoursSinceAction))
+        sla_hours_remaining_to_breach: roundSlaHours(
+      Math.max(0, breachHours - hoursSinceAction)
+    )
   };
 }
-
 function mergeCaseWithSla(row = {}) {
   return {
     ...row,

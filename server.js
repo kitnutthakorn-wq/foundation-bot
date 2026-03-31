@@ -2065,7 +2065,6 @@ async function getSlaMenuCounts() {
 
     const rows = Array.isArray(data) ? data : [];
     const merged = rows.map(mergeCaseWithSla);
-
     const activeRows = merged.filter(
       (row) => !row.sla_excluded && !["done", "cancelled"].includes(normalizeSlaStatus(row.status))
     );

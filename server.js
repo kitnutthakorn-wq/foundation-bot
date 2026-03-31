@@ -852,7 +852,32 @@ const progressText = `${item.progress_percent ?? 0}%`;
 function getPriorityHeaderColor(priority = "") {
   return String(priority).toLowerCase() === "urgent" ? "#DC2626" : "#0b7c86";
 }
+function getCaseHeaderTheme(item = {}) {
+  const priority = String(item.priority || "").toLowerCase();
+  const slaLevel = String(item.sla_level || "").toLowerCase();
 
+  // 🔴 ด่วน / SLA หลุด
+  if (priority === "urgent" || slaLevel === "breached") {
+    return {
+      color: "#DC2626",
+      label: "ด่วน"
+    };
+  }
+
+  // 🟠 ต้องระวัง
+  if (priority === "high" || slaLevel === "warning") {
+    return {
+      color: "#F97316",
+      label: "ต้องระวัง"
+    };
+  }
+
+  // 🔵 ปกติ
+  return {
+    color: "#0B7C86",
+    label: "ทั่วไป"
+  };
+}
 function getStatusBadgeColor(status = "") {
   switch (String(status).toLowerCase()) {
     case "new":

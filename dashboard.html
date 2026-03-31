@@ -190,10 +190,75 @@
     .mini-card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
     .mini-title{font-size:26px;font-weight:800;margin-top:4px}
     .section-label{font-size:12px;color:var(--muted);margin-bottom:8px}
+
+/* ===== KPI V18 ===== */
+.exec-cards.kpi-v18{
+  grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.kpi-card{
+  position: relative;
+  overflow: hidden;
+  min-height: 148px;
+  border: 1px solid #e6edf3;
+}
+
+.kpi-card::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:6px;
+  border-radius:20px 0 0 20px;
+}
+
+.kpi-card .section-label{
+  font-size:13px;
+  font-weight:700;
+  color:#6b7280;
+  margin-bottom:10px;
+}
+
+.kpi-card .mini-title{
+  font-size:42px;
+  line-height:1;
+  font-weight:800;
+  margin:10px 0 12px;
+}
+
+.kpi-card .footer-note{
+  margin-top:0;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.kpi-total::before{ background:#163c72; }
+.kpi-total .mini-title{ color:#163c72; }
+
+.kpi-active::before{ background:#0b7c86; }
+.kpi-active .mini-title{ color:#0b7c86; }
+
+.kpi-urgent::before{ background:#ea580c; }
+.kpi-urgent .mini-title{ color:#c2410c; }
+
+.kpi-warning::before{ background:#f59e0b; }
+.kpi-warning .mini-title{ color:#b45309; }
+.kpi-warning{ background:#fffaf0; }
+
+.kpi-breached::before{ background:#dc2626; }
+.kpi-breached .mini-title{ color:#b91c1c; }
+.kpi-breached{ background:#fff5f5; }
+
+.kpi-breached .footer-note,
+.kpi-warning .footer-note{
+  font-weight:700;
+}
+    
     @media (max-width:1200px){
-      .cards,.exec-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .grid,.exec-grid,.split-grid{grid-template-columns:1fr}
-    }
+  .cards,.exec-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .exec-cards.kpi-v18{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid,.exec-grid,.split-grid{grid-template-columns:1fr}
+}
     @media (max-width:780px){
       .container{padding:12px 12px 96px}
       .brand img{width:58px;height:58px}
@@ -201,6 +266,7 @@
       input,select,button{width:100%}
       .toolbar,.exec-tools{width:100%}
       .cards,.exec-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .exec-cards.kpi-v18{grid-template-columns:repeat(2,minmax(0,1fr))}
       .chart-wrap{height:250px}
       .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}
       .mobile-actions button{width:100%}
@@ -208,6 +274,7 @@
     @media (max-width:480px){
       .cards,.exec-cards{grid-template-columns:1fr}
       .card-value,.mini-title{font-size:34px}
+      .exec-cards.kpi-v18{grid-template-columns:1fr}
       .toast{min-width:auto;max-width:calc(100vw - 32px)}
       .brandbar{align-items:flex-start}
     }
@@ -219,7 +286,7 @@
       <div class="brand">
         <img src="/logo.png" alt="โลโก้มูลนิธิคนช่วยฅน">
         <div>
-          <h1>AI Command Center v17</h1>
+          <h1>มูลนิธิคนช่วยฅน </h1>
           <div class="subtitle">Hybrid Dashboard • Executive View + Operational Control</div>
         </div>
       </div>
@@ -240,31 +307,49 @@
       <button class="secondary" id="reportTopBtn">Executive Report</button>
     </div>
 
-    <div class="exec-cards">
-      <div class="card"><div class="section-label">เคสทั้งหมด</div><div class="mini-title" id="totalCases">0</div><div class="footer-note">ภาพรวมเคสในระบบ</div></div>
-      <div class="card"><div class="section-label">เคสใหม่</div><div class="mini-title" id="newCases">0</div><div class="footer-note">รอทีมงานเริ่มเรื่อง</div></div>
-      <div class="card"><div class="section-label">เคสด่วน</div><div class="mini-title" id="urgentCases">0</div><div class="footer-note">priority = urgent</div></div>
-      <div class="card"><div class="section-label">กำลังดำเนินการ</div><div class="mini-title" id="inProgressCases">0</div><div class="footer-note">ทีมงานกำลังทำงาน</div></div>
-      <div class="card"><div class="section-label">ปิดแล้ว</div><div class="mini-title" id="doneCases">0</div><div class="footer-note">สถานะ done</div></div>
-      <div class="card"><div class="section-label">Open Alerts</div><div class="mini-title" id="openAlerts">0</div><div class="footer-note">แจ้งเตือนที่ยังไม่ปิด</div></div>
-    </div>
-
-  <div class="exec-cards">
-  <div class="card">
-    <div class="section-label">SLA ปกติ</div>
-    <div class="mini-title" id="slaNormalCount">0</div>
+   <div class="exec-cards kpi-v18">
+  <div class="card kpi-card kpi-total">
+    <div class="section-label">เคสทั้งหมด</div>
+    <div class="mini-title" id="totalCases">0</div>
+    <div class="footer-note">ภาพรวมเคสทั้งหมดในระบบ</div>
   </div>
+
+  <div class="card kpi-card kpi-active">
+    <div class="section-label">กำลังดำเนินการทั้งหมด</div>
+    <div class="mini-title" id="activeCases">0</div>
+    <div class="footer-note">รวมเคสใหม่ + เคสที่กำลังทำงาน</div>
+  </div>
+
+  <div class="card kpi-card kpi-urgent">
+    <div class="section-label">เคสด่วน</div>
+    <div class="mini-title" id="urgentCases">0</div>
+    <div class="footer-note">priority = urgent ที่ยังต้องติดตาม</div>
+  </div>
+
+  <div class="card kpi-card kpi-warning">
+    <div class="section-label">ใกล้เกิน SLA</div>
+    <div class="mini-title" id="slaWarningCount">0</div>
+    <div class="footer-note">ต้องเร่งติดตามเชิงรุก</div>
+  </div>
+
+  <div class="card kpi-card kpi-breached">
+    <div class="section-label">เกิน SLA</div>
+    <div class="mini-title" id="slaBreachedCount">0</div>
+    <div class="footer-note">เคสเสี่ยงสูงที่ต้องรีบจัดการ</div>
+  </div>
+</div>
 
   <div class="card">
     <div class="section-label">ใกล้เกิน SLA</div>
     <div class="mini-title" id="slaWarningCount">0</div>
   </div>
 
-  <div class="card">
-    <div class="section-label">เกิน SLA</div>
-    <div class="mini-title" id="slaBreachedCount">0</div>
-  </div>
-</div> 
+ <div class="exec-cards kpi-v18">...</div>
+
+<div id="slaSummaryBanner" class="sla-summary-banner">
+  <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
+  <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
+</div>
 
 <div class="sla-filter-row">
   <button class="secondary sla-filter-btn active" id="slaFilterAllBtn">ทั้งหมด</button>
@@ -272,10 +357,6 @@
   <button class="secondary sla-filter-btn" id="slaFilterWarningBtn">ใกล้เกิน</button>
   <button class="secondary sla-filter-btn" id="slaFilterNormalBtn">ปกติ</button>
 </div>
-   <div id="slaSummaryBanner" class="sla-summary-banner">
-  <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
-  <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
-</div> 
         <div class="panel" id="slaTopRiskPanel">
       <div class="live-row">
         <h2>Top 5 เคสเสี่ยง SLA</h2>

@@ -410,17 +410,35 @@
 
       const focusCaseCode = qs.get("case_code") || "";
 
-      const DEFAULT_API_BASE =
-        qs.get('apiBase') ||
-        window.__API_BASE__ ||
-        localStorage.getItem('foundation_api_base') ||
-        "https://satisfied-stillness-production-7942.up.railway.app";
+    // ===== GOLDEN FIX: FORCE API BASE TO RAILWAY =====
+(function(){
+  const RAILWAY_BASE = "https://satisfied-stillness-production-7942.up.railway.app";
 
-      if (DEFAULT_API_BASE) {
-        localStorage.setItem('foundation_api_base', DEFAULT_API_BASE);
-      }
+  const qs = new URLSearchParams(window.location.search);
 
-      const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
+  const DEFAULT_API_BASE =
+    qs.get('apiBase') ||
+    window.__API_BASE__ ||
+    RAILWAY_BASE;
+
+  const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
+
+  const API_URL = `${API_BASE}/api/cases/map`;
+  const STREAM_URL = `${API_BASE}/api/team/stream`;
+  const CASE_URL_BASE = `${API_BASE}/case`;
+
+  try {
+    localStorage.setItem('foundation_api_base', API_BASE);
+  } catch(e){}
+
+  console.log("✅ API BASE LOCKED:", API_BASE);
+
+  // 👉 expose ให้โค้ดเดิมใช้ต่อได้
+  window.API_BASE = API_BASE;
+  window.API_URL = API_URL;
+  window.STREAM_URL = STREAM_URL;
+  window.CASE_URL_BASE = CASE_URL_BASE;
+})();
       const API_URL = `${API_BASE}/api/cases/map`;
       const STREAM_URL = `${API_BASE}/api/team/stream`;
       const CASE_URL_BASE = `${API_BASE}/case`;

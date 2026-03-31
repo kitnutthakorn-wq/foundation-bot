@@ -6041,17 +6041,21 @@ app.post("/api/team/send-update", async (req, res) => {
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
-// 🔥 SLA AUTO ALERT
+// =========================
+// SLA AUTO ALERT (REALTIME)
+// =========================
 setInterval(async () => {
   try {
     const result = await processSlaAlertsNow();
+
     if (result?.sent > 0) {
-      console.log("SLA AUTO ALERT SENT:", result);
+      console.log("🚨 SLA AUTO ALERT SENT:", result);
     }
-  } catch (error) {
-    console.error("SLA AUTO ALERT ERROR:", error);
+
+  } catch (err) {
+    console.error("❌ SLA AUTO ERROR:", err);
   }
-}, SLA_ALERT_INTERVAL_MS);
+}, 5 * 60 * 1000); // ทุก 5 นาที
 app.listen(PORT, "0.0.0.0", () => {
   console.log("✅ Server started on port " + PORT);
 });

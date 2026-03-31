@@ -1974,21 +1974,20 @@ async function processSlaAlertsNow() {
 
   cleanupSlaAlertCooldownMap();
 
-  const candidates = await getSlaAlertCandidates(200);
-  let sent = 0;
-  let skipped = 0;
+ const candidates = (await getSlaAlertCandidates(200))
+  .slice(0, 5); // ยิงแค่ 5 เคสพอ
 
   for (const item of candidates) {
-    if (!shouldSendSlaAlert(item)) {
-      skipped += 1;
-      continue;
-    }
-
-    const text = buildSlaAlertText(item);
-    await pushTeamNotification(text);
-    markSlaAlertSent(item);
-    sent += 1;
+  if (!shouldSendSlaAlert(item)) {
+    skipped += 1;
+    continue;
   }
+
+  const text = buildSlaAlertText(item);
+  await pushTeamNotification(text);
+  markSlaAlertSent(item);
+  sent += 1;
+}
 
   return {
     ok: true,

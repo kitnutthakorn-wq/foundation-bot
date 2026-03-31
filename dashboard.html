@@ -455,7 +455,9 @@ function filterRowsBySla(rows){
     };
   });
 
-  const filteredRows = filterRowsBySla(mergedRows);
+  lastMergedRows = mergedRows;
+
+const filteredRows = filterRowsBySla(mergedRows);
 
 renderCases(filteredRows);
 return filteredRows;

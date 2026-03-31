@@ -4913,7 +4913,77 @@ if (text === "เปิดเมนูจัดการทีม" || text === "
   await safeReply(replyToken, [buildTeamManageFlex()]);
   continue;
 }
+if (text === "รายการทีม") {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เมนูนี้สำหรับผู้ดูแลระบบ" }
+    ]);
+    continue;
+  }
 
+  const { data, error } = await supabase
+    .from("line_user_roles")
+    .select("line_user_id, role, is_active")
+    .order("role", { ascending: true })
+    .limit(10);
+
+  if (error) {
+    console.error("TEAM LIST ERROR:", error);
+    await safeReply(replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการดึงข้อมูลทีมงาน" }
+    ]);
+    continue;
+  }
+
+  const rows = Array.isArray(data) ? data : [];
+
+  if (!rows.length) {
+    await safeReply(replyToken, [
+      {
+        type: "flex",
+        altText: "รายการทีม",
+        contents: {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#0B7C86",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "รายการทีมงาน",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg",
+                align: "center"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            paddingAll: "20px",
+            contents: [
+              {
+                type: "text",
+                text: "ยังไม่มีข้อมูลทีมงานในระบบ",
+                wrap: true,
+                align: "center"
+              }
+            ]
+          }
+        }
+      }
+    ]);
+    continue;
+  }
+
+  const messages = rows.slice(0, 10).map((row) => buildTeamMemberFlex(row));
+  await safeReply(replyToken, messages);
+  continue;
+}
 if (text === "คำสั่งดูสิทธิ์") {
   await safeReply(replyToken, [{
     type: "text",

@@ -16,6 +16,26 @@ const supabase = createClient(
 );
 
 const userStates = {};
+
+// 👇 วาง helper ตรงนี้เลย
+function setAddTeamState(userId, step, payload = {}) {
+  userStates[userId] = userStates[userId] || {};
+  userStates[userId].addTeam = {
+    step,
+    ...payload
+  };
+}
+
+function getAddTeamState(userId) {
+  return userStates[userId]?.addTeam || null;
+}
+
+function clearAddTeamState(userId) {
+  if (userStates[userId]?.addTeam) {
+    delete userStates[userId].addTeam;
+  }
+}
+
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 

@@ -2070,7 +2070,18 @@ app.options("/api/team/stream", (req, res) => {
   applyPublicCors(req, res);
   return res.status(204).end();
 });
-
+app.post("/api/sla/alerts/run", checkDashboardAuth, async (req, res) => {
+  try {
+    const result = await processSlaAlertsNow();
+    return res.json({ ok: true, data: result });
+  } catch (error) {
+    console.error("SLA ALERT RUN ERROR:", error);
+    return res.status(500).json({
+      ok: false,
+      error: error.message || "SLA alert run failed"
+    });
+  }
+});
 // ===============================
 // MAP API (Golden Safe Patch - YOUR VERSION)
 // ===============================

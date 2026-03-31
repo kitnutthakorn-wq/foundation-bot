@@ -913,10 +913,20 @@ function normalizeStatus(status) {
         };
       }
 
-      function openCase(code) {
-        if (!code) return;
-        window.open(`${CASE_URL_BASE}?case_code=${encodeURIComponent(code)}`, '_blank');
-      }
+      function openCase(caseCode) {
+  if (!caseCode) return;
+
+  const found =
+    (filteredItems || []).find((x) => x.case_code === caseCode) ||
+    (allItems || []).find((x) => x.case_code === caseCode);
+
+  if (!found?.id) {
+    showToast('ไม่พบ id ของเคสนี้');
+    return;
+  }
+
+  window.open(`${CASE_URL_BASE}?id=${encodeURIComponent(found.id)}`, '_blank');
+}
 
       function focusCase(code) {
         selectCase(code, true);

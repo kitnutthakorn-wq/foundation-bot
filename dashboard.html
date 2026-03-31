@@ -266,12 +266,6 @@
   </div>
 </div> 
 
-<div class="sla-filter-row">
-  <button class="secondary sla-filter-btn active" id="slaFilterAllBtn">ทั้งหมด</button>
-  <button class="secondary sla-filter-btn" id="slaFilterBreachedBtn">เกิน SLA</button>
-  <button class="secondary sla-filter-btn" id="slaFilterWarningBtn">ใกล้เกิน</button>
-  <button class="secondary sla-filter-btn" id="slaFilterNormalBtn">ปกติ</button>
-</div>
    <div id="slaSummaryBanner" class="sla-summary-banner">
   <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
   <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
@@ -339,26 +333,32 @@
       </div>
     </div>
 
-    <div class="toolbar" style="margin-bottom:16px">
-      <input id="searchInput" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่ / รายละเอียด">
-      <select id="statusFilter">
-        <option value="">ทุกสถานะ</option>
-        <option value="new">new</option>
-        <option value="in_progress">in_progress</option>
-        <option value="done">done</option>
-        <option value="cancelled">cancelled</option>
-      </select>
-      <select id="priorityFilter">
-        <option value="">ทุกระดับ</option>
-        <option value="normal">normal</option>
-        <option value="urgent">urgent</option>
-      </select>
-      <button id="searchBtn">ค้นหา</button>
-      <button id="exportBtn" class="secondary">Export CSV</button>
-      <button id="reportBtn" class="secondary">Executive Report</button>
-      <button id="resetBtn" class="secondary">ล้างค่า</button>
-    </div>
+   <div class="toolbar" style="margin-bottom:16px">
+  <input id="searchInput" placeholder="ค้นหาเลขเคส / ชื่อ / เบอร์ / พื้นที่ / รายละเอียด">
+  <select id="statusFilter">
+    <option value="">ทุกสถานะ</option>
+    <option value="new">new</option>
+    <option value="in_progress">in_progress</option>
+    <option value="done">done</option>
+    <option value="cancelled">cancelled</option>
+  </select>
+  <select id="priorityFilter">
+    <option value="">ทุกระดับ</option>
+    <option value="normal">normal</option>
+    <option value="urgent">urgent</option>
+  </select>
+  <button id="searchBtn">ค้นหา</button>
+  <button id="exportBtn" class="secondary">Export CSV</button>
+  <button id="reportBtn" class="secondary">Executive Report</button>
+  <button id="resetBtn" class="secondary">ล้างค่า</button>
 
+  <div class="sla-filter-row">
+    <button class="secondary sla-filter-btn active" id="slaFilterAllBtn">ทั้งหมด</button>
+    <button class="secondary sla-filter-btn" id="slaFilterBreachedBtn">เกิน SLA</button>
+    <button class="secondary sla-filter-btn" id="slaFilterWarningBtn">ใกล้เกิน</button>
+    <button class="secondary sla-filter-btn" id="slaFilterNormalBtn">ปกติ</button>
+  </div>
+</div>
      <div class="panel" id="casesPanel">
       <h2>รายการเคสล่าสุด</h2>
       <div class="table-wrap">

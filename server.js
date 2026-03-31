@@ -1609,9 +1609,9 @@ function buildSmartAlertFlex(sla = {}) {
         spacing: "10px",
         paddingAll: "16px",
         contents: [
-          bigButton(`🚨 SLA วิกฤต (${overdue})`, "#EF4444", "ดู SLA วิกฤต"),
-          bigButton(`⚠️ ใกล้หลุด SLA (${nearDue})`, "#F97316", "ดูใกล้หลุด SLA"),
-          bigButton(`📋 เคสเปิดทั้งหมด (${openCases})`, "#1D4ED8", "ดูเคสเปิดทั้งหมด"),
+          bigButton(` SLA วิกฤต (${overdue})`, "#EF4444", "ดู SLA วิกฤต"),
+          bigButton(` ใกล้หลุด SLA (${nearDue})`, "#F97316", "ดูใกล้หลุด SLA"),
+          bigButton(` เคสเปิดทั้งหมด (${openCases})`, "#1D4ED8", "ดูเคสเปิดทั้งหมด"),
           bigButton(
   "เปิดศูนย์ปฏิบัติการ",
   "#22C55E",

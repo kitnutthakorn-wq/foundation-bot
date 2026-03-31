@@ -584,15 +584,19 @@ function filterRowsBySla(rows){
     }
 
     async function loadSummary(){
-      const data = await fetchJSON("/api/dashboard/summary");
-      document.getElementById("totalCases").textContent = data.total_cases || 0;
-      document.getElementById("newCases").textContent = data.new_cases || 0;
-      document.getElementById("urgentCases").textContent = data.urgent_cases || 0;
-      document.getElementById("inProgressCases").textContent = data.in_progress_cases || 0;
-      document.getElementById("doneCases").textContent = data.done_cases || 0;
-      await maybeNotify(data);
-      return data;
-    }
+  const data = await fetchJSON("/api/dashboard/summary");
+
+  const total = Number(data.total_cases || 0);
+  const active = Number(data.new_cases || 0) + Number(data.in_progress_cases || 0);
+  const urgent = Number(data.urgent_cases || 0);
+
+  document.getElementById("totalCases").textContent = total;
+  document.getElementById("activeCases").textContent = active;
+  document.getElementById("urgentCases").textContent = urgent;
+
+  await maybeNotify(data);
+  return data;
+}
     function updateSlaSummaryBanner(totals = {}){
   const banner = document.getElementById("slaSummaryBanner");
   const titleEl = document.getElementById("slaSummaryTitle");

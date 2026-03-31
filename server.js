@@ -1977,7 +1977,7 @@ async function processSlaAlertsNow() {
  const candidates = (await getSlaAlertCandidates(200))
   .slice(0, 5); // ยิงแค่ 5 เคสพอ
 
-  for (const item of candidates) {
+for (const item of candidates) {
   if (!shouldSendSlaAlert(item)) {
     skipped += 1;
     continue;
@@ -1989,14 +1989,13 @@ async function processSlaAlertsNow() {
   sent += 1;
 }
 
-  return {
-    ok: true,
-    sent,
-    skipped,
-    total_candidates: candidates.length,
-    checked_at: new Date().toISOString()
-  };
-}
+return {
+  ok: true,
+  sent,
+  skipped,
+  total_candidates: candidates.length,
+  checked_at: new Date().toISOString()
+};
 /* =========================
    ENV CHECK
 ========================= */

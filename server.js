@@ -629,8 +629,9 @@ function formatThaiDateTime(value) {
 
 function buildCaseTrackingFlex(item = {}) {
   const statusText = formatCaseStatusThai(item.status);
-  const priorityText = formatPriorityThai(item.priority);
-  const progressText = `${item.progress_percent ?? 0}%`;
+const priorityText = formatPriorityThai(item.priority);
+const headerTheme = getCaseHeaderTheme(item);
+const progressText = `${item.progress_percent ?? 0}%`;
   const currentStepText = item.current_step || "รอทีมงานรับเรื่อง";
   const waitingForText = item.waiting_for || "รอการอัปเดต";
   const updatedAtText = formatThaiDateTime(
@@ -649,7 +650,7 @@ function buildCaseTrackingFlex(item = {}) {
       header: {
         type: "box",
         layout: "vertical",
-        backgroundColor: "#0b7c86",
+        backgroundColor: headerTheme.color,
         paddingAll: "18px",
         contents: [
           {
@@ -668,6 +669,14 @@ function buildCaseTrackingFlex(item = {}) {
             margin: "sm",
             align: "center",
           }
+         {
+  type: "text",
+  text: `ระดับการตอบสนอง: ${headerTheme.label}`,
+  color: "#d9f3f5",
+  size: "xs",
+  margin: "sm",
+  align: "center",
+} 
         ]
       },
       body: {
@@ -861,8 +870,9 @@ function getStatusBadgeColor(status = "") {
 
 function buildTeamFollowupFlex(item = {}, followupCount = 1) {
   const statusText = formatCaseStatusThai(item.status);
-  const priorityText = formatPriorityThai(item.priority);
-  const headerColor = getPriorityHeaderColor(item.priority);
+const priorityText = formatPriorityThai(item.priority);
+const headerTheme = getCaseHeaderTheme(item);
+const headerColor = headerTheme.color;
 
   return {
     type: "flex",
@@ -961,8 +971,9 @@ function buildTeamFollowupFlex(item = {}, followupCount = 1) {
 
 function buildTeamNewCaseFlex(item = {}) {
   const statusText = formatCaseStatusThai(item.status);
-  const priorityText = formatPriorityThai(item.priority);
-  const headerColor = getPriorityHeaderColor(item.priority);
+const priorityText = formatPriorityThai(item.priority);
+const headerTheme = getCaseHeaderTheme(item);
+const headerColor = headerTheme.color;
 
   return {
     type: "flex",

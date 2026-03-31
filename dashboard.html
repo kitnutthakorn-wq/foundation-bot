@@ -137,6 +137,42 @@
   line-height:1.7;
 }
     .error-banner{display:none;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow)}
+    /* ===== SLA TOP RISK ===== */
+.sla-top-risk-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.sla-top-risk-item{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  background:#fff;
+}
+.sla-top-risk-item.warning{
+  background:#fffbeb;
+  border-color:#fde68a;
+}
+.sla-top-risk-item.breached{
+  background:#fef2f2;
+  border-color:#fecaca;
+}
+.sla-top-risk-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  margin-bottom:6px;
+}
+.sla-top-risk-title{
+  font-size:15px;
+  font-weight:800;
+}
+.sla-top-risk-meta{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+}
     .error-banner.show{display:block}
     .error-title{font-weight:800;margin-bottom:6px}
     .error-meta{font-size:13px;color:#7c2d12}
@@ -240,6 +276,12 @@
   <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
   <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
 </div> 
+    <div class="panel" id="slaTopRiskPanel">
+  <h2>Top 5 เคสเสี่ยง SLA</h2>
+  <div id="slaTopRiskList" class="sla-top-risk-list">
+    <div class="footer-note">กำลังโหลดเคสเสี่ยง SLA...</div>
+  </div>
+</div>
     <div class="exec-grid">
       <div class="panel">
         <h2>AI Executive Summary</h2>
@@ -501,6 +543,7 @@ if (!totals.breached && !totals.warning) {
   document.getElementById("slaWarningCount").textContent = totals.warning || 0;
   document.getElementById("slaBreachedCount").textContent = totals.breached || 0;
   updateSlaSummaryBanner(totals);
+  renderSlaTopRisk(data.items || []);
   return data;
 }
 
@@ -598,7 +641,35 @@ return filteredRows;
       lines.push(`ข้อเสนอเชิงบริหาร: ให้ทีมงานเร่งติดตามเคส priority สูงก่อน และเคลียร์เคสค้างที่ยังไม่มีผู้รับผิดชอบ`);
       return lines.join(" • ");
     }
+function renderSlaTopRisk(items){
+  const box = document.getElementById("slaTopRiskList");
+  if (!box) return;
 
+  const rows = Array.isArray(items) ? items : [];
+  if (!rows.length) {
+    box.innerHTML = '<div class="footer-note">ยังไม่พบเคสเสี่ยง SLA</div>';
+    return;
+  }
+
+  box.innerHTML = rows.slice(0, 5).map(item => {
+    const level = String(item.sla_level || "").toLowerCase();
+    const cls = level === "breached" ? "breached" : (level === "warning" ? "warning" : "");
+    return `
+      <div class="sla-top-risk-item ${cls}" onclick="window.location.href='/case?id=${item.id}'" style="cursor:pointer">
+        <div class="sla-top-risk-head">
+          <div class="sla-top-risk-title">${escapeHtml(item.case_code || "-")} • ${escapeHtml(item.full_name || "-")}</div>
+          ${slaBadge(item.sla_level, item.sla_label_th)}
+        </div>
+        <div class="sla-top-risk-meta">
+          พื้นที่: ${escapeHtml(item.location || "-")}<br>
+          ผู้รับเคส: ${escapeHtml(item.assigned_to || "ยังไม่มี")}<br>
+          ค้างมาแล้ว: ${escapeHtml(item.sla_hours_since_action || 0)} ชั่วโมง
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+    
     function renderAlerts(alerts){
       document.getElementById("openAlerts").textContent = alerts.length;
       const box = document.getElementById("alertsList");

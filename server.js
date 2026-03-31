@@ -1568,7 +1568,12 @@ function buildSmartAlertFlex(sla = {}) {
           bigButton(`🚨 SLA วิกฤต (${overdue})`, "#EF4444", "ดู SLA วิกฤต"),
           bigButton(`⚠️ ใกล้หลุด SLA (${nearDue})`, "#F97316", "ดูใกล้หลุด SLA"),
           bigButton(`📋 เคสเปิดทั้งหมด (${openCases})`, "#1D4ED8", "ดูเคสเปิดทั้งหมด"),
-          bigButton(`🧠 Smart Alert (${smartAlert})`, "#22C55E", "ดู Smart Alert")
+          bigButton(
+  "เปิดศูนย์ปฏิบัติการ",
+  "#22C55E",
+  null,
+  "https://satisfied-stillness-production-7942.up.railway.app/command-center"
+)
         ]
       }
     }

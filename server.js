@@ -4810,56 +4810,44 @@ if (text === "Smart Alert" || text === "ดู Smart Alert") {
 if (text === "ดู SLA วิกฤต") {
   const slaCounts = await getSlaMenuCounts();
 
-  const items = (slaCounts.overdue_rows || [])
-    .slice(0, 10)
-    .map((row) => {
-      const item = {
-        ...row,
-        ...computeSlaState(row),
-        progress_percent: row.progress_percent ?? 0,
-        current_step: row.current_step || "รอทีมงานรับเรื่อง",
-        waiting_for: row.waiting_for || "รอการอัปเดต"
-      };
-      return buildCaseTrackingFlex(item);
-    });
+  const items = (slaCounts.overdue_rows || []).slice(0, 10).map(row => {
+    const item = {
+      ...row,
+      ...computeSlaState(row),
+      progress_percent: row.progress_percent ?? 0,
+      current_step: row.current_step || "รอทีมงานรับเรื่อง",
+      waiting_for: row.waiting_for || "รอการอัปเดต"
+    };
+    return buildCaseTrackingFlex(item);
+  });
 
-  if (!items.length) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "ไม่พบเคสที่อยู่ในสถานะ SLA วิกฤต"
-    }]);
-    continue;
-  }
+  await safeReply(replyToken, items.length ? items : [{
+    type: "text",
+    text: "ไม่พบเคส SLA วิกฤต"
+  }]);
 
-  await safeReply(replyToken, items);
   continue;
 }
 
 if (text === "ดูใกล้หลุด SLA") {
   const slaCounts = await getSlaMenuCounts();
 
-  const items = (slaCounts.near_due_rows || [])
-    .slice(0, 10)
-    .map((row) => {
-      const item = {
-        ...row,
-        ...computeSlaState(row),
-        progress_percent: row.progress_percent ?? 0,
-        current_step: row.current_step || "รอทีมงานรับเรื่อง",
-        waiting_for: row.waiting_for || "รอการอัปเดต"
-      };
-      return buildCaseTrackingFlex(item);
-    });
+  const items = (slaCounts.near_due_rows || []).slice(0, 10).map(row => {
+    const item = {
+      ...row,
+      ...computeSlaState(row),
+      progress_percent: row.progress_percent ?? 0,
+      current_step: row.current_step || "รอทีมงานรับเรื่อง",
+      waiting_for: row.waiting_for || "รอการอัปเดต"
+    };
+    return buildCaseTrackingFlex(item);
+  });
 
-  if (!items.length) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "ไม่พบเคสที่อยู่ในสถานะใกล้หลุด SLA"
-    }]);
-    continue;
-  }
+  await safeReply(replyToken, items.length ? items : [{
+    type: "text",
+    text: "ไม่พบเคสใกล้หลุด SLA"
+  }]);
 
-  await safeReply(replyToken, items);
   continue;
 }
 
@@ -4871,37 +4859,24 @@ if (text === "ดูเคสเปิดทั้งหมด") {
     ...(slaCounts.near_due_rows || [])
   ];
 
-  const uniqueRows = [];
-  const seen = new Set();
+  const items = rows.slice(0, 10).map(row => {
+    const item = {
+      ...row,
+      ...computeSlaState(row),
+      progress_percent: row.progress_percent ?? 0,
+      current_step: row.current_step || "รอทีมงานรับเรื่อง",
+      waiting_for: row.waiting_for || "รอการอัปเดต"
+    };
+    return buildCaseTrackingFlex(item);
+  });
 
-  for (const row of rows) {
-    const key = String(row.case_code || "");
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    uniqueRows.push(row);
-  }
+  await safeReply(replyToken, items.length ? items : [{
+    type: "text",
+    text: "ไม่พบเคสเปิด"
+  }]);
 
-  const items = uniqueRows
-    .slice(0, 10)
-    .map((row) => {
-      const item = {
-        ...row,
-        ...computeSlaState(row),
-        progress_percent: row.progress_percent ?? 0,
-        current_step: row.current_step || "รอทีมงานรับเรื่อง",
-        waiting_for: row.waiting_for || "รอการอัปเดต"
-      };
-      return buildCaseTrackingFlex(item);
-    });
-
-  if (!items.length) {
-    await safeReply(replyToken, [{
-      type: "text",
-      text: "ไม่พบเคสเปิดที่ต้องแสดงผลในขณะนี้"
-    }]);
-    continue;
-  }
-
+  continue;
+}
   await safeReply(replyToken, items);
   continue;
 }

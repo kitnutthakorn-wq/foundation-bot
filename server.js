@@ -4640,6 +4640,32 @@ app.post("/webhook", async (req, res) => {
       const text = event.message.text.trim();
       const userId = event.source?.userId || "";
       const role = await getUserRole(userId);
+      
+ // =========================
+// STEP FLOW: เพิ่มทีม (รับ USER ID)
+// =========================
+const addState = getAddTeamState(userId);
+
+if (addState?.step === "waiting_user_id") {
+  const inputId = text.trim();
+
+  if (!inputId.startsWith("U")) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ USER ID ต้องขึ้นต้นด้วย U" }
+    ]);
+    continue;
+  }
+
+  setAddTeamState(userId, "waiting_role", {
+    targetUserId: inputId
+  });
+
+  await safeReply(replyToken, [
+    buildSelectRoleFlex(inputId)
+  ]);
+
+  continue;
+}
 
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);

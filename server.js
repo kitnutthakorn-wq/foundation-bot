@@ -4934,7 +4934,16 @@ if (text === "รายการทีม") {
     continue;
   }
 
-  const rows = Array.isArray(data) ? data : [];
+  const rowsRaw = Array.isArray(data) ? data : [];
+
+const uniqueMap = new Map();
+for (const row of rowsRaw) {
+  if (!uniqueMap.has(row.line_user_id)) {
+    uniqueMap.set(row.line_user_id, row);
+  }
+}
+
+const rows = Array.from(uniqueMap.values());
 
   if (!rows.length) {
     await safeReply(replyToken, [

@@ -5085,17 +5085,22 @@ if (text === "คำสั่งดูสิทธิ์") {
   continue;
 }
 if (text === "คำสั่งเพิ่มทีม") {
-  await safeReply(replyToken, [{
-    type: "text",
-    text:
-      "คำสั่งเพิ่มทีม\n\n" +
-      "ใช้รูปแบบ:\n" +
-      "เพิ่มทีม USER_ID role\n\n" +
-      "role ที่ใช้ได้:\n" +
-      "- admin\n- staff\n- viewer\n\n" +
-      "ตัวอย่าง:\n" +
-      "เพิ่มทีม U1234567890abcdef staff"
-  }]);
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เฉพาะผู้ดูแลระบบ" }
+    ]);
+    continue;
+  }
+
+  setAddTeamState(userId, "waiting_user_id");
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "กรุณากรอก LINE USER ID\nเช่น: Uxxxxxxxxxxxx"
+    }
+  ]);
+
   continue;
 }
 

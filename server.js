@@ -1839,7 +1839,97 @@ function formatSlaLabelTh(level) {
   if (level === "warning") return "ใกล้เกิน SLA";
   return "ปกติ";
 }
+app.post("/webhook", async (req, res) => {
+  try {
+    const events = req.body.events || [];
 
+    for (const event of events) {
+      if (event.type !== "message" || event.message?.type !== "text") continue;
+
+      const text = String(event.message.text || "").trim();
+      const replyToken = event.replyToken;
+
+      if (text === "ดู Smart Alert") {
+        const slaCounts = await getSlaMenuCounts();
+        await safeReply(replyToken, [buildSmartAlertFlex(slaCounts)]);
+        continue;
+      }
+
+      if (text === "ดู SLA วิกฤต") {
+        const slaCounts = await getSlaMenuCounts();
+
+        const items = (slaCounts.overdue_rows || []).slice(0, 10).map((row) => {
+          const item = {
+            ...row,
+            ...computeSlaState(row),
+            progress_percent: row.progress_percent ?? 0,
+            current_step: row.current_step || "รอทีมงานรับเรื่อง",
+            waiting_for: row.waiting_for || "รอการอัปเดต"
+          };
+          return buildCaseTrackingFlex(item);
+        });
+
+        await safeReply(replyToken, items.length ? items : [{
+          type: "text",
+          text: "ไม่พบเคส SLA วิกฤต"
+        }]);
+        continue;
+      }
+
+      if (text === "ดูใกล้หลุด SLA") {
+        const slaCounts = await getSlaMenuCounts();
+
+        const items = (slaCounts.near_due_rows || []).slice(0, 10).map((row) => {
+          const item = {
+            ...row,
+            ...computeSlaState(row),
+            progress_percent: row.progress_percent ?? 0,
+            current_step: row.current_step || "รอทีมงานรับเรื่อง",
+            waiting_for: row.waiting_for || "รอการอัปเดต"
+          };
+          return buildCaseTrackingFlex(item);
+        });
+
+        await safeReply(replyToken, items.length ? items : [{
+          type: "text",
+          text: "ไม่พบเคสใกล้หลุด SLA"
+        }]);
+        continue;
+      }
+
+      if (text === "ดูเคสเปิดทั้งหมด") {
+        const slaCounts = await getSlaMenuCounts();
+
+        const rows = [
+          ...(slaCounts.overdue_rows || []),
+          ...(slaCounts.near_due_rows || [])
+        ];
+
+        const items = rows.slice(0, 10).map((row) => {
+          const item = {
+            ...row,
+            ...computeSlaState(row),
+            progress_percent: row.progress_percent ?? 0,
+            current_step: row.current_step || "รอทีมงานรับเรื่อง",
+            waiting_for: row.waiting_for || "รอการอัปเดต"
+          };
+          return buildCaseTrackingFlex(item);
+        });
+
+        await safeReply(replyToken, items.length ? items : [{
+          type: "text",
+          text: "ไม่พบเคสเปิด"
+        }]);
+        continue;
+      }
+    }
+
+    return res.sendStatus(200);
+  } catch (err) {
+    console.error("WEBHOOK ERROR:", err);
+    return res.sendStatus(500);
+  }
+});
 function formatSlaColor(level) {
   if (level === "breached") return "#dc2626";
   if (level === "warning") return "#d97706";

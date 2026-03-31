@@ -323,31 +323,50 @@
     }
 
     function renderCases(rows){
-      const body = document.getElementById("casesTableBody");
-      body.innerHTML = rows.length ? rows.map(row => `
-        <tr onclick="window.location.href='/case?id=${row.id}'">
-          <td>${escapeHtml(row.case_code || "-")}</td>
-          <td>${escapeHtml(row.full_name || "-")}</td>
-          <td>${escapeHtml(row.location || "-")}</td>
-          <td>${statusBadge(row.status)}</td>
-          <td>${priorityBadge(row.priority)}</td>
-          <td>${escapeHtml(row.assigned_to || "-")}</td>
-          <td>${escapeHtml(formatThaiDateTime(row.created_at))}</td>
-        </tr>`).join("") : `<tr><td colspan="7" class="footer-note">ไม่พบข้อมูล</td></tr>`;
-    }
+  const body = document.getElementById("casesTableBody");
+  body.innerHTML = rows.length ? rows.map(row => `
+    <tr onclick="window.location.href='/case?id=${row.id}'">
+      <td>${escapeHtml(row.case_code || "-")}</td>
+      <td>${escapeHtml(row.full_name || "-")}</td>
+      <td>${escapeHtml(row.location || "-")}</td>
+      <td>${statusBadge(row.status)}</td>
+      <td>${priorityBadge(row.priority)}</td>
+      <td>${slaBadge(row.sla_level, row.sla_label_th)}</td>
+      <td>${escapeHtml(row.assigned_to || "-")}</td>
+      <td>${escapeHtml(formatThaiDateTime(row.created_at))}</td>
+    </tr>`).join("") : `<tr><td colspan="8" class="footer-note">ไม่พบข้อมูล</td></tr>`;
+}
 
     async function loadCases(){
-      const search = document.getElementById("searchInput").value.trim();
-      const status = document.getElementById("statusFilter").value;
-      const priority = document.getElementById("priorityFilter").value;
-      const params = new URLSearchParams({limit:"50"});
-      if(search) params.set("search", search);
-      if(status) params.set("status", status);
-      if(priority) params.set("priority", priority);
-      const rows = await fetchJSON("/api/dashboard/cases?" + params.toString());
-      renderCases(rows);
-      return rows;
-    }
+  const search = document.getElementById("searchInput").value.trim();
+  const status = document.getElementById("statusFilter").value;
+  const priority = document.getElementById("priorityFilter").value;
+
+  const params = new URLSearchParams({limit:"50"});
+  if(search) params.set("search", search);
+  if(status) params.set("status", status);
+  if(priority) params.set("priority", priority);
+
+  const [rows, slaData] = await Promise.all([
+    fetchJSON("/api/dashboard/cases?" + params.toString()),
+    fetchJSON("/api/sla/summary?limit=500")
+  ]);
+
+  const slaItems = Array.isArray(slaData.items) ? slaData.items : [];
+  const slaMap = new Map(slaItems.map(item => [String(item.id), item]));
+
+  const mergedRows = (Array.isArray(rows) ? rows : []).map(row => {
+    const sla = slaMap.get(String(row.id));
+    return {
+      ...row,
+      sla_level: sla?.sla_level || "normal",
+      sla_label_th: sla?.sla_label_th || "ปกติ"
+    };
+  });
+
+  renderCases(mergedRows);
+  return mergedRows;
+}
 
     async function loadStats(summary){
       const rows = await fetchJSON("/api/dashboard/stats?days=7");
@@ -476,11 +495,11 @@
       }
 
       try {
-        const tasks = [loadCases()];
-        if (summary) tasks.push(loadStats(summary));
-        await Promise.all(tasks);
+       const tasks = [loadCases(), loadSlaSummary()];
+if (summary) tasks.push(loadStats(summary));
+await Promise.all(tasks);
       } catch (err) {
-        errors.push(`Cases/Stats: ${err.message}`);
+        errors.push(`Cases/Stats/SLA: ${err.message}`);
       }
 
       try {

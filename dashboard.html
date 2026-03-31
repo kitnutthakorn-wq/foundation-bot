@@ -464,7 +464,10 @@ function filterRowsBySla(rows){
   const textEl = document.getElementById("slaSummaryText");
 
   if (!banner || !titleEl || !textEl) return;
-
+if (!totals.breached && !totals.warning) {
+  banner.classList.remove("show");
+  return;
+}
   const normal = Number(totals.normal || 0);
   const warning = Number(totals.warning || 0);
   const breached = Number(totals.breached || 0);

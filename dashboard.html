@@ -253,7 +253,12 @@
     function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
     function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
     function severityBadge(severity){const value=(severity||"info").toLowerCase();const cls=["critical","high","medium","info"].includes(value)?value:"info";return `<span class="badge severity-${cls}">${escapeHtml(value)}</span>`}
-
+    function slaBadge(level, label){
+  const value = String(level || "").trim().toLowerCase();
+  const cls = ["normal","warning","breached"].includes(value) ? value : "unknown";
+  const text = label || (value || "-");
+  return `<span class="badge sla-${cls}">${escapeHtml(text)}</span>`;
+}
     function showErrorBanner(message, meta = "") {
       const banner = document.getElementById("errorBanner");
       const messageEl = document.getElementById("errorMessage");
@@ -321,7 +326,18 @@
       await maybeNotify(data);
       return data;
     }
+  async function loadSlaSummary(){
+  const data = await fetchJSON("/api/sla/summary?limit=200");
+  const totals = data.totals || {};
 
+  document.getElementById("slaNormalCount").textContent = totals.normal || 0;
+  document.getElementById("slaWarningCount").textContent = totals.warning || 0;
+  document.getElementById("slaBreachedCount").textContent = totals.breached || 0;
+
+  return data;
+}
+
+    
     function renderCases(rows){
   const body = document.getElementById("casesTableBody");
   body.innerHTML = rows.length ? rows.map(row => `

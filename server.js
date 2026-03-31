@@ -1733,6 +1733,66 @@ function buildTeamMemberFlex(item = {}) {
     }
   };
 }
+function buildSelectRoleFlex(userId) {
+  function btn(label, text, color) {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "message",
+        label,
+        text
+      }
+    };
+  }
+
+  return {
+    type: "flex",
+    altText: "เลือกสิทธิ์ทีมงาน",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#0B7C86",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกสิทธิ์ทีมงาน",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: userId,
+            color: "#D1FAE5",
+            size: "sm",
+            align: "center",
+            margin: "sm"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "10px",
+        paddingAll: "16px",
+        contents: [
+          btn("Admin", `setrole ${userId} admin`, "#DC2626"),
+          btn("Staff", `setrole ${userId} staff`, "#F97316"),
+          btn("Viewer", `setrole ${userId} viewer`, "#0B7C86")
+        ]
+      }
+    }
+  };
+}
+
 function buildSmartAlertFlex(sla = {}) {
   const overdue = Number(sla.overdue || 0);
   const nearDue = Number(sla.near_due || 0);

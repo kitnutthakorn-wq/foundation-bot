@@ -1972,7 +1972,7 @@ async function processSlaAlertsNow() {
     return { ok: false, sent: 0, skipped: 0, reason: "missing_line_config" };
   }
 
- cleanupSlaAlertCooldownMap();
+cleanupSlaAlertCooldownMap();
 
 let sent = 0;
 let skipped = 0;
@@ -1986,9 +1986,11 @@ for (const item of candidates) {
     continue;
   }
 
-  const text = buildSlaAlertText(item);
-  await pushTeamNotification(text);
-  markSlaAlertSent(item);
+  const text = buildSlaAlertText(item);   // ✅ สร้างก่อนใช้
+
+  await pushTeamNotification(text);       // ✅ ส่ง 1 ครั้ง
+  markSlaAlertSent(item);                 // ✅ mark 1 ครั้ง
+
   sent += 1;
 }
 

@@ -646,6 +646,12 @@ function renderSlaTopRisk(items){
   if (!box) return;
 
   const rows = Array.isArray(items) ? items : [];
+
+// 🔥 เพิ่มตรงนี้
+const sorted = [...rows].sort((a,b)=>{
+  return (b.sla_hours_since_action||0) - (a.sla_hours_since_action||0);
+});
+  
   if (!rows.length) {
     box.innerHTML = '<div class="footer-note">ยังไม่พบเคสเสี่ยง SLA</div>';
     return;

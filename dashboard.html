@@ -636,7 +636,8 @@ if (!totals.breached && !totals.warning) {
   const data = await fetchJSON("/api/sla/summary?limit=200");
   const totals = data.totals || {};
 
-  document.getElementById("slaNormalCount").textContent = totals.normal || 0;
+  const slaNormalEl = document.getElementById("slaNormalCount");
+if (slaNormalEl) slaNormalEl.textContent = totals.normal || 0;
   document.getElementById("slaWarningCount").textContent = totals.warning || 0;
   document.getElementById("slaBreachedCount").textContent = totals.breached || 0;
   updateSlaSummaryBanner(totals);

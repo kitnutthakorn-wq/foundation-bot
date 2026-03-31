@@ -901,11 +901,7 @@ const summaryCaseCodeEl = document.getElementById("summary_case_code");
 if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 
 const summaryStatusEl = document.getElementById("summary_status");
-
 if (summaryStatusEl) summaryStatusEl.innerText = data.status_th || data.status || "-";
-
-const summaryPriorityEl = document.getElementById("summary_priority");
-if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || data.priority || "-";
 
 if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 

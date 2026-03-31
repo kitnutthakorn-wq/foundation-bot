@@ -657,7 +657,7 @@ const sorted = [...rows].sort((a,b)=>{
     return;
   }
 
-  box.innerHTML = rows.slice(0, 5).map(item => {
+  box.innerHTML = sorted.slice(0,5).map(item => {
     const level = String(item.sla_level || "").toLowerCase();
     const cls = level === "breached" ? "breached" : (level === "warning" ? "warning" : "");
     return `

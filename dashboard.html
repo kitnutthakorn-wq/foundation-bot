@@ -340,7 +340,12 @@ function filterRowsBySla(rows){
     function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
     function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
     function severityBadge(severity){const value=(severity||"info").toLowerCase();const cls=["critical","high","medium","info"].includes(value)?value:"info";return `<span class="badge severity-${cls}">${escapeHtml(value)}</span>`}
-    
+   function getSlaRowClass(level){
+  const value = String(level || "").trim().toLowerCase();
+  if (value === "breached") return "row-sla-breached";
+  if (value === "warning") return "row-sla-warning";
+  return "";
+}   
     function slaBadge(level, label){
   const value = String(level || "").trim().toLowerCase();
   const cls = ["normal","warning","breached"].includes(value) ? value : "unknown";

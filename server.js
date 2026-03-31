@@ -1505,15 +1505,15 @@ function buildAdminMenuFlex(sla = {}) {
           ]
         ),
 
-        buildMenuBubble(
-          "https://img1.pic.in.th/images/26272da5848ec9a47.png",
-          [
-            messageButton(formatMenuBadgeLabel("SLA วิกฤต", overdue), "ดู SLA วิกฤต", "#EF4444"),
-            messageButton(formatMenuBadgeLabel("ใกล้หลุด SLA", nearDue), "ดูใกล้หลุด SLA", "#F97316"),
-            messageButton(formatMenuBadgeLabel("เคสเปิดทั้งหมด", openCases), "ดูเคสเปิดทั้งหมด", "#1D4ED8"),
-            messageButton(formatMenuBadgeLabel("Smart Alert", smartAlert), "ดู Smart Alert", "#16A34A")
-          ]
-        ),
+       buildMenuBubble(
+  "https://img1.pic.in.th/images/26272da5848ec9a47.png",
+  [
+    uriButton("แดชบอร์ดผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
+    uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
+    messageButton("Smart Alert", "ดู Smart Alert"),
+    uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
+  ]
+),
 
         buildMenuBubble(
           "https://img1.pic.in.th/images/346dc5fe1957cf436.png",

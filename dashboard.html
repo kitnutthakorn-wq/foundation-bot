@@ -643,25 +643,44 @@ return filteredRows;
       });
     }
 
-    function buildAiSummary(summary, alerts, board){
-      const lines = [];
-      const topAlert = alerts[0];
-      const topCase = (board.cases || [])[0];
+   function buildAiSummary(summary, alerts, board){
+  const lines = [];
+  const topAlert = alerts[0];
+  const topCase = (board.cases || [])[0];
 
-      lines.push(`วันนี้ระบบมีเคสใหม่ ${summary.new_cases || 0} เคส และมีเคสด่วน ${summary.urgent_cases || 0} เคส`);
-      lines.push(`ขณะนี้มี open alerts ${alerts.length} รายการที่ผู้บริหารควรติดตาม`);
+  const newCases = Number(summary.new_cases || 0);
+  const urgentCases = Number(summary.urgent_cases || 0);
+  const warning = Number(lastSlaTotals.warning || 0);
+  const breached = Number(lastSlaTotals.breached || 0);
 
-      if(topAlert){
-        lines.push(`แจ้งเตือนสำคัญที่สุดตอนนี้คือ “${topAlert.title || "-"}” ระดับ ${topAlert.severity || "-"}`);
-      }
+  lines.push(`วันนี้ระบบมีเคสใหม่ ${newCases} เคส และมีเคสด่วน ${urgentCases} เคส`);
 
-      if(topCase && topCase.case){
-        lines.push(`เคสที่ควรเร่งที่สุดคือ ${topCase.case.case_code || "-"} ของ ${topCase.case.full_name || "-"} โดยคำแนะนำคือ “${topCase.recommended_action || "ติดตามเคส"}”`);
-      }
+  if (breached > 0) {
+    lines.push(`ขณะนี้มีเคสเกิน SLA ${breached} เคส และมีเคสใกล้เกิน SLA ${warning} เคส ที่ผู้บริหารควรติดตามทันที`);
+  } else if (warning > 0) {
+    lines.push(`ขณะนี้ยังไม่มีเคสเกิน SLA แต่มีเคสใกล้เกิน SLA ${warning} เคส ควรติดตามเชิงรุก`);
+  } else {
+    lines.push(`ขณะนี้สถานะ SLA ยังปกติ และมี open alerts ${alerts.length} รายการ`);
+  }
 
-      lines.push(`ข้อเสนอเชิงบริหาร: ให้ทีมงานเร่งติดตามเคส priority สูงก่อน และเคลียร์เคสค้างที่ยังไม่มีผู้รับผิดชอบ`);
-      return lines.join(" • ");
-    }
+  if(topAlert){
+    lines.push(`แจ้งเตือนสำคัญที่สุดตอนนี้คือ “${topAlert.title || "-"}” ระดับ ${topAlert.severity || "-"}`);
+  }
+
+  if(topCase && topCase.case){
+    lines.push(`เคสที่ควรเร่งที่สุดคือ ${topCase.case.case_code || "-"} ของ ${topCase.case.full_name || "-"} โดยคำแนะนำคือ “${topCase.recommended_action || "ติดตามเคส"}”`);
+  }
+
+  if (breached > 0) {
+    lines.push(`ข้อเสนอเชิงบริหาร: ให้ทีมงานเร่งเคลียร์เคสเกิน SLA ก่อนเป็นลำดับแรก แล้วตามด้วยเคสใกล้เกิน SLA`);
+  } else if (urgentCases > 0) {
+    lines.push(`ข้อเสนอเชิงบริหาร: ให้ทีมงานเร่งติดตามเคส priority สูงก่อน และเคลียร์เคสค้างที่ยังไม่มีผู้รับผิดชอบ`);
+  } else {
+    lines.push(`ข้อเสนอเชิงบริหาร: รักษาความต่อเนื่องของการติดตาม และเฝ้าระวังเคสใหม่ไม่ให้ค้างสะสม`);
+  }
+
+  return lines.join(" • ");
+}
 function renderSlaTopRisk(items){
   const box = document.getElementById("slaTopRiskList");
   if (!box) return;

@@ -4806,7 +4806,10 @@ if (text === "Smart Alert" || text === "ดู Smart Alert") {
   const slaCounts = await getSlaMenuCounts();
   await safeReply(replyToken, [buildSmartAlertFlex(slaCounts)]);
   continue;
-}
+}// =========================
+// SLA COMMAND (PRO VERSION)
+// =========================
+
 if (text === "ดู SLA วิกฤต") {
   const slaCounts = await getSlaMenuCounts();
 
@@ -4846,6 +4849,33 @@ if (text === "ดูใกล้หลุด SLA") {
   await safeReply(replyToken, items.length ? items : [{
     type: "text",
     text: "ไม่พบเคสใกล้หลุด SLA"
+  }]);
+
+  continue;
+}
+
+if (text === "ดูเคสเปิดทั้งหมด") {
+  const slaCounts = await getSlaMenuCounts();
+
+  const rows = [
+    ...(slaCounts.overdue_rows || []),
+    ...(slaCounts.near_due_rows || [])
+  ];
+
+  const items = rows.slice(0, 10).map(row => {
+    const item = {
+      ...row,
+      ...computeSlaState(row),
+      progress_percent: row.progress_percent ?? 0,
+      current_step: row.current_step || "รอทีมงานรับเรื่อง",
+      waiting_for: row.waiting_for || "รอการอัปเดต"
+    };
+    return buildCaseTrackingFlex(item);
+  });
+
+  await safeReply(replyToken, items.length ? items : [{
+    type: "text",
+    text: "ไม่พบเคสเปิด"
   }]);
 
   continue;

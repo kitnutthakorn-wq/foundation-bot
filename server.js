@@ -1549,26 +1549,70 @@ function buildAdminMenuFlex(sla = {}) {
           ]
         ),
 
-       buildMenuBubble(
-  "https://img1.pic.in.th/images/26272da5848ec9a47.png",
-  [
-    uriButton("แดชบอร์ดผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
-    uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
-    messageButton("Smart Alert", "ดู Smart Alert"),
-    uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
-  ]
-),
+        buildMenuBubble(
+          "https://img1.pic.in.th/images/26272da5848ec9a47.png",
+          [
+            uriButton("แดชบอร์ดผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/dashboard"),
+            uriButton("รายงานผู้บริหาร", "https://satisfied-stillness-production-7942.up.railway.app/report"),
+            messageButton("Smart Alert", "ดู Smart Alert"),
+            uriButton("เปิดศูนย์ปฏิบัติการ", "https://satisfied-stillness-production-7942.up.railway.app/command-center")
+          ]
+        ),
 
-       buildMenuBubble(
-  "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
-  [
-    messageButton("ดูทีม", "เปิดเมนูจัดการทีม"),
-    messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
-    messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
-    messageButton("ลบทีม", "คำสั่งลบทีม")
-  ]
-)
+        buildMenuBubble(
+          "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
+          [
+            messageButton("ดูทีม", "เปิดเมนูจัดการทีม"),
+            messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
+            messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
+            messageButton("ลบทีม", "คำสั่งลบทีม")
+          ]
+        )
       ]
+    }
+  };
+}
+
+function buildTeamManageFlex() {
+  function btn(label, text) {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color: "#22C55E",
+      action: {
+        type: "message",
+        label,
+        text
+      }
+    };
+  }
+
+  return {
+    type: "flex",
+    altText: "เมนูจัดการทีม",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      hero: {
+        type: "image",
+        url: "https://img1.pic.in.th/images/346dc5fe1957cf436.png",
+        size: "full",
+        aspectRatio: "1:1",
+        aspectMode: "cover"
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "10px",
+        paddingAll: "14px",
+        contents: [
+          btn("ดูทีม", "รายการทีม"),
+          btn("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
+          btn("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
+          btn("ลบทีม", "คำสั่งลบทีม")
+        ]
+      }
     }
   };
 }
@@ -1613,11 +1657,11 @@ function buildSmartAlertFlex(sla = {}) {
           bigButton(` ใกล้หลุด SLA (${nearDue})`, "#F97316", "ดูใกล้หลุด SLA"),
           bigButton(` เคสเปิดทั้งหมด (${openCases})`, "#1D4ED8", "ดูเคสเปิดทั้งหมด"),
           bigButton(
-  "เปิดศูนย์ปฏิบัติการ",
-  "#22C55E",
-  null,
-  "https://satisfied-stillness-production-7942.up.railway.app/command-center"
-)
+            "เปิดศูนย์ปฏิบัติการ",
+            "#22C55E",
+            null,
+            "https://satisfied-stillness-production-7942.up.railway.app/command-center"
+          )
         ]
       }
     }

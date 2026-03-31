@@ -2051,7 +2051,21 @@ app.get("/version", (req, res) => {
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
-
+// =========================
+// SLA ALERT (MANUAL TRIGGER)
+// =========================
+app.get("/api/sla/alerts/run", async (req, res) => {
+  try {
+    const result = await processSlaAlertsNow();
+    res.json(result);
+  } catch (err) {
+    console.error("SLA ALERT RUN ERROR:", err);
+    res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
 + // =========================
 + // SLA ALERT (MANUAL TRIGGER)
 + // =========================

@@ -99,7 +99,43 @@
   color:#fff;
   border-color:var(--brand);
 }
-    
+    /* ===== SLA SUMMARY BANNER ===== */
+.sla-summary-banner{
+  display:none;
+  border-radius:18px;
+  padding:16px 18px;
+  margin:0 0 16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--line);
+  background:#ffffff;
+}
+.sla-summary-banner.show{
+  display:block;
+}
+.sla-summary-banner.ok{
+  background:#f0fdf4;
+  border-color:#bbf7d0;
+  color:#166534;
+}
+.sla-summary-banner.warning{
+  background:#fffbeb;
+  border-color:#fde68a;
+  color:#92400e;
+}
+.sla-summary-banner.breached{
+  background:#fef2f2;
+  border-color:#fecaca;
+  color:#b91c1c;
+}
+.sla-summary-title{
+  font-size:18px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+.sla-summary-text{
+  font-size:14px;
+  line-height:1.7;
+}
     .error-banner{display:none;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:var(--shadow)}
     .error-banner.show{display:block}
     .error-title{font-weight:800;margin-bottom:6px}
@@ -200,7 +236,10 @@
   <button class="secondary sla-filter-btn" id="slaFilterWarningBtn">ใกล้เกิน</button>
   <button class="secondary sla-filter-btn" id="slaFilterNormalBtn">ปกติ</button>
 </div>
-    
+   <div id="slaSummaryBanner" class="sla-summary-banner">
+  <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
+  <div id="slaSummaryText" class="sla-summary-text">กำลังประมวลผลสถานะ SLA...</div>
+</div> 
     <div class="exec-grid">
       <div class="panel">
         <h2>AI Executive Summary</h2>
@@ -419,6 +458,38 @@ function filterRowsBySla(rows){
       await maybeNotify(data);
       return data;
     }
+    function updateSlaSummaryBanner(totals = {}){
+  const banner = document.getElementById("slaSummaryBanner");
+  const titleEl = document.getElementById("slaSummaryTitle");
+  const textEl = document.getElementById("slaSummaryText");
+
+  if (!banner || !titleEl || !textEl) return;
+
+  const normal = Number(totals.normal || 0);
+  const warning = Number(totals.warning || 0);
+  const breached = Number(totals.breached || 0);
+
+  banner.classList.remove("ok", "warning", "breached");
+  banner.classList.add("show");
+
+  if (breached > 0) {
+    banner.classList.add("breached");
+    titleEl.textContent = "วิกฤต SLA";
+    textEl.textContent = `มีเคสเกิน SLA ${breached} เคส และมีเคสใกล้เกิน SLA ${warning} เคส ควรเร่งติดตามทันที`;
+    return;
+  }
+
+  if (warning > 0) {
+    banner.classList.add("warning");
+    titleEl.textContent = "ต้องติดตาม SLA";
+    textEl.textContent = `ยังไม่มีเคสเกิน SLA แต่มีเคสใกล้เกิน SLA ${warning} เคส ควรติดตามเชิงรุก`;
+    return;
+  }
+
+  banner.classList.add("ok");
+  titleEl.textContent = "สถานะ SLA ปกติ";
+  textEl.textContent = `ขณะนี้ยังไม่พบเคสเกิน SLA และไม่มีเคสใกล้เกิน SLA เคส active ปกติ ${normal} เคส`;
+}
   async function loadSlaSummary(){
   const data = await fetchJSON("/api/sla/summary?limit=200");
   const totals = data.totals || {};
@@ -426,7 +497,7 @@ function filterRowsBySla(rows){
   document.getElementById("slaNormalCount").textContent = totals.normal || 0;
   document.getElementById("slaWarningCount").textContent = totals.warning || 0;
   document.getElementById("slaBreachedCount").textContent = totals.breached || 0;
-
+  updateSlaSummaryBanner(totals);
   return data;
 }
 

@@ -4774,7 +4774,7 @@ if (caseUpdateState?.step === "await_detail") {
        
        
 
-if (text === "เมนูแอดมิน" || text === "เปิดเมนูแอดมิน" || text === "รีเฟรชเมนูแอดมิน") {
+iif (text === "เมนูแอดมิน" || text === "เปิดเมนูแอดมิน" || text === "รีเฟรชเมนูแอดมิน") {
   if (!isGroupEvent(event)) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }]);
     continue;
@@ -4805,6 +4805,17 @@ if (text === "เมนูแอดมิน" || text === "เปิดเมน
   ]);
   continue;
 }
+
+if (text === "เปิดเมนูจัดการทีม" || text === "ดูทีม") {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ เมนูนี้สำหรับผู้ดูแลระบบ" }]);
+    continue;
+  }
+
+  await safeReply(replyToken, [buildTeamManageFlex()]);
+  continue;
+}
+
 if (text === "คำสั่งดูสิทธิ์") {
   await safeReply(replyToken, [{
     type: "text",
@@ -4817,7 +4828,6 @@ if (text === "คำสั่งดูสิทธิ์") {
   }]);
   continue;
 }
-
 if (text === "คำสั่งเพิ่มทีม") {
   await safeReply(replyToken, [{
     type: "text",

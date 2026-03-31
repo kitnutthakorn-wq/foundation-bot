@@ -1972,7 +1972,10 @@ async function processSlaAlertsNow() {
     return { ok: false, sent: 0, skipped: 0, reason: "missing_line_config" };
   }
 
-  cleanupSlaAlertCooldownMap();
+ cleanupSlaAlertCooldownMap();
+
+let sent = 0;
+let skipped = 0;
 
 const candidates = (await getSlaAlertCandidates(200))
   .slice(0, 5);
@@ -1984,13 +1987,11 @@ for (const item of candidates) {
   }
 
   const text = buildSlaAlertText(item);
-
-  await pushTeamNotification(text);   // ยิง 1 ครั้ง
-  markSlaAlertSent(item);             // กัน spam
-
+  await pushTeamNotification(text);
+  markSlaAlertSent(item);
   sent += 1;
 }
-// ✅ return ต้องอยู่นอก loop เท่านั้น
+
 return {
   ok: true,
   sent,

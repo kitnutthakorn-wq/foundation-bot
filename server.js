@@ -1349,6 +1349,10 @@ function buildTeamNewCaseText(item = {}) {
 }
 
 async function pushTeamNewCaseNotification(item = {}) {
+
+  // ✅ เติม SLA เข้า item
+  const sla = computeSlaState(item);
+  item.sla_level = sla.sla_level;
   const flex = buildTeamNewCaseFlex(item);
   try {
     await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);

@@ -814,7 +814,10 @@ async function bootstrap() {
       await loadGroupMembersForPicker();
     } else {
      await Promise.all([loadCases(), loadActivities()]);
-     connectRealtime();
+
+setTimeout(() => {
+  connectRealtime();
+}, 800);
     }
 
   } catch (err) {

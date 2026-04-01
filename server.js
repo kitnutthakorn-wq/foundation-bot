@@ -5262,25 +5262,26 @@ if (text === "คำสั่งดูสิทธิ์") {
   continue;
 }
 if (text === "คำสั่งเพิ่มทีม") {
-  if (!(await isAdmin(userId))) {
+
+  const targetUserId = event?.source?.userId || "";
+
+  if (!targetUserId.startsWith("U")) {
     await safeReply(replyToken, [
-      { type: "text", text: "❌ เฉพาะผู้ดูแลระบบ" }
+      { type: "text", text: "❌ ไม่พบ USER ID" }
     ]);
     continue;
   }
 
-  setAddTeamState(userId, "waiting_user_id");
+  setAddTeamState(userId, "waiting_role", {
+    targetUserId
+  });
 
   await safeReply(replyToken, [
-    {
-      type: "text",
-      text: "กรุณากรอก LINE USER ID\nเช่น: Uxxxxxxxxxxxx"
-    }
+    buildSelectRoleFlex(targetUserId)
   ]);
 
   continue;
 }
-
 if (text === "คำสั่งลบทีม") {
   await safeReply(replyToken, [{
     type: "text",

@@ -4733,9 +4733,9 @@ if (text.startsWith("setrole ")) {
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 
-  if (existing && existing.is_active !== false) {
-  clearAddTeamState(userId);
+if (existing && existing.is_active !== false) {
 
+  // ✅ ถ้า role เดิม = role ใหม่ → กันซ้ำ
   if (existing.role === role) {
     await safeReply(replyToken, [
       { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
@@ -4743,11 +4743,13 @@ if (text.startsWith("setrole ")) {
     continue;
   }
 
+  // ✅ ถ้า role เปลี่ยน → UPDATE แทน
   await setLineUserRole(targetUserId, role);
 
   await safeReply(replyToken, [
     { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
   ]);
+
   continue;
 } 
   catch (err) {
@@ -4803,9 +4805,9 @@ if (text.startsWith("setrole_auto ")) {
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 
- if (existing && existing.is_active !== false) {
-  clearAddTeamState(userId);
+if (existing && existing.is_active !== false) {
 
+  // ✅ ถ้า role เดิม = role ใหม่ → กันซ้ำ
   if (existing.role === role) {
     await safeReply(replyToken, [
       { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
@@ -4813,13 +4815,15 @@ if (text.startsWith("setrole_auto ")) {
     continue;
   }
 
+  // ✅ ถ้า role เปลี่ยน → UPDATE แทน
   await setLineUserRole(targetUserId, role);
 
   await safeReply(replyToken, [
     { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
   ]);
+
   continue;
-} 
+}
   catch (err) {
     console.error("AUTO SET ROLE ERROR:", err);
 

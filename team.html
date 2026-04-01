@@ -307,6 +307,30 @@ async function safeFetchJson(url, options={}) {
   if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
   return data;
 }
+ // =========================
+// MEMBER PICKER (LOAD FROM API)
+// =========================
+async function loadGroupMembersForPicker() {
+  try {
+    const res = await safeFetchJson(
+      `${CONFIG.API_BASE_URL}${CONFIG.GROUP_MEMBERS_ENDPOINT}`
+    );
+
+    memberPickerItems = res.members || [];
+
+    document.getElementById('memberCountBadge').textContent =
+      `${memberPickerItems.length} สมาชิก`;
+
+    document.getElementById('memberPickerSection')
+      .classList.remove('hidden');
+
+    renderMemberPicker();
+
+  } catch (err) {
+    console.error("LOAD MEMBERS ERROR:", err);
+    alert("❌ โหลดสมาชิกไม่สำเร็จ");
+  }
+} 
 function getViewMode() {
   const params = new URLSearchParams(window.location.search);
   return (params.get("view") || "").trim();

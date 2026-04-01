@@ -4676,17 +4676,21 @@ app.post("/webhook", async (req, res) => {
 
     const events = req.body.events || [];
 
-    for (const event of events) {
-  const userId = event?.source?.userId;
-  upsertRecentUser(userId); // ✅ เพิ่มตรงนี้
-      
-      if (event.type !== "message") continue;
-      if (!event.message || event.message.type !== "text") continue;
+   for (const event of events) {
 
-      const replyToken = event.replyToken;
-      const text = event.message.text.trim();
-      const userId = event.source?.userId || "";
-      const role = await getUserRole(userId);
+  if (event.type !== "message") continue;
+  if (!event.message || event.message.type !== "text") continue;
+
+  const replyToken = event.replyToken;
+  const text = event.message.text.trim();
+  const userId = event?.source?.userId || "";
+
+  upsertRecentUser(userId); // ✅ ถูกแล้ว
+
+  const role = await getUserRole(userId);
+
+  // 👉 STEP FLOW ของคุณต่อจากนี้
+
       
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)

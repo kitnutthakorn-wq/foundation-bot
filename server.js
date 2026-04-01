@@ -1597,7 +1597,7 @@ function buildAdminMenuFlex(sla = {}) {
             messageButton("ดูทีม", "เปิดเมนูจัดการทีม"),
             messageButton("ดูสิทธิ์", "คำสั่งดูสิทธิ์"),
             messageButton("เพิ่มทีม", "คำสั่งเพิ่มทีม"),
-            messageButton("ลบทีม", "คำสั่งลบทีม")
+            messageButton("ลบทีม", "คำสั่งลบทีม"),
           ]
         )
       ]

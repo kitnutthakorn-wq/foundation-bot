@@ -1778,6 +1778,102 @@ function buildTeamMemberFlex(item = {}) {
     }
   };
 }
+function buildSelectUserFlex() {
+  const users = [...recentUsers.values()]
+    .sort((a, b) => b.lastSeen - a.lastSeen)
+    .slice(0, 10);
+
+  if (users.length === 0) {
+    return {
+      type: "flex",
+      altText: "ยังไม่มีผู้ใช้",
+      contents: {
+        type: "bubble",
+        size: "mega",
+        header: {
+          type: "box",
+          layout: "vertical",
+          backgroundColor: "#0B7C86",
+          paddingAll: "16px",
+          contents: [
+            {
+              type: "text",
+              text: "เลือกสมาชิก",
+              color: "#FFFFFF",
+              weight: "bold",
+              size: "lg",
+              align: "center"
+            }
+          ]
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "16px",
+          contents: [
+            {
+              type: "text",
+              text: "❌ ยังไม่มีผู้ใช้ที่ทักบอทล่าสุด",
+              wrap: true,
+              align: "center",
+              color: "#666666"
+            }
+          ]
+        }
+      }
+    };
+  }
+
+  return {
+    type: "flex",
+    altText: "เลือกสมาชิก",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#0B7C86",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกสมาชิก",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: "เลือกผู้ใช้ที่ต้องการกำหนดสิทธิ์",
+            color: "#D1FAE5",
+            size: "sm",
+            align: "center",
+            margin: "sm"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "10px",
+        paddingAll: "16px",
+        contents: users.map((u) => ({
+          type: "button",
+          style: "secondary",
+          height: "sm",
+          action: {
+            type: "message",
+            label: (u.displayName || u.userId).slice(0, 20),
+            text: `select_user ${u.userId}`
+          }
+        }))
+      }
+    }
+  };
+}
+
 function buildSelectRoleFlex(userId) {
   function btn(label, text, color) {
     return {

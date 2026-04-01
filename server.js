@@ -5456,23 +5456,19 @@ if (text === "คำสั่งดูสิทธิ์") {
   }]);
   continue;
 }
-if (text === "คำสั่งเพิ่มทีม") {
+if (text === "คำสั่งเพิ่มทีม" || text === "เพิ่มทีม") {
 
-  const targetUserId = event?.source?.userId || "";
-
-  if (!targetUserId.startsWith("U")) {
+  if (!(await isAdmin(userId))) {
     await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่พบ USER ID" }
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
     ]);
     continue;
   }
 
-  setAddTeamState(userId, "waiting_role", {
-    targetUserId
-  });
+  clearAddTeamState(userId);
 
   await safeReply(replyToken, [
-    buildSelectRoleFlex(targetUserId)
+    buildSelectUserFlex() // 🔥 PRO MAX
   ]);
 
   continue;

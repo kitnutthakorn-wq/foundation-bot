@@ -634,7 +634,36 @@ async function sendUpdate(){const type=document.getElementById('messageType').va
 
 function connectRealtime(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){document.getElementById('realtimeStatus').textContent='Demo mode';return;} if(eventSource) eventSource.close(); eventSource = new EventSource(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_STREAM_ENDPOINT}`); eventSource.onopen=()=>document.getElementById('realtimeStatus').textContent='Connected'; eventSource.onmessage=async()=>{document.getElementById('realtimeStatus').textContent='Syncing...'; await Promise.all([loadCases(),loadActivities()]); document.getElementById('realtimeStatus').textContent='Connected';}; eventSource.onerror=()=>document.getElementById('realtimeStatus').textContent='Reconnect...';}catch{document.getElementById('realtimeStatus').textContent='Unavailable';}}
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
+async function bootstrap() {
+  try {
+    setToday();
+    await initLiff();
+    await loadTeamRole();
+
+    if (isPickMemberMode()) {
+      document.querySelector('.hero')?.classList.add('hidden');
+      document.querySelector('.workspace')?.classList.add('hidden');
+      document.querySelector('.footer-note')?.classList.add('hidden');
+
+      await loadGroupMembersForPicker();
+    } else {
+      await Promise.all([loadCases(), loadActivities()]);
+      await loadRecentActivityRealtime();
+      connectRealtime();
+    }
+
+  } catch (err) {
+    console.error("BOOTSTRAP ERROR:", err);
+    bindProfile({ displayName: 'Fallback User' }, 'เกิดข้อผิดพลาด - ใช้โหมดสำรอง');
+    allCases = demoCases;
+    activities = demoActivities;
+    updateStats();
+    renderCases();
+    renderActivities();
+  } finally {
+    setLoading(false);
+  }
+}
 
 function connectRealtime() {
   try {
@@ -690,7 +719,6 @@ function connectRealtime() {
 }
 
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
-async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); await loadRecentActivityRealtime(); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
 
 bootstrap();
 </script>

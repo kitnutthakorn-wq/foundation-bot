@@ -1641,7 +1641,17 @@ function buildTeamManageFlex() {
         contents: [
           btn("บริหารทีมงาน", "รายการทีม"),
           btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
-          btn("เพิ่มทีมงาน", "คำสั่งเพิ่มทีม"),
+          {
+  type: "button",
+  style: "primary",
+  height: "sm",
+  color: "#22C55E",
+  action: {
+    type: "uri",
+    label: "เพิ่มทีมงาน",
+    uri: getTeamLiffUrl("pick-member")
+  }
+}
           btn("ลบทีมงาน", "คำสั่งลบทีม")
         ]
       }

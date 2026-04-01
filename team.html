@@ -360,7 +360,10 @@ function renderMemberPicker() {
 function openRoleModal(member) {
   selectedMember = member;
   selectedMemberRole = "viewer";
+ document.querySelectorAll('.role-option')
+    .forEach(el => el.classList.remove('active'));
 
+  document.getElementById('roleOptionViewer').classList.add('active'); // 👈 เพิ่ม
   document.getElementById('roleTargetName').textContent = member.displayName;
   document.getElementById('roleTargetId').textContent = member.userId;
   document.getElementById('roleTargetAvatar').src = member.pictureUrl || '';

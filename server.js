@@ -4666,7 +4666,112 @@ if (addState?.step === "waiting_user_id") {
 
   continue;
 }
+if (text.startsWith("setrole ")) {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
 
+  const parts = text.trim().split(/\s+/);
+  const targetUserId = parts[1] || "";
+  const selectedRole = parts[2] || "";
+
+  if (!targetUserId.startsWith("U")) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
+    ]);
+    continue;
+  }
+
+  if (!["admin", "staff", "viewer"].includes(selectedRole)) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
+    ]);
+    continue;
+  }
+
+  try {
+    await setLineUserRole(targetUserId, selectedRole);
+    clearAddTeamState(userId);
+
+    await safeReply(replyToken, [
+      {
+        type: "flex",
+        altText: "เพิ่มทีมสำเร็จ",
+        contents: {
+          type: "bubble",
+          size: "mega",
+          header: {
+            type: "box",
+            layout: "vertical",
+            backgroundColor:
+              selectedRole === "admin" ? "#DC2626" :
+              selectedRole === "staff" ? "#F97316" :
+              "#0B7C86",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: "เพิ่มทีมสำเร็จ",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "lg",
+                align: "center"
+              },
+              {
+                type: "text",
+                text:
+                  selectedRole === "admin" ? "ผู้ดูแลระบบ" :
+                  selectedRole === "staff" ? "ทีมงาน" :
+                  "ดูได้อย่างเดียว",
+                color: "#F9FAFB",
+                size: "sm",
+                margin: "sm",
+                align: "center"
+              }
+            ]
+          },
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            paddingAll: "16px",
+            contents: [
+              {
+                type: "text",
+                text: `LINE USER ID: ${targetUserId}`,
+                wrap: true,
+                size: "sm"
+              },
+              {
+                type: "text",
+                text: `สิทธิ์: ${selectedRole}`,
+                wrap: true,
+                size: "sm"
+              },
+              {
+                type: "text",
+                text: "สถานะ: เพิ่มเข้าทีมแล้ว",
+                wrap: true,
+                size: "sm"
+              }
+            ]
+          }
+        }
+      }
+    ]);
+  } catch (error) {
+    console.error("SET ROLE ERROR:", error);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เพิ่มทีมไม่สำเร็จ" }
+    ]);
+  }
+
+  continue;
+}
+      
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);
 console.log("USER ROLE =", role);

@@ -4810,7 +4810,8 @@ app.post("/webhook", async (req, res) => {
   const text = event.message.text.trim();
   const userId = event?.source?.userId || "";
 
-  upsertRecentUser(userId); // ✅ ถูกแล้ว
+ const lineDisplayName = await getLineProfileNameSafe(event);
+upsertRecentUser(userId, lineDisplayName || userId);
 
   const role = await getUserRole(userId);
 

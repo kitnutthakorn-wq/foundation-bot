@@ -326,17 +326,6 @@ async function isAdmin(userId) {
   return role === "admin";
 }
 
-// 👇 วางตรงนี้
-async function countActiveAdmins() {
-  const { count, error } = await supabase
-    .from("line_user_roles")
-    .select("*", { count: "exact", head: true })
-    .eq("role", "admin");
-
-  if (error) throw error;
-  return count || 0;
-}
-
 async function findTeamMemberByUserId(lineUserId) {
   const { data, error } = await supabase
     .from("line_user_roles")

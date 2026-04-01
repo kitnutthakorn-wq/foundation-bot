@@ -1863,10 +1863,10 @@ function buildSelectUserFlex() {
           style: "secondary",
           height: "sm",
           action: {
-            type: "message",
-           (u.displayName || u.userId).slice(0, 20),
-            text: `select_user ${u.userId}`
-          }
+  type: "message",
+  label: (u.displayName || u.userId).slice(0, 20),
+  text: `select_user ${u.userId}`
+}
         }))
       }
     }

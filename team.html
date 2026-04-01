@@ -434,6 +434,8 @@ async function saveSelectedTeamMember() {
 
 function closeRoleModal(){
   document.getElementById('roleModalBackdrop').style.display = 'none';
+  selectedMember = null;
+  selectedMemberRole = "viewer";
 }
 
 function closeMemberPicker(){

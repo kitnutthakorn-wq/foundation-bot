@@ -47,6 +47,7 @@ async function getLineProfileNameSafe(event = {}) {
     if (!userId) return "";
 
     const sourceType = event?.source?.type || "";
+    console.log("PROFILE DEBUG sourceType:", sourceType, "userId:", userId, "groupId:", event?.source?.groupId || "", "roomId:", event?.source?.roomId || "");
 
     if (sourceType === "user") {
       const profile = await getLineProfile(userId);

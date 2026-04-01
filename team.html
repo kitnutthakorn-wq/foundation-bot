@@ -420,7 +420,7 @@ async function saveSelectedTeamMember() {
 
   } catch (err) {
     alert("❌ บันทึกไม่สำเร็จ: " + err.message);
-  } finally {
+} finally {
   saving = false;
 
   const saveBtn = document.getElementById('saveTeamBtn');
@@ -429,6 +429,9 @@ async function saveSelectedTeamMember() {
     saveBtn.textContent = 'บันทึกทีม';
   }
 }
+
+} // 👈 ปิดฟังก์ชัน saveSelectedTeamMember ตรงนี้
+
 function closeRoleModal(){
   document.getElementById('roleModalBackdrop').style.display = 'none';
 }

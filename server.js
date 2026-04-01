@@ -4750,7 +4750,74 @@ if (text.startsWith("setrole ")) {
     continue;
   }
 }
-      
+if (text.startsWith("setrole_auto ")) {
+
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
+  const role = (text.split(" ")[1] || "").toLowerCase();
+
+  try {
+    const targetUserId = event?.source?.userId || "";
+
+    if (!targetUserId.startsWith("U")) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ ไม่พบ USER ID ที่ถูกต้อง" }
+      ]);
+      continue;
+    }
+
+    if (!["admin", "staff", "viewer"].includes(role)) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
+      ]);
+      continue;
+    }
+
+    if (role === "admin") {
+      const adminCount = await countActiveAdmins();
+      if (adminCount >= 3) {
+        await safeReply(replyToken, [
+          { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
+        ]);
+        continue;
+      }
+    }
+
+    const { data: existing } = await supabase
+      .from("line_user_roles")
+      .select("line_user_id, is_active")
+      .eq("line_user_id", targetUserId)
+      .maybeSingle();
+
+    if (existing && existing.is_active !== false) {
+      await safeReply(replyToken, [
+        { type: "text", text: "⚠️ ผู้ใช้นี้อยู่ในระบบแล้ว" }
+      ]);
+      continue;
+    }
+
+    await setLineUserRole(targetUserId, role);
+
+    await safeReply(replyToken, [
+      { type: "text", text: `✅ เพิ่มทีมสำเร็จ (${role})` }
+    ]);
+
+    continue;
+
+  } catch (err) {
+    console.error("AUTO SET ROLE ERROR:", err);
+
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เกิดข้อผิดพลาด" }
+    ]);
+    continue;
+  }
+}      
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);
 

@@ -4729,7 +4729,7 @@ if (text.startsWith("setrole ")) {
 
     const { data: existing } = await supabase
       .from("line_user_roles")
-      .select("line_user_id, is_active")
+      .select("line_user_id, is_active, role")
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 

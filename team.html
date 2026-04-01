@@ -348,7 +348,7 @@ function renderMemberPicker() {
   }
 
   root.innerHTML = filtered.map(m => `
-    <div class="member-item" onclick="openRoleModalById('${m.userId}')">
+    <div class="member-item"onclick="openRoleModalById('${m.userId.replace(/'/g, "\\'")}')">
     
      <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
       <div class="member-meta">

@@ -30,6 +30,12 @@ function getAddTeamState(userId) {
   return userStates[userId]?.addTeam || null;
 }
 
+function clearAddTeamState(userId) {
+  if (userStates[userId]?.addTeam) {
+    delete userStates[userId].addTeam;
+  }
+}
+
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 

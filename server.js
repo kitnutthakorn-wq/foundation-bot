@@ -3215,6 +3215,86 @@ async function callLinePushApi(to, messages) {
 
   return resultText;
 }
+async function getLineProfile(userId) {
+  if (!userId) return null;
+
+  const response = await fetch(`https://api.line.me/v2/bot/profile/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+    },
+  });
+
+  const resultText = await response.text();
+  console.log("LINE profile status:", response.status);
+  console.log("LINE profile body:", resultText);
+
+  if (!response.ok) {
+    throw new Error(`LINE profile failed: ${response.status} ${resultText}`);
+  }
+
+  try {
+    return JSON.parse(resultText);
+  } catch {
+    return null;
+  }
+}
+
+async function getGroupMemberProfile(groupId, userId) {
+  if (!groupId || !userId) return null;
+
+  const response = await fetch(
+    `https://api.line.me/v2/bot/group/${groupId}/member/${userId}/profile`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+      },
+    }
+  );
+
+  const resultText = await response.text();
+  console.log("LINE group member profile status:", response.status);
+  console.log("LINE group member profile body:", resultText);
+
+  if (!response.ok) {
+    throw new Error(`LINE group member profile failed: ${response.status} ${resultText}`);
+  }
+
+  try {
+    return JSON.parse(resultText);
+  } catch {
+    return null;
+  }
+}
+
+async function getRoomMemberProfile(roomId, userId) {
+  if (!roomId || !userId) return null;
+
+  const response = await fetch(
+    `https://api.line.me/v2/bot/room/${roomId}/member/${userId}/profile`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+      },
+    }
+  );
+
+  const resultText = await response.text();
+  console.log("LINE room member profile status:", response.status);
+  console.log("LINE room member profile body:", resultText);
+
+  if (!response.ok) {
+    throw new Error(`LINE room member profile failed: ${response.status} ${resultText}`);
+  }
+
+  try {
+    return JSON.parse(resultText);
+  } catch {
+    return null;
+  }
+}
 
 async function safeReply(replyToken, messages) {
   try {

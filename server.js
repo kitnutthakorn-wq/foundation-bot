@@ -4671,7 +4671,9 @@ if (addState?.step === "waiting_user_id") {
 
   continue;
 }
+
 if (text.startsWith("setrole ")) {
+
   if (!(await isAdmin(userId))) {
     await safeReply(replyToken, [
       { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
@@ -4681,26 +4683,33 @@ if (text.startsWith("setrole ")) {
 
   const parts = text.trim().split(/\s+/);
   const targetUserId = parts[1] || "";
-  const selectedRole = parts[2] || "";
-
-  if (!targetUserId.startsWith("U")) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
-    ]);
-    continue;
-  }
-
-  if (!["admin", "staff", "viewer"].includes(selectedRole)) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
-    ]);
-    continue;
-  }
+  const role = (parts[2] || "").toLowerCase();
 
   try {
-    // =========================
-    // เช็ก user ซ้ำ
-    // =========================
+    if (!targetUserId.startsWith("U")) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
+      ]);
+      continue;
+    }
+
+    if (!["admin", "staff", "viewer"].includes(role)) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
+      ]);
+      continue;
+    }
+
+    if (role === "admin") {
+      const adminCount = await countActiveAdmins();
+      if (adminCount >= 3) {
+        await safeReply(replyToken, [
+          { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
+        ]);
+        continue;
+      }
+    }
+
     const { data: existing } = await supabase
       .from("line_user_roles")
       .select("line_user_id, is_active")
@@ -4716,113 +4725,28 @@ if (text.startsWith("setrole ")) {
       continue;
     }
 
-    // =========================
-    // บันทึก role
-    // =========================
-    await setLineUserRole(targetUserId, selectedRole);
+    await setLineUserRole(targetUserId, role);
     clearAddTeamState(userId);
 
     await safeReply(replyToken, [
-      {
-        type: "flex",
-        altText: "เพิ่มทีมสำเร็จ",
-        contents: {
-          type: "bubble",
-          size: "mega",
-          header: {
-            type: "box",
-            layout: "vertical",
-            backgroundColor:
-              selectedRole === "admin" ? "#DC2626" :
-              selectedRole === "staff" ? "#F97316" :
-              "#0B7C86",
-            paddingAll: "16px",
-            contents: [
-              {
-                type: "text",
-                text: "เพิ่มทีมสำเร็จ",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "lg",
-                align: "center"
-              },
-              {
-                type: "text",
-                text:
-                  selectedRole === "admin" ? "ผู้ดูแลระบบ" :
-                  selectedRole === "staff" ? "ทีมงาน" :
-                  "ดูได้อย่างเดียว",
-                color: "#F9FAFB",
-                size: "sm",
-                margin: "sm",
-                align: "center"
-              }
-            ]
-          },
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            paddingAll: "16px",
-            contents: [
-              {
-                type: "text",
-                text: `LINE USER ID: ${targetUserId}`,
-                wrap: true,
-                size: "sm"
-              },
-              {
-                type: "text",
-                text:
-                  `สิทธิ์: ${
-                    selectedRole === "admin" ? "ผู้ดูแลระบบ" :
-                    selectedRole === "staff" ? "ทีมงาน" :
-                    "ดูได้อย่างเดียว"
-                  }`,
-                wrap: true,
-                size: "sm"
-              },
-              {
-                type: "text",
-                text: "สถานะ: เพิ่มเข้าทีมแล้ว",
-                wrap: true,
-                size: "sm"
-              }
-            ]
-          },
-          footer: {
-            type: "box",
-            layout: "vertical",
-            paddingAll: "14px",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#22C55E",
-                action: {
-                  type: "message",
-                  label: "ดูทีมทั้งหมด",
-                  text: "รายการทีม"
-                }
-              }
-            ]
-          }
-        }
-      }
+      { type: "text", text: `✅ เพิ่มทีมสำเร็จ (${role})` }
     ]);
-  } catch (error) {
-    console.error("SET ROLE ERROR:", error);
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ เพิ่มทีมไม่สำเร็จ" }
-    ]);
-  }
 
-  continue;
+    continue;
+
+  } catch (err) {
+    console.error("SET ROLE ERROR:", err);
+
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เกิดข้อผิดพลาด" }
+    ]);
+    continue;
+  }
 }
       
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);
-console.log("USER ROLE =", role);
+
 
 console.log("SOURCE TYPE =", event.source?.type);
 console.log("GROUP ID =", event.source?.groupId);

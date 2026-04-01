@@ -1779,9 +1779,6 @@ function buildSelectRoleFlex(userId) {
       styles: {
         body: {
           backgroundColor: "#1F1F1F"
-        },
-        footer: {
-          separator: false
         }
       },
       body: {
@@ -1801,15 +1798,15 @@ function buildSelectRoleFlex(userId) {
             type: "box",
             layout: "vertical",
             position: "absolute",
-            offsetTop: "116px",
-            offsetStart: "24px",
-            offsetEnd: "24px",
-            backgroundColor: "#F3F3F3",
+            offsetTop: "102px",
+            offsetStart: "28px",
+            offsetEnd: "28px",
+            backgroundColor: "#EFEFEF",
             cornerRadius: "10px",
             paddingTop: "18px",
-            paddingBottom: "18px",
-            paddingStart: "16px",
-            paddingEnd: "16px",
+            paddingBottom: "8px",
+            paddingStart: "14px",
+            paddingEnd: "14px",
             spacing: "12px",
             contents: [
               {

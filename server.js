@@ -38,7 +38,37 @@ function upsertRecentUser(userId, displayName = "") {
     if (oldest) recentUsers.delete(oldest[0]);
   }
 }
+// =========================
+// GOLDEN SAFE PATCH: LINE PROFILE HELPERS
+// =========================
+async function getLineProfileNameSafe(event = {}) {
+  try {
+    const userId = event?.source?.userId || "";
+    if (!userId) return "";
 
+    const sourceType = event?.source?.type || "";
+
+    if (sourceType === "user") {
+      const profile = await getLineProfile(userId);
+      return profile?.displayName || "";
+    }
+
+    if (sourceType === "group" && event?.source?.groupId) {
+      const profile = await getGroupMemberProfile(event.source.groupId, userId);
+      return profile?.displayName || "";
+    }
+
+    if (sourceType === "room" && event?.source?.roomId) {
+      const profile = await getRoomMemberProfile(event.source.roomId, userId);
+      return profile?.displayName || "";
+    }
+
+    return "";
+  } catch (err) {
+    console.log("getLineProfileNameSafe error:", err?.message || err);
+    return "";
+  }
+}
 // 👇 วาง helper ตรงนี้เลย
 function setAddTeamState(userId, step, payload = {}) {
   userStates[userId] = userStates[userId] || {};

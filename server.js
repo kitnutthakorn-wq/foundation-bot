@@ -1183,88 +1183,31 @@ function getTeamLiffUrl(baseView = "") {
 }
 
 function buildTeamMenuFlex() {
-  function menuCard(title, subtitle, accentColor, softBg, action) {
+  function messageButton(label, text, color = "#22C55E") {
     return {
-      type: "box",
-      layout: "vertical",
-      margin: "none",
-      backgroundColor: softBg,
-      borderColor: accentColor,
-      borderWidth: "2px",
-      cornerRadius: "18px",
-      paddingAll: "14px",
-      action,
-      contents: [
-        {
-          type: "box",
-          layout: "horizontal",
-          justifyContent: "space-between",
-          alignItems: "center",
-          contents: [
-            {
-              type: "text",
-              text: title,
-              weight: "bold",
-              size: "lg",
-              color: accentColor,
-              flex: 1,
-              wrap: true
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              width: "18px",
-              height: "18px",
-              cornerRadius: "999px",
-              backgroundColor: accentColor,
-              contents: []
-            }
-          ]
-        },
-        {
-          type: "text",
-          text: subtitle,
-          size: "sm",
-          color: "#5F7285",
-          wrap: true,
-          margin: "sm"
-        },
-        {
-          type: "box",
-          layout: "horizontal",
-          margin: "md",
-          spacing: "6px",
-          contents: [
-            {
-              type: "box",
-              layout: "vertical",
-              width: "36px",
-              height: "5px",
-              cornerRadius: "999px",
-              backgroundColor: accentColor,
-              contents: []
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              width: "14px",
-              height: "5px",
-              cornerRadius: "999px",
-              backgroundColor: "#B9D4D9",
-              contents: []
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              width: "10px",
-              height: "5px",
-              cornerRadius: "999px",
-              backgroundColor: "#D7E7EA",
-              contents: []
-            }
-          ]
-        }
-      ]
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "message",
+        label: label.slice(0, 20),
+        text
+      }
+    };
+  }
+
+  function uriButton(label, uri, color = "#F97316") {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "uri",
+        label: label.slice(0, 20),
+        uri
+      }
     };
   }
 
@@ -1274,146 +1217,23 @@ function buildTeamMenuFlex() {
     contents: {
       type: "bubble",
       size: "mega",
+      hero: {
+        type: "image",
+        url: "https://img2.pic.in.th/TEAMWORK.png",
+        size: "full",
+        aspectRatio: "1:1",
+        aspectMode: "cover"
+      },
       body: {
         type: "box",
         layout: "vertical",
-        backgroundColor: "#EAF3F5",
-        cornerRadius: "24px",
-        paddingAll: "16px",
-        spacing: "14px",
+        spacing: "10px",
+        paddingAll: "14px",
         contents: [
-          {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#0B7C86",
-            borderColor: "#1F8F4D",
-            borderWidth: "3px",
-            cornerRadius: "20px",
-            paddingAll: "16px",
-            alignItems: "center",
-            contents: [
-              {
-                type: "text",
-                text: "เมนูทีมงาน",
-                color: "#FFFFFF",
-                weight: "bold",
-                size: "xl",
-                align: "center"
-              },
-              {
-                type: "text",
-                text: "ศูนย์ปฏิบัติการรายการเคส",
-                color: "#DDF7FA",
-                size: "sm",
-                align: "center",
-                margin: "sm"
-              }
-            ]
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#F7FBFC",
-            borderColor: "#CFE1E6",
-            borderWidth: "1px",
-            cornerRadius: "20px",
-            paddingAll: "14px",
-            spacing: "10px",
-            contents: [
-              menuCard(
-                "ดูเคสใหม่",
-                "รายการเคสที่เพิ่งเข้าระบบล่าสุด",
-                "#0B7C86",
-                "#E9F8FA",
-                {
-                  type: "uri",
-                  label: "ดูเคสใหม่",
-                  uri: getTeamLiffUrl("new")
-                }
-              ),
-              menuCard(
-                "เคสด่วน",
-                "ตรวจสอบเคสเร่งด่วนที่ต้องรีบดำเนินการ",
-                "#C56608",
-                "#FFF7ED",
-                {
-                  type: "uri",
-                  label: "เคสด่วน",
-                  uri: getTeamLiffUrl("urgent")
-                }
-              ),
-              menuCard(
-                "ค้นหาเคส",
-                "ค้นหาด้วยเลขเคสหรือเบอร์โทร",
-                "#163C72",
-                "#F8FAFC",
-                {
-                  type: "uri",
-                  label: "ค้นหาเคส",
-                  uri: getTeamLiffUrl("search")
-                }
-              ),
-              menuCard(
-                "เคสวันนี้",
-                "สรุปรายการเคสที่เข้ามาในวันนี้",
-                "#1F8F4D",
-                "#F0FDF4",
-                {
-                  type: "uri",
-                  label: "เคสวันนี้",
-                  uri: getTeamLiffUrl("today")
-                }
-              )
-            ]
-          },
-          {
-            type: "button",
-            style: "primary",
-            height: "md",
-            color: "#0B7C86",
-            action: {
-              type: "uri",
-              label: "เปิดศูนย์ปฏิบัติการ",
-              uri: getTeamLiffUrl()
-            }
-          },
-          {
-            type: "box",
-            layout: "horizontal",
-            spacing: "sm",
-            contents: [
-              {
-                type: "button",
-                style: "secondary",
-                flex: 1,
-                color: "#FFFFFF",
-                action: {
-                  type: "uri",
-                  label: "เคสด่วนเต็มจอ",
-                  uri: getTeamLiffUrl("urgent")
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                flex: 1,
-                color: "#FFFFFF",
-                action: {
-                  type: "uri",
-                  label: "ค้นหาเต็มจอ",
-                  uri: getTeamLiffUrl("search")
-                }
-              }
-            ]
-          },
-          {
-            type: "text",
-            text: "แนะนำให้ทีมกดเมนูนี้ในแอปไลน์ เพื่อเปิด LIFF แบบเนียนและลดโอกาสเด้งหน้า login",
-            color: "#5F7285",
-            size: "xs",
-            wrap: true,
-            align: "center"
-          }
+          messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
+          messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
+          messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
+          uriButton("เปิดศูนย์ปฏิบัติการ", getTeamLiffUrl(), "#F97316")
         ]
       }
     }

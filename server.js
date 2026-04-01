@@ -1789,7 +1789,7 @@ function buildSelectRoleFlex(userId) {
         contents: [
           {
             type: "image",
-            url: "https://img1.pic.in.th/images/ADD_ADMIN2.png",
+            url: "https://img1.pic.in.th/images/ADD_ADMIN2341a474eeab9c478.png",
             size: "full",
             aspectMode: "cover",
             aspectRatio: "3:4"

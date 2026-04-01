@@ -349,7 +349,7 @@ function renderMemberPicker() {
 
   root.innerHTML = filtered.map(m => `
     <div class="member-item" onclick='openRoleModal(${JSON.stringify(m)})'>
-      <img class="member-avatar" src="${m.pictureUrl || ''}" />
+     <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
       <div class="member-meta">
         <div class="member-name">${m.displayName || "-"}</div>
         <div class="member-sub">${m.userId}</div>

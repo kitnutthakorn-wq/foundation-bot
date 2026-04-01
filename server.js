@@ -1233,7 +1233,11 @@ function buildTeamMenuFlex() {
           messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
           messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
           messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
-          uriButton("เปิดศูนย์ปฏิบัติการ", getTeamLiffUrl(), "#F97316")
+         uriButton(
+  "เปิดศูนย์ปฏิบัติการ",
+  "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+  "#F97316"
+)
         ]
       }
     }

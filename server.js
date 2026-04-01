@@ -4806,14 +4806,28 @@ app.post("/webhook", async (req, res) => {
   if (event.type !== "message") continue;
   if (!event.message || event.message.type !== "text") continue;
 
+  for (const event of events) {
+
+  if (event.type !== "message") continue;
+  if (!event.message || event.message.type !== "text") continue;
+
   const replyToken = event.replyToken;
   const text = event.message.text.trim();
   const userId = event?.source?.userId || "";
 
- const lineDisplayName = await getLineProfileNameSafe(event);
-upsertRecentUser(userId, lineDisplayName || userId);
+  let lineDisplayName = "";
+
+  try {
+    lineDisplayName = await getLineProfileNameSafe(event);
+  } catch (err) {
+    console.log("LINE display name load error:", err?.message || err);
+  }
+
+  upsertRecentUser(userId, lineDisplayName || userId);
 
   const role = await getUserRole(userId);
+
+  // 👉 STEP FLOW ของคุณต่อจากนี้
 
   // 👉 STEP FLOW ของคุณต่อจากนี้
 

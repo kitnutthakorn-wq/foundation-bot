@@ -4752,6 +4752,8 @@ if (existing && existing.is_active !== false) {
 
   continue;
 } 
+} 
+  
   catch (err) {
     console.error("SET ROLE ERROR:", err);
 

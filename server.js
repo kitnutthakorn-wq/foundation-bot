@@ -4735,21 +4735,21 @@ if (text.startsWith("setrole ")) {
 
 if (existing && existing.is_active !== false) {
 
-  // ✅ ถ้า role เดิม = role ใหม่ → กันซ้ำ
   if (existing.role === role) {
     await safeReply(replyToken, [
       { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
     ]);
+    clearAddTeamState(userId);   // ✅ เพิ่ม
     continue;
   }
 
-  // ✅ ถ้า role เปลี่ยน → UPDATE แทน
   await setLineUserRole(targetUserId, role);
 
   await safeReply(replyToken, [
     { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
   ]);
 
+  clearAddTeamState(userId);     // ✅ เพิ่ม
   continue;
 } 
 

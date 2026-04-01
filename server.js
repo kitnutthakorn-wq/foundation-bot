@@ -4733,25 +4733,24 @@ if (text.startsWith("setrole ")) {
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 
-    if (existing && existing.is_active !== false) {
-      clearAddTeamState(userId);
+  if (existing && existing.is_active !== false) {
+  clearAddTeamState(userId);
 
-      await safeReply(replyToken, [
-        { type: "text", text: "⚠️ ผู้ใช้นี้อยู่ในระบบแล้ว" }
-      ]);
-      continue;
-    }
-
-    await setLineUserRole(targetUserId, role);
-    clearAddTeamState(userId);
-
+  if (existing.role === role) {
     await safeReply(replyToken, [
-      { type: "text", text: `✅ เพิ่มทีมสำเร็จ (${role})` }
+      { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
     ]);
-
     continue;
+  }
 
-  } catch (err) {
+  await setLineUserRole(targetUserId, role);
+
+  await safeReply(replyToken, [
+    { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
+  ]);
+  continue;
+} 
+  catch (err) {
     console.error("SET ROLE ERROR:", err);
 
     await safeReply(replyToken, [

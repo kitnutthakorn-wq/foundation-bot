@@ -4752,9 +4752,8 @@ if (existing && existing.is_active !== false) {
 
   continue;
 } 
-} 
-  
-  catch (err) {
+
+  }catch (err) {
     console.error("SET ROLE ERROR:", err);
 
     await safeReply(replyToken, [
@@ -4826,7 +4825,7 @@ if (existing && existing.is_active !== false) {
 
   continue;
 }
-  catch (err) {
+  }catch (err) {
     console.error("AUTO SET ROLE ERROR:", err);
 
     await safeReply(replyToken, [

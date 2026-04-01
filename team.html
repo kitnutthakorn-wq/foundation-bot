@@ -390,9 +390,15 @@ function chooseMemberRole(role) {
 }
 
 async function saveSelectedTeamMember() {
-  if (!selectedMember || saving) return; // 👈 กันกดรัว
+  if (!selectedMember || saving) return;
 
-  saving = true; // 👈 lock
+  saving = true;
+
+  const saveBtn = document.getElementById('saveTeamBtn');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'กำลังบันทึก...';
+  }
 
   try {
     await safeFetchJson(

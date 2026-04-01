@@ -320,17 +320,43 @@ async function setLineUserRole(lineUserId, role) {
   roleCache.set(lineUserId, { role, ts: Date.now() });
   return data;
 }
+
 async function isAdmin(userId) {
   const role = await getUserRole(userId);
   return role === "admin";
+}
+
+// 👇 วางตรงนี้
+async function countActiveAdmins() {
+  const { count, error } = await supabase
+    .from("line_user_roles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "admin");
+
+  if (error) throw error;
+  return count || 0;
+}
+
+async function findTeamMemberByUserId(lineUserId) {
+  const { data, error } = await supabase
+    .from("line_user_roles")
+    .select("*")
+    .eq("line_user_id", lineUserId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data || null;
+}
+
+function clearAddTeamState(userId) {
+  delete userStates[userId];
 }
 
 function parseAddTeamCommand(text = "") {
   const normalized = String(text || "").trim();
   const match = normalized.match(/^เพิ่มทีม\s+(U[a-zA-Z0-9]+)\s+(admin|staff|viewer)$/);
   if (!match) return null;
-
-  return {
+}  return {
     targetUserId: match[1],
     role: match[2],
   };

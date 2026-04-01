@@ -1760,7 +1760,7 @@ function buildSelectRoleFlex(userId) {
     return {
       type: "button",
       style: "primary",
-      height: "md",
+      height: "sm",
       color,
       action: {
         type: "message",
@@ -1776,61 +1776,39 @@ function buildSelectRoleFlex(userId) {
     contents: {
       type: "bubble",
       size: "mega",
-      styles: {
-        body: {
-          backgroundColor: "#1F1F1F"
-        }
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#0B7C86",
+        paddingAll: "16px",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกสิทธิ์ทีมงาน",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: userId,
+            color: "#D1FAE5",
+            size: "sm",
+            align: "center",
+            margin: "sm"
+          }
+        ]
       },
       body: {
         type: "box",
         layout: "vertical",
-        paddingAll: "0px",
-        spacing: "0px",
+        spacing: "12px",
+        paddingAll: "16px",
         contents: [
-          {
-            type: "image",
-            url: "https://img1.pic.in.th/images/ADD_ADMIN2341a474eeab9c478.png",
-            size: "full",
-            aspectMode: "cover",
-            aspectRatio: "3:4"
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            position: "absolute",
-            offsetTop: "102px",
-            offsetStart: "28px",
-            offsetEnd: "28px",
-            backgroundColor: "#EFEFEF",
-            cornerRadius: "10px",
-            paddingTop: "18px",
-            paddingBottom: "8px",
-            paddingStart: "14px",
-            paddingEnd: "14px",
-            spacing: "12px",
-            contents: [
-              {
-                type: "text",
-                text: "เลือกสิทธิ์ทีมงาน",
-                weight: "bold",
-                size: "lg",
-                color: "#555555",
-                align: "center"
-              },
-              {
-                type: "text",
-                text: userId,
-                size: "sm",
-                color: "#7A7A7A",
-                align: "center",
-                wrap: true,
-                margin: "sm"
-              },
-              btn("Admin", "setrole_auto admin", "#E52424"),
-              btn("Staff", "setrole_auto staff", "#FF7A12"),
-              btn("Viewer", "setrole_auto viewer", "#0F8A96")
-            ]
-          }
+          btn("Admin", "setrole_auto admin", "#DC2626"),
+          btn("Staff", "setrole_auto staff", "#F97316"),
+          btn("Viewer", "setrole_auto viewer", "#0F8A96")
         ]
       }
     }

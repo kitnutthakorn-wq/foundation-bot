@@ -617,9 +617,6 @@ function filterTodayCases(){currentPresetFilter='today';document.getElementById(
 function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}
 
 function viewCase(code){alert(`ดูรายละเอียดเคส: ${code}\n\nPhase ถัดไปสามารถต่อหน้า case-detail.html หรือ modal ได้`);}
-function openCaseUpdateLiff(caseCode){
-  const target = `update-case.html?caseCode=${encodeURIComponent(caseCode)}`;
-
 function viewCase(code){
   window.location.href = `team-case-view.html?case_code=${encodeURIComponent(code)}`;
 }

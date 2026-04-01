@@ -1864,7 +1864,7 @@ function buildSelectUserFlex() {
           height: "sm",
           action: {
             type: "message",
-            label: `${u.userId.slice(0, 8)}...${u.userId.slice(-4)}`
+           (u.displayName || u.userId).slice(0, 20),
             text: `select_user ${u.userId}`
           }
         }))

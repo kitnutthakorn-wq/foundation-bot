@@ -1796,9 +1796,9 @@ function buildSelectRoleFlex(userId) {
         spacing: "10px",
         paddingAll: "16px",
         contents: [
-          btn("Admin", `setrole ${userId} admin`, "#DC2626"),
-          btn("Staff", `setrole ${userId} staff`, "#F97316"),
-          btn("Viewer", `setrole ${userId} viewer`, "#0B7C86")
+          btn("Admin", `setrole_auto admin`, "#DC2626"),
+          btn("Staff", `setrole_auto staff`, "#F97316"),
+          btn("Viewer", `setrole_auto viewer`, "#0B7C86")
         ]
       }
     }

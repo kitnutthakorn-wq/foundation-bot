@@ -420,7 +420,12 @@ async function saveSelectedTeamMember() {
   } catch (err) {
     alert("❌ บันทึกไม่สำเร็จ: " + err.message);
   } finally {
-    saving = false; // 👈 unlock (สำคัญมาก)
+  saving = false;
+
+  const saveBtn = document.getElementById('saveTeamBtn');
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'บันทึกทีม';
   }
 }
 function closeRoleModal(){

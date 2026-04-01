@@ -373,7 +373,8 @@ function openRoleModal(member) {
   document.getElementById('roleOptionViewer').classList.add('active'); // 👈 เพิ่ม
   document.getElementById('roleTargetName').textContent = member.displayName;
   document.getElementById('roleTargetId').textContent = member.userId;
-  document.getElementById('roleTargetAvatar').src = member.pictureUrl || '';
+ document.getElementById('roleTargetAvatar').src =
+  member.pictureUrl || getFallbackAvatar(member.displayName);
 
   document.getElementById('roleModalBackdrop').style.display = 'flex';
 }  

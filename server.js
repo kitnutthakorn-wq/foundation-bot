@@ -1760,7 +1760,7 @@ function buildSelectRoleFlex(userId) {
     return {
       type: "button",
       style: "primary",
-      height: "sm",
+      height: "md",
       color,
       action: {
         type: "message",
@@ -1776,42 +1776,64 @@ function buildSelectRoleFlex(userId) {
     contents: {
       type: "bubble",
       size: "mega",
-
-      // 🔥 HERO (ภาพใหญ่แบบ ADMIN)
-      hero: {
-        type: "image",
-        url: "https://img2.pic.in.th/ADD_ADMIN.png", // 👈 ใส่ลิ้งที่คุณมี
-        size: "full",
-        aspectRatio: "1:1",
-        aspectMode: "cover"
+      styles: {
+        body: {
+          backgroundColor: "#1F1F1F"
+        },
+        footer: {
+          separator: false
+        }
       },
-
-      // 🔥 BODY (ปุ่ม)
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "10px",
-        paddingAll: "16px",
+        paddingAll: "0px",
+        spacing: "0px",
         contents: [
           {
-            type: "text",
-            text: "เลือกสิทธิ์ทีมงาน",
-            weight: "bold",
-            size: "lg",
-            align: "center"
+            type: "image",
+            url: "ใส่ลิงก์ภาพการ์ดแบบภาพที่ 2 ตรงนี้",
+            size: "full",
+            aspectMode: "cover",
+            aspectRatio: "3:4"
           },
           {
-            type: "text",
-            text: userId,
-            size: "sm",
-            color: "#666666",
-            align: "center",
-            margin: "sm"
-          },
-
-          btn("Admin", `setrole_auto admin`, "#DC2626"),
-          btn("Staff", `setrole_auto staff`, "#F97316"),
-          btn("Viewer", `setrole_auto viewer`, "#0B7C86")
+            type: "box",
+            layout: "vertical",
+            position: "absolute",
+            offsetTop: "116px",
+            offsetStart: "24px",
+            offsetEnd: "24px",
+            backgroundColor: "#F3F3F3",
+            cornerRadius: "10px",
+            paddingTop: "18px",
+            paddingBottom: "18px",
+            paddingStart: "16px",
+            paddingEnd: "16px",
+            spacing: "12px",
+            contents: [
+              {
+                type: "text",
+                text: "เลือกสิทธิ์ทีมงาน",
+                weight: "bold",
+                size: "lg",
+                color: "#555555",
+                align: "center"
+              },
+              {
+                type: "text",
+                text: userId,
+                size: "sm",
+                color: "#7A7A7A",
+                align: "center",
+                wrap: true,
+                margin: "sm"
+              },
+              btn("Admin", "setrole_auto admin", "#E52424"),
+              btn("Staff", "setrole_auto staff", "#FF7A12"),
+              btn("Viewer", "setrole_auto viewer", "#0F8A96")
+            ]
+          }
         ]
       }
     }

@@ -335,7 +335,8 @@ function parseAddTeamCommand(text = "") {
   const normalized = String(text || "").trim();
   const match = normalized.match(/^เพิ่มทีม\s+(U[a-zA-Z0-9]+)\s+(admin|staff|viewer)$/);
   if (!match) return null;
-}  return {
+
+  return {
     targetUserId: match[1],
     role: match[2],
   };

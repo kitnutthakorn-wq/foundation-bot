@@ -4677,6 +4677,9 @@ app.post("/webhook", async (req, res) => {
     const events = req.body.events || [];
 
     for (const event of events) {
+  const userId = event?.source?.userId;
+  upsertRecentUser(userId); // ✅ เพิ่มตรงนี้
+      
       if (event.type !== "message") continue;
       if (!event.message || event.message.type !== "text") continue;
 

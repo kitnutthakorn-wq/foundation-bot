@@ -389,8 +389,10 @@ function chooseMemberRole(role) {
     .classList.add('active');
 }
 
-  async function saveSelectedTeamMember() {
-  if (!selectedMember) return;
+async function saveSelectedTeamMember() {
+  if (!selectedMember || saving) return; // 👈 กันกดรัว
+
+  saving = true; // 👈 lock
 
   try {
     await safeFetchJson(
@@ -398,11 +400,11 @@ function chooseMemberRole(role) {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({
-  targetUserId: selectedMember.userId,
-  role: selectedMemberRole,
-  actorUserId: currentProfile?.userId || ""
-})
+        body: JSON.stringify({
+          targetUserId: selectedMember.userId,
+          role: selectedMemberRole,
+          actorUserId: currentProfile?.userId || ""
+        })
       }
     );
 
@@ -411,6 +413,8 @@ function chooseMemberRole(role) {
 
   } catch (err) {
     alert("❌ บันทึกไม่สำเร็จ: " + err.message);
+  } finally {
+    saving = false; // 👈 unlock (สำคัญมาก)
   }
 }
 function closeRoleModal(){

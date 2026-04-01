@@ -183,7 +183,70 @@
       </div>
     </div>
   </section>
+<section id="memberPickerSection" class="card hidden">
+  <div class="headline">
+    <div>
+      <h2>เลือกสมาชิกจากกลุ่ม</h2>
+      <p>ค้นหาแล้วกดชื่อสมาชิกเพื่อเลือกสิทธิ์ทีมงาน</p>
+    </div>
+    <span class="badge new" id="memberCountBadge">0 สมาชิก</span>
+  </div>
 
+  <div class="member-picker-wrap">
+    <div class="member-toolbar">
+      <input
+        id="memberSearchInput"
+        class="member-search"
+        type="text"
+        placeholder="ค้นหาด้วยชื่อหรือ LINE USER ID"
+        oninput="renderMemberPicker()"
+      />
+      <button class="btn-secondary" onclick="closeMemberPicker()">กลับหน้าหลัก</button>
+    </div>
+
+    <div id="memberList" class="member-list"></div>
+  </div>
+</section>
+
+<div id="roleModalBackdrop" class="role-modal-backdrop">
+  <div class="role-modal">
+    <div class="role-modal-header">
+      <div>
+        <h3 class="role-modal-title">เลือกสิทธิ์ทีมงาน</h3>
+        <div class="meta-row">กำหนดบทบาทให้สมาชิกที่เลือก</div>
+      </div>
+      <button class="btn-ghost" onclick="closeRoleModal()">ปิด</button>
+    </div>
+
+    <div class="role-target-box">
+      <img id="roleTargetAvatar" class="member-avatar" alt="avatar" />
+      <div class="member-meta">
+        <div id="roleTargetName" class="member-name">-</div>
+        <div id="roleTargetId" class="member-sub">-</div>
+      </div>
+    </div>
+
+    <div class="role-option-grid">
+      <div id="roleOptionAdmin" class="role-option admin" onclick="chooseMemberRole('admin')">
+        <strong>Admin</strong>
+        <span>ผู้ดูแลระบบ • จำกัดไม่เกิน 3 คน</span>
+      </div>
+      <div id="roleOptionStaff" class="role-option staff" onclick="chooseMemberRole('staff')">
+        <strong>Staff</strong>
+        <span>ทีมงานปฏิบัติการ • รับเคส / อัปเดต / ปิดเคส</span>
+      </div>
+      <div id="roleOptionViewer" class="role-option viewer" onclick="chooseMemberRole('viewer')">
+        <strong>Viewer</strong>
+        <span>ดูข้อมูลได้อย่างเดียว</span>
+      </div>
+    </div>
+
+    <div class="role-modal-actions">
+      <button class="btn-secondary" onclick="closeRoleModal()">ยกเลิก</button>
+      <button class="btn-primary" onclick="saveSelectedTeamMember()">บันทึกทีม</button>
+    </div>
+  </div>
+</div>
   <div class="footer-note">Phase PRO MAX UI: role-based menu • urgent highlight • realtime feel • golden-safe</div>
 </div>
 

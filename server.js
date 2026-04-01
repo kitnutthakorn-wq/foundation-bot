@@ -4800,13 +4800,7 @@ app.post("/webhook", async (req, res) => {
     }
 
     const events = req.body.events || [];
-
-   for (const event of events) {
-
-  if (event.type !== "message") continue;
-  if (!event.message || event.message.type !== "text") continue;
-
-  for (const event of events) {
+    for (const event of events) {
 
   if (event.type !== "message") continue;
   if (!event.message || event.message.type !== "text") continue;
@@ -4829,9 +4823,7 @@ app.post("/webhook", async (req, res) => {
 
   // 👉 STEP FLOW ของคุณต่อจากนี้
 
-  // 👉 STEP FLOW ของคุณต่อจากนี้
-
-      
+    
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================

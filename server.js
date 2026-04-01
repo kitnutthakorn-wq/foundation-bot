@@ -16,6 +16,29 @@ const supabase = createClient(
 );
 
 const userStates = {};
+const userStates = {};
+
+// =========================
+// PRO MAX: Recent Users Cache
+// =========================
+const recentUsers = new Map(); // userId -> { userId, displayName, lastSeen }
+
+function upsertRecentUser(userId, displayName = "") {
+  if (!userId) return;
+
+  recentUsers.set(userId, {
+    userId,
+    displayName: displayName || userId,
+    lastSeen: Date.now()
+  });
+
+  // จำกัดไม่เกิน 30 คน
+  if (recentUsers.size > 30) {
+    const oldest = [...recentUsers.entries()]
+      .sort((a, b) => a[1].lastSeen - b[1].lastSeen)[0];
+    if (oldest) recentUsers.delete(oldest[0]);
+  }
+}
 
 // 👇 วาง helper ตรงนี้เลย
 function setAddTeamState(userId, step, payload = {}) {

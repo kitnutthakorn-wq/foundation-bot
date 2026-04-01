@@ -4771,6 +4771,7 @@ if (text.startsWith("setrole ")) {
 
   continue;
 }
+
       
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);

@@ -1776,16 +1776,26 @@ function buildSelectRoleFlex(userId) {
     contents: {
       type: "bubble",
       size: "mega",
-      header: {
+
+      // 🔥 HERO (ภาพใหญ่แบบ ADMIN)
+      hero: {
+        type: "image",
+        url: "https://img2.pic.in.th/ADD_ADMIN.png", // 👈 ใส่ลิ้งที่คุณมี
+        size: "full",
+        aspectRatio: "1:1",
+        aspectMode: "cover"
+      },
+
+      // 🔥 BODY (ปุ่ม)
+      body: {
         type: "box",
         layout: "vertical",
-        backgroundColor: "#0B7C86",
+        spacing: "10px",
         paddingAll: "16px",
         contents: [
           {
             type: "text",
             text: "เลือกสิทธิ์ทีมงาน",
-            color: "#FFFFFF",
             weight: "bold",
             size: "lg",
             align: "center"
@@ -1793,19 +1803,12 @@ function buildSelectRoleFlex(userId) {
           {
             type: "text",
             text: userId,
-            color: "#D1FAE5",
             size: "sm",
+            color: "#666666",
             align: "center",
             margin: "sm"
-          }
-        ]
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "10px",
-        paddingAll: "16px",
-        contents: [
+          },
+
           btn("Admin", `setrole_auto admin`, "#DC2626"),
           btn("Staff", `setrole_auto staff`, "#F97316"),
           btn("Viewer", `setrole_auto viewer`, "#0B7C86")
@@ -1814,7 +1817,6 @@ function buildSelectRoleFlex(userId) {
     }
   };
 }
-
 function buildSmartAlertFlex(sla = {}) {
   const overdue = Number(sla.overdue || 0);
   const nearDue = Number(sla.near_due || 0);

@@ -4889,6 +4889,33 @@ if (existing && existing.is_active !== false) {
   continue;
 }
 }
+
+ if (text.startsWith("select_user ")) {
+
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
+  const targetUserId = text.replace("select_user ", "").trim();
+
+  if (!targetUserId.startsWith("U")) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
+    ]);
+    continue;
+  }
+
+  setAddTeamState(userId, "waiting_role", { targetUserId });
+
+  await safeReply(replyToken, [
+    buildSelectRoleFlex(targetUserId)
+  ]);
+
+  continue;
+}    
 if (text.startsWith("setrole_auto ")) {
 
   if (!(await isAdmin(userId))) {

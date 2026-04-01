@@ -4753,14 +4753,17 @@ if (existing && existing.is_active !== false) {
   continue;
 } 
 
-  }catch (err) {
-    console.error("SET ROLE ERROR:", err);
+ }catch (err) {
+  console.error("SET ROLE ERROR:", err);
 
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ เกิดข้อผิดพลาด" }
-    ]);
-    continue;
-  }
+  await safeReply(replyToken, [
+    { type: "text", text: "❌ เกิดข้อผิดพลาด" }
+  ]);
+
+  clearAddTeamState(userId);   // ✅ ต้องเพิ่มตรงนี้
+
+  continue;
+}
 }
 if (text.startsWith("setrole_auto ")) {
 
@@ -4871,14 +4874,17 @@ if (text.startsWith("setrole_auto ")) {
         text: `✅ อัปเดตสิทธิ์สำเร็จ (${role})\nUSER ID: ${targetUserId}`
       }
     ]);
-  } catch (err) {
-    console.error("SET ROLE AUTO ERROR:", err);
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ เกิดข้อผิดพลาดในการอัปเดตสิทธิ์" }
-    ]);
-    clearAddTeamState(userId);
-    continue;
-  }
+ }catch (err) {
+  console.error("SET ROLE ERROR:", err);
+
+  await safeReply(replyToken, [
+    { type: "text", text: "❌ เกิดข้อผิดพลาด" }
+  ]);
+
+  clearAddTeamState(userId);   // ✅ ต้องเพิ่มตรงนี้
+
+  continue;
+}
 
   continue;
 }

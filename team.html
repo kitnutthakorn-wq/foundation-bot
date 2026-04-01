@@ -393,21 +393,11 @@ function chooseMemberRole(role) {
 async function saveSelectedTeamMember() {
   if (!selectedMember || saving) return;
 
-  // ✅ ใส่ตรงนี้เลย
   if (!selectedMemberRole) {
     alert("⚠️ กรุณาเลือกสิทธิ์ก่อน");
     return;
   }
 
-  saving = true;
-
-  const saveBtn = document.getElementById('saveTeamBtn');
-  if (saveBtn) {
-    saveBtn.disabled = true;
-    saveBtn.textContent = 'กำลังบันทึก...';
-  }
-
-  try {
   saving = true;
 
   const saveBtn = document.getElementById('saveTeamBtn');
@@ -435,18 +425,16 @@ async function saveSelectedTeamMember() {
 
   } catch (err) {
     alert("❌ บันทึกไม่สำเร็จ: " + err.message);
-} finally {
-  saving = false;
 
-  const saveBtn = document.getElementById('saveTeamBtn');
-  if (saveBtn) {
-    saveBtn.disabled = false;
-    saveBtn.textContent = 'บันทึกทีม';
+  } finally {
+    saving = false;
+
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'บันทึกทีม';
+    }
   }
 }
-
-} // 👈 ปิดฟังก์ชัน saveSelectedTeamMember ตรงนี้
-
 function closeRoleModal(){
   document.getElementById('roleModalBackdrop').style.display = 'none';
   selectedMember = null;

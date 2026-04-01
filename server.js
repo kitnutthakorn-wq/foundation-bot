@@ -4693,6 +4693,27 @@ if (text.startsWith("setrole ")) {
   }
 
   try {
+    // =========================
+    // เช็ก user ซ้ำ
+    // =========================
+    const { data: existing } = await supabase
+      .from("line_user_roles")
+      .select("line_user_id, is_active")
+      .eq("line_user_id", targetUserId)
+      .maybeSingle();
+
+    if (existing && existing.is_active !== false) {
+      clearAddTeamState(userId);
+
+      await safeReply(replyToken, [
+        { type: "text", text: "⚠️ ผู้ใช้นี้อยู่ในระบบแล้ว" }
+      ]);
+      continue;
+    }
+
+    // =========================
+    // บันทึก role
+    // =========================
     await setLineUserRole(targetUserId, selectedRole);
     clearAddTeamState(userId);
 
@@ -4747,7 +4768,12 @@ if (text.startsWith("setrole ")) {
               },
               {
                 type: "text",
-                text: `สิทธิ์: ${selectedRole}`,
+                text:
+                  `สิทธิ์: ${
+                    selectedRole === "admin" ? "ผู้ดูแลระบบ" :
+                    selectedRole === "staff" ? "ทีมงาน" :
+                    "ดูได้อย่างเดียว"
+                  }`,
                 wrap: true,
                 size: "sm"
               },
@@ -4756,6 +4782,23 @@ if (text.startsWith("setrole ")) {
                 text: "สถานะ: เพิ่มเข้าทีมแล้ว",
                 wrap: true,
                 size: "sm"
+              }
+            ]
+          },
+          footer: {
+            type: "box",
+            layout: "vertical",
+            paddingAll: "14px",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#22C55E",
+                action: {
+                  type: "message",
+                  label: "ดูทีมทั้งหมด",
+                  text: "รายการทีม"
+                }
               }
             ]
           }
@@ -4771,7 +4814,6 @@ if (text.startsWith("setrole ")) {
 
   continue;
 }
-
       
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);

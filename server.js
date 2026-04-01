@@ -348,10 +348,6 @@ async function findTeamMemberByUserId(lineUserId) {
   return data || null;
 }
 
-function clearAddTeamState(userId) {
-  delete userStates[userId];
-}
-
 function parseAddTeamCommand(text = "") {
   const normalized = String(text || "").trim();
   const match = normalized.match(/^เพิ่มทีม\s+(U[a-zA-Z0-9]+)\s+(admin|staff|viewer)$/);

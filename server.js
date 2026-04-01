@@ -4772,17 +4772,9 @@ if (text.startsWith("setrole_auto ")) {
   }
 
   const role = (text.split(" ")[1] || "").toLowerCase();
+  const addTeamState = getAddTeamState(userId);
 
   try {
-    const targetUserId = event?.source?.userId || "";
-
-    if (!targetUserId.startsWith("U")) {
-      await safeReply(replyToken, [
-        { type: "text", text: "❌ ไม่พบ USER ID ที่ถูกต้อง" }
-      ]);
-      continue;
-    }
-
     if (!["admin", "staff", "viewer"].includes(role)) {
       await safeReply(replyToken, [
         { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
@@ -4790,50 +4782,106 @@ if (text.startsWith("setrole_auto ")) {
       continue;
     }
 
-    if (role === "admin") {
-      const adminCount = await countActiveAdmins();
+    if (!addTeamState || addTeamState.step !== "waiting_role" || !addTeamState.targetUserId) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ ยังไม่ได้เลือกผู้ใช้เป้าหมาย\nกรุณาเริ่มจากคำสั่งเพิ่มทีมอีกครั้ง" }
+      ]);
+      continue;
+    }
+
+    const targetUserId = String(addTeamState.targetUserId || "").trim();
+
+    if (!targetUserId.startsWith("U")) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ ไม่พบ USER ID ที่ถูกต้อง" }
+      ]);
+      clearAddTeamState(userId);
+      continue;
+    }
+
+    // 🔒 กันลดสิทธิ์ตัวเอง
+    if (targetUserId === userId && role !== "admin") {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ ไม่สามารถลดสิทธิ์ของตัวเองได้" }
+      ]);
+      clearAddTeamState(userId);
+      continue;
+    }
+
+    const currentRole = await getUserRole(targetUserId);
+    const adminCount = await countActiveAdmins();
+
+    // 🔒 จำกัด admin ไม่เกิน 3 คน
+    if (role === "admin" && currentRole !== "admin") {
       if (adminCount >= 3) {
         await safeReply(replyToken, [
           { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
         ]);
+        clearAddTeamState(userId);
         continue;
       }
     }
 
-    const { data: existing } = await supabase
+    // 🔒 กัน admin คนสุดท้ายหาย
+    if (currentRole === "admin" && role !== "admin") {
+      if (adminCount <= 1) {
+        await safeReply(replyToken, [
+          { type: "text", text: "❌ ต้องมีผู้ดูแลระบบอย่างน้อย 1 คน" }
+        ]);
+        clearAddTeamState(userId);
+        continue;
+      }
+    }
+
+    const { data: existing, error: existingError } = await supabase
       .from("line_user_roles")
-      .select("line_user_id, is_active")
+      .select("line_user_id, is_active, role")
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 
-if (existing && existing.is_active !== false) {
+    if (existingError) {
+      throw existingError;
+    }
 
-  // ✅ ถ้า role เดิม = role ใหม่ → กันซ้ำ
-  if (existing.role === role) {
+    if (existing && existing.is_active !== false && existing.role === role) {
+      await safeReply(replyToken, [
+        { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
+      ]);
+      clearAddTeamState(userId);
+      continue;
+    }
+
+    await supabase
+      .from("line_user_roles")
+      .upsert(
+        {
+          line_user_id: targetUserId,
+          role,
+          is_active: true
+        },
+        { onConflict: "line_user_id" }
+      );
+
+    roleCache.delete(targetUserId);
+    clearAddTeamState(userId);
+
     await safeReply(replyToken, [
-      { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
+      {
+        type: "text",
+        text: `✅ อัปเดตสิทธิ์สำเร็จ (${role})\nUSER ID: ${targetUserId}`
+      }
     ]);
+  } catch (err) {
+    console.error("SET ROLE AUTO ERROR:", err);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เกิดข้อผิดพลาดในการอัปเดตสิทธิ์" }
+    ]);
+    clearAddTeamState(userId);
     continue;
   }
-
-  // ✅ ถ้า role เปลี่ยน → UPDATE แทน
-  await setLineUserRole(targetUserId, role);
-
-  await safeReply(replyToken, [
-    { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
-  ]);
 
   continue;
 }
-  }catch (err) {
-    console.error("AUTO SET ROLE ERROR:", err);
-
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ เกิดข้อผิดพลาด" }
-    ]);
-    continue;
-  }
-}      
 console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);
 

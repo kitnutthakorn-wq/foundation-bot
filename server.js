@@ -16,7 +16,6 @@ const supabase = createClient(
 );
 
 const userStates = {};
-const userStates = {};
 
 // =========================
 // PRO MAX: Recent Users Cache

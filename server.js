@@ -1638,22 +1638,22 @@ function buildTeamManageFlex() {
         layout: "vertical",
         spacing: "10px",
         paddingAll: "14px",
-        contents: [
-          btn("บริหารทีมงาน", "รายการทีม"),
-          btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
-          {
-  type: "button",
-  style: "primary",
-  height: "sm",
-  color: "#22C55E",
-  action: {
-    type: "uri",
-    label: "เพิ่มทีมงาน",
-    uri: getTeamLiffUrl("pick-member")
-  }
-}
-          btn("ลบทีมงาน", "คำสั่งลบทีม")
-        ]
+       contents: [
+  btn("บริหารทีมงาน", "รายการทีม"),
+  btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
+  {
+    type: "button",
+    style: "primary",
+    height: "sm",
+    color: "#22C55E",
+    action: {
+      type: "uri",
+      label: "เพิ่มทีมงาน",
+      uri: getTeamLiffUrl("pick-member")
+    }
+  }, // 👈 ต้องมี comma ตรงนี้
+  btn("ลบทีมงาน", "คำสั่งลบทีม")
+]
       }
     }
   };

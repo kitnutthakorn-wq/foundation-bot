@@ -568,7 +568,7 @@ function connectRealtime() {
 
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
 async function bootstrap(){try{setToday(); await initLiff(); await loadTeamRole(); await Promise.all([loadCases(),loadActivities()]); await loadRecentActivityRealtime(); connectRealtime();}catch{bindProfile({displayName:'Fallback User'},'เกิดข้อผิดพลาด - ใช้โหมดสำรอง'); allCases=demoCases; activities=demoActivities; updateStats(); renderCases(); renderActivities();}finally{setLoading(false);}}
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 bootstrap();
 </script>
 </body>

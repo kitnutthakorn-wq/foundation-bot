@@ -331,6 +331,87 @@ async function loadGroupMembersForPicker() {
     alert("❌ โหลดสมาชิกไม่สำเร็จ");
   }
 } 
+
+function renderMemberPicker() {
+  const keyword = document.getElementById('memberSearchInput')?.value?.toLowerCase() || "";
+
+  const filtered = memberPickerItems.filter(m =>
+    (m.displayName || "").toLowerCase().includes(keyword) ||
+    (m.userId || "").toLowerCase().includes(keyword)
+  );
+
+  const root = document.getElementById('memberList');
+
+  if (!filtered.length) {
+    root.innerHTML = `<div class="member-empty">ไม่พบสมาชิก</div>`;
+    return;
+  }
+
+  root.innerHTML = filtered.map(m => `
+    <div class="member-item" onclick='openRoleModal(${JSON.stringify(m)})'>
+      <img class="member-avatar" src="${m.pictureUrl || ''}" />
+      <div class="member-meta">
+        <div class="member-name">${m.displayName || "-"}</div>
+        <div class="member-sub">${m.userId}</div>
+      </div>
+    </div>
+  `).join('');
+}
+function openRoleModal(member) {
+  selectedMember = member;
+  selectedMemberRole = "viewer";
+
+  document.getElementById('roleTargetName').textContent = member.displayName;
+  document.getElementById('roleTargetId').textContent = member.userId;
+  document.getElementById('roleTargetAvatar').src = member.pictureUrl || '';
+
+  document.getElementById('roleModalBackdrop').style.display = 'flex';
+}  
+
+function chooseMemberRole(role) {
+  selectedMemberRole = role;
+
+  document.querySelectorAll('.role-option')
+    .forEach(el => el.classList.remove('active'));
+
+  document.getElementById(`roleOption${capitalize(role)}`)
+    .classList.add('active');
+}
+
+  async function saveSelectedTeamMember() {
+  if (!selectedMember) return;
+
+  try {
+    await safeFetchJson(
+      `${CONFIG.API_BASE_URL}${CONFIG.ASSIGN_ROLE_ENDPOINT}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedMember.userId,
+          role: selectedMemberRole
+        })
+      }
+    );
+
+    alert("✅ เพิ่มทีมสำเร็จ");
+    closeRoleModal();
+
+  } catch (err) {
+    alert("❌ บันทึกไม่สำเร็จ: " + err.message);
+  }
+}
+function closeRoleModal(){
+  document.getElementById('roleModalBackdrop').style.display = 'none';
+}
+
+function closeMemberPicker(){
+  window.location.href = "team.html";
+}
+  
+function capitalize(s){
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}  
 function getViewMode() {
   const params = new URLSearchParams(window.location.search);
   return (params.get("view") || "").trim();

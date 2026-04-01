@@ -348,7 +348,8 @@ function renderMemberPicker() {
   }
 
   root.innerHTML = filtered.map(m => `
-    <div class="member-item" onclick='openRoleModal(${JSON.stringify(m)})'>
+    <div class="member-item" onclick="openRoleModalById('${m.userId}')">
+    
      <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
       <div class="member-meta">
         <div class="member-name">${m.displayName || "-"}</div>
@@ -357,6 +358,12 @@ function renderMemberPicker() {
     </div>
   `).join('');
 }
+function openRoleModalById(userId) {
+  const member = memberPickerItems.find(m => m.userId === userId);
+  if (!member) return;
+  openRoleModal(member);
+}
+  
 function openRoleModal(member) {
   selectedMember = member;
   selectedMemberRole = "viewer";

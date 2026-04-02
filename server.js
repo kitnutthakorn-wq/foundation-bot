@@ -3066,6 +3066,9 @@ app.get("/case", checkDashboardAuth, (req, res) => {
 });
 
 app.get("/report", checkDashboardAuth, (req, res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   res.sendFile(path.join(__dirname, "report.html"));
 });
 app.get("/team.html", (req, res) => {
@@ -4840,11 +4843,18 @@ async function getDashboardReportData(days = 7) {
 
   const insights = await getReportInsights(days);
 
+  const executiveBrief = {
+    headline: `ในช่วง ${days} วันล่าสุด รับเรื่อง ${summary.total_cases || 0} เคส ปิดแล้ว ${summary.done_cases || 0} เคส`,
+    subheadline: `ยังมี ${summary.delayed_cases || 0} เคสล่าช้า • เคสด่วนค้าง ${summary.followup_urgent_cases || summary.urgent_cases || 0} เคส • เวลาปิดเฉลี่ย ${insights.avg_close_readable || "0 ชั่วโมง"}`,
+    tone: (summary.delayed_cases || 0) > 0 || (summary.followup_urgent_cases || 0) > 0 ? "warning" : "good"
+  };
+
   return {
     generated_at: new Date().toISOString(),
     summary,
     graph,
     insights,
+    executive_brief: executiveBrief,
     recent_cases: recentRes.data || [],
     urgent_cases: urgentRes.data || [],
     in_progress_cases: inProgressRes.data || [],
@@ -5082,6 +5092,9 @@ app.get("/api/dashboard/report", checkDashboardAuth, async (req, res) => {
   try {
     const days = Math.min(parseInt(req.query.days || "7", 10), 31);
     const data = await getDashboardReportData(days);
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
     res.json({ ok: true, data });
   } catch (error) {
     console.error("DASHBOARD REPORT ERROR:", error);

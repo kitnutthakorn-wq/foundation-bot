@@ -9,8 +9,10 @@
     :root{--brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--card:#fff;--line:#dbe3ea;--muted:#6b7280;--shadow:0 10px 24px rgba(18,36,58,.08)}
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#16304e}
-    .container{max-width:1340px;margin:0 auto;padding:18px}
-    .header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .container{width:min(1480px,calc(100% - 32px));max-width:1480px;margin:0 auto;padding:18px 0 30px}
+    .report-shell{position:relative}
+    .report-shell::before{content:"";position:absolute;inset:0 0 auto 0;height:220px;background:linear-gradient(180deg,rgba(11,124,134,.08),rgba(11,124,134,0));pointer-events:none;border-radius:0 0 32px 32px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px;position:relative;z-index:1}
     .brand{display:flex;align-items:center;gap:14px}
     .brand img{width:72px;height:72px;object-fit:contain;border-radius:18px;background:#fff;box-shadow:var(--shadow);padding:6px}
     h1{margin:0 0 6px;font-size:32px}
@@ -21,6 +23,21 @@
     button.secondary{background:#fff;color:#16304e;border:1px solid var(--line)}
     .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
     .card,.panel{background:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+    .panel{border:1px solid rgba(219,227,234,.7)}
+    .report-hero{position:relative;z-index:1;display:grid;grid-template-columns:1.35fr .65fr;gap:16px;margin-bottom:16px}
+    .report-hero-card{background:linear-gradient(135deg,#163c72 0%,#0b7c86 100%);color:#fff;border-radius:24px;padding:22px;box-shadow:var(--shadow)}
+    .report-hero-title{font-size:14px;opacity:.92;margin-bottom:8px}
+    .report-hero-headline{font-size:24px;font-weight:800;line-height:1.55}
+    .report-hero-sub{font-size:14px;line-height:1.8;opacity:.94;margin-top:8px}
+    .report-side-card{background:#fff;border-radius:24px;padding:18px;box-shadow:var(--shadow);border:1px solid rgba(219,227,234,.7)}
+    .signal-list{display:flex;flex-direction:column;gap:10px}
+    .signal-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;background:#f8fafc;border:1px solid #e5edf3}
+    .signal-label{font-size:13px;color:#475569;font-weight:700}
+    .signal-value{font-size:20px;font-weight:800;color:#16304e}
+    .signal-value.danger{color:#b91c1c}
+    .signal-value.warn{color:#b45309}
+    .signal-value.good{color:#15803d}
+    .section-kicker{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:#eef6f7;color:#0b7c86;padding:8px 12px;font-size:12px;font-weight:800;margin-bottom:10px}
     .card-title{color:#4b5563;margin-bottom:8px}
     .card-value{font-size:34px;font-weight:800}
     .wide-panel{margin-bottom:16px}
@@ -56,6 +73,9 @@
     .table-wrap{overflow:auto}
     table{width:100%;border-collapse:collapse}
     th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e9edf2;vertical-align:top;font-size:14px}
+    th{background:#f8fbfc;color:#163c72;font-weight:800;position:sticky;top:0;z-index:1}
+    tbody tr{transition:background-color .15s ease,transform .15s ease}
+    tbody tr:hover{background:#f8fbfc;transform:translateY(-1px)}
     .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 10px;font-weight:700;font-size:12px;min-width:74px}
     .status-new{background:#dbeafe;color:#1d4ed8}
     .status-in_progress{background:#ffedd5;color:#c2410c}
@@ -67,13 +87,14 @@
     .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 1.6s infinite}
     @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
     .mobile-actions{display:none}
-    @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.mini-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}}
-    @media (max-width:780px){.container{padding:12px 12px 96px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}select,button{width:100%}.toolbar{width:100%}.mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}}
+    @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.mini-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.report-hero{grid-template-columns:1fr}}
+    @media (max-width:780px){.container{width:calc(100% - 24px);padding:12px 0 96px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}select,button{width:100%}.toolbar{width:100%}.report-hero-headline{font-size:20px}.mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}}
     @media (max-width:480px){.cards,.mini-cards{grid-template-columns:1fr}}
     @media print{body{background:#fff}.toolbar,.mobile-actions,.live{display:none}.container{max-width:100%;padding:0}.card,.panel{box-shadow:none;border:1px solid #dfe4ea}}
   </style>
 </head>
 <body>
+  <div class="report-shell">
   <div class="container">
     <div class="header">
       <div class="brand">
@@ -97,6 +118,24 @@
           <button id="exportBtn" class="secondary">Export CSV</button>
           <button id="dashboardBtn" class="secondary">กลับ Dashboard</button>
           <button id="commandCenterBtn" class="secondary">ศูนย์ควบคุม</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-hero">
+      <div class="report-hero-card">
+        <div class="section-kicker">EXECUTIVE FOCUS</div>
+        <div class="report-hero-title">ภาพรวมผู้บริหาร</div>
+        <div class="report-hero-headline" id="reportHeadline">กำลังวิเคราะห์ภาพรวมการดำเนินงาน...</div>
+        <div class="report-hero-sub" id="reportHeadlineSub">ระบบกำลังสรุปผลลัพธ์ ความเสี่ยง และจุดที่ควรติดตามให้โดยอัตโนมัติ</div>
+      </div>
+      <div class="report-side-card">
+        <div class="section-kicker">REPORT SIGNALS</div>
+        <div class="signal-list">
+          <div class="signal-item"><div><div class="signal-label">อัตราปิดเคส</div></div><div class="signal-value" id="signalConversion">0%</div></div>
+          <div class="signal-item"><div><div class="signal-label">เคสล่าช้า</div></div><div class="signal-value warn" id="signalDelayed">0</div></div>
+          <div class="signal-item"><div><div class="signal-label">เคสด่วนค้าง</div></div><div class="signal-value danger" id="signalUrgent">0</div></div>
+          <div class="signal-item"><div><div class="signal-label">เวลาปิดเฉลี่ย</div></div><div class="signal-value good" id="signalAvgClose">0 ชม.</div></div>
         </div>
       </div>
     </div>
@@ -379,6 +418,19 @@
       ).join("");
     }
 
+    function buildHeadline(summary, insights, days){
+      const total = Number(summary?.total_cases || 0);
+      const done = Number(summary?.done_cases || 0);
+      const delayed = Number(summary?.delayed_cases || 0);
+      const urgent = Number(summary?.followup_urgent_cases || summary?.urgent_cases || 0);
+      const conversion = Number(insights?.conversion_rate || 0);
+      const avgReadable = insights?.avg_close_readable || "0 ชั่วโมง";
+      return {
+        headline: `ในช่วง ${days} วันล่าสุด รับเรื่อง ${total} เคส ปิดแล้ว ${done} เคส และยังมี ${delayed} เคสที่ต้องเร่งติดตาม`,
+        sub: `อัตราปิดเคสอยู่ที่ ${conversion}% • เวลาปิดเฉลี่ย ${avgReadable} • เคสด่วนคงค้าง ${urgent} เคส`
+      };
+    }
+
     function drawGraph(graph){
       const ctx = document.getElementById("trendChart");
       if(!ctx) return;
@@ -439,6 +491,14 @@
       safeSet("topProblem", insights.top_problem_label || "-");
       safeSet("topProblemSub", `${insights.top_problem_count ?? 0} เคส`);
       safeSet("insightSentence", insights.summary_sentence || "-");
+
+      const headline = buildHeadline(s, insights, days);
+      safeSet("reportHeadline", headline.headline);
+      safeSet("reportHeadlineSub", headline.sub);
+      safeSet("signalConversion", `${insights.conversion_rate ?? 0}%`);
+      safeSet("signalDelayed", s.delayed_cases || 0);
+      safeSet("signalUrgent", s.followup_urgent_cases || s.urgent_cases || 0);
+      safeSet("signalAvgClose", insights.avg_close_readable || "0 ชั่วโมง");
 
       applyTone(document.getElementById("conversionCard"), Number(insights.conversion_rate ?? 0));
 
@@ -514,5 +574,6 @@ if (commandCenterBtnEl) {
     connectRealtime();    
   </script>
   <script src="/ui-th-apply.js"></script>
+  </div>
 </body>
 </html>

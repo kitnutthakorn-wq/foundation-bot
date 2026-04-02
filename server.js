@@ -6557,14 +6557,20 @@ function filterDelayedCases(rows = []) {
 
 function filterUrgentOpenCases(rows = []) {
   return rows.filter((row) => {
-    const status = String(row.status || "").toLowerCase();
-    const priority = String(row.priority || "").toLowerCase();
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+
+    const priority = String(row.priority || "").trim().toLowerCase();
     return priority === "urgent" && ["new", "in_progress"].includes(status);
   });
 }
 
 function filterClosedCases(rows = []) {
-  return rows.filter((row) => String(row.status || "").toLowerCase() === "done");
+  return rows.filter((row) => {
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return status === "done";
+  });
 }
 
 async function getCommandCenterSummary(days = 7) {

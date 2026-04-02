@@ -1256,11 +1256,15 @@ if (PRESENTATION_MODE) {
   if (!sent) {
     console.log("⚠️ fallback → push team");
 
-    try {
-      await pushTeamNotification(buildTeamNewCaseText(item));
-    } catch (err) {
-      console.warn("⚠️ fallback push failed:", err?.message || err);
-    }
+   let sent = false;
+try {
+  sent = await sendPresentationNotify({
+    replyToken: item.replyToken,
+    fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
+  });
+} catch (err) {
+  console.warn("sendPresentationNotify error:", err?.message || err);
+}
   }
 
   return;

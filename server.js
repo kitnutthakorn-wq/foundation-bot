@@ -1248,23 +1248,23 @@ async function pushTeamNewCaseNotification(item = {}) {
 if (PRESENTATION_MODE) {
   console.log("📣 PRESENTATION MODE: use reply instead of push");
 
-  const sent = await sendPresentationNotify({
-    replyToken: item.replyToken,
-    fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
-  });
+  let sent = false;
+  try {
+    sent = await sendPresentationNotify({
+      replyToken: item.replyToken,
+      fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
+    });
+  } catch (err) {
+    console.warn("sendPresentationNotify error:", err?.message || err);
+  }
 
   if (!sent) {
     console.log("⚠️ fallback → push team");
-
-   let sent = false;
-try {
-  sent = await sendPresentationNotify({
-    replyToken: item.replyToken,
-    fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
-  });
-} catch (err) {
-  console.warn("sendPresentationNotify error:", err?.message || err);
-}
+    try {
+      await pushTeamNotification(buildTeamNewCaseText(item));
+    } catch (err) {
+      console.warn("⚠️ fallback push failed:", err?.message || err);
+    }
   }
 
   return;

@@ -538,7 +538,7 @@ const row = {
   current_step: toNullableText(payload.current_step),
   waiting_for: toNullableText(payload.waiting_for),
   progress_percent: toNumberOrNull(payload.progress_percent),
-  note: toNullableText(payload.note),
+  
   latest_note: toNullableText(payload.latest_note || payload.note || payload.message),
   message: toNullableText(payload.message),
   updated_by: toNullableText(payload.updated_by),

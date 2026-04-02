@@ -6792,43 +6792,53 @@ app.post("/api/team/cases/status", async (req, res) => {
     let requesterNotifyOk = false;
     const notifyWarnings = [];
 
+  if (PRESENTATION_MODE) {
+  await sendPresentationNotify({
+    replyToken: req.body?.replyToken || "",
+    fallbackText:
+      "📣 มีการอัปเดตเคส\n" +
+      `เลขเคส: ${caseCode || "-"}\n` +
+      `สถานะ: ${nextStatus || "-"}\n` +
+      `โดย: ${actorName || "ทีมงาน"}`
+  });
+} else {
+  try {
+    await pushTeamNotification(
+      buildTeamWorkspaceAutoText(
+        notifyAction,
+        updatedCase || { case_code: caseCode, status: nextStatus },
+        actorName
+      )
+    );
+    teamNotifyOk = true;
+  } catch (notifyErr) {
+    console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
+    notifyWarnings.push({
+      target: "team",
+      message: notifyErr?.message || String(notifyErr),
+    });
+  }
+
+  if (updatedCase?.line_user_id) {
     try {
-      await pushTeamNotification(
-        buildTeamWorkspaceAutoText(
+      await pushLineTextSafe(
+        updatedCase.line_user_id,
+        buildRequesterAutoText(
           notifyAction,
-          updatedCase || { case_code: caseCode, status: nextStatus },
+          updatedCase || { case_code: caseCode },
           actorName
         )
       );
-      teamNotifyOk = true;
-    } catch (notifyErr) {
-      console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
+      requesterNotifyOk = true;
+    } catch (requesterErr) {
+      console.warn("REQUESTER STATUS NOTIFY WARNING:", requesterErr?.message || requesterErr);
       notifyWarnings.push({
-        target: "team",
-        message: notifyErr?.message || String(notifyErr),
+        target: "requester",
+        message: requesterErr?.message || String(requesterErr),
       });
     }
-
-    if (updatedCase?.line_user_id) {
-      try {
-        await pushLineTextSafe(
-          updatedCase.line_user_id,
-          buildRequesterAutoText(
-            notifyAction,
-            updatedCase || { case_code: caseCode },
-            actorName
-          )
-        );
-        requesterNotifyOk = true;
-      } catch (notifyErr) {
-        console.warn("REQUESTER STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
-        notifyWarnings.push({
-          target: "requester",
-          message: notifyErr?.message || String(notifyErr),
-        });
-      }
-    }
-
+  }
+}
     // ✅ ถึง LINE push จะ fail ก็ยังตอบสำเร็จ
     return res.json({
       ok: true,

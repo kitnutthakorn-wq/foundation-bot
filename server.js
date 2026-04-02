@@ -1272,7 +1272,8 @@ if (PRESENTATION_MODE) {
       console.error("TEAM NEW CASE TEXT FAILED:", fallbackError.message);
     }
   }
-}function buildTeamFollowupText(item = {}, followupCount = 1) {
+}
+function buildTeamFollowupText(item = {}, followupCount = 1) {
   return (
     "มีการติดตามเคสอีกครั้ง\n\n" +
     `เลขเคส: ${item.case_code || "-"}\n` +

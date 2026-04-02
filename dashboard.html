@@ -618,7 +618,26 @@ if (!totals.breached && !totals.warning) {
   return data;
 }
 
-    
+ function updateExecutiveHeadline(summary = {}, sla = {}) {
+  const total = Number(summary.total_cases || 0);
+  const done = Number(summary.done_cases || 0);
+  const newCases = Number(summary.new_cases || 0);
+  const inProgress = Number(summary.in_progress_cases || 0);
+  const urgent = Number(summary.urgent_cases || 0);
+  const breached = Number((sla.totals || {}).breached || 0);
+
+  const follow = newCases + inProgress;
+
+  const el = document.getElementById("executiveHeadlineText");
+  if (!el) return;
+
+  el.innerHTML =
+    `จาก ${total} เคส ` +
+    `• ปิดแล้ว ${done} เคส ` +
+    `• ยังต้องติดตาม ${follow} เคส ` +
+    `• ในจำนวนนี้มี ${urgent} เคสด่วน ` +
+    `และ ${breached} เคสเกิน SLA`;
+}   
     function renderCases(rows){
   const body = document.getElementById("casesTableBody");
   body.innerHTML = rows.length ? rows.map(row => `

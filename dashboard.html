@@ -882,7 +882,9 @@ await Promise.all(tasks);
       try {
         const exec = await loadExecutive();
         document.getElementById("aiSummary").textContent = buildAiSummary(summary || {}, exec.alerts || [], exec.board || { cases: [] });
-        if (exec.errors?.length) errors.push(...exec.errors.map(msg => `Executive: ${msg}`));
+       if (exec.errors?.length) {
+  errors.push(...exec.errors.map(msg => `Executive: ${msg}`));
+}
       } catch (err) {
         errors.push(`Executive: ${err.message}`);
       }

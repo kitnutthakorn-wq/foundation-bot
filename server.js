@@ -1358,29 +1358,67 @@ function buildTeamFollowupText(item = {}, followupCount = 1) {
 }
 
 async function pushTeamFollowupNotification(item = {}, followupCount = 1) {
-  // ✅ เติม SLA เข้า item
-  if (PRESENTATION_MODE) {
-  console.log("📣 PRESENTATION MODE: use reply (followup)");
-
-  await sendPresentationNotify({
-    replyToken: item.replyToken,
-    fallbackText:
-      "📣 มีการติดตามเคส\n" +
-      `เลขเคส: ${item.case_code || "-"}\n` +
-      `ติดตามซ้ำครั้งที่ ${followupCount}`
-  });
-
-  return;
-}
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;
+
   const flex = buildTeamFollowupFlex(item, followupCount);
-  
+  const fallbackText = buildTeamFollowupText(item, followupCount);
+
+  // 🔥 HYBRID MODE:
+  // - ถ้ามี replyToken → reply ผู้ใช้ก่อน
+  // - จากนั้น push เข้ากลุ่มทีมงานต่อ
+  // - ถ้า push flex ไม่ได้ ค่อย fallback เป็น text
+  if (PRESENTATION_MODE) {
+    console.log("📣 HYBRID MODE: reply user + push team (followup)");
+
+    if (item.replyToken) {
+      try {
+        const replied = await sendPresentationNotify({
+          replyToken: item.replyToken,
+          fallbackText:
+            "📣 รับคำขอติดตามเคสแล้ว\n" +
+            `เลขเคส: ${item.case_code || "-"}\n` +
+            `ติดตามซ้ำครั้งที่ ${followupCount}`
+        });
+
+        if (!replied) {
+          console.warn("HYBRID followup reply failed");
+        }
+      } catch (err) {
+        console.warn("HYBRID followup reply error:", err?.message || err);
+      }
+    } else {
+      console.warn("HYBRID followup: missing replyToken");
+    }
+
+    try {
+      await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
+      console.log("HYBRID followup: team flex pushed");
+    } catch (error) {
+      console.warn("HYBRID followup flex failed:", error?.message || error);
+
+      try {
+        await pushTeamNotification(fallbackText);
+        console.log("HYBRID followup: fallback text pushed");
+      } catch (fallbackError) {
+        console.warn("HYBRID followup text failed:", fallbackError?.message || fallbackError);
+      }
+    }
+
+    return;
+  }
+
+  // ✅ โหมดปกติเดิม
   try {
     await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
   } catch (error) {
     console.error("TEAM FOLLOWUP FLEX FAILED:", error.message);
-    await pushTeamNotification(buildTeamFollowupText(item, followupCount));
+
+    try {
+      await pushTeamNotification(fallbackText);
+    } catch (fallbackError) {
+      console.error("TEAM FOLLOWUP TEXT FAILED:", fallbackError.message);
+    }
   }
 }
 

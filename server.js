@@ -1248,13 +1248,24 @@ async function pushTeamNewCaseNotification(item = {}) {
 if (PRESENTATION_MODE) {
   console.log("📣 PRESENTATION MODE: use reply instead of push");
 
-  await sendPresentationNotify({
+  const sent = await sendPresentationNotify({
     replyToken: item.replyToken,
     fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
   });
 
+  if (!sent) {
+    console.log("⚠️ fallback → push team");
+
+    try {
+      await pushTeamNotification(buildTeamNewCaseText(item));
+    } catch (err) {
+      console.warn("⚠️ fallback push failed:", err?.message || err);
+    }
+  }
+
   return;
 }
+
   // ของเดิมด้านล่าง
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;

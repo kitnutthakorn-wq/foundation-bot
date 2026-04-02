@@ -7146,21 +7146,6 @@ app.post("/api/team/send-update", async (req, res) => {
   }
 });
 // =========================
-// SLA AUTO ALERT (REALTIME)
-// =========================
-setInterval(async () => {
-  try {
-    const result = await processSlaAlertsNow();
-
-    if (result?.sent > 0) {
-      console.log("🚨 SLA AUTO ALERT SENT:", result);
-    }
-
-  } catch (err) {
-    console.error("❌ SLA AUTO ERROR:", err);
-  }
-}, 5 * 60 * 1000); // ทุก 5 นาที
-// =========================
 // DEBUG TEAM GROUP
 // =========================
 

@@ -492,8 +492,7 @@ function toImageArray(input) {
 function normalizeCaseUpdateRecord(row = {}) {
   return {
     ...row,
-    status: row.status || row.status_after || null,
-    note: row.note || row.latest_note || row.message || null,
+    note: row.latest_note || row.message || null,
     images: Array.isArray(row.images) ? row.images : toImageArray(row.images),
   };
 }

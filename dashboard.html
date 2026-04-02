@@ -763,28 +763,26 @@ return filteredRows;
       const sctx = document.getElementById("statusChart");
       if(statusChartInstance) statusChartInstance.destroy();
       statusChartInstance = new Chart(sctx, {
-        type:"bar",
-        data:{
-          labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
-          datasets:[{
-            label:"จำนวน",
-            data:[
-              summary.new_cases||0,
-              summary.in_progress_cases||0,
-              summary.done_cases||0
-            ],
-            backgroundColor:"rgba(54,162,235,0.55)"
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          plugins:{legend:{display:true}},
-          scales:{y:{beginAtZero:true,ticks:{precision:0}}}
-        }
-      });
-    }
-
+  type:"bar",
+  data:{
+    labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
+    datasets:[{
+      label:"จำนวน",
+      data:[
+        summary.new_cases||0,
+        summary.in_progress_cases||0,
+        summary.done_cases||0
+      ],
+      backgroundColor:"rgba(54,162,235,0.55)"
+    }]
+  }, // 👈🔥 ต้องมี comma ตรงนี้
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:true}},
+    scales:{y:{beginAtZero:true,ticks:{precision:0}}}
+  }
+});
    function buildAiSummary(summary, alerts, board){
   const lines = [];
   const topAlert = alerts[0];

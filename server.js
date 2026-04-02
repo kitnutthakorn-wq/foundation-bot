@@ -1289,6 +1289,19 @@ async function pushTeamNewCaseNotification(item = {}) {
 
 async function pushTeamFollowupNotification(item = {}, followupCount = 1) {
   // ✅ เติม SLA เข้า item
+  if (PRESENTATION_MODE) {
+  console.log("📣 PRESENTATION MODE: use reply (followup)");
+
+  await sendPresentationNotify({
+    replyToken: item.replyToken,
+    fallbackText:
+      "📣 มีการติดตามเคส\n" +
+      `เลขเคส: ${item.case_code || "-"}\n` +
+      `ติดตามซ้ำครั้งที่ ${followupCount}`
+  });
+
+  return;
+}
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;
   const flex = buildTeamFollowupFlex(item, followupCount);

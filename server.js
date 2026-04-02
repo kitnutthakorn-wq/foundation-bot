@@ -1282,6 +1282,99 @@ async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {
     return false;
   }
 }
+
+// =========================
+// GOLDEN SAFE PATCH: TEAM GROUP PUSH HELPERS
+// FINAL FIX - SAFE / NO REGRESSION
+// =========================
+
+function getEffectiveTeamGroupId() {
+  return (
+    process.env.EFFECTIVE_TEAM_GROUP_ID ||
+    process.env.TEAM_GROUP_ID ||
+    process.env.LINE_GROUP_ID ||
+    ""
+  ).trim();
+}
+
+function maskGroupId(groupId = "") {
+  if (!groupId) return "(empty)";
+  if (groupId.length <= 10) return groupId;
+  return `${groupId.slice(0, 6)}...${groupId.slice(-4)}`;
+}
+
+function buildLineHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${CHANNEL_ACCESS_TOKEN}`
+  };
+}
+
+async function safePushToTeamGroup(messages, debugLabel = "team-group-push") {
+  const groupId = getEffectiveTeamGroupId();
+
+  console.log(`[${debugLabel}] start`);
+  console.log(`[${debugLabel}] effectiveGroupId = ${maskGroupId(groupId)}`);
+  console.log(`[${debugLabel}] messageCount = ${Array.isArray(messages) ? messages.length : 0}`);
+
+  if (!CHANNEL_ACCESS_TOKEN) {
+    console.warn(`[${debugLabel}] skip: CHANNEL_ACCESS_TOKEN missing`);
+    return { ok: false, skipped: true, reason: "missing_channel_access_token" };
+  }
+
+  if (!groupId) {
+    console.warn(`[${debugLabel}] skip: team group id missing`);
+    return { ok: false, skipped: true, reason: "missing_group_id" };
+  }
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    console.warn(`[${debugLabel}] skip: no messages`);
+    return { ok: false, skipped: true, reason: "empty_messages" };
+  }
+
+  try {
+    const response = await fetch("https://api.line.me/v2/bot/message/push", {
+      method: "POST",
+      headers: buildLineHeaders(),
+      body: JSON.stringify({
+        to: groupId,
+        messages
+      })
+    });
+
+    const rawText = await response.text();
+
+    if (!response.ok) {
+      console.warn(`[${debugLabel}] LINE push failed: ${response.status} ${response.statusText}`);
+      console.warn(`[${debugLabel}] response = ${rawText}`);
+
+      return {
+        ok: false,
+        skipped: false,
+        reason: "line_push_failed",
+        status: response.status,
+        statusText: response.statusText,
+        body: rawText
+      };
+    }
+
+    console.log(`[${debugLabel}] push success`);
+    return {
+      ok: true,
+      skipped: false,
+      status: response.status,
+      body: rawText
+    };
+  } catch (error) {
+    console.warn(`[${debugLabel}] fetch error:`, error?.message || error);
+    return {
+      ok: false,
+      skipped: false,
+      reason: "fetch_error",
+      error: error?.message || String(error)
+    };
+  }
+}
 async function pushTeamNewCaseNotification(item = {}) {
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;

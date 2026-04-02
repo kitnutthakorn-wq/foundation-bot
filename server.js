@@ -531,7 +531,7 @@ async function getHelpRequestByCaseCode(caseCode = "") {
 }
 
 async function insertCaseUpdateLog(payload = {}) {
- const row = {
+const row = {
   case_code: toNullableText(payload.case_code),
   status: toNullableText(payload.status),
   status_after: toNullableText(payload.status_after || payload.status),

@@ -4009,15 +4009,41 @@ async function getDashboardSummaryByDays(days = 7) {
     { count: urgentCases },
     { count: todayCases },
     { count: inProgressCases },
-    { count: doneCases }
+    { count: doneCases },
+    delayedRes,
+    followupRes,
   ] = await Promise.all([
     supabase.from("help_requests").select("*", { count: "exact", head: true }).gte("created_at", rangeStart.toISOString()),
     supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "new").gte("created_at", rangeStart.toISOString()),
     supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("priority", "urgent").in("status", ["new", "in_progress"]).gte("created_at", rangeStart.toISOString()),
     supabase.from("help_requests").select("*", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
     supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "in_progress").gte("created_at", rangeStart.toISOString()),
-    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "done").gte("created_at", rangeStart.toISOString())
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "done").gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("created_at,status").gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("priority,status,created_at").gte("created_at", rangeStart.toISOString()),
   ]);
+
+  if (delayedRes.error) throw delayedRes.error;
+  if (followupRes.error) throw followupRes.error;
+
+  const now = Date.now();
+
+  const delayedCases = (delayedRes.data || []).filter((row) => {
+    if (row.status === "done" || row.status === "cancelled") return false;
+
+    const created = new Date(row.created_at).getTime();
+    if (Number.isNaN(created)) return false;
+
+    const ageDays = (now - created) / (1000 * 60 * 60 * 24);
+    return ageDays >= 2;
+  }).length;
+
+  const followupUrgentCases = (followupRes.data || []).filter((row) => {
+    if (row.status === "done" || row.status === "cancelled") return false;
+
+    const priority = String(row.priority || "").toLowerCase();
+    return priority === "urgent";
+  }).length;
 
   return {
     total_cases: totalCases || 0,
@@ -4025,7 +4051,9 @@ async function getDashboardSummaryByDays(days = 7) {
     urgent_cases: urgentCases || 0,
     today_cases: todayCases || 0,
     in_progress_cases: inProgressCases || 0,
-    done_cases: doneCases || 0
+    done_cases: doneCases || 0,
+    delayed_cases: delayedCases || 0,
+    followup_urgent_cases: followupUrgentCases || 0,
   };
 }
 async function getDashboardGraph(days = 7) {
@@ -4343,12 +4371,16 @@ function toCsvValue(value) {
 }
 
 async function getDashboardReportData(days = 7) {
+  const rangeStart = new Date();
+  rangeStart.setDate(rangeStart.getDate() - (days - 1));
+  rangeStart.setHours(0, 0, 0, 0);
+
   const [summary, graph, recentRes, urgentRes, inProgressRes] = await Promise.all([
-  getDashboardSummaryByDays(days),
-  getDashboardGraph(days),
-    supabase.from("help_requests").select("*").order("created_at", { ascending: false }).limit(10),
-    supabase.from("help_requests").select("*").eq("priority", "urgent").in("status", ["new", "in_progress"]).order("created_at", { ascending: false }).limit(10),
-    supabase.from("help_requests").select("*").eq("status", "in_progress").order("assigned_at", { ascending: false }).limit(10),
+    getDashboardSummaryByDays(days),
+    getDashboardGraph(days),
+    supabase.from("help_requests").select("*").gte("created_at", rangeStart.toISOString()).order("created_at", { ascending: false }).limit(10),
+    supabase.from("help_requests").select("*").eq("priority", "urgent").in("status", ["new", "in_progress"]).gte("created_at", rangeStart.toISOString()).order("created_at", { ascending: false }).limit(10),
+    supabase.from("help_requests").select("*").eq("status", "in_progress").gte("created_at", rangeStart.toISOString()).order("assigned_at", { ascending: false }).limit(10),
   ]);
 
   if (recentRes.error) throw recentRes.error;

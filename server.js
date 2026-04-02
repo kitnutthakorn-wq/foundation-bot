@@ -1386,10 +1386,6 @@ async function pushTeamNewCaseNotification(item = {}) {
   const flex = buildTeamNewCaseFlex(item);
   const fallbackText = buildTeamNewCaseText(item);
 
-  // 🔥 HYBRID MODE:
-  // - ถ้ามี replyToken → reply ผู้ใช้ก่อน
-  // - จากนั้น push เข้ากลุ่มทีมงานต่อ
-  // - ถ้า push flex ไม่ได้ ค่อย fallback เป็น text
   if (PRESENTATION_MODE) {
     console.log("📣 HYBRID MODE: reply user + push team (new case)");
 
@@ -1410,35 +1406,22 @@ async function pushTeamNewCaseNotification(item = {}) {
       console.warn("HYBRID new case: missing replyToken");
     }
 
-    try {
-      await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
-      console.log("HYBRID new case: team flex pushed");
-    } catch (error) {
-      console.warn("HYBRID new case flex failed:", error?.message || error);
+    const pushResult = await safePushToTeamGroup(
+      [flex, { type: "text", text: fallbackText }],
+      "pushTeamNewCaseNotification"
+    );
 
-      try {
-        await pushTeamNotification(fallbackText);
-        console.log("HYBRID new case: fallback text pushed");
-      } catch (fallbackError) {
-        console.warn("HYBRID new case text failed:", fallbackError?.message || fallbackError);
-      }
-    }
-
-    return;
+    console.log("[pushTeamNewCaseNotification] result =", pushResult);
+    return pushResult;
   }
 
-  // ✅ โหมดปกติเดิม
-  try {
-    await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
-  } catch (error) {
-    console.error("TEAM NEW CASE FLEX FAILED:", error.message);
+  const pushResult = await safePushToTeamGroup(
+    [flex, { type: "text", text: fallbackText }],
+    "pushTeamNewCaseNotification"
+  );
 
-    try {
-      await pushTeamNotification(fallbackText);
-    } catch (fallbackError) {
-      console.error("TEAM NEW CASE TEXT FAILED:", fallbackError.message);
-    }
-  }
+  console.log("[pushTeamNewCaseNotification] result =", pushResult);
+  return pushResult;
 }
 function buildTeamFollowupText(item = {}, followupCount = 1) {
   return (

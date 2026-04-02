@@ -1445,10 +1445,6 @@ async function pushTeamFollowupNotification(item = {}, followupCount = 1) {
   const flex = buildTeamFollowupFlex(item, followupCount);
   const fallbackText = buildTeamFollowupText(item, followupCount);
 
-  // 🔥 HYBRID MODE:
-  // - ถ้ามี replyToken → reply ผู้ใช้ก่อน
-  // - จากนั้น push เข้ากลุ่มทีมงานต่อ
-  // - ถ้า push flex ไม่ได้ ค่อย fallback เป็น text
   if (PRESENTATION_MODE) {
     console.log("📣 HYBRID MODE: reply user + push team (followup)");
 
@@ -1472,37 +1468,23 @@ async function pushTeamFollowupNotification(item = {}, followupCount = 1) {
       console.warn("HYBRID followup: missing replyToken");
     }
 
-    try {
-      await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
-      console.log("HYBRID followup: team flex pushed");
-    } catch (error) {
-      console.warn("HYBRID followup flex failed:", error?.message || error);
+    const pushResult = await safePushToTeamGroup(
+      [flex, { type: "text", text: fallbackText }],
+      "pushTeamFollowupNotification"
+    );
 
-      try {
-        await pushTeamNotification(fallbackText);
-        console.log("HYBRID followup: fallback text pushed");
-      } catch (fallbackError) {
-        console.warn("HYBRID followup text failed:", fallbackError?.message || fallbackError);
-      }
-    }
-
-    return;
+    console.log("[pushTeamFollowupNotification] result =", pushResult);
+    return pushResult;
   }
 
-  // ✅ โหมดปกติเดิม
-  try {
-    await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
-  } catch (error) {
-    console.error("TEAM FOLLOWUP FLEX FAILED:", error.message);
+  const pushResult = await safePushToTeamGroup(
+    [flex, { type: "text", text: fallbackText }],
+    "pushTeamFollowupNotification"
+  );
 
-    try {
-      await pushTeamNotification(fallbackText);
-    } catch (fallbackError) {
-      console.error("TEAM FOLLOWUP TEXT FAILED:", fallbackError.message);
-    }
-  }
+  console.log("[pushTeamFollowupNotification] result =", pushResult);
+  return pushResult;
 }
-
 function normalizePhoneForSearch(phone = "") {
   return String(phone || "").replace(/\D/g, "");
 }

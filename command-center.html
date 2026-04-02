@@ -309,8 +309,26 @@
     .case-link:hover {
       text-decoration: underline;
     }
+    .quick-action-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+    .quick-chip{display:inline-flex;align-items:center;gap:8px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:800;cursor:pointer}
+    .quick-chip.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+    .quick-chip.danger{background:var(--soft-red);color:#b91c1c}
+    .quick-chip.warn{background:var(--soft-orange);color:#9a3412}
+    .quick-chip.info{background:var(--soft-blue);color:#1d4ed8}
+    .ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+    .queue-list,.workload-list,.ownerless-list,.health-list{display:grid;gap:10px}
+    .queue-item,.workload-item,.ownerless-item,.health-item{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fbfdff}
+    .queue-item{cursor:pointer;transition:transform .12s ease, box-shadow .12s ease}
+    .queue-item:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+    .queue-top,.workload-top,.ownerless-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:6px}
+    .queue-title,.workload-name,.ownerless-code{font-weight:800;color:var(--brand-dark)}
+    .queue-meta,.workload-meta,.ownerless-meta,.health-desc{font-size:13px;color:var(--muted);line-height:1.5}
+    .health-item.good{background:var(--soft-green)}
+    .health-item.warn{background:var(--soft-orange)}
+    .health-item.info{background:var(--soft-blue)}
+    .health-label{font-weight:800;margin-bottom:4px}
     @media (max-width: 1100px) {
-      .grid-top, .command-grid { grid-template-columns: 1fr; }
+      .grid-top, .command-grid, .ops-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 720px) {
       h1 { font-size: 34px; }
@@ -340,6 +358,14 @@
         <button class="btn-secondary" onclick="location.href='/dashboard'">กลับ Dashboard</button>
         <div class="status-pill"><span class="dot"></span><span id="streamState">เชื่อมต่อข้อมูลสดแล้ว</span></div>
       </div>
+    </div>
+
+    <div class="quick-action-bar">
+      <button class="quick-chip primary" id="quickAllBtn">แสดงเคสทั้งหมด</button>
+      <button class="quick-chip danger" id="quickSlaBtn">เปิดเคสเกิน SLA</button>
+      <button class="quick-chip warn" id="quickOwnerlessBtn">เคสยังไม่มีผู้รับผิดชอบ</button>
+      <button class="quick-chip info" id="quickUrgentBtn">เคสด่วนทั้งหมด</button>
+      <button class="quick-chip" id="quickRefreshBtn">รีเฟรชทั้งหน้า</button>
     </div>
 
     <div class="grid-top">
@@ -374,6 +400,35 @@
         <h2>📡 Live Activity</h2>
         <div class="feed-list" id="feedList">
           <div class="empty">กำลังโหลดกิจกรรมล่าสุด…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ops-grid">
+      <div class="card">
+        <h2>🧠 Command Queue</h2>
+        <div id="commandQueueList" class="queue-list">
+          <div class="empty">กำลังโหลดรายการที่ควรสั่งการก่อน…</div>
+        </div>
+      </div>
+      <div class="side-panel">
+        <div class="card">
+          <h3>👥 Workload by Assignee</h3>
+          <div id="workloadList" class="workload-list">
+            <div class="empty">กำลังโหลดภาระงานทีม…</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🧷 Cases Without Owner</h3>
+          <div id="ownerlessList" class="ownerless-list">
+            <div class="empty">กำลังโหลดเคสที่ยังไม่มีผู้รับผิดชอบ…</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>❤️ System Health</h3>
+          <div id="systemHealthList" class="health-list">
+            <div class="empty">กำลังตรวจสอบสถานะระบบ…</div>
+          </div>
         </div>
       </div>
     </div>
@@ -593,6 +648,97 @@
     }
 
 
+    async function loadCommandQueue() {
+      const result = await apiGet('/api/command-center/command-queue?limit=8');
+      const rows = result.data || [];
+      const el = document.getElementById('commandQueueList');
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">ยังไม่มีรายการที่ต้องสั่งการก่อน</div>';
+        return;
+      }
+      el.innerHTML = rows.map(row => `
+        <div class="queue-item" data-type="${escapeHtml(row.type || '')}">
+          <div class="queue-top">
+            <div>
+              <div class="queue-title">${escapeHtml(row.case_code || '-')} · ${escapeHtml(row.action_text || '-')}</div>
+              <div class="queue-meta">${escapeHtml(row.full_name || '-')} · ${escapeHtml(row.location || '-')}</div>
+            </div>
+            <span class="badge ${escapeHtml((row.priority || 'normal').toLowerCase())}">${escapeHtml(mapPriorityThai(row.priority || 'normal'))}</span>
+          </div>
+          <div class="queue-meta">เหตุผล: ${escapeHtml(row.reason || '-')}</div>
+        </div>
+      `).join('');
+      el.querySelectorAll('.queue-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const type = item.getAttribute('data-type') || 'latest';
+          const filterEl = document.getElementById('listType');
+          if (filterEl) {
+            if (type === 'urgent_followup') filterEl.value = 'followup_urgent';
+            else if (type === 'delayed_followup') filterEl.value = 'delayed';
+            else if (type === 'assign_now') filterEl.value = 'latest';
+            else filterEl.value = 'latest';
+          }
+          loadList();
+        });
+      });
+    }
+
+    async function loadWorkload() {
+      const result = await apiGet('/api/command-center/workload');
+      const rows = result.data || [];
+      const el = document.getElementById('workloadList');
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">ยังไม่พบภาระงานทีม</div>';
+        return;
+      }
+      el.innerHTML = rows.map(row => `
+        <div class="workload-item">
+          <div class="workload-top">
+            <div class="workload-name">${escapeHtml(row.assignee || '-')}</div>
+            <span class="badge in_progress">${Number(row.total_open_cases || 0)} เคสเปิด</span>
+          </div>
+          <div class="workload-meta">เคสด่วน ${Number(row.urgent_cases || 0)} · ใหม่ ${Number(row.new_cases || 0)} · กำลังดำเนินการ ${Number(row.in_progress_cases || 0)}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadOwnerless() {
+      const result = await apiGet('/api/command-center/unassigned?limit=8');
+      const rows = result.data || [];
+      const el = document.getElementById('ownerlessList');
+      if (!rows.length) {
+        el.innerHTML = '<div class="empty">ไม่มีเคสค้างที่ยังไม่มีผู้รับผิดชอบ</div>';
+        return;
+      }
+      el.innerHTML = rows.map(row => `
+        <div class="ownerless-item">
+          <div class="ownerless-top">
+            <div class="ownerless-code">${escapeHtml(row.case_code || '-')}</div>
+            <span class="badge ${escapeHtml((row.priority || 'normal').toLowerCase())}">${escapeHtml(mapPriorityThai(row.priority || 'normal'))}</span>
+          </div>
+          <div class="ownerless-meta">${escapeHtml(row.full_name || '-')} · ${escapeHtml(row.location || '-')}</div>
+        </div>
+      `).join('');
+    }
+
+    async function loadSystemHealth() {
+      const result = await apiGet('/api/command-center/system-health');
+      const row = result.data || {};
+      const el = document.getElementById('systemHealthList');
+      const items = [
+        { cls: row.stream_ready ? 'good' : 'warn', label: 'Realtime Stream', desc: row.stream_ready ? 'พร้อมใช้งาน' : 'ต้องตรวจสอบการเชื่อมต่อ' },
+        { cls: row.alert_engine_ready ? 'good' : 'warn', label: 'Alert Engine', desc: row.alert_engine_ready ? 'พร้อมแจ้งเตือน' : 'ต้องตรวจสอบ alert engine' },
+        { cls: row.auto_assign_ready ? 'good' : 'warn', label: 'Auto Assign', desc: row.auto_assign_ready ? 'พร้อมทำงาน' : 'ยังไม่ active' },
+        { cls: row.team_group_ready ? 'good' : 'info', label: 'LINE Team Channel', desc: row.team_group_ready ? 'พร้อมส่งแจ้งเตือนทีม' : 'ยังไม่ได้ตั้งค่า group แจ้งเตือน' }
+      ];
+      el.innerHTML = items.map(item => `
+        <div class="health-item ${item.cls}">
+          <div class="health-label">${escapeHtml(item.label)}</div>
+          <div class="health-desc">${escapeHtml(item.desc)}</div>
+        </div>
+      `).join('') + `<div class="footer-note">${escapeHtml(row.status_text || '')}</div>`;
+    }
+
     async function loadAlerts() {
       const result = await apiGet('/api/command-center/alerts');
       const rows = result.data || [];
@@ -631,6 +777,8 @@
       };
       eventSource.addEventListener('case_created', refreshAll);
       eventSource.addEventListener('case_updated', refreshAll);
+      eventSource.addEventListener('alert_update', refreshAll);
+      eventSource.addEventListener('auto_assign_update', refreshAll);
       eventSource.addEventListener('heartbeat', () => {
         document.getElementById('streamState').textContent = 'เชื่อมต่อข้อมูลสดแล้ว';
       });
@@ -638,7 +786,7 @@
 
     async function refreshAll() {
       try {
-        await Promise.all([loadSummary(), loadFeed(), loadList(), loadAlerts()]);
+        await Promise.all([loadSummary(), loadFeed(), loadList(), loadAlerts(), loadCommandQueue(), loadWorkload(), loadOwnerless(), loadSystemHealth()]);
       } catch (err) {
         console.error(err);
         alert('โหลดข้อมูลไม่สำเร็จ: ' + err.message);

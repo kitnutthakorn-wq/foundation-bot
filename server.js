@@ -7694,6 +7694,121 @@ async function getCommandCenterAlerts() {
   return buildSmartAlerts(rows);
 }
 
+
+
+async function getCommandCenterCommandQueue(limit = 8) {
+  const rows = await getCommandCenterRows(300);
+  const queue = [];
+  const urgentOpen = filterUrgentOpenCases(rows);
+  const delayed = filterDelayedCases(rows);
+  const unassigned = rows.filter((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return !assigned && ["new", "in_progress"].includes(status);
+  });
+
+  urgentOpen.slice(0, limit).forEach((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    queue.push({
+      type: assigned ? "urgent_followup" : "assign_now",
+      severity: assigned ? "high" : "critical",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: row.assigned_to || null,
+      action_text: assigned ? "ติดตามเคสด่วนทันที" : "มอบหมายผู้รับผิดชอบด่วน",
+      reason: assigned ? "เป็นเคสด่วนที่ยังเปิดอยู่" : "เป็นเคสด่วนและยังไม่มีผู้รับผิดชอบ"
+    });
+  });
+
+  delayed.filter((row) => !queue.some((item) => item.case_id === row.id)).slice(0, limit).forEach((row) => {
+    queue.push({
+      type: "delayed_followup",
+      severity: "medium",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: row.assigned_to || null,
+      action_text: "เร่งติดตามเคสล่าช้า",
+      reason: "เคสยังไม่ปิดและค้างเกินเกณฑ์"
+    });
+  });
+
+  unassigned.filter((row) => !queue.some((item) => item.case_id === row.id)).slice(0, limit).forEach((row) => {
+    queue.push({
+      type: "assign_owner",
+      severity: "medium",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: null,
+      action_text: "มอบหมายผู้รับผิดชอบ",
+      reason: "เคสยังไม่มีผู้รับผิดชอบ"
+    });
+  });
+
+  return queue.slice(0, limit);
+}
+
+async function getCommandCenterWorkload() {
+  const rows = await getCommandCenterRows(500);
+  const openRows = rows.filter((row) => {
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return ["new", "in_progress"].includes(status);
+  });
+  const map = new Map();
+  openRows.forEach((row) => {
+    const key = String(row.assigned_to || "").trim() || "ยังไม่มีผู้รับผิดชอบ";
+    const bucket = map.get(key) || {
+      assignee: key,
+      total_open_cases: 0,
+      urgent_cases: 0,
+      new_cases: 0,
+      in_progress_cases: 0,
+    };
+    bucket.total_open_cases += 1;
+    if (String(row.priority || "").trim().toLowerCase() === "urgent") bucket.urgent_cases += 1;
+    const status = String(row.status || "").trim().toLowerCase();
+    if (status === "new") bucket.new_cases += 1;
+    if (status === "in_progress" || status === "progress") bucket.in_progress_cases += 1;
+    map.set(key, bucket);
+  });
+  return Array.from(map.values()).sort((a, b) => b.total_open_cases - a.total_open_cases).slice(0, 10);
+}
+
+async function getCommandCenterUnassigned(limit = 10) {
+  const rows = await getCommandCenterRows(300);
+  return rows.filter((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return !assigned && ["new", "in_progress"].includes(status);
+  }).slice(0, limit);
+}
+
+async function getCommandCenterSystemHealth() {
+  const recentAlerts = await getCommandCenterAlerts();
+  const autoAssignEnabled = typeof processAutoAssign === "function";
+  return {
+    stream_ready: true,
+    alert_engine_ready: recentAlerts.length >= 0,
+    auto_assign_ready: autoAssignEnabled,
+    team_group_ready: Boolean(getEffectiveTeamGroupId()),
+    status_text: autoAssignEnabled ? "ระบบพร้อมสั่งการและติดตามสด" : "ระบบพร้อมติดตามสด แต่ Auto Assign ยังไม่ active"
+  };
+}
+
 app.get("/command-center", checkDashboardAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "command-center.html"));
 });
@@ -7740,6 +7855,49 @@ app.get("/api/command-center/activity", checkDashboardAuth, async (req, res) => 
     res.json({ ok: true, data });
   } catch (error) {
     console.error("COMMAND CENTER ACTIVITY ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+
+app.get("/api/command-center/command-queue", checkDashboardAuth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "8", 10), 20);
+    const data = await getCommandCenterCommandQueue(limit);
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER QUEUE ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/workload", checkDashboardAuth, async (req, res) => {
+  try {
+    const data = await getCommandCenterWorkload();
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER WORKLOAD ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/unassigned", checkDashboardAuth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "10", 10), 30);
+    const data = await getCommandCenterUnassigned(limit);
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER UNASSIGNED ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/system-health", checkDashboardAuth, async (req, res) => {
+  try {
+    const data = await getCommandCenterSystemHealth();
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER SYSTEM HEALTH ERROR:", error);
     res.status(500).json({ ok: false, error: error.message });
   }
 });

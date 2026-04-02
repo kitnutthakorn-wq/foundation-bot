@@ -348,16 +348,15 @@ function renderMemberPicker() {
     return;
   }
 
-  root.innerHTML = filtered.map(m => `
-    <div class="member-item"onclick="openRoleModalById('${m.userId.replace(/'/g, "\\'")}')">
-    
-     <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
-      <div class="member-meta">
-        <div class="member-name">${m.displayName || "-"}</div>
-        <div class="member-sub">${m.userId}</div>
-      </div>
+root.innerHTML = filtered.map(m => `
+  <div class="member-item" onclick="openRoleModalById('${String(m.userId || "").replace(/'/g, "\\'")}')">
+    <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
+    <div class="member-meta">
+      <div class="member-name">${m.displayName || "-"}</div>
+      <div class="member-sub">${m.userId}</div>
     </div>
-  `).join('');
+  </div>
+`).join('');
 }
 function openRoleModalById(userId) {
   const member = memberPickerItems.find(m => m.userId === userId);

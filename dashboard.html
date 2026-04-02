@@ -589,6 +589,51 @@ function filterRowsBySla(rows){
       lastTotal = current;
     }
 
+
+
+async function loadAlertSummary(){
+  try {
+    const data = await fetchJSON("/api/alerts/summary");
+    const summary = data.summary || {};
+    const openAlertsEl = document.getElementById("openAlerts");
+    if (openAlertsEl) openAlertsEl.textContent = Number(summary.total_open || 0);
+    return summary;
+  } catch (err) {
+    console.warn("loadAlertSummary failed:", err);
+    const openAlertsEl = document.getElementById("openAlerts");
+    if (openAlertsEl) openAlertsEl.textContent = 0;
+    return {
+      total_open: 0,
+      critical: 0,
+      high: 0,
+      medium: 0,
+      info: 0,
+      by_type: {
+        new_case_unassigned: 0,
+        urgent_case: 0,
+        sla_warning: 0,
+        sla_breach: 0
+      }
+    };
+  }
+}
+
+async function loadRecentAlerts(limit = 5){
+  try {
+    const data = await fetchJSON(`/api/alerts/recent?limit=${limit}`);
+    return Array.isArray(data.items) ? data.items : [];
+  } catch (err) {
+    console.warn("loadRecentAlerts failed:", err);
+    return [];
+  }
+}
+
+function formatAlertSourceLabel(item = {}){
+  const sourceType = item.source_type || "system";
+  const sourceId = item.source_id || "-";
+  return `source: ${sourceType} #${sourceId}`;
+}
+
    async function loadSummary(){
   const data = await fetchJSON("/api/dashboard/summary");
 
@@ -863,29 +908,30 @@ const sorted = [...rows].sort((a,b)=>{
     `;
   }).join("");
 }
-    
-    function renderAlerts(alerts){
-      const openAlertsEl = document.getElementById("openAlerts");
-      if (openAlertsEl) {
-        openAlertsEl.textContent = alerts.length;
-      }
 
-      const box = document.getElementById("alertsList");
-      if(!alerts.length){
-        box.innerHTML = '<div class="footer-note">ยังไม่มี alerts</div>';
-        return;
-      }
-      box.innerHTML = alerts.slice(0,5).map(a => `
-        <div class="mini-card">
-          <div class="top">
-            <strong>${escapeHtml(a.title || "-")}</strong>
-            ${severityBadge(a.severity)}
-          </div>
-          <div style="font-weight:700;margin-bottom:6px">${escapeHtml(a.message || "-")}</div>
-          <div class="footer-note">source: ${escapeHtml(a.source_type || "-")} #${escapeHtml(a.source_id || "-")} • ${escapeHtml(formatThaiDateTime(a.created_at))}</div>
-        </div>
-      `).join("");
-    }
+function renderAlerts(alerts){
+  const rows = Array.isArray(alerts) ? alerts : [];
+  const openAlertsEl = document.getElementById("openAlerts");
+  if (openAlertsEl) {
+    openAlertsEl.textContent = rows.length;
+  }
+
+  const box = document.getElementById("alertsList");
+  if(!rows.length){
+    box.innerHTML = '<div class="footer-note">ยังไม่มี alerts</div>';
+    return;
+  }
+  box.innerHTML = rows.slice(0,5).map(a => `
+    <div class="mini-card">
+      <div class="top">
+        <strong>${escapeHtml(a.title || "-")}</strong>
+        ${severityBadge(a.severity || a.alert_level || "info")}
+      </div>
+      <div style="font-weight:700;margin-bottom:6px">${escapeHtml(a.message || "-")}</div>
+      <div class="footer-note">${escapeHtml(formatAlertSourceLabel(a))} • ${escapeHtml(formatThaiDateTime(a.created_at))}</div>
+    </div>
+  `).join("");
+}
 
     function renderActions(cases){
       const box = document.getElementById("actionsList");
@@ -921,22 +967,30 @@ const sorted = [...rows].sort((a,b)=>{
     }
 
     async function loadExecutive(){
-      const [alertsRes, boardRes] = await Promise.all([
-        fetchJSON("/api/alerts?status=open").catch(err => ({ __error: err.message, data: [] })),
+      const [alertSummaryRes, recentAlertsRes, boardRes] = await Promise.all([
+        fetchJSON("/api/alerts/summary").catch(err => ({ __error: err.message, summary: {} })),
+        fetchJSON("/api/alerts/recent?limit=5").catch(err => ({ __error: err.message, items: [] })),
         fetchJSON("/api/executive/decision-board").catch(err => ({ __error: err.message, cases: [], alerts: [] }))
       ]);
 
-      const alerts = alertsRes.data || alertsRes.alerts || alertsRes || [];
+      const recentAlerts = Array.isArray(recentAlertsRes.items) ? recentAlertsRes.items : [];
       const board = boardRes || { cases: [], alerts: [] };
+      const summary = alertSummaryRes.summary || {};
 
-      renderAlerts(Array.isArray(alerts) ? alerts : []);
+      renderAlerts(recentAlerts);
       renderActions(Array.isArray(board.cases) ? board.cases : []);
       renderHighPriorityCases(Array.isArray(board.cases) ? board.cases : []);
 
+      const openAlertsEl = document.getElementById("openAlerts");
+      if (openAlertsEl) {
+        openAlertsEl.textContent = Number(summary.total_open || recentAlerts.length || 0);
+      }
+
       return {
-        alerts: Array.isArray(alerts) ? alerts : [],
+        alertSummary: summary,
+        alerts: recentAlerts,
         board: { ...board, cases: Array.isArray(board.cases) ? board.cases : [] },
-        errors: [alertsRes.__error, boardRes.__error].filter(Boolean)
+        errors: [alertSummaryRes.__error, recentAlertsRes.__error, boardRes.__error].filter(Boolean)
       };
     }
 
@@ -965,8 +1019,15 @@ const sorted = [...rows].sort((a,b)=>{
       }
 
       try {
-        const exec = await loadExecutive();
+        const [alertSummary, exec] = await Promise.all([
+          loadAlertSummary().catch(err => ({ __error: err.message })),
+          loadExecutive()
+        ]);
         document.getElementById("aiSummary").textContent = buildAiSummary(summary || {}, exec.alerts || [], exec.board || { cases: [] });
+        if (alertSummary && !alertSummary.__error) {
+          const openAlertsEl = document.getElementById("openAlerts");
+          if (openAlertsEl) openAlertsEl.textContent = Number(alertSummary.total_open || (exec.alerts || []).length || 0);
+        }
        if (exec.errors?.length) {
   errors.push(...exec.errors.map(msg => `Executive: ${msg}`));
 }
@@ -1004,6 +1065,7 @@ const sorted = [...rows].sort((a,b)=>{
         eventSource.addEventListener("case_created", onChange);
         eventSource.addEventListener("case_updated", onChange);
         eventSource.addEventListener("alerts_generated", () => refreshAll(true).catch(console.error));
+        eventSource.addEventListener("alert_update", () => refreshAll(true).catch(console.error));
         eventSource.onerror = () => {
           document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
         };
@@ -1025,7 +1087,7 @@ const sorted = [...rows].sort((a,b)=>{
     async function runGenerateAlerts(){
       try{
         const result = await fetchJSON("/api/alerts/generate");
-        showToast("Generate Alerts สำเร็จ", `สร้าง ${result.created || 0} รายการ`);
+        showToast("Generate Alerts สำเร็จ", `สร้าง ${result.created || 0} รายการ • ข้าม ${result.skipped || 0} รายการ`);
         refreshAll(true).catch(console.error);
       }catch(err){
         alert("Generate Alerts ไม่สำเร็จ: " + err.message);

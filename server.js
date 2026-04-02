@@ -2535,6 +2535,432 @@ return {
   checked_at: new Date().toISOString()
 };
 }
+
+
+// =========================
+// GOLDEN SAFE PATCH: ALERT ENGINE HELPERS
+// =========================
+const ALERT_ENGINE_DEDUPE_MS = 60 * 60 * 1000;
+const ALERT_ENGINE_MEMORY_LIMIT = 300;
+const alertEngineMemory = [];
+const alertEngineSeenMap = new Map();
+let alertEngineTableCheckedAt = 0;
+let alertEngineTableAvailable = null;
+
+function cleanupAlertEngineSeenMap() {
+  const now = Date.now();
+  const maxAge = 24 * 60 * 60 * 1000;
+  for (const [key, value] of alertEngineSeenMap.entries()) {
+    if (!value?.ts || (now - value.ts) > maxAge) {
+      alertEngineSeenMap.delete(key);
+    }
+  }
+  while (alertEngineMemory.length > ALERT_ENGINE_MEMORY_LIMIT) {
+    alertEngineMemory.shift();
+  }
+}
+
+function normalizeAlertSeverity(value = '') {
+  const raw = String(value || '').trim().toLowerCase();
+  if (['critical', 'high', 'medium', 'info'].includes(raw)) return raw;
+  return 'info';
+}
+
+function getAlertSeverityFromCase(row = {}, merged = row) {
+  const priority = normalizeSlaPriority(row.priority);
+  const slaLevel = String(merged?.sla_level || '').toLowerCase();
+  const assignedTo = String(row.assigned_to || '').trim();
+  const status = normalizeSlaStatus(row.status);
+
+  if (status === 'done' || status === 'cancelled') return 'info';
+  if (slaLevel === 'breached') return priority === 'urgent' ? 'critical' : 'high';
+  if (status === 'new' && !assignedTo) return priority === 'urgent' ? 'critical' : 'high';
+  if (priority === 'urgent') return 'high';
+  if (slaLevel === 'warning') return 'medium';
+  return 'info';
+}
+
+function buildGoldenAlertFromCase(row = {}, options = {}) {
+  const merged = options.mergedRow || mergeCaseWithSla(row || {});
+  const status = normalizeSlaStatus(merged.status);
+  const priority = normalizeSlaPriority(merged.priority);
+  const assignedTo = String(merged.assigned_to || '').trim();
+  const hours = Number(merged.sla_hours_since_action || 0);
+
+  if (!merged?.case_code) return null;
+  if (status === 'done' || status === 'cancelled') return null;
+
+  let alertType = '';
+  let title = '';
+  let message = '';
+
+  if (merged.sla_level === 'breached') {
+    alertType = 'sla_breach';
+    title = 'เคสเกิน SLA';
+    message = `เคส ${merged.case_code} เกิน SLA แล้ว (${hours} ชั่วโมง)`;
+  } else if (merged.sla_level === 'warning') {
+    alertType = 'sla_warning';
+    title = 'เคสใกล้เกิน SLA';
+    message = `เคส ${merged.case_code} ใกล้เกิน SLA (${hours} ชั่วโมง)`;
+  } else if (status === 'new' && !assignedTo) {
+    alertType = 'new_case_unassigned';
+    title = priority === 'urgent' ? 'เคสด่วนยังไม่มีผู้รับผิดชอบ' : 'เคสใหม่ยังไม่มีผู้รับผิดชอบ';
+    message = `เคส ${merged.case_code} ยังไม่มีผู้รับผิดชอบ`;
+  } else if (priority === 'urgent') {
+    alertType = 'urgent_case';
+    title = 'พบเคสด่วน';
+    message = `เคส ${merged.case_code} ถูกจัดเป็นเคสด่วน`;
+  } else {
+    return null;
+  }
+
+  return {
+    id: `alert-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    case_code: merged.case_code,
+    alert_type: alertType,
+    severity: normalizeAlertSeverity(getAlertSeverityFromCase(merged, merged)),
+    title,
+    message,
+    status: 'open',
+    source_type: options.source_type || 'system',
+    source_id: String(options.source_id || merged.id || merged.case_code || '-'),
+    created_at: new Date().toISOString(),
+    metadata: {
+      case_id: merged.id || null,
+      full_name: merged.full_name || null,
+      location: merged.location || null,
+      assigned_to: merged.assigned_to || null,
+      priority: merged.priority || null,
+      status: merged.status || null,
+      sla_level: merged.sla_level || null,
+      sla_hours_since_action: merged.sla_hours_since_action || 0
+    }
+  };
+}
+
+function getAlertEngineKey(alert = {}) {
+  return `${alert.case_code || 'unknown'}:${alert.alert_type || 'unknown'}`;
+}
+
+function shouldCreateGoldenAlert(alert = {}) {
+  const key = getAlertEngineKey(alert);
+  const found = alertEngineSeenMap.get(key);
+  if (!found) return true;
+  return (Date.now() - found.ts) >= ALERT_ENGINE_DEDUPE_MS;
+}
+
+async function isAlertLogsTableAvailable() {
+  const now = Date.now();
+  if (alertEngineTableAvailable !== null && (now - alertEngineTableCheckedAt) < 5 * 60 * 1000) {
+    return alertEngineTableAvailable;
+  }
+
+  alertEngineTableCheckedAt = now;
+  try {
+    const { error } = await supabase
+      .from('alert_logs')
+      .select('id', { head: true, count: 'exact' })
+      .limit(1);
+
+    alertEngineTableAvailable = !error;
+    if (error) {
+      console.warn('alert_logs table unavailable:', error.message || error);
+    }
+  } catch (err) {
+    alertEngineTableAvailable = false;
+    console.warn('alert_logs table check failed:', err?.message || err);
+  }
+
+  return alertEngineTableAvailable;
+}
+
+async function persistGoldenAlert(alert = {}) {
+  const canUseTable = await isAlertLogsTableAvailable();
+  if (!canUseTable) return { ok: false, persisted: false, reason: 'table_unavailable' };
+
+  try {
+    const { data, error } = await supabase
+      .from('alert_logs')
+      .insert([{
+        case_code: alert.case_code,
+        alert_type: alert.alert_type,
+        alert_level: alert.severity,
+        title: alert.title,
+        message: alert.message,
+        status: alert.status || 'open',
+        source: alert.source_type || 'system',
+        sent_to_line: false,
+        metadata: alert.metadata || {}
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.warn('persistGoldenAlert insert failed:', error.message || error);
+      return { ok: false, persisted: false, reason: error.message || 'insert_failed' };
+    }
+
+    return { ok: true, persisted: true, row: data };
+  } catch (err) {
+    console.warn('persistGoldenAlert catch:', err?.message || err);
+    return { ok: false, persisted: false, reason: err?.message || 'insert_failed' };
+  }
+}
+
+async function updateGoldenAlertLineStatus(dbId, sentToLine, lineError = null) {
+  if (!dbId) return;
+  const canUseTable = await isAlertLogsTableAvailable();
+  if (!canUseTable) return;
+
+  try {
+    await supabase
+      .from('alert_logs')
+      .update({
+        sent_to_line: !!sentToLine,
+        line_error: sentToLine ? null : (lineError || null)
+      })
+      .eq('id', dbId);
+  } catch (err) {
+    console.warn('updateGoldenAlertLineStatus failed:', err?.message || err);
+  }
+}
+
+async function safePushAlertToTeam(text = '') {
+  if (!text) return { ok: false, reason: 'empty_text' };
+  try {
+    await pushTeamNotification(text);
+    return { ok: true };
+  } catch (err) {
+    console.warn('safePushAlertToTeam failed:', err?.message || err);
+    return { ok: false, reason: err?.message || 'push_failed' };
+  }
+}
+
+function buildGoldenAlertLineMessage(alert = {}) {
+  const meta = alert.metadata || {};
+  const severity = String(alert.severity || 'info').toUpperCase();
+  return [
+    '🚨 ALERT ENGINE',
+    `${alert.title || 'พบเหตุแจ้งเตือน'}`,
+    `เคส: ${alert.case_code || '-'}`,
+    `ระดับ: ${severity}`,
+    `สถานะ: ${formatCaseStatusThai(meta.status || '-')}`,
+    `ความสำคัญ: ${formatPriorityThai(meta.priority || 'normal')}`,
+    `ผู้รับผิดชอบ: ${meta.assigned_to || 'ยังไม่มีผู้รับผิดชอบ'}`,
+    `รายละเอียด: ${alert.message || '-'}`
+  ].join('\n');
+}
+
+async function createGoldenAlertFromCaseRow(row = {}, options = {}) {
+  cleanupAlertEngineSeenMap();
+
+  const alert = buildGoldenAlertFromCase(row, options);
+  if (!alert) return { ok: true, created: false, reason: 'no_alert' };
+  if (!options.force && !shouldCreateGoldenAlert(alert)) {
+    return { ok: true, created: false, reason: 'cooldown' };
+  }
+
+  const key = getAlertEngineKey(alert);
+  alertEngineSeenMap.set(key, { ts: Date.now() });
+  alertEngineMemory.push(alert);
+  cleanupAlertEngineSeenMap();
+
+  const persisted = await persistGoldenAlert(alert);
+  let line = { ok: false, reason: 'notify_disabled' };
+  if (options.notify !== false) {
+    line = await safePushAlertToTeam(buildGoldenAlertLineMessage(alert));
+  }
+  if (persisted?.row?.id) {
+    await updateGoldenAlertLineStatus(persisted.row.id, line.ok, line.reason || null);
+  }
+
+  try {
+    broadcastSse('alert_update', {
+      case_code: alert.case_code,
+      alert_type: alert.alert_type,
+      severity: alert.severity,
+      title: alert.title,
+      message: alert.message
+    });
+  } catch (err) {
+    console.warn('broadcast alert_update failed:', err?.message || err);
+  }
+
+  return { ok: true, created: true, alert, line, persisted };
+}
+
+async function getAlertCasesSnapshot(limit = 100) {
+  const { data, error } = await supabase
+    .from('help_requests')
+    .select('id, case_code, full_name, location, status, priority, assigned_to, created_at, last_action_at, closed_at')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data || []).map(mergeCaseWithSla);
+}
+
+async function getAlertsFromDatabase(status = 'open', limit = 50) {
+  const canUseTable = await isAlertLogsTableAvailable();
+  if (!canUseTable) return [];
+
+  try {
+    let query = supabase
+      .from('alert_logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (status) {
+      query = query.eq('status', status);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.warn('getAlertsFromDatabase failed:', error.message || error);
+      return [];
+    }
+
+    return (data || []).map((row) => ({
+      id: row.id || `db-${row.case_code || 'case'}-${row.alert_type || 'alert'}`,
+      case_code: row.case_code || '-',
+      alert_type: row.alert_type || '-',
+      severity: normalizeAlertSeverity(row.alert_level || row.severity || 'info'),
+      title: row.title || '-',
+      message: row.message || '-',
+      status: row.status || 'open',
+      source_type: row.source || 'system',
+      source_id: row.id || '-',
+      created_at: row.created_at || new Date().toISOString(),
+      metadata: row.metadata || {}
+    }));
+  } catch (err) {
+    console.warn('getAlertsFromDatabase catch:', err?.message || err);
+    return [];
+  }
+}
+
+async function listGoldenAlerts(options = {}) {
+  const status = String(options.status || 'open').trim().toLowerCase();
+  const limit = Math.max(1, Math.min(Number(options.limit || 20), 100));
+
+  const dbAlerts = await getAlertsFromDatabase(status, limit);
+  if (dbAlerts.length) {
+    return dbAlerts.slice(0, limit);
+  }
+
+  const memoryAlerts = [...alertEngineMemory]
+    .filter((item) => !status || (item.status || 'open') === status)
+    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+  if (memoryAlerts.length) {
+    return memoryAlerts.slice(0, limit);
+  }
+
+  try {
+    const snapshot = await getAlertCasesSnapshot(Math.max(limit * 4, 50));
+    const generated = snapshot
+      .map((row) => buildGoldenAlertFromCase(row, { source_type: 'snapshot', source_id: row.id || row.case_code }))
+      .filter(Boolean)
+      .sort((a, b) => {
+        const rank = { critical: 4, high: 3, medium: 2, info: 1 };
+        return (rank[b.severity] || 0) - (rank[a.severity] || 0);
+      });
+    return generated.slice(0, limit);
+  } catch (err) {
+    console.warn('listGoldenAlerts snapshot failed:', err?.message || err);
+    return [];
+  }
+}
+
+async function generateGoldenAlertsNow(options = {}) {
+  const limit = Math.max(1, Math.min(Number(options.limit || 20), 100));
+  const snapshot = await getAlertCasesSnapshot(Math.max(limit * 5, 50));
+  let created = 0;
+  let skipped = 0;
+  const items = [];
+
+  for (const row of snapshot.slice(0, Math.max(limit * 2, 20))) {
+    const result = await createGoldenAlertFromCaseRow(row, {
+      source_type: options.source_type || 'manual_generate',
+      source_id: row.id || row.case_code,
+      force: false,
+      notify: options.notify !== false
+    });
+
+    if (result.created) {
+      created += 1;
+      items.push(result.alert);
+      if (created >= limit) break;
+    } else {
+      skipped += 1;
+    }
+  }
+
+  try {
+    broadcastSse('alerts_generated', {
+      created,
+      skipped,
+      checked_at: new Date().toISOString()
+    });
+  } catch (err) {
+    console.warn('broadcast alerts_generated failed:', err?.message || err);
+  }
+
+  return {
+    ok: true,
+    created,
+    skipped,
+    items,
+    checked_at: new Date().toISOString()
+  };
+}
+
+async function buildExecutiveDecisionBoard(limit = 10) {
+  const rows = await getAlertCasesSnapshot(Math.max(limit * 5, 50));
+  const activeRows = rows.filter((row) => !row.sla_excluded);
+
+  const cases = activeRows
+    .map((row) => {
+      const priority = normalizeSlaPriority(row.priority);
+      const severity = getAlertSeverityFromCase(row, row);
+      const priorityScore =
+        (priority === 'urgent' ? 40 : priority === 'high' ? 25 : priority === 'normal' ? 12 : 6) +
+        (!row.assigned_to ? 10 : 0) +
+        (row.status === 'new' ? 8 : row.status === 'in_progress' ? 6 : 0);
+
+      const riskScore =
+        (row.sla_level === 'breached' ? 50 : row.sla_level === 'warning' ? 25 : 5) +
+        Number(row.sla_hours_since_action || 0);
+
+      let recommendedAction = 'ติดตามเคส';
+      if (row.sla_level === 'breached') {
+        recommendedAction = 'เร่งเคลียร์เคสเกิน SLA ทันที';
+      } else if (row.sla_level === 'warning') {
+        recommendedAction = 'ติดตามเชิงรุกก่อนเกิน SLA';
+      } else if (!row.assigned_to) {
+        recommendedAction = 'มอบหมายผู้รับผิดชอบโดยเร็ว';
+      } else if (priority === 'urgent') {
+        recommendedAction = 'เร่งติดตามเคสด่วน';
+      }
+
+      return {
+        case: row,
+        severity,
+        priority_score: priorityScore,
+        risk_score: Math.round(riskScore * 10) / 10,
+        recommended_action: recommendedAction
+      };
+    })
+    .sort((a, b) => (b.risk_score - a.risk_score) || (b.priority_score - a.priority_score))
+    .slice(0, limit);
+
+  return {
+    ok: true,
+    cases,
+    alerts: await listGoldenAlerts({ status: 'open', limit: 5 })
+  };
+}
 /* =========================
    ENV CHECK
 ========================= */
@@ -6320,6 +6746,16 @@ if (text === "เคสวันนี้") {
 try {
   await pushTeamNewCaseNotification(insertedCase);
 
+            try {
+              await createGoldenAlertFromCaseRow(insertedCase, {
+                source_type: "new_case_created",
+                source_id: insertedCase.id || insertedCase.case_code,
+                notify: false
+              });
+            } catch (alertErr) {
+              console.warn("NEW CASE ALERT WARNING:", alertErr?.message || alertErr);
+            }
+
             await supabase
               .from("help_requests")
               .update({
@@ -6423,14 +6859,93 @@ function safeJson(res, data) {
   }
 }
 
+
+// ===== PATCH: /api/alerts/summary =====
+app.get("/api/alerts/summary", async (req, res) => {
+  try {
+    const alerts = await listGoldenAlerts({
+      status: String(req.query.status || 'open'),
+      limit: Math.max(20, Math.min(Number(req.query.limit || 100), 200))
+    });
+
+    const summary = {
+      total_open: alerts.length,
+      critical: alerts.filter((item) => item.severity === 'critical').length,
+      high: alerts.filter((item) => item.severity === 'high').length,
+      medium: alerts.filter((item) => item.severity === 'medium').length,
+      info: alerts.filter((item) => item.severity === 'info').length,
+      by_type: {
+        new_case_unassigned: alerts.filter((item) => item.alert_type === 'new_case_unassigned').length,
+        urgent_case: alerts.filter((item) => item.alert_type === 'urgent_case').length,
+        sla_warning: alerts.filter((item) => item.alert_type === 'sla_warning').length,
+        sla_breach: alerts.filter((item) => item.alert_type === 'sla_breach').length,
+      }
+    };
+
+    return safeJson(res, { ok: true, summary });
+  } catch (err) {
+    console.error('[ALERTS_SUMMARY_ERROR]', err);
+    return safeJson(res, {
+      ok: true,
+      summary: {
+        total_open: 0,
+        critical: 0,
+        high: 0,
+        medium: 0,
+        info: 0,
+        by_type: {
+          new_case_unassigned: 0,
+          urgent_case: 0,
+          sla_warning: 0,
+          sla_breach: 0,
+        }
+      },
+      fallback: true,
+    });
+  }
+});
+
+// ===== PATCH: /api/alerts/recent =====
+app.get("/api/alerts/recent", async (req, res) => {
+  try {
+    const items = await listGoldenAlerts({
+      status: String(req.query.status || 'open'),
+      limit: Number(req.query.limit || 20)
+    });
+
+    return safeJson(res, { ok: true, items });
+  } catch (err) {
+    console.error('[ALERTS_RECENT_ERROR]', err);
+    return safeJson(res, { ok: true, items: [], fallback: true });
+  }
+});
+
+// ===== PATCH: /api/alerts/generate =====
+app.get("/api/alerts/generate", async (req, res) => {
+  try {
+    const result = await generateGoldenAlertsNow({
+      limit: Number(req.query.limit || 10),
+      notify: req.query.notify === '0' ? false : true,
+      source_type: 'manual_generate'
+    });
+    return safeJson(res, result);
+  } catch (err) {
+    console.error('[ALERTS_GENERATE_ERROR]', err);
+    return res.status(500).json({ ok: false, error: err.message || 'generate_alerts_failed' });
+  }
+});
+
+
 // ===== PATCH: /api/alerts =====
 app.get("/api/alerts", async (req, res) => {
   try {
-    const status = req.query.status || "open";
+    const status = String(req.query.status || "open").trim().toLowerCase();
+    const limit = Math.max(1, Math.min(Number(req.query.limit || 20), 100));
+    const alerts = await listGoldenAlerts({ status, limit });
 
     return safeJson(res, {
       success: true,
-      data: [],
+      data: alerts,
     });
 
   } catch (err) {
@@ -6444,12 +6959,17 @@ app.get("/api/alerts", async (req, res) => {
   }
 });
 
+
 // ===== PATCH: /api/executive/decision-board =====
 app.get("/api/executive/decision-board", async (req, res) => {
   try {
+    const limit = Math.max(1, Math.min(Number(req.query.limit || 10), 50));
+    const board = await buildExecutiveDecisionBoard(limit);
+
     return safeJson(res, {
       success: true,
-      data: {},
+      cases: board.cases || [],
+      alerts: board.alerts || [],
     });
 
   } catch (err) {
@@ -6457,7 +6977,8 @@ app.get("/api/executive/decision-board", async (req, res) => {
 
     return safeJson(res, {
       success: true,
-      data: {},
+      cases: [],
+      alerts: [],
       fallback: true,
     });
   }
@@ -6984,6 +7505,18 @@ const payload = {
 
     const updatedCase = result.data?.[0] || null;
 
+    try {
+      if (updatedCase) {
+        await createGoldenAlertFromCaseRow(updatedCase, {
+          source_type: "team_case_assigned",
+          source_id: updatedCase.id || updatedCase.case_code,
+          notify: false
+        });
+      }
+    } catch (alertErr) {
+      console.warn("TEAM ASSIGN ALERT WARNING:", alertErr?.message || alertErr);
+    }
+
   broadcastSse("team_case_assigned", {
   case_code: caseCode,
   assigned_to: payload.assigned_to,
@@ -7062,6 +7595,18 @@ app.post("/api/team/cases/status", async (req, res) => {
     if (result.error) throw result.error;
 
     const updatedCase = result.data?.[0] || null;
+
+    try {
+      if (updatedCase) {
+        await createGoldenAlertFromCaseRow(updatedCase, {
+          source_type: "team_case_status_updated",
+          source_id: updatedCase.id || updatedCase.case_code,
+          notify: false
+        });
+      }
+    } catch (alertErr) {
+      console.warn("TEAM STATUS ALERT WARNING:", alertErr?.message || alertErr);
+    }
 
     // ✅ งานหลักต้องสำเร็จก่อน
     broadcastSse("team_case_status_updated", {

@@ -735,29 +735,24 @@ return filteredRows;
       const counts = rows.map(r => r.count);
       const ctx = document.getElementById("casesChart");
       if(chartInstance) chartInstance.destroy();
-      chartInstance = new Chart(ctx, {
-        type:"line",
-        data:{labels,datasets:[{label:"จำนวนเคส",data:counts,borderColor:"rgba(11,124,134,1)",backgroundColor:"rgba(11,124,134,0.15)",fill:false,tension:.35}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
-      });
-
-      const sctx = document.getElementById("statusChart");
-      if(statusChartInstance) statusChartInstance.destroy();
-      statusChartInstance = new Chart(sctx, {
-        type:"bar",
-        data:{
-          labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
-datasets:[{
-  data:[
-    summary.new_cases||0,
-    summary.in_progress_cases||0,
-    summary.done_cases||0
-  ]
-}]
+      chartInstance = new Chart(statusCtx,{
+  type:"bar",
+  data:{
+    labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
+    datasets:[{
+      data:[
+        summary.new_cases||0,
+        summary.in_progress_cases||0,
+        summary.done_cases||0
+      ]
+    }]
+  }, // 👈 ต้องมี comma ตรงนี้
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false}},
+    scales:{y:{beginAtZero:true}}
   }
-        options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
-      });
-    }
+});
 
    function buildAiSummary(summary, alerts, board){
   const lines = [];

@@ -533,17 +533,10 @@ async function getHelpRequestByCaseCode(caseCode = "") {
 async function insertCaseUpdateLog(payload = {}) {
 const row = {
   case_code: toNullableText(payload.case_code),
-  status: toNullableText(payload.status),
-  status_after: toNullableText(payload.status_after || payload.status),
-  current_step: toNullableText(payload.current_step),
-  waiting_for: toNullableText(payload.waiting_for),
-  progress_percent: toNumberOrNull(payload.progress_percent),
-  
   latest_note: toNullableText(payload.latest_note || payload.note || payload.message),
   message: toNullableText(payload.message),
   updated_by: toNullableText(payload.updated_by),
   updated_by_user_id: toNullableText(payload.updated_by_user_id),
-  updated_by_role: toNullableText(payload.updated_by_role),
   updater_name: toNullableText(payload.updater_name),
   updater_user_id: toNullableText(payload.updater_user_id),
   location_text: toNullableText(payload.location_text),

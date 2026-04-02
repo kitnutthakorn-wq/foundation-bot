@@ -4344,7 +4344,7 @@ function toCsvValue(value) {
 
 async function getDashboardReportData(days = 7) {
   const [summary, graph, recentRes, urgentRes, inProgressRes] = await Promise.all([
-    getDashboardSummary(),
+    getDashboardSummaryByDays(days)
     getDashboardGraph(days),
     supabase.from("help_requests").select("*").order("created_at", { ascending: false }).limit(10),
     supabase.from("help_requests").select("*").eq("priority", "urgent").in("status", ["new", "in_progress"]).order("created_at", { ascending: false }).limit(10),

@@ -1244,78 +1244,17 @@ function buildTeamNewCaseText(item = {}) {
 
 async function pushTeamNewCaseNotification(item = {}) {
 
-  // 🔥 PRESENTATION MODE (กัน quota พัง)
- if (PRESENTATION_MODE) {
-  const presentationSent = await sendPresentationNotify({
-    replyToken: req.body?.replyToken || "",
-    fallbackText:
-      "📣 มีการอัปเดตเคส\n" +
-      `เลขเคส: ${caseCode || "-"}\n` +
-      `สถานะ: ${nextStatus || "-"}\n` +
-      `โดย: ${actorName || "ทีมงาน"}`
+ // 🔥 PRESENTATION MODE (กัน quota พัง)
+if (PRESENTATION_MODE) {
+  console.log("📣 PRESENTATION MODE: use reply instead of push");
+
+  await sendPresentationNotify({
+    replyToken: item.replyToken,
+    fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
   });
-
-  teamNotifyOk = presentationSent;
-
-  if (!presentationSent) {
-    notifyWarnings.push({
-      target: "presentation_reply",
-      message: "replyToken missing or reply failed",
-    });
-  }
-} else {
-  try {
-    await pushTeamNotification(
-      buildTeamWorkspaceAutoText(
-        notifyAction,
-        updatedCase || { case_code: caseCode, status: nextStatus },
-        actorName
-      )
-    );
-    teamNotifyOk = true;
-  } catch (notifyErr) {
-    console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
-    notifyWarnings.push({
-      target: "team",
-      message: notifyErr?.message || String(notifyErr),
-    });
-  }
-
-  if (updatedCase?.line_user_id) {
-    try {
-      await pushLineTextSafe(
-        updatedCase.line_user_id,
-        buildRequesterAutoText(
-          notifyAction,
-          updatedCase || { case_code: caseCode },
-          actorName
-        )
-      );
-      requesterNotifyOk = true;
-    } catch (requesterErr) {
-      console.warn("REQUESTER STATUS NOTIFY WARNING:", requesterErr?.message || requesterErr);
-      notifyWarnings.push({
-        target: "requester",
-        message: requesterErr?.message || String(requesterErr),
-      });
-    }
-  }
-}
-
-return res.json({
-  ok: true,
-  message: "status updated",
-  case: updatedCase,
-  auto_notify: {
-    team: teamNotifyOk,
-    requester: requesterNotifyOk,
-  },
-  warnings: notifyWarnings,
-});
 
   return;
 }
-
   // ของเดิมด้านล่าง
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;

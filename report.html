@@ -87,6 +87,12 @@
     .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 1.6s infinite}
     @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
     .mobile-actions{display:none}
+
+    .section-block-title{font-size:24px;font-weight:800;margin:4px 0 6px;color:#16304e}
+    .section-block-subtitle{color:var(--muted);font-size:13px;margin:0 0 14px}
+    .section-block-divider{height:1px;background:#dbe3ea;border-radius:999px;margin:0 0 16px}
+    .section-stack{margin-bottom:16px}
+    .table-note{margin-top:10px;color:#64748b;font-size:12px;line-height:1.7}
     @media (max-width:1100px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.mini-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:1fr}.report-hero{grid-template-columns:1fr}}
     @media (max-width:780px){.container{width:calc(100% - 24px);padding:12px 0 96px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}select,button{width:100%}.toolbar{width:100%}.report-hero-headline{font-size:20px}.mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}}
     @media (max-width:480px){.cards,.mini-cards{grid-template-columns:1fr}}
@@ -195,6 +201,13 @@
       <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
     </div>
 
+    <div class="section-stack">
+      <div class="section-kicker">OPERATIONAL VIEW</div>
+      <div class="section-block-title">รายการเคสสำหรับติดตามด้านล่าง</div>
+      <div class="section-block-subtitle">นำข้อมูลภาพรวมด้านบนมาแสดงเป็นรายเคส เพื่อให้ผู้บริหารและทีมภาคสนามเห็นรายการจริงที่ต้องติดตามต่อทันที</div>
+      <div class="section-block-divider"></div>
+    </div>
+
     <div class="grid">
       <div class="panel">
         <h2>เคสล่าสุด</h2>
@@ -204,6 +217,7 @@
             <tbody id="recentBody"></tbody>
           </table>
         </div>
+        <div class="table-note">แสดงรายการเคสล่าสุดจากระบบ เพื่อเชื่อมภาพรวม KPI ด้านบนกับรายการเคสจริงที่ต้องติดตาม</div>
       </div>
 
       <div class="panel">
@@ -214,6 +228,7 @@
             <tbody id="urgentBody"></tbody>
           </table>
         </div>
+        <div class="table-note">ใช้ติดตามเคสด่วนที่ยังไม่ปิด เพื่อให้คำสั่งการจากผู้บริหารลงสู่รายการเคสจริงได้ทันที</div>
       </div>
     </div>
 
@@ -247,6 +262,7 @@
           <tbody id="progressBody"></tbody>
         </table>
       </div>
+      <div class="table-note">แสดงเคสที่อยู่ระหว่างดำเนินการ พร้อมผู้รับผิดชอบและเวลาที่มีการเคลื่อนไหวล่าสุด</div>
     </div>
   </div>
 
@@ -493,8 +509,8 @@
       safeSet("insightSentence", insights.summary_sentence || "-");
 
       const headline = buildHeadline(s, insights, days);
-      safeSet("reportHeadline", headline.headline);
-      safeSet("reportHeadlineSub", headline.sub);
+      safeSet("reportHeadline", data.executive_brief?.headline || headline.headline);
+      safeSet("reportHeadlineSub", data.executive_brief?.subheadline || headline.sub);
       safeSet("signalConversion", `${insights.conversion_rate ?? 0}%`);
       safeSet("signalDelayed", s.delayed_cases || 0);
       safeSet("signalUrgent", s.followup_urgent_cases || s.urgent_cases || 0);
@@ -523,9 +539,9 @@
       safeSet("slaMiniInsight", slaTrend.note);
 
       drawGraph(data.graph || []);
-      fillRows("recentBody", data.recent_cases || [], "regular");
-      fillRows("urgentBody", data.urgent_cases || [], "regular");
-      fillRows("progressBody", data.in_progress_cases || [], "progress");
+      fillRows("recentBody", data.recent_cases || data.operational_tables?.recent_cases || [], "regular");
+      fillRows("urgentBody", data.urgent_cases || data.operational_tables?.urgent_open_cases || [], "regular");
+      fillRows("progressBody", data.in_progress_cases || data.operational_tables?.in_progress_cases || [], "progress");
       fillMetricRows("areaBody", insights.area_breakdown || []);
       fillMetricRows("problemBody", insights.top_problems || []);
 

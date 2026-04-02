@@ -4849,15 +4849,24 @@ async function getDashboardReportData(days = 7) {
     tone: (summary.delayed_cases || 0) > 0 || (summary.followup_urgent_cases || 0) > 0 ? "warning" : "good"
   };
 
+  const recentCases = recentRes.data || [];
+  const urgentOpenCases = urgentRes.data || [];
+  const inProgressCases = inProgressRes.data || [];
+
   return {
     generated_at: new Date().toISOString(),
     summary,
     graph,
     insights,
     executive_brief: executiveBrief,
-    recent_cases: recentRes.data || [],
-    urgent_cases: urgentRes.data || [],
-    in_progress_cases: inProgressRes.data || [],
+    recent_cases: recentCases,
+    urgent_cases: urgentOpenCases,
+    in_progress_cases: inProgressCases,
+    operational_tables: {
+      recent_cases: recentCases,
+      urgent_open_cases: urgentOpenCases,
+      in_progress_cases: inProgressCases
+    }
   };
 }
 

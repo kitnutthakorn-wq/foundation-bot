@@ -573,19 +573,18 @@ async function upsertCaseUpdateLegacy({
   const helpRequest = await getHelpRequestByCaseCode(caseCode);
 
   const inserted = await insertCaseUpdateLog({
-    case_id: helpRequest?.id || null,
-    case_code: caseCode,
-    status: helpRequest?.status || "in_progress",
-    current_step: updateStage,
-    waiting_for: waitingFor,
-    progress_percent: progressPercent,
-    note: detail,
-    latest_note: detail,
-    message: detail,
-    updated_by: updatedBy,
-    updated_by_user_id: updatedBy,
-    updater_name: updatedBy
-  });
+  case_code: caseCode,
+  status: helpRequest?.status || "in_progress",
+  current_step: updateStage,
+  waiting_for: waitingFor,
+  progress_percent: progressPercent,
+  note: detail,
+  latest_note: detail,
+  message: detail,
+  updated_by: updatedBy,
+  updated_by_user_id: updatedBy,
+  updater_name: updatedBy
+});
 
   const syncPatch = {
     last_action_at: inserted.updated_at || new Date().toISOString(),

@@ -2523,7 +2523,7 @@ app.get("/api/team/case-detail", async (req, res) => {
     });
   }
 });
-app.get("/api/team/case-detail", async (req, res) => {
+  
 // =========================
 // GOLDEN SAFE PATCH: SLA SUMMARY API (READ ONLY)
 // =========================

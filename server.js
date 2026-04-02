@@ -1241,7 +1241,47 @@ function buildTeamNewCaseText(item = {}) {
     `ระดับ: ${formatPriorityThai(item.priority)}`
   );
 }
+// =========================
+// GOLDEN SAFE: PRESENTATION NOTIFY
+// =========================
+async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {
+  try {
+    if (!replyToken) {
+      console.warn("sendPresentationNotify: missing replyToken");
+      return false;
+    }
 
+    const res = await fetch("https://api.line.me/v2/bot/message/reply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${CHANNEL_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        replyToken,
+        messages: [
+          {
+            type: "text",
+            text: fallbackText || "มีการอัปเดต"
+          }
+        ]
+      })
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.warn("LINE reply failed:", text);
+      return false;
+    }
+
+    console.log("LINE reply status: 200");
+    return true;
+
+  } catch (err) {
+    console.warn("sendPresentationNotify error:", err?.message || err);
+    return false;
+  }
+}
 async function pushTeamNewCaseNotification(item = {}) {
 
  // 🔥 PRESENTATION MODE (กัน quota พัง)

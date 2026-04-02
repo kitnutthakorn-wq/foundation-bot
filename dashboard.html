@@ -746,9 +746,14 @@ return filteredRows;
       statusChartInstance = new Chart(sctx, {
         type:"bar",
         data:{
-          labels:["ใหม่","ด่วน","กำลังทำ","ปิดแล้ว"],
-          datasets:[{label:"จำนวน",data:[summary.new_cases||0, summary.urgent_cases||0, summary.in_progress_cases||0, summary.done_cases||0],backgroundColor:"rgba(54,162,235,0.55)"}]
-        },
+          labels:["ใหม่","กำลังทำ","ปิดแล้ว"]
+datasets:[{
+  data:[
+    summary.new_cases||0,
+    summary.in_progress_cases||0,
+    summary.done_cases||0
+  ]
+}]
         options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
       });
     }

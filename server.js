@@ -2451,11 +2451,12 @@ app.get("/api/recent-activity", async (req, res) => {
 
     return res.json({
   ok: true,
-  items: (data || []).map((row) => {
-    const label =
-      row.latest_note ||
-      row.message ||
-      "มีการอัปเดตเคส";
+  items: (data || []).map(row => ({
+    ...row,
+    label: row.latest_note || row.message || "มีการอัปเดตเคส",
+    status_after: row.status || null
+  })),
+});
 
     const actor =
       row.updater_name ||

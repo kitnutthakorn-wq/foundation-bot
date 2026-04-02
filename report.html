@@ -142,6 +142,7 @@
           <div class="signal-item"><div><div class="signal-label">เคสล่าช้า</div></div><div class="signal-value warn" id="signalDelayed">0</div></div>
           <div class="signal-item"><div><div class="signal-label">เคสด่วนค้าง</div></div><div class="signal-value danger" id="signalUrgent">0</div></div>
           <div class="signal-item"><div><div class="signal-label">เวลาปิดเฉลี่ย</div></div><div class="signal-value good" id="signalAvgClose">0 ชม.</div></div>
+          <div class="signal-item"><div><div class="signal-label">Auto Assign ล่าสุด</div></div><div class="signal-value" id="signalAutoAssign">0</div></div>
         </div>
       </div>
     </div>
@@ -155,6 +156,7 @@
       <div class="card"><div class="card-title">ปิดแล้ว</div><div class="card-value" id="doneCases">0</div></div>
       <div class="card"><div class="card-title">เคสที่ล่าช้า</div><div class="card-value" id="delayedCases">0</div></div>
       <div class="card"><div class="card-title">ติดตามด่วน</div><div class="card-value" id="followupUrgentCases">0</div></div>
+      <div class="card"><div class="card-title">Auto Assign</div><div class="card-value" id="autoAssignCases">0</div></div>
     </div>
 
     <div class="mini-cards">
@@ -439,6 +441,7 @@
       const done = Number(summary?.done_cases || 0);
       const delayed = Number(summary?.delayed_cases || 0);
       const urgent = Number(summary?.followup_urgent_cases || summary?.urgent_cases || 0);
+      const autoAssign = Number(insights?.auto_assign_total || 0);
       const conversion = Number(insights?.conversion_rate || 0);
       const avgReadable = insights?.avg_close_readable || "0 ชั่วโมง";
       return {
@@ -515,6 +518,8 @@
       safeSet("signalDelayed", s.delayed_cases || 0);
       safeSet("signalUrgent", s.followup_urgent_cases || s.urgent_cases || 0);
       safeSet("signalAvgClose", insights.avg_close_readable || "0 ชั่วโมง");
+      safeSet("signalAutoAssign", data.auto_assign_summary?.total || 0);
+      safeSet("autoAssignCases", data.auto_assign_summary?.total || 0);
 
       applyTone(document.getElementById("conversionCard"), Number(insights.conversion_rate ?? 0));
 

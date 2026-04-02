@@ -114,14 +114,14 @@
   </div>
 
   <div class="card">
-<<<<<<< HEAD
+
     <div class="headline"><div><h2>แบบฟอร์มอัปเดตเคส</h2><p>เวอร์ชันพร้อมใช้งานจริงสำหรับภาคสนาม</p></div></div>
-=======
+
   <input type="hidden" id="case_code" />
 
   <div class="headline">
       <div><h2>แบบฟอร์มอัปเดตเคส</h2><p>เวอร์ชันพร้อมใช้งานจริงสำหรับภาคสนาม</p></div></div>
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 
     <div class="inline-grid">
       <div class="field">
@@ -186,13 +186,13 @@ const CONFIG = {
 let currentProfile = null;
 let currentLocation = null;
 const params = new URLSearchParams(window.location.search);
-<<<<<<< HEAD
+
 const caseCode = params.get('caseCode') || '';
-=======
+
 const caseCode = params.get("case_code");
 
 document.getElementById("case_code").value = caseCode || "";
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
 
 function setLoading(v){
   document.getElementById('loading').classList.toggle('hidden', !v);
@@ -333,11 +333,11 @@ async function submitCaseUpdate() {
     setStatus('กำลังอัปโหลดรูป บันทึกข้อมูล และแจ้งเตือน LINE...', 'warn');
 
     const formData = new FormData();
-<<<<<<< HEAD
+
     formData.append('caseCode', caseCode);
-=======
+
   formData.append('case_code', caseCode);
->>>>>>> b725e26c356a7d03c35a8b38972720a4e2b1c498
+
     formData.append('title', title);
     formData.append('message', message);
     formData.append('progressStatus', progressStatus);

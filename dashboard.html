@@ -542,16 +542,28 @@ function filterRowsBySla(rows){
       lastTotal = current;
     }
 
-    async function loadSummary(){
-      const data = await fetchJSON("/api/dashboard/summary");
-      document.getElementById("totalCases").textContent = data.total_cases || 0;
-      document.getElementById("newCases").textContent = data.new_cases || 0;
-      document.getElementById("urgentCases").textContent = data.urgent_cases || 0;
-      document.getElementById("inProgressCases").textContent = data.in_progress_cases || 0;
-      document.getElementById("doneCases").textContent = data.done_cases || 0;
-      await maybeNotify(data);
-      return data;
-    }
+   async function loadSummary(){
+  const data = await fetchJSON("/api/dashboard/summary");
+
+  const total = Number(data.total_cases || 0);
+  const newCases = Number(data.new_cases || 0);
+  const urgent = Number(data.urgent_cases || 0);
+  const inProgress = Number(data.in_progress_cases || 0);
+  const done = Number(data.done_cases || 0);
+  const follow = newCases + inProgress;
+
+  document.getElementById("totalCases").textContent = total;
+  document.getElementById("newCases").textContent = newCases;
+  document.getElementById("urgentCases").textContent = urgent;
+  document.getElementById("inProgressCases").textContent = inProgress;
+  document.getElementById("doneCases").textContent = done;
+
+  const liveSummary = document.getElementById("liveSummary");
+  if (liveSummary) liveSummary.textContent = "สด";
+
+  await maybeNotify(data);
+  return data;
+}
     function updateSlaSummaryBanner(totals = {}){
   const banner = document.getElementById("slaSummaryBanner");
   const titleEl = document.getElementById("slaSummaryTitle");

@@ -307,10 +307,6 @@
     <div class="mini-title" id="doneCases">0</div>
   </div>
 
-  <div class="card">
-    <div class="section-label">เคสด่วน</div>
-    <div class="mini-title" id="urgentCases">0</div>
-  </div>
 
   <div class="card">
     <div class="section-label">Open Alerts</div>
@@ -325,8 +321,15 @@
 <div class="kpi-section-divider"></div>
   <div class="exec-cards">
   <div class="card">
-    <div class="section-label">SLA ปกติ</div>
-    <div class="mini-title" id="slaNormalCount">0</div>
+    <div class="section-label">เคสด่วน</div>
+    <div class="mini-title" id="urgentCases">0</div>
+    <div class="footer-note">ต้องดำเนินการทันที</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">เคสต้องติดตาม</div>
+    <div class="mini-title" id="followCases">0</div>
+    <div class="footer-note">ยังไม่ปิดและยังต้องติดตาม</div>
   </div>
 
   <div class="card">
@@ -338,7 +341,7 @@
     <div class="section-label">เกิน SLA</div>
     <div class="mini-title" id="slaBreachedCount">0</div>
   </div>
-</div> 
+</div>
 
    <div id="slaSummaryBanner" class="sla-summary-banner">
   <div id="slaSummaryTitle" class="sla-summary-title">สถานะ SLA วันนี้</div>
@@ -602,6 +605,9 @@ function filterRowsBySla(rows){
   document.getElementById("inProgressCases").textContent = inProgress;
   document.getElementById("doneCases").textContent = done;
 
+  const followCasesEl = document.getElementById("followCases");
+  if (followCasesEl) followCasesEl.textContent = follow;
+
   const liveSummary = document.getElementById("liveSummary");
   if (liveSummary) liveSummary.textContent = "สด";
 
@@ -763,27 +769,28 @@ return filteredRows;
       const sctx = document.getElementById("statusChart");
       if(statusChartInstance) statusChartInstance.destroy();
       statusChartInstance = new Chart(sctx, {
-  type:"bar",
-  data:{
-    labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
-    datasets:[{
-      label:"จำนวน",
-      data:[
-        summary.new_cases||0,
-        summary.in_progress_cases||0,
-        summary.done_cases||0
-      ],
-      backgroundColor:"rgba(54,162,235,0.55)"
-    }]
-  }, // 👈🔥 ต้องมี comma ตรงนี้
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:true}},
-    scales:{y:{beginAtZero:true,ticks:{precision:0}}}
-  }
-});
-}
+        type:"bar",
+        data:{
+          labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
+          datasets:[{
+            label:"จำนวน",
+            data:[
+              summary.new_cases||0,
+              summary.in_progress_cases||0,
+              summary.done_cases||0
+            ],
+            backgroundColor:"rgba(54,162,235,0.55)"
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{legend:{display:true}},
+          scales:{y:{beginAtZero:true,ticks:{precision:0}}}
+        }
+      });
+    }
+
    function buildAiSummary(summary, alerts, board){
   const lines = [];
   const topAlert = alerts[0];

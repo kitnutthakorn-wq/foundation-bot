@@ -2433,47 +2433,45 @@ app.get("/api/recent-activity", async (req, res) => {
 
     const { data, error } = await supabase
       .from("case_updates")
-     .select(`
-  case_code,
-  latest_note,
-  message,
-  updated_at,
-  updated_by,
-  updater_name,
-  current_step,
-  status,
-  images
-`)
+      .select(`
+        case_code,
+        latest_note,
+        message,
+        updated_at,
+        updated_by,
+        updater_name,
+        images
+      `)
       .order("updated_at", { ascending: false })
       .limit(limit);
 
     if (error) throw error;
 
     return res.json({
-  ok: true,
-  items: (data || []).map(row => ({
-    ...row,
-    label: row.latest_note || row.message || "มีการอัปเดตเคส",
-    status_after: row.status || null
-  })),
-});
+      ok: true,
+      items: (data || []).map((row) => {
+        const label =
+          row.latest_note ||
+          row.message ||
+          "มีการอัปเดตเคส";
 
-    const actor =
-      row.updater_name ||
-      row.updated_by ||
-      "ทีมงาน";
+        const actor =
+          row.updater_name ||
+          row.updated_by ||
+          "ทีมงาน";
 
-    return {
-      case_code: row.case_code || "-",
-      title: `${row.case_code || "-"} · ${label}`,
-      subtitle: `อัปเดตโดย ${actor}`,
-      detail: label,
-      updated_at: row.updated_at || null,
-      images: Array.isArray(row.images) ? row.images : [],
-      updater_name: actor
-    };
-  }),
-});
+        return {
+          ...row,
+          label,
+          title: `${row.case_code || "-"} · ${label}`,
+          subtitle: `อัปเดตโดย ${actor}`,
+          detail: label,
+          updated_at: row.updated_at || null,
+          images: Array.isArray(row.images) ? row.images : [],
+          updater_name: actor
+        };
+      }),
+    });
   } catch (err) {
     console.error("recent-activity error:", err);
     return res.status(500).json({

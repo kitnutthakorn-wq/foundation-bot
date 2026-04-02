@@ -6767,15 +6767,16 @@ app.post("/api/team/cases/status", async (req, res) => {
     if (status === "done") nextStatus = "done";
 
     const actorName = displayName || "ทีมงาน";
+    const now = new Date().toISOString();
 
     const payload = {
-  status: nextStatus,
-  last_action_at: new Date().toISOString(),
-  last_action_by: actorName,
-};
+      status: nextStatus,
+      last_action_at: now,
+      last_action_by: actorName,
+    };
 
     if (nextStatus === "done") {
-      payload.closed_at = new Date().toISOString();
+      payload.closed_at = now;
       payload.priority = "normal";
     }
 
@@ -6790,6 +6791,7 @@ app.post("/api/team/cases/status", async (req, res) => {
 
     const updatedCase = result.data?.[0] || null;
 
+    // ✅ งานหลักต้องสำเร็จก่อน
     broadcastSse("team_case_status_updated", {
       case_code: caseCode,
       status: nextStatus,
@@ -6803,34 +6805,60 @@ app.post("/api/team/cases/status", async (req, res) => {
       sync_target: "dashboard_and_team",
     });
 
+    // ✅ งานรอง: แจ้งเตือน LINE แต่ห้ามทำให้ route ล้ม
     const notifyAction = nextStatus === "done" ? "done" : "progress";
-    await pushTeamNotification(
-      buildTeamWorkspaceAutoText(
-        notifyAction,
-        updatedCase || { case_code: caseCode, status: nextStatus },
-        actorName
-      )
-    );
 
-    if (updatedCase?.line_user_id) {
-      await pushLineTextSafe(
-        updatedCase.line_user_id,
-        buildRequesterAutoText(
+    let teamNotifyOk = false;
+    let requesterNotifyOk = false;
+    const notifyWarnings = [];
+
+    try {
+      await pushTeamNotification(
+        buildTeamWorkspaceAutoText(
           notifyAction,
-          updatedCase || { case_code: caseCode },
+          updatedCase || { case_code: caseCode, status: nextStatus },
           actorName
         )
       );
+      teamNotifyOk = true;
+    } catch (notifyErr) {
+      console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
+      notifyWarnings.push({
+        target: "team",
+        message: notifyErr?.message || String(notifyErr),
+      });
     }
 
+    if (updatedCase?.line_user_id) {
+      try {
+        await pushLineTextSafe(
+          updatedCase.line_user_id,
+          buildRequesterAutoText(
+            notifyAction,
+            updatedCase || { case_code: caseCode },
+            actorName
+          )
+        );
+        requesterNotifyOk = true;
+      } catch (notifyErr) {
+        console.warn("REQUESTER STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
+        notifyWarnings.push({
+          target: "requester",
+          message: notifyErr?.message || String(notifyErr),
+        });
+      }
+    }
+
+    // ✅ ถึง LINE push จะ fail ก็ยังตอบสำเร็จ
     return res.json({
       ok: true,
       message: "status updated",
       case: updatedCase,
       auto_notify: {
-        team: true,
-        requester: !!updatedCase?.line_user_id,
+        team: teamNotifyOk,
+        requester: requesterNotifyOk,
       },
+      warnings: notifyWarnings,
     });
   } catch (err) {
     console.error("POST /api/team/cases/status error:", err);

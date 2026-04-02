@@ -2466,52 +2466,7 @@ app.get("/api/recent-activity", async (req, res) => {
     });
   }
 });
-
-// =========================
-// TEAM CASE DETAIL
-// =========================
-app.get("/api/team/case-detail", async (req, res) => {
-  try {
-    const caseCode = String(req.query.case_code || "").trim();
-
-    if (!caseCode) {
-      return res.status(400).json({
-        ok: false,
-        error: "Missing case_code"
-      });
-    }
-
-    const { data, error } = await supabase
-      .from("help_requests")
-      .select("*")
-      .eq("case_code", caseCode)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (error) throw error;
-
-    if (!data) {
-      return res.status(404).json({
-        ok: false,
-        error: "Case not found"
-      });
-    }
-
-    return res.json({
-      ok: true,
-      case: data
-    });
-
-  } catch (err) {
-    console.error("CASE DETAIL ERROR:", err);
-    return res.status(500).json({
-      ok: false,
-      error: err.message || "Internal server error"
-    });
-  }
-});
-  
+ 
 // =========================
 // GOLDEN SAFE PATCH: SLA SUMMARY API (READ ONLY)
 // =========================

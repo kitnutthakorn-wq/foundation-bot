@@ -1245,10 +1245,16 @@ function buildTeamNewCaseText(item = {}) {
 async function pushTeamNewCaseNotification(item = {}) {
 
   // 🔥 PRESENTATION MODE (กัน quota พัง)
-  if (PRESENTATION_MODE) {
-    console.log("📣 PRESENTATION MODE: skip push → use reply");
-    return;
-  }
+ if (PRESENTATION_MODE) {
+  console.log("📣 PRESENTATION MODE: use reply instead of push");
+
+  await sendPresentationNotify({
+    replyToken: item.replyToken,
+    fallbackText: `📣 เคสใหม่: ${item.case_code || "-"}`
+  });
+
+  return;
+}
 
   // ของเดิมด้านล่าง
   const sla = computeSlaState(item);

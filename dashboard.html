@@ -746,7 +746,7 @@ return filteredRows;
       statusChartInstance = new Chart(sctx, {
         type:"bar",
         data:{
-          labels:["ใหม่","กำลังทำ","ปิดแล้ว"]
+          labels:["ใหม่","กำลังทำ","ปิดแล้ว"],
 datasets:[{
   data:[
     summary.new_cases||0,
@@ -926,8 +926,15 @@ const sorted = [...rows].sort((a,b)=>{
 if (summary) {
   updateExecutiveHeadline(summary, slaData);
 }
-if (summary) tasks.push(loadStats(summary));
-await Promise.all(tasks);
+const [casesData, slaData] = await Promise.all([
+  loadCases(),
+  loadSlaSummary()
+]);
+
+if (summary) {
+  updateExecutiveHeadline(summary, slaData);
+  await loadStats(summary);
+}
       } catch (err) {
         errors.push(`Cases/Stats/SLA: ${err.message}`);
       }

@@ -255,7 +255,7 @@ const CONFIG = {
   GROUP_MEMBERS_ENDPOINT: "/api/team/group-members",
   ASSIGN_ROLE_ENDPOINT: "/api/team/assign-role",
   LIFF_ID: "2009446483-2q6biMUk",
-  API_BASE_URL: "https://satisfied-stillness-production-7942.up.railway.app",
+  API_BASE_URL: "https://foundation-bot-p5wu.onrender.com",
   TEAM_ROLE_ENDPOINT: "/api/team/me",
   CASES_ENDPOINT: "/api/team/cases",
   ACTIVITY_ENDPOINT: "/api/team/activities",
@@ -392,12 +392,24 @@ function chooseMemberRole(role) {
 
 async function saveSelectedTeamMember() {
   if (!selectedMember || saving) return;
+async function saveSelectedTeamMember() {
+  if (!selectedMember || saving) return;
 
+  // ✅ ใส่ตรงนี้เลย
   if (!selectedMemberRole) {
     alert("⚠️ กรุณาเลือกสิทธิ์ก่อน");
     return;
   }
 
+  saving = true;
+
+  const saveBtn = document.getElementById('saveTeamBtn');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'กำลังบันทึก...';
+  }
+
+  try {
   saving = true;
 
   const saveBtn = document.getElementById('saveTeamBtn');
@@ -425,16 +437,18 @@ async function saveSelectedTeamMember() {
 
   } catch (err) {
     alert("❌ บันทึกไม่สำเร็จ: " + err.message);
+} finally {
+  saving = false;
 
-  } finally {
-    saving = false;
-
-    if (saveBtn) {
-      saveBtn.disabled = false;
-      saveBtn.textContent = 'บันทึกทีม';
-    }
+  const saveBtn = document.getElementById('saveTeamBtn');
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'บันทึกทีม';
   }
 }
+
+} // 👈 ปิดฟังก์ชัน saveSelectedTeamMember ตรงนี้
+
 function closeRoleModal(){
   document.getElementById('roleModalBackdrop').style.display = 'none';
   selectedMember = null;
@@ -788,10 +802,9 @@ async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.incl
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
 async function bootstrap() {
   try {
-    // await initLiff();
-    // await loadTeamRole();
-
-    setLoading(false); // เปิดหน้าเลย
+    setToday();
+    await initLiff();
+    await loadTeamRole();
 
     if (isPickMemberMode()) {
       document.querySelector('.hero')?.classList.add('hidden');
@@ -801,10 +814,8 @@ async function bootstrap() {
       await loadGroupMembersForPicker();
     } else {
       await Promise.all([loadCases(), loadActivities()]);
-
-      setTimeout(() => {
-        connectRealtime();
-      }, 800);
+      await loadRecentActivityRealtime();
+      connectRealtime();
     }
 
   } catch (err) {
@@ -815,6 +826,7 @@ async function bootstrap() {
     updateStats();
     renderCases();
     renderActivities();
+  } finally {
     setLoading(false);
   }
 }

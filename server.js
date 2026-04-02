@@ -1258,25 +1258,24 @@ function buildTeamNewCaseText(item = {}) {
 }
 
 async function pushTeamNewCaseNotification(item = {}) {
+  // ✅ เติม SLA เข้า item
+  const sla = computeSlaState(item);
+  item.sla_level = sla.sla_level;
 
-// ✅ เติม SLA เข้า item
-const sla = computeSlaState(item);
-item.sla_level = sla.sla_level;
-
-const flex = buildTeamNewCaseFlex(item);
-
-try {
-  await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
-} catch (error) {
-  console.error("TEAM NEW CASE FLEX FAILED:", error.message);
+  const flex = buildTeamNewCaseFlex(item);
 
   try {
-    await pushTeamNotification(buildTeamNewCaseText(item));
-  } catch (fallbackError) {
-    console.error("TEAM NEW CASE TEXT FAILED:", fallbackError.message);
+    await callLinePushApi(EFFECTIVE_TEAM_GROUP_ID, [flex]);
+  } catch (error) {
+    console.error("TEAM NEW CASE FLEX FAILED:", error.message);
+
+    try {
+      await pushTeamNotification(buildTeamNewCaseText(item));
+    } catch (fallbackError) {
+      console.error("TEAM NEW CASE TEXT FAILED:", fallbackError.message);
+    }
   }
-}
-function buildTeamFollowupText(item = {}, followupCount = 1) {
+}function buildTeamFollowupText(item = {}, followupCount = 1) {
   return (
     "มีการติดตามเคสอีกครั้ง\n\n" +
     `เลขเคส: ${item.case_code || "-"}\n` +

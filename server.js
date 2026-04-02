@@ -6803,6 +6803,20 @@ app.post("/api/team/cases/status", async (req, res) => {
   });
 } else {
   try {
+if (PRESENTATION_MODE) {
+  console.log("📣 PRESENTATION MODE (status update)");
+
+  await pushTeamNotification(
+    buildTeamWorkspaceAutoText(
+      notifyAction,
+      updatedCase || { case_code: caseCode, status: nextStatus },
+      actorName
+    )
+  );
+
+  teamNotifyOk = true;
+} else {
+  try {
     await pushTeamNotification(
       buildTeamWorkspaceAutoText(
         notifyAction,

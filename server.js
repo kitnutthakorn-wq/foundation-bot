@@ -2448,9 +2448,29 @@ app.get("/api/recent-activity", async (req, res) => {
     if (error) throw error;
 
     return res.json({
-      ok: true,
-      items: data || [],
-    });
+  ok: true,
+  items: (data || []).map((row) => {
+    const label =
+      row.latest_note ||
+      row.message ||
+      "มีการอัปเดตเคส";
+
+    const actor =
+      row.updater_name ||
+      row.updated_by ||
+      "ทีมงาน";
+
+    return {
+      case_code: row.case_code || "-",
+      title: `${row.case_code || "-"} · ${label}`,
+      subtitle: `อัปเดตโดย ${actor}`,
+      detail: label,
+      updated_at: row.updated_at || null,
+      images: Array.isArray(row.images) ? row.images : [],
+      updater_name: actor
+    };
+  }),
+});
   } catch (err) {
     console.error("recent-activity error:", err);
     return res.status(500).json({

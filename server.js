@@ -135,6 +135,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID || "";
 const LINE_GROUP_ID = process.env.LINE_GROUP_ID || "";
 const EFFECTIVE_TEAM_GROUP_ID = TEAM_GROUP_ID || LINE_GROUP_ID;
+const PRESENTATION_MODE = true;
 
 /* =========================
    TEAM GROUP GUARD (SAFE PATCH)

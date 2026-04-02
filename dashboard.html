@@ -909,7 +909,14 @@ const sorted = [...rows].sort((a,b)=>{
       }
 
       try {
-       const tasks = [loadCases(), loadSlaSummary()];
+      const [casesData, slaData] = await Promise.all([
+  loadCases(),
+  loadSlaSummary()
+]);
+
+if (summary) {
+  updateExecutiveHeadline(summary, slaData);
+}
 if (summary) tasks.push(loadStats(summary));
 await Promise.all(tasks);
       } catch (err) {

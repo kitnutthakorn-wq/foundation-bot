@@ -4436,17 +4436,53 @@ function buildCaseListFallback(title, cases = []) {
 /* =========================
    TEAM NOTIFY TEST
 ========================= */
-app.get("/test-team-notify", async (req, res) => {
+app.get("/debug/team-group", async (req, res) => {
   try {
-    if (!EFFECTIVE_TEAM_GROUP_ID) {
-      return res.status(400).send("TEAM_GROUP_ID / LINE_GROUP_ID is not set yet");
-    }
+    const effectiveGroupId = getEffectiveTeamGroupId();
 
-    await pushTeamNotification("🔔 ทดสอบแจ้งเตือนทีมงานจากระบบมูลนิธิ สำเร็จแล้ว");
-    return res.status(200).send("OK: team notification sent");
+    return res.json({
+      ok: true,
+      hasChannelAccessToken: !!CHANNEL_ACCESS_TOKEN,
+      effectiveTeamGroupIdMasked: maskGroupId(effectiveGroupId),
+      source: {
+        EFFECTIVE_TEAM_GROUP_ID: !!process.env.EFFECTIVE_TEAM_GROUP_ID,
+        TEAM_GROUP_ID: !!process.env.TEAM_GROUP_ID,
+        LINE_GROUP_ID: !!process.env.LINE_GROUP_ID
+      }
+    });
   } catch (error) {
-    console.error("TEST TEAM NOTIFY ERROR:", error);
-    return res.status(500).send("ERROR: " + error.message);
+    return res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
+  }
+});
+
+app.get("/debug/push-team-test", async (req, res) => {
+  try {
+    const now = new Date().toLocaleString("th-TH", {
+      timeZone: "Asia/Bangkok"
+    });
+
+    const result = await safePushToTeamGroup(
+      [
+        {
+          type: "text",
+          text: `✅ TEST PUSH ถึงกลุ่มทีมงาน\nเวลา: ${now}`
+        }
+      ],
+      "debug-push-team-test"
+    );
+
+    return res.json({
+      ok: true,
+      result
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error: error?.message || String(error)
+    });
   }
 });
 

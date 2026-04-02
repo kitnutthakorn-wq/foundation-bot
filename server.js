@@ -2434,21 +2434,14 @@ app.get("/api/recent-activity", async (req, res) => {
     const { data, error } = await supabase
       .from("case_updates")
       .select(`
-        id,
-        case_code,
-        progress_percent,
-        current_step,
-        waiting_for,
-        latest_note,
-        updated_at,
-        updated_by,
-        updated_by_user_id,
-        updated_by_role,
-        updater_name,
-        message,
-        images,
-        status_after
-      `)
+  case_code,
+  latest_note,
+  message,
+  updated_at,
+  updated_by,
+  updater_name,
+  images
+`)
       .order("updated_at", { ascending: false })
       .limit(limit);
 

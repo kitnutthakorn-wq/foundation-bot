@@ -3991,6 +3991,43 @@ async function getDashboardSummary() {
     followup_urgent_cases: followupUrgentCases || 0,
   };
 }
+
+// =========================
+// REPORT SAFE: SUMMARY BY DAYS
+// =========================
+async function getDashboardSummaryByDays(days = 7) {
+  const rangeStart = new Date();
+  rangeStart.setDate(rangeStart.getDate() - (days - 1));
+  rangeStart.setHours(0, 0, 0, 0);
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const [
+    { count: totalCases },
+    { count: newCases },
+    { count: urgentCases },
+    { count: todayCases },
+    { count: inProgressCases },
+    { count: doneCases }
+  ] = await Promise.all([
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "new").gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("priority", "urgent").in("status", ["new", "in_progress"]).gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).gte("created_at", todayStart.toISOString()),
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "in_progress").gte("created_at", rangeStart.toISOString()),
+    supabase.from("help_requests").select("*", { count: "exact", head: true }).eq("status", "done").gte("created_at", rangeStart.toISOString())
+  ]);
+
+  return {
+    total_cases: totalCases || 0,
+    new_cases: newCases || 0,
+    urgent_cases: urgentCases || 0,
+    today_cases: todayCases || 0,
+    in_progress_cases: inProgressCases || 0,
+    done_cases: doneCases || 0
+  };
+}
 async function getDashboardGraph(days = 7) {
   const start = new Date();
   start.setDate(start.getDate() - (days - 1));

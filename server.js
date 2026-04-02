@@ -564,13 +564,8 @@ async function upsertCaseUpdateLegacy({
   const waitingFor = CASE_UPDATE_WAITING_FOR_MAP[updateStage] || "รอการอัปเดต";
   const helpRequest = await getHelpRequestByCaseCode(caseCode);
 
-  const inserted = await insertCaseUpdateLog({
+ const inserted = await insertCaseUpdateLog({
   case_code: caseCode,
-  status: helpRequest?.status || "in_progress",
-  current_step: updateStage,
-  waiting_for: waitingFor,
-  progress_percent: progressPercent,
-  note: detail,
   latest_note: detail,
   message: detail,
   updated_by: updatedBy,

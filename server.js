@@ -6714,7 +6714,17 @@ const payload = {
       sync_target: "dashboard_and_team",
     });
 
-    await pushTeamNotification(buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName));
+   if (PRESENTATION_MODE) {
+  console.log("📣 PRESENTATION MODE (assign)");
+
+  await pushTeamNotification(
+    buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName)
+  );
+} else {
+  await pushTeamNotification(
+    buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName)
+  );
+}
     if (updatedCase?.line_user_id) {
       await pushLineTextSafe(updatedCase.line_user_id, buildRequesterAutoText("assign", updatedCase, actorName));
     }

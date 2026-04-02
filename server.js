@@ -1243,7 +1243,14 @@ function buildTeamNewCaseText(item = {}) {
 }
 
 async function pushTeamNewCaseNotification(item = {}) {
-  // ✅ เติม SLA เข้า item
+
+  // 🔥 PRESENTATION MODE (กัน quota พัง)
+  if (PRESENTATION_MODE) {
+    console.log("📣 PRESENTATION MODE: skip push → use reply");
+    return;
+  }
+
+  // ของเดิมด้านล่าง
   const sla = computeSlaState(item);
   item.sla_level = sla.sla_level;
 

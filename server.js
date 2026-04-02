@@ -134,7 +134,12 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 
 const TEAM_GROUP_ID = process.env.TEAM_GROUP_ID || "";
 const LINE_GROUP_ID = process.env.LINE_GROUP_ID || "";
-const EFFECTIVE_TEAM_GROUP_ID = TEAM_GROUP_ID || LINE_GROUP_ID;
+const EFFECTIVE_TEAM_GROUP_ID =
+  process.env.EFFECTIVE_TEAM_GROUP_ID ||
+  TEAM_GROUP_ID ||
+  LINE_GROUP_ID ||
+  "";
+
 const PRESENTATION_MODE = true;
 
 /* =========================
@@ -142,7 +147,6 @@ const PRESENTATION_MODE = true;
 ========================= */
 const TEAM_GROUP_ENABLED = true;
 const ALLOWED_TEAM_GROUP_ID = EFFECTIVE_TEAM_GROUP_ID;
-const TEAM_COMMANDS = [
   "เมนูทีมงาน",
   "เปิดเมนูทีมงาน",
   "รีเฟรชเมนูทีมงาน",

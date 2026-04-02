@@ -2934,22 +2934,47 @@ async function buildExecutiveDecisionBoard(limit = 10) {
         Number(row.sla_hours_since_action || 0);
 
       let recommendedAction = 'ติดตามเคส';
+      let actionCode = 'follow_case';
+      let actionButtonText = 'ติดตามเคส';
       if (row.sla_level === 'breached') {
         recommendedAction = 'เร่งเคลียร์เคสเกิน SLA ทันที';
+        actionCode = 'rush_clear_sla';
+        actionButtonText = 'เร่งเคลียร์ SLA';
       } else if (row.sla_level === 'warning') {
         recommendedAction = 'ติดตามเชิงรุกก่อนเกิน SLA';
+        actionCode = 'follow_before_breach';
+        actionButtonText = 'ติดตามเชิงรุก';
       } else if (!row.assigned_to) {
         recommendedAction = 'มอบหมายผู้รับผิดชอบโดยเร็ว';
+        actionCode = 'assign_owner';
+        actionButtonText = 'มอบหมายผู้รับผิดชอบ';
       } else if (priority === 'urgent') {
         recommendedAction = 'เร่งติดตามเคสด่วน';
+        actionCode = 'expedite_urgent_case';
+        actionButtonText = 'เร่งติดตามเคสด่วน';
       }
+
+      const riskScoreRounded = Math.round(riskScore * 10) / 10;
+      const riskLevel = riskScoreRounded >= 100 ? 'critical' : riskScoreRounded >= 50 ? 'high' : riskScoreRounded >= 20 ? 'medium' : 'normal';
+      const riskLabelTh =
+        riskLevel === 'critical' ? 'วิกฤต' :
+        riskLevel === 'high' ? 'สูง' :
+        riskLevel === 'medium' ? 'เฝ้าระวัง' :
+        'ปกติ';
 
       return {
         case: row,
         severity,
         priority_score: priorityScore,
-        risk_score: Math.round(riskScore * 10) / 10,
-        recommended_action: recommendedAction
+        priority_label_th: formatPriorityThai(priority),
+        risk_score: riskScoreRounded,
+        risk_level: riskLevel,
+        risk_label_th: riskLabelTh,
+        recommended_action: recommendedAction,
+        recommended_action_label_th: recommendedAction,
+        action_code: actionCode,
+        action_button_text: actionButtonText,
+        case_url: `/case?id=${encodeURIComponent(row.id || '')}`
       };
     })
     .sort((a, b) => (b.risk_score - a.risk_score) || (b.priority_score - a.priority_score))

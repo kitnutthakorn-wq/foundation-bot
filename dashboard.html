@@ -232,6 +232,42 @@
   line-height:1.8;
   font-weight:700;
 }
+
+    /* ===== PRO MAX DECISION BOARD ===== */
+    .decision-case-code{font-size:15px;font-weight:800;color:#163c72;line-height:1.35}
+    .decision-subtext{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+    .decision-name{font-weight:700;line-height:1.45}
+    .decision-location{line-height:1.45}
+    .decision-priority{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;white-space:nowrap}
+    .decision-priority.urgent{background:#fee2e2;color:#b91c1c}
+    .decision-priority.high{background:#ffedd5;color:#c2410c}
+    .decision-priority.normal{background:#dbeafe;color:#1d4ed8}
+    .decision-priority.low{background:#f3f4f6;color:#374151}
+    .decision-risk-wrap{display:flex;flex-direction:column;gap:6px;min-width:132px}
+    .decision-risk-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .decision-risk-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:800;white-space:nowrap}
+    .decision-risk-badge.normal{background:#dcfce7;color:#166534}
+    .decision-risk-badge.medium{background:#fef3c7;color:#92400e}
+    .decision-risk-badge.high{background:#ffedd5;color:#c2410c}
+    .decision-risk-badge.critical{background:#fee2e2;color:#b91c1c}
+    .decision-risk-score{font-size:13px;font-weight:800;color:#16304e}
+    .decision-risk-bar{position:relative;width:100%;height:8px;border-radius:999px;background:#e5e7eb;overflow:hidden}
+    .decision-risk-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+    .decision-risk-fill.normal{background:#22c55e}
+    .decision-risk-fill.medium{background:#f59e0b}
+    .decision-risk-fill.high{background:#f97316}
+    .decision-risk-fill.critical{background:#dc2626}
+    .decision-action-wrap{display:flex;flex-direction:column;gap:8px;min-width:190px}
+    .decision-action-text{font-size:13px;font-weight:800;line-height:1.45;color:#16304e}
+    .decision-action-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:8px 12px;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;color:#fff;box-shadow:var(--shadow)}
+    .decision-action-btn.assign_owner{background:#0b7c86}
+    .decision-action-btn.follow_before_breach{background:#f59e0b}
+    .decision-action-btn.rush_clear_sla{background:#dc2626}
+    .decision-action-btn.expedite_urgent_case{background:#ea580c}
+    .decision-action-btn.follow_case{background:#163c72}
+    .decision-row-critical{background:#fff5f5}
+    .decision-row-high{background:#fffaf0}
+    .decision-empty{padding:18px 10px !important;text-align:center;color:var(--muted)}
     @media (max-width:1200px){
       .cards,.exec-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
       .grid,.exec-grid,.split-grid{grid-template-columns:1fr}
@@ -391,12 +427,12 @@
           <table>
             <thead>
               <tr>
-                <th>CASE</th>
-                <th>ชื่อ</th>
+                <th>เลขเคส</th>
+                <th>ผู้ร้องขอ</th>
                 <th>พื้นที่</th>
-                <th>PRIORITY</th>
-                <th>RISK</th>
-                <th>ACTION</th>
+                <th>ความสำคัญ</th>
+                <th>ความเสี่ยง</th>
+                <th>คำสั่งการ</th>
               </tr>
             </thead>
             <tbody id="highPriorityBody"></tbody>
@@ -517,9 +553,9 @@ function filterRowsBySla(rows){
 
     function escapeHtml(value){return String(value ?? "-").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
     function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}
-    function statusBadge(status){const safe=escapeHtml(status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(status)?status:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
-    function priorityBadge(priority){const value=priority||"normal";const cls=value==="urgent"?"urgent":"normal";return `<span class="badge priority-${cls}">${escapeHtml(value)}</span>`}
-    function severityBadge(severity){const value=(severity||"info").toLowerCase();const cls=["critical","high","medium","info"].includes(value)?value:"info";return `<span class="badge severity-${cls}">${escapeHtml(value)}</span>`}
+    function statusBadge(status){const map={new:"รับเรื่องแล้ว",in_progress:"กำลังดำเนินการ",done:"ปิดแล้ว",cancelled:"ยกเลิก"};const value=(status||"unknown").toLowerCase();const safe=escapeHtml(map[value]||status||"unknown");const cls=["new","in_progress","done","cancelled"].includes(value)?value:"unknown";return `<span class="badge status-${cls}">${safe}</span>`}
+    function priorityBadge(priority){const value=(priority||"normal").toLowerCase();const map={urgent:"ด่วน",high:"สูง",normal:"ปกติ",low:"ต่ำ"};const cls=["urgent","high","normal","low"].includes(value)?value:"normal";return `<span class="badge priority-${cls === "urgent" ? "urgent" : "normal"}">${escapeHtml(map[value]||value)}</span>`}
+    function severityBadge(severity){const value=(severity||"info").toLowerCase();const cls=["critical","high","medium","info"].includes(value)?value:"info";const map={critical:"วิกฤต",high:"สูง",medium:"กลาง",info:"ทั่วไป"};return `<span class="badge severity-${cls}">${escapeHtml(map[value]||value)}</span>`}
    function getSlaRowClass(level){
   const value = String(level || "").trim().toLowerCase();
   if (value === "breached") return "row-sla-breached";
@@ -532,7 +568,40 @@ function filterRowsBySla(rows){
   const text = label || (value || "-");
   return `<span class="badge sla-${cls}">${escapeHtml(text)}</span>`;
 }
-    function showErrorBanner(message, meta = "") {
+    function normalizeDecisionRiskLevel(level, score){
+  const safeLevel = String(level || '').toLowerCase();
+  if (["critical","high","medium","normal"].includes(safeLevel)) return safeLevel;
+  const n = Number(score || 0);
+  if (n >= 100) return 'critical';
+  if (n >= 50) return 'high';
+  if (n >= 20) return 'medium';
+  return 'normal';
+}
+function decisionPriorityBadge(priority, label){
+  const value = String(priority || 'normal').toLowerCase();
+  const safeValue = ['urgent','high','normal','low'].includes(value) ? value : 'normal';
+  const map = { urgent:'ด่วน', high:'สูง', normal:'ปกติ', low:'ต่ำ' };
+  return `<span class="decision-priority ${safeValue}">${escapeHtml(label || map[safeValue] || safeValue)}</span>`;
+}
+function decisionRiskBadge(level, label){
+  const safeLevel = normalizeDecisionRiskLevel(level);
+  const map = { critical:'วิกฤต', high:'สูง', medium:'เฝ้าระวัง', normal:'ปกติ' };
+  return `<span class="decision-risk-badge ${safeLevel}">${escapeHtml(label || map[safeLevel] || safeLevel)}</span>`;
+}
+function decisionRiskBar(level, score){
+  const safeLevel = normalizeDecisionRiskLevel(level, score);
+  const safeScore = Math.max(0, Math.min(Number(score || 0), 160));
+  const width = Math.max(8, Math.min((safeScore / 160) * 100, 100));
+  return `<div class="decision-risk-bar"><div class="decision-risk-fill ${safeLevel}" style="width:${width}%"></div></div>`;
+}
+function getDecisionActionLabel(item){
+  return item.action_button_text || item.recommended_action_label_th || item.recommended_action || 'ติดตามเคส';
+}
+function openDecisionCase(caseId){
+  if(!caseId) return;
+  window.location.href = `/case?id=${encodeURIComponent(caseId)}`;
+}
+function showErrorBanner(message, meta = "") {
       const banner = document.getElementById("errorBanner");
       const messageEl = document.getElementById("errorMessage");
       const metaEl = document.getElementById("errorMeta");
@@ -939,31 +1008,58 @@ function renderAlerts(alerts){
         box.innerHTML = '<div class="footer-note">ยังไม่มีคำแนะนำ</div>';
         return;
       }
-      box.innerHTML = cases.slice(0,5).map(item => `
+      box.innerHTML = cases.slice(0,5).map(item => {
+        const riskLevel = normalizeDecisionRiskLevel(item.risk_level, item.risk_score);
+        return `
         <div class="mini-card">
-          <div style="font-size:16px;font-weight:800">${escapeHtml(item.case?.case_code || "-")}</div>
-          <div style="font-size:14px;font-weight:800;margin:8px 0">${escapeHtml(item.recommended_action || "ปกติ")}</div>
+          <div class="top">
+            <strong>${escapeHtml(item.case?.case_code || "-")}</strong>
+            ${decisionRiskBadge(riskLevel, item.risk_label_th)}
+          </div>
+          <div style="font-size:14px;font-weight:800;margin:8px 0">${escapeHtml(item.recommended_action_label_th || item.recommended_action || "ปกติ")}</div>
           <div class="footer-note">
-            Priority Score: ${escapeHtml(item.priority_score || 0)} •
-            Risk Score: ${escapeHtml(item.risk_score || 0)} •
+            ความสำคัญ: ${escapeHtml(item.priority_label_th || item.case?.priority || "ปกติ")} •
+            คะแนนความเสี่ยง: ${escapeHtml(item.risk_score || 0)} •
             ผู้รับผิดชอบ: ${escapeHtml(item.case?.assigned_to || "ยังไม่มี")}
           </div>
         </div>
-      `).join("");
+      `}).join("");
     }
 
     function renderHighPriorityCases(cases){
       const body = document.getElementById("highPriorityBody");
-      body.innerHTML = cases.length ? cases.slice(0,5).map(item => `
-        <tr>
-          <td>${escapeHtml(item.case?.case_code || "-")}</td>
-          <td>${escapeHtml(item.case?.full_name || "-")}</td>
-          <td>${escapeHtml(item.case?.location || "-")}</td>
-          <td>${escapeHtml(item.priority_score || 0)}</td>
-          <td>${escapeHtml(item.risk_score || 0)}</td>
-          <td>${escapeHtml(item.recommended_action || "ปกติ")}</td>
+      body.innerHTML = cases.length ? cases.slice(0,5).map(item => {
+        const riskLevel = normalizeDecisionRiskLevel(item.risk_level, item.risk_score);
+        const rowClass = riskLevel === 'critical' ? 'decision-row-critical' : riskLevel === 'high' ? 'decision-row-high' : '';
+        return `
+        <tr class="${rowClass}">
+          <td>
+            <div class="decision-case-code">${escapeHtml(item.case?.case_code || "-")}</div>
+            <div class="decision-subtext">${escapeHtml(item.case?.status || "-")}</div>
+          </td>
+          <td>
+            <div class="decision-name">${escapeHtml(item.case?.full_name || "-")}</div>
+            <div class="decision-subtext">ผู้รับเคส: ${escapeHtml(item.case?.assigned_to || "ยังไม่มี")}</div>
+          </td>
+          <td><div class="decision-location">${escapeHtml(item.case?.location || "-")}</div></td>
+          <td>${decisionPriorityBadge(item.case?.priority || item.priority_label_th, item.priority_label_th)}</td>
+          <td>
+            <div class="decision-risk-wrap">
+              <div class="decision-risk-top">
+                ${decisionRiskBadge(riskLevel, item.risk_label_th)}
+                <span class="decision-risk-score">${escapeHtml(item.risk_score || 0)}</span>
+              </div>
+              ${decisionRiskBar(riskLevel, item.risk_score)}
+            </div>
+          </td>
+          <td>
+            <div class="decision-action-wrap">
+              <div class="decision-action-text">${escapeHtml(item.recommended_action_label_th || item.recommended_action || "ปกติ")}</div>
+              <button type="button" class="decision-action-btn ${escapeHtml(item.action_code || 'follow_case')}" onclick="openDecisionCase('${escapeHtml(item.case?.id || "")}')">${escapeHtml(getDecisionActionLabel(item))}</button>
+            </div>
+          </td>
         </tr>
-      `).join("") : `<tr><td colspan="6" class="footer-note">ยังไม่มีข้อมูล</td></tr>`;
+      `}).join("") : `<tr><td colspan="6" class="decision-empty">ยังไม่มีข้อมูล</td></tr>`;
     }
 
     async function loadExecutive(){

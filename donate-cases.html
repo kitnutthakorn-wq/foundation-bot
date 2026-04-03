@@ -21,7 +21,8 @@
     if (!items.length) { list.innerHTML = '<div class="case-card">ยังไม่มีเคสในโครงการนี้</div>'; return; }
     list.innerHTML = items.map(item => {
       const percent = Math.max(0, Math.min(100, Math.round((Number(item.raised_amount||0) / Math.max(Number(item.target_amount||0),1)) * 100)));
-      return `<article class="case-card"><div class="tag">${item.province || '-'}</div><div class="case-title">${item.title}</div><div class="money">ช่วยแล้ว ${formatMoney(item.raised_amount)} / ${formatMoney(item.target_amount)} บาท (${percent}%)</div><div class="bar"><div class="fill" style="width:${percent}%"></div></div><div class="actions"><a class="btn" href="donate-form.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(item.id)}">บริจาคเคสนี้</a></div></article>`;
+      return `<article class="case-card"><div class="tag">${item.province || '-'}</div><div class="case-title">${item.title}</div><div class="money">ช่วยแล้ว ${formatMoney(item.raised_amount)} / ${formatMoney(item.target_amount)} บาท (${percent}%)</div><div class="bar"><div class="fill" style="width:${percent}%"></div></div><div class="actions">
+      <a class="btn" href="donate-form.html?project=${encodeURIComponent(projectSlug)}&caseId=${encodeURIComponent(item.id)}">บริจาคเคสนี้</a></div></article>`;
     }).join('');
   } catch (err) { console.error(err); titleEl.textContent='โหลดโครงการไม่สำเร็จ'; list.innerHTML='<div class="case-card">โหลดรายการเคสไม่สำเร็จ</div>'; }
 })();

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เมนูบริจาค | Golden ProMax</title>
+  <script src="mock-data.js"></script>
+  <style>
+    :root{
+      --bg:#edf2f5;--card:#fff;--line:#dbe3ea;--text:#16324f;--muted:#6b7280;
+      --brand:#19a84a;--brand-dark:#0b7c86;--shadow:0 12px 30px rgba(18,36,58,.10);--radius:24px;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .page{max-width:1200px;margin:0 auto;padding:22px 18px 40px}
+    .hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+    .hero h1{margin:0;font-size:38px;line-height:1.1}.hero p{margin:10px 0 0;color:var(--muted);font-size:17px;line-height:1.7}
+    .pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 14px;background:#fff;box-shadow:var(--shadow);font-size:14px;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+    .card{background:var(--card);border-radius:28px;box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(219,227,234,.8)}
+    .cover{position:relative;height:360px;background:#ddd center/cover no-repeat}
+    .overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.68))}
+    .caption{position:absolute;left:20px;right:20px;bottom:18px;color:#fff}
+    .caption .kicker{font-size:15px;font-weight:700;color:#ffcf5a;margin-bottom:8px}
+    .caption .title{font-size:34px;font-weight:800;line-height:1.02;text-shadow:0 2px 12px rgba(0,0,0,.25)}
+    .caption .mini{margin-top:8px;font-size:12px;opacity:.92}
+    .body{padding:18px 18px 20px}.body h3{margin:0 0 8px;font-size:28px;line-height:1.2}.body p{margin:0 0 16px;color:var(--muted);line-height:1.7}
+    .btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:48px;border:none;border-radius:14px;background:#20c44c;color:#fff;font-size:22px;font-weight:800;cursor:pointer;text-decoration:none}
+    .footer-note{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:1024px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:320px}.caption .title{font-size:28px}.body h3{font-size:24px}}
+    @media (max-width:640px){.page{padding:14px 12px 30px}.hero h1{font-size:28px}.hero p{font-size:15px}.grid{grid-template-columns:1fr;gap:14px}.cover{height:300px}.caption .title{font-size:24px}.body{padding:14px}.body h3{font-size:20px}.btn{font-size:18px;min-height:44px}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div>
+        <h1>เมนูบริจาค</h1>
+        <p>เลือกโครงการที่ต้องการสนับสนุน เพื่อเข้าสู่รายการเคสที่เปิดรับบริจาคในแต่ละโครงการ</p>
+      </div>
+      <div class="pill">Golden Version ProMax · Phase 1 Prototype</div>
+    </div>
+    <div class="grid" id="projectGrid"></div>
+    <div class="footer-note">เวอร์ชันนี้เป็นโครงหน้า HTML + Mock Data ยังไม่เชื่อมระบบจริง เพื่อความปลอดภัยของ Golden Version</div>
+  </div>
+  <script>
+    const grid = document.getElementById('projectGrid');
+    grid.innerHTML = (window.DONATION_PROJECTS || []).map(project => `
+      <article class="card">
+        <div class="cover" style="background-image:url('${project.cover_image}')">
+          <div class="overlay"></div>
+          <div class="caption">
+            <div class="kicker">ร่วมหยิบยื่น แบ่งปัน</div>
+            <div class="title">${project.title}</div>
+            <div class="mini">มูลนิธิคนช่วยฅน</div>
+          </div>
+        </div>
+        <div class="body">
+          <h3>${project.title}</h3>
+          <p>${project.subtitle}</p>
+          <a class="btn" href="donate-cases.html?project=${encodeURIComponent(project.slug)}">ดูโครงการ</a>
+        </div>
+      </article>
+    `).join('');
+  </script>
+</body>
+</html>

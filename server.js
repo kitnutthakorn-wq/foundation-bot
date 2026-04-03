@@ -4332,6 +4332,8 @@ function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
   };
 }
 
+const BASE_URL = "https://satisfied-stillness-production-7942.up.railway.app";
+
 const donationFlex = {
   type: "flex",
   altText: "โครงการช่วยเหลือของมูลนิธิ",
@@ -4342,43 +4344,43 @@ const donationFlex = {
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
         "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing"
+        `${BASE_URL}/donate-cases.html?project=zakat`
       ),
       createProjectBubble(
         "การศึกษา",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education"
+        `${BASE_URL}/donate-cases.html?project=education`
       ),
       createProjectBubble(
         "ที่อยู่อาศัย",
         "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
         "https://img5.pic.in.th/file/secure-sv1/KCK3.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-form-promax.html"
+        `${BASE_URL}/donate-form-promax.html?project=housing`
       ),
       createProjectBubble(
         "ภัยพิบัติ",
         "ช่วยเหลือผู้ประสบเหตุเร่งด่วน",
         "https://img5.pic.in.th/file/secure-sv1/KCK4.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
+        `${BASE_URL}/donate-cases.html?project=disaster`
       ),
       createProjectBubble(
         "อาสาพามัยยิดกลับบ้าน",
         "ร่วมสร้างความดีพาร่างผู้เสียชีวิตกลับภูมิลำเนา",
         "https://img2.pic.in.th/KCK54af3446f47283561.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
+        `${BASE_URL}/donate-cases.html?project=transport`
       ),
       createProjectBubble(
         "เด็กกำพร้า",
         "ส่งต่อโอกาสและอนาคตที่ดี",
         "https://img5.pic.in.th/file/secure-sv1/KCK6.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
+        `${BASE_URL}/donate-cases.html?project=orphan`
       ),
       createProjectBubble(
         "มูลนิธิคนช่วยฅน",
         "สนับสนุนภารกิจช่วยเหลือสังคม",
         "https://img5.pic.in.th/file/secure-sv1/KCK7.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
+        `${BASE_URL}/donate-projects.html`
       ),
     ],
   },

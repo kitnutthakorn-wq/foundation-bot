@@ -4391,7 +4391,7 @@ const donationFallbackText = [
       "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
       "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
       "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
-      "3) ที่อยู่อาศัย\https://satisfied-stillness-production-7942.up.railway.app/donate-form-promax.html\n\n" +
+      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
       "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
   },
   {

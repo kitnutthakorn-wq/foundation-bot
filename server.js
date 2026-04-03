@@ -2766,6 +2766,29 @@ async function createGoldenAlertFromCaseRow(row = {}, options = {}) {
   cleanupAlertEngineSeenMap();
 
   const persisted = await persistGoldenAlert(alert);
+  const mergedCaseForAutoAssign = mergeCaseWithSla(row || {});
+  const autoAssignProfile = buildRiskDecisionProfile(mergedCaseForAutoAssign);
+  let autoAssignResult = { ok: true, assigned: false, profile: autoAssignProfile };
+  try {
+    autoAssignResult = await processAutoAssignFromRisk(mergedCaseForAutoAssign, {
+      profile: autoAssignProfile,
+      trigger_alert_type: alert.alert_type,
+      source_type: options.source_type || 'alert_engine'
+    });
+  } catch (autoAssignErr) {
+    console.warn('AUTO ASSIGN WARNING:', autoAssignErr?.message || autoAssignErr);
+  }
+
+  if (autoAssignResult?.assigned && autoAssignResult.case) {
+    alert.metadata = {
+      ...(alert.metadata || {}),
+      auto_assigned: true,
+      auto_assigned_to: autoAssignResult.assignee?.assigned_to || autoAssignResult.case.assigned_to || null,
+      auto_assign_risk_score: autoAssignResult.profile?.risk_score || autoAssignProfile.risk_score || 0,
+      auto_assign_risk_level: autoAssignResult.profile?.risk_level || autoAssignProfile.risk_level || 'normal'
+    };
+  }
+
   let line = { ok: false, reason: 'notify_disabled' };
   if (options.notify !== false) {
     line = await safePushAlertToTeam(buildGoldenAlertLineMessage(alert));
@@ -2786,7 +2809,7 @@ async function createGoldenAlertFromCaseRow(row = {}, options = {}) {
     console.warn('broadcast alert_update failed:', err?.message || err);
   }
 
-  return { ok: true, created: true, alert, line, persisted };
+  return { ok: true, created: true, alert, line, persisted, auto_assign: autoAssignResult };
 }
 
 async function getAlertCasesSnapshot(limit = 100) {
@@ -2916,64 +2939,426 @@ async function generateGoldenAlertsNow(options = {}) {
   };
 }
 
+
+
+// =========================
+// AUTO ASSIGN ENGINE (GOLDEN SAFE PATCH)
+// =========================
+const AUTO_ASSIGN_ENABLED = true;
+const AUTO_ASSIGN_CRITICAL_THRESHOLD = 120;
+const AUTO_ASSIGN_HIGH_THRESHOLD = 80;
+const AUTO_ASSIGN_MEMORY_LIMIT = 300;
+const autoAssignMemory = [];
+let autoAssignLogsTableCheckedAt = 0;
+let autoAssignLogsTableAvailable = null;
+
+function cleanupAutoAssignMemory() {
+  while (autoAssignMemory.length > AUTO_ASSIGN_MEMORY_LIMIT) {
+    autoAssignMemory.shift();
+  }
+}
+
+async function isAutoAssignLogsTableAvailable() {
+  const now = Date.now();
+  if (autoAssignLogsTableAvailable !== null && (now - autoAssignLogsTableCheckedAt) < 5 * 60 * 1000) {
+    return autoAssignLogsTableAvailable;
+  }
+
+  autoAssignLogsTableCheckedAt = now;
+  try {
+    const { error } = await supabase
+      .from('auto_assign_logs')
+      .select('id', { head: true, count: 'exact' })
+      .limit(1);
+
+    autoAssignLogsTableAvailable = !error;
+    if (error) {
+      console.warn('auto_assign_logs table unavailable:', error.message || error);
+    }
+  } catch (err) {
+    autoAssignLogsTableAvailable = false;
+    console.warn('auto_assign_logs table check failed:', err?.message || err);
+  }
+
+  return autoAssignLogsTableAvailable;
+}
+
+function getAutoAssignDisplayName(member = {}) {
+  return (
+    member.display_name ||
+    member.displayName ||
+    member.name ||
+    member.full_name ||
+    member.nickname ||
+    member.line_user_id ||
+    'เจ้าหน้าที่อัตโนมัติ'
+  );
+}
+
+async function pickAutoAssignee() {
+  try {
+    const { data, error } = await supabase
+      .from('line_user_roles')
+      .select('*')
+      .in('role', ['staff', 'admin'])
+      .eq('is_active', true)
+      .order('updated_at', { ascending: true, nullsFirst: false });
+
+    if (error) throw error;
+
+    const members = Array.isArray(data) ? data : [];
+    if (!members.length) return null;
+
+    const labels = members.map((member) => getAutoAssignDisplayName(member));
+
+    let loadMap = new Map();
+    try {
+      const { data: caseRows, error: caseError } = await supabase
+        .from('help_requests')
+        .select('assigned_to, status')
+        .in('status', ['new', 'in_progress']);
+
+      if (caseError) throw caseError;
+
+      loadMap = new Map();
+      for (const row of caseRows || []) {
+        const key = String(row.assigned_to || '').trim();
+        if (!key) continue;
+        loadMap.set(key, (loadMap.get(key) || 0) + 1);
+      }
+    } catch (loadErr) {
+      console.warn('pickAutoAssignee load map warning:', loadErr?.message || loadErr);
+    }
+
+    const sorted = [...members].sort((a, b) => {
+      const labelA = getAutoAssignDisplayName(a);
+      const labelB = getAutoAssignDisplayName(b);
+      const loadA = Number(loadMap.get(labelA) || 0);
+      const loadB = Number(loadMap.get(labelB) || 0);
+      if (loadA !== loadB) return loadA - loadB;
+      return String(labelA).localeCompare(String(labelB), 'th');
+    });
+
+    const picked = sorted[0] || null;
+    if (!picked) return null;
+
+    return {
+      line_user_id: picked.line_user_id || null,
+      assigned_to: getAutoAssignDisplayName(picked),
+      role: picked.role || 'staff',
+      raw: picked
+    };
+  } catch (err) {
+    console.warn('pickAutoAssignee error:', err?.message || err);
+    return null;
+  }
+}
+
+async function persistAutoAssignLog(entry = {}) {
+  const payload = {
+    id: entry.id || `auto-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    case_code: entry.case_code || '-',
+    assigned_to: entry.assigned_to || 'เจ้าหน้าที่อัตโนมัติ',
+    line_user_id: entry.line_user_id || null,
+    risk_score: Number(entry.risk_score || 0),
+    risk_level: entry.risk_level || 'normal',
+    trigger_alert_type: entry.trigger_alert_type || null,
+    reason: entry.reason || 'auto_assign_by_risk',
+    source_type: entry.source_type || 'alert_engine',
+    created_at: entry.created_at || new Date().toISOString(),
+    metadata: entry.metadata || {}
+  };
+
+  autoAssignMemory.unshift(payload);
+  cleanupAutoAssignMemory();
+
+  const canUseTable = await isAutoAssignLogsTableAvailable();
+  if (!canUseTable) {
+    return { ok: true, persisted: false, memory: true, row: payload };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('auto_assign_logs')
+      .insert([{
+        case_code: payload.case_code,
+        assigned_to: payload.assigned_to,
+        risk_score: payload.risk_score,
+        reason: payload.reason,
+        metadata: payload.metadata
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.warn('persistAutoAssignLog failed:', error.message || error);
+      return { ok: false, persisted: false, memory: true, row: payload, reason: error.message || 'insert_failed' };
+    }
+
+    return { ok: true, persisted: true, row: { ...payload, db_row: data } };
+  } catch (err) {
+    console.warn('persistAutoAssignLog catch:', err?.message || err);
+    return { ok: false, persisted: false, memory: true, row: payload, reason: err?.message || 'insert_failed' };
+  }
+}
+
+async function listAutoAssignLogs(limit = 20) {
+  const safeLimit = Math.max(1, Math.min(Number(limit || 20), 100));
+  const canUseTable = await isAutoAssignLogsTableAvailable();
+
+  if (canUseTable) {
+    try {
+      const { data, error } = await supabase
+        .from('auto_assign_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(safeLimit);
+
+      if (!error && Array.isArray(data) && data.length) {
+        return data.map((row) => ({
+          id: row.id || `db-${row.case_code || 'case'}`,
+          case_code: row.case_code || '-',
+          assigned_to: row.assigned_to || '-',
+          risk_score: Number(row.risk_score || 0),
+          risk_level: row.metadata?.risk_level || 'normal',
+          trigger_alert_type: row.metadata?.trigger_alert_type || null,
+          reason: row.reason || 'auto_assign_by_risk',
+          source_type: row.metadata?.source_type || 'alert_engine',
+          created_at: row.created_at || new Date().toISOString(),
+          metadata: row.metadata || {}
+        }));
+      }
+      if (error) {
+        console.warn('listAutoAssignLogs db failed:', error.message || error);
+      }
+    } catch (err) {
+      console.warn('listAutoAssignLogs catch:', err?.message || err);
+    }
+  }
+
+  return autoAssignMemory.slice(0, safeLimit);
+}
+
+async function getAutoAssignSummary(days = 7) {
+  const logs = await listAutoAssignLogs(100);
+  const now = Date.now();
+  const rangeMs = Math.max(1, Number(days || 7)) * 24 * 60 * 60 * 1000;
+  const recent = logs.filter((item) => {
+    const ts = new Date(item.created_at || 0).getTime();
+    return Number.isFinite(ts) && (now - ts) <= rangeMs;
+  });
+
+  return {
+    total: recent.length,
+    critical: recent.filter((item) => String(item.risk_level || '').toLowerCase() === 'critical').length,
+    high: recent.filter((item) => String(item.risk_level || '').toLowerCase() === 'high').length,
+    recent: recent.slice(0, 5)
+  };
+}
+
+function buildRiskDecisionProfile(row = {}) {
+  const priority = normalizeSlaPriority(row.priority);
+  const severity = getAlertSeverityFromCase(row, row);
+  const priorityScore =
+    (priority === 'urgent' ? 40 : priority === 'high' ? 25 : priority === 'normal' ? 12 : 6) +
+    (!row.assigned_to ? 10 : 0) +
+    (row.status === 'new' ? 8 : row.status === 'in_progress' ? 6 : 0);
+
+  const riskScore =
+    (row.sla_level === 'breached' ? 50 : row.sla_level === 'warning' ? 25 : 5) +
+    Number(row.sla_hours_since_action || 0);
+
+  let recommendedAction = 'ติดตามเคส';
+  let actionCode = 'follow_case';
+  let actionButtonText = 'ติดตามเคส';
+  if (row.sla_level === 'breached') {
+    recommendedAction = 'เร่งเคลียร์เคสเกิน SLA ทันที';
+    actionCode = 'rush_clear_sla';
+    actionButtonText = 'เร่งเคลียร์ SLA';
+  } else if (row.sla_level === 'warning') {
+    recommendedAction = 'ติดตามเชิงรุกก่อนเกิน SLA';
+    actionCode = 'follow_before_breach';
+    actionButtonText = 'ติดตามเชิงรุก';
+  } else if (!row.assigned_to) {
+    recommendedAction = 'มอบหมายผู้รับผิดชอบโดยเร็ว';
+    actionCode = 'assign_owner';
+    actionButtonText = 'มอบหมายผู้รับผิดชอบ';
+  } else if (priority === 'urgent') {
+    recommendedAction = 'เร่งติดตามเคสด่วน';
+    actionCode = 'expedite_urgent_case';
+    actionButtonText = 'เร่งติดตามเคสด่วน';
+  }
+
+  const riskScoreRounded = Math.round(riskScore * 10) / 10;
+  const riskLevel = riskScoreRounded >= 100 ? 'critical' : riskScoreRounded >= 50 ? 'high' : riskScoreRounded >= 20 ? 'medium' : 'normal';
+  const riskLabelTh =
+    riskLevel === 'critical' ? 'วิกฤต' :
+    riskLevel === 'high' ? 'สูง' :
+    riskLevel === 'medium' ? 'เฝ้าระวัง' :
+    'ปกติ';
+
+  return {
+    severity,
+    priority_score: priorityScore,
+    priority_label_th: formatPriorityThai(priority),
+    risk_score: riskScoreRounded,
+    risk_level: riskLevel,
+    risk_label_th: riskLabelTh,
+    recommended_action: recommendedAction,
+    recommended_action_label_th: recommendedAction,
+    action_code: actionCode,
+    action_button_text: actionButtonText
+  };
+}
+
+function shouldAutoAssignFromProfile(caseRow = {}, profile = {}) {
+  if (!AUTO_ASSIGN_ENABLED) return false;
+  if (!caseRow || !caseRow.case_code) return false;
+
+  const status = normalizeSlaStatus(caseRow.status);
+  if (['done', 'cancelled'].includes(status)) return false;
+  if (String(caseRow.assigned_to || '').trim()) return false;
+
+  const riskScore = Number(profile.risk_score || 0);
+  return riskScore >= AUTO_ASSIGN_HIGH_THRESHOLD;
+}
+
+async function processAutoAssignFromRisk(caseRow = {}, options = {}) {
+  try {
+    const merged = mergeCaseWithSla(caseRow);
+    const profile = options.profile || buildRiskDecisionProfile(merged);
+
+    if (!shouldAutoAssignFromProfile(merged, profile)) {
+      return { ok: true, assigned: false, reason: 'threshold_or_state_not_matched', profile };
+    }
+
+    const freshCase = await getHelpRequestByCaseCode(merged.case_code || '');
+    const caseToAssign = freshCase ? mergeCaseWithSla(freshCase) : merged;
+    if (String(caseToAssign.assigned_to || '').trim()) {
+      return { ok: true, assigned: false, reason: 'already_assigned', profile, case: caseToAssign };
+    }
+
+    const assignee = await pickAutoAssignee();
+    if (!assignee?.assigned_to) {
+      return { ok: true, assigned: false, reason: 'no_assignee_available', profile, case: caseToAssign };
+    }
+
+    const nowIso = new Date().toISOString();
+    const updatePayload = {
+      assigned_to: assignee.assigned_to,
+      assigned_at: nowIso,
+      last_action_at: nowIso,
+      last_action_by: 'ระบบ Auto Assign'
+    };
+
+    const { data, error } = await supabase
+      .from('help_requests')
+      .update(updatePayload)
+      .eq('case_code', caseToAssign.case_code)
+      .select()
+      .limit(1);
+
+    if (error) throw error;
+
+    const updatedCase = (data && data[0]) ? data[0] : { ...caseToAssign, ...updatePayload };
+    const mergedUpdatedCase = mergeCaseWithSla(updatedCase);
+
+    const logEntry = {
+      case_code: mergedUpdatedCase.case_code,
+      assigned_to: assignee.assigned_to,
+      line_user_id: assignee.line_user_id,
+      risk_score: profile.risk_score,
+      risk_level: profile.risk_level,
+      trigger_alert_type: options.trigger_alert_type || null,
+      reason: profile.risk_score >= AUTO_ASSIGN_CRITICAL_THRESHOLD ? 'auto_assign_critical_risk' : 'auto_assign_high_risk',
+      source_type: options.source_type || 'alert_engine',
+      created_at: nowIso,
+      metadata: {
+        case_id: mergedUpdatedCase.id || null,
+        full_name: mergedUpdatedCase.full_name || null,
+        location: mergedUpdatedCase.location || null,
+        status: mergedUpdatedCase.status || null,
+        priority: mergedUpdatedCase.priority || null,
+        risk_level: profile.risk_level,
+        risk_score: profile.risk_score,
+        trigger_alert_type: options.trigger_alert_type || null,
+        source_type: options.source_type || 'alert_engine'
+      }
+    };
+
+    const persistedLog = await persistAutoAssignLog(logEntry);
+
+    const lineText = [
+      '🤖 AUTO ASSIGN',
+      `เลขเคส: ${mergedUpdatedCase.case_code || '-'}`,
+      `ผู้ร้อง: ${mergedUpdatedCase.full_name || '-'}`,
+      `พื้นที่: ${mergedUpdatedCase.location || '-'}`,
+      `Risk Score: ${profile.risk_score || 0}`,
+      `ระดับความเสี่ยง: ${profile.risk_label_th || profile.risk_level || '-'}`,
+      `มอบหมายให้: ${assignee.assigned_to}`,
+      `เหตุผล: ${profile.recommended_action_label_th || profile.recommended_action || 'เร่งติดตามเคส'}`
+    ].join('\n');
+
+    const line = await safePushAlertToTeam(lineText);
+
+    try {
+      broadcastSse('case_updated', {
+        case_id: mergedUpdatedCase.id,
+        case_code: mergedUpdatedCase.case_code,
+        action: 'auto_assign',
+        assigned_to: assignee.assigned_to,
+        priority: mergedUpdatedCase.priority,
+        status: mergedUpdatedCase.status,
+        risk_score: profile.risk_score,
+        risk_level: profile.risk_level
+      });
+      broadcastSse('dashboard_refresh', {
+        reason: 'auto_assign_by_risk',
+        case_code: mergedUpdatedCase.case_code,
+        assigned_to: assignee.assigned_to,
+        risk_score: profile.risk_score,
+        risk_level: profile.risk_level
+      });
+    } catch (broadcastErr) {
+      console.warn('AUTO ASSIGN broadcast warning:', broadcastErr?.message || broadcastErr);
+    }
+
+    return {
+      ok: true,
+      assigned: true,
+      case: mergedUpdatedCase,
+      assignee,
+      profile,
+      line,
+      log: persistedLog?.row || logEntry
+    };
+  } catch (err) {
+    console.warn('processAutoAssignFromRisk error:', err?.message || err);
+    return { ok: false, assigned: false, reason: err?.message || 'auto_assign_failed' };
+  }
+}
+
 async function buildExecutiveDecisionBoard(limit = 10) {
   const rows = await getAlertCasesSnapshot(Math.max(limit * 5, 50));
   const activeRows = rows.filter((row) => !row.sla_excluded);
 
+  const autoAssignSummary = await getAutoAssignSummary(7);
+  const recentAutoAssignMap = new Map((autoAssignSummary.recent || []).map((item) => [String(item.case_code || ''), item]));
+
   const cases = activeRows
     .map((row) => {
-      const priority = normalizeSlaPriority(row.priority);
-      const severity = getAlertSeverityFromCase(row, row);
-      const priorityScore =
-        (priority === 'urgent' ? 40 : priority === 'high' ? 25 : priority === 'normal' ? 12 : 6) +
-        (!row.assigned_to ? 10 : 0) +
-        (row.status === 'new' ? 8 : row.status === 'in_progress' ? 6 : 0);
-
-      const riskScore =
-        (row.sla_level === 'breached' ? 50 : row.sla_level === 'warning' ? 25 : 5) +
-        Number(row.sla_hours_since_action || 0);
-
-      let recommendedAction = 'ติดตามเคส';
-      let actionCode = 'follow_case';
-      let actionButtonText = 'ติดตามเคส';
-      if (row.sla_level === 'breached') {
-        recommendedAction = 'เร่งเคลียร์เคสเกิน SLA ทันที';
-        actionCode = 'rush_clear_sla';
-        actionButtonText = 'เร่งเคลียร์ SLA';
-      } else if (row.sla_level === 'warning') {
-        recommendedAction = 'ติดตามเชิงรุกก่อนเกิน SLA';
-        actionCode = 'follow_before_breach';
-        actionButtonText = 'ติดตามเชิงรุก';
-      } else if (!row.assigned_to) {
-        recommendedAction = 'มอบหมายผู้รับผิดชอบโดยเร็ว';
-        actionCode = 'assign_owner';
-        actionButtonText = 'มอบหมายผู้รับผิดชอบ';
-      } else if (priority === 'urgent') {
-        recommendedAction = 'เร่งติดตามเคสด่วน';
-        actionCode = 'expedite_urgent_case';
-        actionButtonText = 'เร่งติดตามเคสด่วน';
-      }
-
-      const riskScoreRounded = Math.round(riskScore * 10) / 10;
-      const riskLevel = riskScoreRounded >= 100 ? 'critical' : riskScoreRounded >= 50 ? 'high' : riskScoreRounded >= 20 ? 'medium' : 'normal';
-      const riskLabelTh =
-        riskLevel === 'critical' ? 'วิกฤต' :
-        riskLevel === 'high' ? 'สูง' :
-        riskLevel === 'medium' ? 'เฝ้าระวัง' :
-        'ปกติ';
-
+      const profile = buildRiskDecisionProfile(row);
+      const recentAutoAssign = recentAutoAssignMap.get(String(row.case_code || '')) || null;
       return {
         case: row,
-        severity,
-        priority_score: priorityScore,
-        priority_label_th: formatPriorityThai(priority),
-        risk_score: riskScoreRounded,
-        risk_level: riskLevel,
-        risk_label_th: riskLabelTh,
-        recommended_action: recommendedAction,
-        recommended_action_label_th: recommendedAction,
-        action_code: actionCode,
-        action_button_text: actionButtonText,
+        ...profile,
+        auto_assign_enabled: AUTO_ASSIGN_ENABLED,
+        auto_assign_candidate: !row.assigned_to && Number(profile.risk_score || 0) >= AUTO_ASSIGN_HIGH_THRESHOLD,
+        auto_assign_threshold: AUTO_ASSIGN_HIGH_THRESHOLD,
+        auto_assigned: !!recentAutoAssign,
+        auto_assigned_to: recentAutoAssign?.assigned_to || null,
+        auto_assigned_at: recentAutoAssign?.created_at || null,
+        auto_assign_reason: recentAutoAssign?.reason || null,
         case_url: `/case?id=${encodeURIComponent(row.id || '')}`
       };
     })
@@ -2983,7 +3368,8 @@ async function buildExecutiveDecisionBoard(limit = 10) {
   return {
     ok: true,
     cases,
-    alerts: await listGoldenAlerts({ status: 'open', limit: 5 })
+    alerts: await listGoldenAlerts({ status: 'open', limit: 5 }),
+    auto_assign_summary: autoAssignSummary
   };
 }
 /* =========================
@@ -3956,13 +4342,13 @@ const donationFlex = {
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
         "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing"
       ),
       createProjectBubble(
         "การศึกษา",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education"
       ),
       createProjectBubble(
         "ที่อยู่อาศัย",
@@ -4842,10 +5228,11 @@ async function getDashboardReportData(days = 7) {
   if (inProgressRes.error) throw inProgressRes.error;
 
   const insights = await getReportInsights(days);
+  const autoAssignSummary = await getAutoAssignSummary(days);
 
   const executiveBrief = {
     headline: `ในช่วง ${days} วันล่าสุด รับเรื่อง ${summary.total_cases || 0} เคส ปิดแล้ว ${summary.done_cases || 0} เคส`,
-    subheadline: `ยังมี ${summary.delayed_cases || 0} เคสล่าช้า • เคสด่วนค้าง ${summary.followup_urgent_cases || summary.urgent_cases || 0} เคส • เวลาปิดเฉลี่ย ${insights.avg_close_readable || "0 ชั่วโมง"}`,
+    subheadline: `ยังมี ${summary.delayed_cases || 0} เคสล่าช้า • เคสด่วนค้าง ${summary.followup_urgent_cases || summary.urgent_cases || 0} เคส • Auto Assign ${autoAssignSummary.total || 0} เคส • เวลาปิดเฉลี่ย ${insights.avg_close_readable || "0 ชั่วโมง"}`,
     tone: (summary.delayed_cases || 0) > 0 || (summary.followup_urgent_cases || 0) > 0 ? "warning" : "good"
   };
 
@@ -4862,6 +5249,7 @@ async function getDashboardReportData(days = 7) {
     recent_cases: recentCases,
     urgent_cases: urgentOpenCases,
     in_progress_cases: inProgressCases,
+    auto_assign_summary: autoAssignSummary,
     operational_tables: {
       recent_cases: recentCases,
       urgent_open_cases: urgentOpenCases,
@@ -7007,6 +7395,27 @@ app.get("/api/alerts", async (req, res) => {
 });
 
 
+
+
+// ===== PATCH: /api/auto-assign/summary =====
+app.get("/api/auto-assign/summary", async (req, res) => {
+  try {
+    const days = Math.max(1, Math.min(Number(req.query.days || 7), 30));
+    const summary = await getAutoAssignSummary(days);
+    return safeJson(res, {
+      success: true,
+      summary
+    });
+  } catch (err) {
+    console.error("[AUTO_ASSIGN_SUMMARY_ERROR]", err);
+    return safeJson(res, {
+      success: true,
+      summary: { total: 0, critical: 0, high: 0, recent: [] },
+      fallback: true
+    });
+  }
+});
+
 // ===== PATCH: /api/executive/decision-board =====
 app.get("/api/executive/decision-board", async (req, res) => {
   try {
@@ -7017,6 +7426,7 @@ app.get("/api/executive/decision-board", async (req, res) => {
       success: true,
       cases: board.cases || [],
       alerts: board.alerts || [],
+      auto_assign_summary: board.auto_assign_summary || { total: 0, critical: 0, high: 0, recent: [] },
     });
 
   } catch (err) {
@@ -7026,6 +7436,7 @@ app.get("/api/executive/decision-board", async (req, res) => {
       success: true,
       cases: [],
       alerts: [],
+      auto_assign_summary: { total: 0, critical: 0, high: 0, recent: [] },
       fallback: true,
     });
   }
@@ -7283,6 +7694,121 @@ async function getCommandCenterAlerts() {
   return buildSmartAlerts(rows);
 }
 
+
+
+async function getCommandCenterCommandQueue(limit = 8) {
+  const rows = await getCommandCenterRows(300);
+  const queue = [];
+  const urgentOpen = filterUrgentOpenCases(rows);
+  const delayed = filterDelayedCases(rows);
+  const unassigned = rows.filter((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return !assigned && ["new", "in_progress"].includes(status);
+  });
+
+  urgentOpen.slice(0, limit).forEach((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    queue.push({
+      type: assigned ? "urgent_followup" : "assign_now",
+      severity: assigned ? "high" : "critical",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: row.assigned_to || null,
+      action_text: assigned ? "ติดตามเคสด่วนทันที" : "มอบหมายผู้รับผิดชอบด่วน",
+      reason: assigned ? "เป็นเคสด่วนที่ยังเปิดอยู่" : "เป็นเคสด่วนและยังไม่มีผู้รับผิดชอบ"
+    });
+  });
+
+  delayed.filter((row) => !queue.some((item) => item.case_id === row.id)).slice(0, limit).forEach((row) => {
+    queue.push({
+      type: "delayed_followup",
+      severity: "medium",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: row.assigned_to || null,
+      action_text: "เร่งติดตามเคสล่าช้า",
+      reason: "เคสยังไม่ปิดและค้างเกินเกณฑ์"
+    });
+  });
+
+  unassigned.filter((row) => !queue.some((item) => item.case_id === row.id)).slice(0, limit).forEach((row) => {
+    queue.push({
+      type: "assign_owner",
+      severity: "medium",
+      case_id: row.id,
+      case_code: row.case_code,
+      full_name: row.full_name,
+      location: row.location,
+      status: row.status,
+      priority: row.priority,
+      assigned_to: null,
+      action_text: "มอบหมายผู้รับผิดชอบ",
+      reason: "เคสยังไม่มีผู้รับผิดชอบ"
+    });
+  });
+
+  return queue.slice(0, limit);
+}
+
+async function getCommandCenterWorkload() {
+  const rows = await getCommandCenterRows(500);
+  const openRows = rows.filter((row) => {
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return ["new", "in_progress"].includes(status);
+  });
+  const map = new Map();
+  openRows.forEach((row) => {
+    const key = String(row.assigned_to || "").trim() || "ยังไม่มีผู้รับผิดชอบ";
+    const bucket = map.get(key) || {
+      assignee: key,
+      total_open_cases: 0,
+      urgent_cases: 0,
+      new_cases: 0,
+      in_progress_cases: 0,
+    };
+    bucket.total_open_cases += 1;
+    if (String(row.priority || "").trim().toLowerCase() === "urgent") bucket.urgent_cases += 1;
+    const status = String(row.status || "").trim().toLowerCase();
+    if (status === "new") bucket.new_cases += 1;
+    if (status === "in_progress" || status === "progress") bucket.in_progress_cases += 1;
+    map.set(key, bucket);
+  });
+  return Array.from(map.values()).sort((a, b) => b.total_open_cases - a.total_open_cases).slice(0, 10);
+}
+
+async function getCommandCenterUnassigned(limit = 10) {
+  const rows = await getCommandCenterRows(300);
+  return rows.filter((row) => {
+    const assigned = String(row.assigned_to || "").trim();
+    let status = String(row.status || "").trim().toLowerCase();
+    if (status === "progress") status = "in_progress";
+    return !assigned && ["new", "in_progress"].includes(status);
+  }).slice(0, limit);
+}
+
+async function getCommandCenterSystemHealth() {
+  const recentAlerts = await getCommandCenterAlerts();
+  const autoAssignEnabled = typeof processAutoAssign === "function";
+  return {
+    stream_ready: true,
+    alert_engine_ready: recentAlerts.length >= 0,
+    auto_assign_ready: autoAssignEnabled,
+    team_group_ready: Boolean(getEffectiveTeamGroupId()),
+    status_text: autoAssignEnabled ? "ระบบพร้อมสั่งการและติดตามสด" : "ระบบพร้อมติดตามสด แต่ Auto Assign ยังไม่ active"
+  };
+}
+
 app.get("/command-center", checkDashboardAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "command-center.html"));
 });
@@ -7329,6 +7855,49 @@ app.get("/api/command-center/activity", checkDashboardAuth, async (req, res) => 
     res.json({ ok: true, data });
   } catch (error) {
     console.error("COMMAND CENTER ACTIVITY ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+
+app.get("/api/command-center/command-queue", checkDashboardAuth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "8", 10), 20);
+    const data = await getCommandCenterCommandQueue(limit);
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER QUEUE ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/workload", checkDashboardAuth, async (req, res) => {
+  try {
+    const data = await getCommandCenterWorkload();
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER WORKLOAD ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/unassigned", checkDashboardAuth, async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit || "10", 10), 30);
+    const data = await getCommandCenterUnassigned(limit);
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER UNASSIGNED ERROR:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get("/api/command-center/system-health", checkDashboardAuth, async (req, res) => {
+  try {
+    const data = await getCommandCenterSystemHealth();
+    res.json({ ok: true, data });
+  } catch (error) {
+    console.error("COMMAND CENTER SYSTEM HEALTH ERROR:", error);
     res.status(500).json({ ok: false, error: error.message });
   }
 });
@@ -7865,428 +8434,6 @@ app.get("/debug/push-team-test", async (req, res) => {
     });
   }
 });
-
-
-/* =========================
-   DONATION PHASE 2 (ADD ONLY / GOLDEN SAFE)
-========================= */
-const DONATION_SLIP_BUCKET = process.env.DONATION_SLIP_BUCKET || 'slips';
-const DONATION_QR_IMAGE = process.env.DONATION_QR_IMAGE || '';
-const DONATION_PRESET_VALUES = [100, 300, 500];
-
-function donationMoney(value) {
-  return Number(value || 0);
-}
-
-function mapDonationStatusLabel(status = '') {
-  const s = String(status || '').trim().toLowerCase();
-  if (s === 'approved') return 'approved';
-  if (s === 'rejected') return 'rejected';
-  return 'pending';
-}
-
-function normalizeDonationName(row = {}) {
-  if (row.is_anonymous) return 'ผู้ไม่ประสงค์เอ่ยนาม';
-  return String(row.donor_name || '').trim() || 'ไม่ระบุชื่อ';
-}
-
-async function getDonationProjects() {
-  const { data, error } = await supabase
-    .from('donation_projects')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
-    .order('created_at', { ascending: true });
-  if (error) throw error;
-  return Array.isArray(data) ? data : [];
-}
-
-async function getDonationProjectBySlug(projectSlug = '') {
-  const slug = String(projectSlug || '').trim();
-  if (!slug) return null;
-  const { data, error } = await supabase
-    .from('donation_projects')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle();
-  if (error) throw error;
-  return data || null;
-}
-
-async function getDonationCaseByKey(caseKey = '') {
-  const key = String(caseKey || '').trim();
-  if (!key) return null;
-  const numericId = /^\d+$/.test(key) ? Number(key) : null;
-  let query = supabase
-    .from('donation_cases')
-    .select('*, donation_projects(title, slug)')
-    .limit(1);
-
-  if (numericId !== null) {
-    query = query.eq('id', numericId);
-  } else {
-    query = query.or(`slug.eq.${key},case_code.eq.${key}`);
-  }
-
-  const { data, error } = await query.maybeSingle();
-  if (error) throw error;
-  return data || null;
-}
-
-async function getDonationCasesByProjectSlug(projectSlug = '') {
-  const project = await getDonationProjectBySlug(projectSlug);
-  if (!project) return [];
-  const { data, error } = await supabase
-    .from('donation_cases')
-    .select('*')
-    .eq('project_id', project.id)
-    .order('created_at', { ascending: true });
-  if (error) throw error;
-  return Array.isArray(data) ? data : [];
-}
-
-async function getDonationRecentByCase(caseId, limit = 10) {
-  const safeLimit = Math.min(Math.max(Number(limit || 10), 1), 50);
-  const { data, error } = await supabase
-    .from('donations')
-    .select('id, donor_name, is_anonymous, amount, payment_status, created_at, slip_url')
-    .eq('case_id', caseId)
-    .order('created_at', { ascending: false })
-    .limit(safeLimit);
-  if (error) throw error;
-  return (data || []).map((row) => ({
-    ...row,
-    donor_name: normalizeDonationName(row),
-    payment_status: mapDonationStatusLabel(row.payment_status)
-  }));
-}
-
-async function getDonationDashboardData() {
-  const projects = await getDonationProjects();
-  const { data: donations, error: donationError } = await supabase
-    .from('donations')
-    .select('id, donor_name, is_anonymous, amount, payment_status, created_at, case_id');
-  if (donationError) throw donationError;
-
-  const { data: cases, error: caseError } = await supabase
-    .from('donation_cases')
-    .select('id, title, project_id');
-  if (caseError) throw caseError;
-
-  const rows = Array.isArray(donations) ? donations : [];
-  const approvedRows = rows.filter((row) => String(row.payment_status || '').toLowerCase() === 'approved');
-  const caseMap = new Map((cases || []).map((item) => [item.id, item]));
-
-  const activeCaseIds = new Set(rows.map((row) => row.case_id).filter(Boolean));
-  const summary = {
-    total_amount: approvedRows.reduce((sum, row) => sum + donationMoney(row.amount), 0),
-    donations_count: rows.length,
-    projects_count: projects.length,
-    active_cases_count: activeCaseIds.size
-  };
-
-  const projectSummary = projects.map((project) => {
-    const projectRows = approvedRows.filter((row) => caseMap.get(row.case_id)?.project_id === project.id);
-    const caseCount = new Set(projectRows.map((row) => row.case_id).filter(Boolean)).size;
-    return {
-      project_id: project.id,
-      title: project.title,
-      slug: project.slug,
-      cases_count: caseCount,
-      amount_total: projectRows.reduce((sum, row) => sum + donationMoney(row.amount), 0)
-    };
-  });
-
-  const recent = rows
-    .slice()
-    .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
-    .slice(0, 20)
-    .map((row) => ({
-      id: row.id,
-      donor_name: normalizeDonationName(row),
-      amount: donationMoney(row.amount),
-      payment_status: mapDonationStatusLabel(row.payment_status),
-      created_at: row.created_at,
-      case_id: row.case_id
-    }));
-
-  return {
-    summary,
-    project_summary: projectSummary,
-    recent_donations: recent
-  };
-}
-
-async function getDonationAdminList({ q = '', status = '', slip = '' } = {}) {
-  const { data, error } = await supabase
-    .from('donations')
-    .select(`
-      id,
-      donor_name,
-      is_anonymous,
-      amount,
-      slip_url,
-      payment_status,
-      note,
-      created_at,
-      case_id,
-      donation_cases ( id, title, case_code, province )
-    `)
-    .order('created_at', { ascending: false })
-    .limit(500);
-  if (error) throw error;
-  let rows = (data || []).map((row) => ({
-    ...row,
-    donor_name: normalizeDonationName(row),
-    payment_status: mapDonationStatusLabel(row.payment_status)
-  }));
-
-  const keyword = String(q || '').trim().toLowerCase();
-  if (keyword) {
-    rows = rows.filter((row) => [
-      row.donor_name,
-      row.amount,
-      row.payment_status,
-      row?.donation_cases?.title,
-      row?.donation_cases?.case_code,
-      row?.donation_cases?.province
-    ].join(' ').toLowerCase().includes(keyword));
-  }
-
-  if (status) {
-    const wanted = String(status).trim().toLowerCase();
-    rows = rows.filter((row) => String(row.payment_status || '').toLowerCase() === wanted);
-  }
-
-  if (slip === 'has') rows = rows.filter((row) => String(row.slip_url || '').trim());
-  if (slip === 'none') rows = rows.filter((row) => !String(row.slip_url || '').trim());
-
-  return rows;
-}
-
-async function uploadDonationSlipFile(file) {
-  if (!file || !file.buffer || !file.originalname) return null;
-  const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
-  const fileName = `donations/${new Date().toISOString().slice(0, 10)}/${uuidv4()}${ext}`;
-  const { error } = await supabase.storage
-    .from(DONATION_SLIP_BUCKET)
-    .upload(fileName, file.buffer, {
-      contentType: file.mimetype || 'application/octet-stream',
-      upsert: false
-    });
-  if (error) throw error;
-  const { data } = supabase.storage.from(DONATION_SLIP_BUCKET).getPublicUrl(fileName);
-  return data?.publicUrl || null;
-}
-
-async function updateDonationCaseRaisedAmount(caseId, amountDelta) {
-  const donationCase = await getDonationCaseByKey(String(caseId));
-  if (!donationCase) return null;
-  const currentAmount = donationMoney(donationCase.raised_amount);
-  const nextAmount = Math.max(0, currentAmount + donationMoney(amountDelta));
-  const { data, error } = await supabase
-    .from('donation_cases')
-    .update({ raised_amount: nextAmount })
-    .eq('id', donationCase.id)
-    .select('*')
-    .single();
-  if (error) throw error;
-  return data;
-}
-
-app.get('/donate-projects', (req, res) => {
-  res.sendFile(path.join(__dirname, 'donate-projects.html'));
-});
-
-app.get('/donate-cases', (req, res) => {
-  res.sendFile(path.join(__dirname, 'donate-cases.html'));
-});
-
-app.get('/donate-form', (req, res) => {
-  res.sendFile(path.join(__dirname, 'donate-form.html'));
-});
-
-app.get('/donate-dashboard', checkDashboardAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'donate-dashboard.html'));
-});
-
-app.get('/donate-admin', checkDashboardAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, 'donate-admin.html'));
-});
-
-app.get('/api/donations/projects', async (req, res) => {
-  try {
-    const items = await getDonationProjects();
-    return res.json({ ok: true, items, presets: DONATION_PRESET_VALUES, qr_image: DONATION_QR_IMAGE });
-  } catch (error) {
-    console.error('DONATION PROJECTS ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load projects failed' });
-  }
-});
-
-app.get('/api/donations/projects/:slug/cases', async (req, res) => {
-  try {
-    const project = await getDonationProjectBySlug(req.params.slug || '');
-    if (!project) return res.status(404).json({ ok: false, error: 'project not found' });
-    const items = await getDonationCasesByProjectSlug(project.slug);
-    return res.json({ ok: true, project, items });
-  } catch (error) {
-    console.error('DONATION CASES ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load cases failed' });
-  }
-});
-
-app.get('/api/donations/cases/:caseKey', async (req, res) => {
-  try {
-    const item = await getDonationCaseByKey(req.params.caseKey || '');
-    if (!item) return res.status(404).json({ ok: false, error: 'case not found' });
-    return res.json({ ok: true, item, presets: DONATION_PRESET_VALUES, qr_image: DONATION_QR_IMAGE });
-  } catch (error) {
-    console.error('DONATION CASE DETAIL ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load case failed' });
-  }
-});
-
-app.get('/api/donations/cases/:caseKey/recent', async (req, res) => {
-  try {
-    const item = await getDonationCaseByKey(req.params.caseKey || '');
-    if (!item) return res.status(404).json({ ok: false, error: 'case not found' });
-    const items = await getDonationRecentByCase(item.id, req.query.limit || 10);
-    return res.json({ ok: true, items });
-  } catch (error) {
-    console.error('DONATION RECENT ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load recent donations failed' });
-  }
-});
-
-app.post('/api/donations/submit', upload.single('slip'), async (req, res) => {
-  try {
-    const caseKey = String(req.body.case_id || req.body.caseId || req.body.case_key || '').trim();
-    const amount = donationMoney(req.body.amount);
-    const donorName = String(req.body.donor_name || '').trim();
-    const isAnonymous = String(req.body.is_anonymous || '').toLowerCase() === 'true' || req.body.is_anonymous === '1' || req.body.is_anonymous === true || req.body.is_anonymous === 'on';
-    const note = String(req.body.note || '').trim() || null;
-
-    if (!caseKey) return res.status(400).json({ ok: false, error: 'missing case_id' });
-    if (!amount || amount <= 0) return res.status(400).json({ ok: false, error: 'invalid amount' });
-
-    const donationCase = await getDonationCaseByKey(caseKey);
-    if (!donationCase) return res.status(404).json({ ok: false, error: 'case not found' });
-
-    let slipUrl = null;
-    if (req.file) {
-      slipUrl = await uploadDonationSlipFile(req.file);
-    }
-
-    const insertPayload = {
-      case_id: donationCase.id,
-      donor_name: donorName || null,
-      is_anonymous: isAnonymous,
-      amount,
-      slip_url: slipUrl,
-      payment_status: 'pending',
-      note
-    };
-
-    const { data, error } = await supabase
-      .from('donations')
-      .insert([insertPayload])
-      .select('*')
-      .single();
-    if (error) throw error;
-
-    try {
-      broadcastSse('donation_created', {
-        donation_id: data.id,
-        case_id: donationCase.id,
-        case_code: donationCase.case_code,
-        amount,
-        donor_name: isAnonymous ? 'ผู้ไม่ประสงค์เอ่ยนาม' : (donorName || 'ไม่ระบุชื่อ')
-      });
-    } catch (sseErr) {
-      console.warn('broadcast donation_created failed:', sseErr?.message || sseErr);
-    }
-
-    return res.json({ ok: true, item: data, message: 'รับข้อมูลการบริจาคแล้ว กรุณารอตรวจสอบ' });
-  } catch (error) {
-    console.error('DONATION SUBMIT ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'submit donation failed' });
-  }
-});
-
-app.get('/api/donations/dashboard', checkDashboardAuth, async (req, res) => {
-  try {
-    const data = await getDonationDashboardData();
-    return res.json({ ok: true, data });
-  } catch (error) {
-    console.error('DONATION DASHBOARD ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load donation dashboard failed' });
-  }
-});
-
-app.get('/api/donations/admin-list', checkDashboardAuth, async (req, res) => {
-  try {
-    const items = await getDonationAdminList({
-      q: req.query.q || '',
-      status: req.query.status || '',
-      slip: req.query.slip || ''
-    });
-    return res.json({ ok: true, items });
-  } catch (error) {
-    console.error('DONATION ADMIN LIST ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'load donation admin list failed' });
-  }
-});
-
-app.post('/api/donations/:id/status', checkDashboardAuth, async (req, res) => {
-  try {
-    const donationId = Number(req.params.id || 0);
-    const nextStatus = mapDonationStatusLabel(req.body.status || 'pending');
-    if (!donationId) return res.status(400).json({ ok: false, error: 'invalid donation id' });
-
-    const { data: currentRow, error: currentError } = await supabase
-      .from('donations')
-      .select('*')
-      .eq('id', donationId)
-      .single();
-    if (currentError) throw currentError;
-
-    const prevStatus = mapDonationStatusLabel(currentRow.payment_status);
-    if (prevStatus !== nextStatus) {
-      if (prevStatus === 'approved' && nextStatus !== 'approved') {
-        await updateDonationCaseRaisedAmount(currentRow.case_id, -donationMoney(currentRow.amount));
-      }
-      if (prevStatus !== 'approved' && nextStatus === 'approved') {
-        await updateDonationCaseRaisedAmount(currentRow.case_id, donationMoney(currentRow.amount));
-      }
-    }
-
-    const { data, error } = await supabase
-      .from('donations')
-      .update({ payment_status: nextStatus })
-      .eq('id', donationId)
-      .select('*')
-      .single();
-    if (error) throw error;
-
-    try {
-      broadcastSse('donation_status_updated', {
-        donation_id: data.id,
-        case_id: data.case_id,
-        status: nextStatus,
-        amount: donationMoney(data.amount)
-      });
-    } catch (sseErr) {
-      console.warn('broadcast donation_status_updated failed:', sseErr?.message || sseErr);
-    }
-
-    return res.json({ ok: true, item: data });
-  } catch (error) {
-    console.error('DONATION STATUS UPDATE ERROR:', error);
-    return res.status(500).json({ ok: false, error: error.message || 'update donation status failed' });
-  }
-});
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log("✅ Server started on port " + PORT);
 });

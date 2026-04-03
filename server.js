@@ -4391,6 +4391,27 @@ const donationFallbackText = [
     type: "text",
     text:
       "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
+      `1) ซากาตเพื่อผู้ยากไร้\n${BASE_URL}/donate-cases.html?project=zakat\n\n` +
+      `2) การศึกษา\n${BASE_URL}/donate-cases.html?project=education\n\n` +
+      `3) ที่อยู่อาศัย\n${BASE_URL}/donate-form-promax.html?project=housing\n\n` +
+      `4) ภัยพิบัติ\n${BASE_URL}/donate-cases.html?project=disaster`
+  },
+  {
+    type: "text",
+    text:
+      "โครงการเพิ่มเติม\n\n" +
+      `5) อาสาพามัยยิดกลับบ้าน\n${BASE_URL}/donate-cases.html?project=transport\n\n` +
+      `6) เด็กกำพร้า\n${BASE_URL}/donate-cases.html?project=orphan\n\n` +
+      `7) มูลนิธิคนช่วยฅน\n${BASE_URL}/donate-projects.html`
+  },
+];  },
+};
+
+const donationFallbackText = [
+  {
+    type: "text",
+    text:
+      "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
       "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
       "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
       "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +

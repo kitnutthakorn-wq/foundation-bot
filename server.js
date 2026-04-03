@@ -4426,7 +4426,8 @@ const donationFallbackText = [
       "7) มูลนิธิ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation",
   },
 ];
-
+  },
+};
 /* =========================
    MENU
 ========================= */

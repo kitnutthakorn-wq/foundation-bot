@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard มูลนิธิ | Donation ProMax</title>
+  <style>
+    :root{
+      --bg:#edf2f5;--card:#ffffff;--line:#dbe3ea;--text:#16324f;--muted:#6b7280;
+      --brand:#19a84a;--brand-dark:#0b7c86;--blue:#2f64e3;--warn:#f59e0b;--ok:#16a34a;
+      --shadow:0 12px 30px rgba(18,36,58,.10);--radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .page{max-width:1280px;margin:0 auto;padding:28px 18px 40px}
+    .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+    h1{margin:0;font-size:28px}
+    .sub{margin-top:8px;color:var(--muted)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border:none;border-radius:12px;background:var(--brand);color:#fff;text-decoration:none;font-weight:800;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--text);border:1px solid var(--line)}
+    .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:24px}
+    .card{background:var(--card);border:1px solid rgba(219,227,234,.85);border-radius:22px;box-shadow:var(--shadow)}
+    .stat{padding:18px 18px 16px}
+    .stat-label{font-size:15px;color:#4b5563;margin-bottom:10px}
+    .stat-value{font-size:30px;font-weight:800}
+    .section-title{margin:0 0 14px;font-size:18px}
+    .panel{padding:0 0 6px}
+    .panel-head{padding:18px 18px 0}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:14px 12px;border-bottom:1px solid #edf2f7;font-size:15px;vertical-align:top}
+    th{font-size:14px;color:#374151}
+    .badge{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}
+    .approved{background:#dcfce7;color:#166534}
+    .pending{background:#fef3c7;color:#92400e}
+    .rejected{background:#fee2e2;color:#b91c1c}
+    .empty{padding:22px;text-align:center;color:var(--muted)}
+    @media (max-width:1024px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:640px){
+      .page{padding:16px 10px 24px}
+      h1{font-size:22px}
+      .grid4{grid-template-columns:1fr}
+      .stat-value{font-size:26px}
+      th,td{padding:12px 10px;font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <h1>Dashboard มูลนิธิ</h1>
+        <div class="sub">สรุปข้อมูลการบริจาคและภาพรวมโครงการสำหรับผู้ดูแลระบบ</div>
+      </div>
+      <div class="actions">
+        <a class="btn secondary" href="donate-projects.html">กลับหน้าเมนูบริจาค</a>
+        <a class="btn secondary" href="donate-admin.html">เปิดหน้าจัดการบริจาค</a>
+      </div>
+    </div>
+
+    <div class="grid4">
+      <div class="card stat"><div class="stat-label">ยอดบริจาครวมทั้งหมด</div><div class="stat-value" id="totalAmount">-</div></div>
+      <div class="card stat"><div class="stat-label">จำนวนรายการบริจาค</div><div class="stat-value" id="totalDonations">-</div></div>
+      <div class="card stat"><div class="stat-label">จำนวนโครงการหลัก</div><div class="stat-value" id="totalProjects">-</div></div>
+      <div class="card stat"><div class="stat-label">จำนวนเคสที่เปิดอยู่</div><div class="stat-value" id="activeCases">-</div></div>
+    </div>
+
+    <div class="card panel" style="margin-bottom:24px;">
+      <div class="panel-head"><h2 class="section-title">สรุปตามโครงการหลัก</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>โครงการ</th>
+              <th>จำนวนเคส</th>
+              <th>ยอดสะสม</th>
+            </tr>
+          </thead>
+          <tbody id="projectSummaryBody">
+            <tr><td colspan="3" class="empty">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-head"><h2 class="section-title">ผู้บริจาคล่าสุด</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ชื่อผู้บริจาค</th>
+              <th>จำนวนเงิน</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody id="recentDonationsBody">
+            <tr><td colspan="3" class="empty">กำลังโหลดข้อมูล...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<script src="mock-data.js"></script>
+<script>
+(function(){
+  const money = n => `${Number(n || 0).toLocaleString('th-TH')} บาท`;
+  const statusClass = s => String(s||'pending').toLowerCase();
+  const statusText = s => ({approved:'approved',pending:'pending',rejected:'rejected'}[String(s||'pending').toLowerCase()] || s || '-');
+
+  function buildDemoData(){
+    const projects = window.DONATION_PROJECTS || [];
+    const casesMap = window.DONATION_CASES || {};
+    const demoDonations = [
+      { donor_name:'KCK2', amount:15000, payment_status:'approved' },
+      { donor_name:'KCK_Test', amount:10000, payment_status:'approved' },
+      { donor_name:'ผู้ไม่ประสงค์เอ่ยนาม', amount:500, payment_status:'approved' },
+      { donor_name:'ผู้ไม่ประสงค์เอ่ยนาม', amount:10000, payment_status:'approved' },
+      { donor_name:'kck', amount:500, payment_status:'pending' },
+      { donor_name:'kck', amount:500, payment_status:'pending' },
+      { donor_name:'uyuu', amount:100, payment_status:'pending' }
+    ];
+
+    const projectSummary = projects.map(p => {
+      const list = casesMap[p.slug] || [];
+      const total = list.reduce((sum, item) => sum + Number(item.raised_amount || 0), 0);
+      return { title:p.title, cases_count:list.length, amount_total:total };
+    });
+
+    return {
+      summary:{
+        total_amount: demoDonations.filter(d => d.payment_status === 'approved').reduce((s,d)=>s+Number(d.amount||0),0),
+        donations_count: demoDonations.length,
+        projects_count: projects.length,
+        active_cases_count: Object.values(casesMap).flat().filter(c => (c.status || 'active') === 'active').length
+      },
+      project_summary: projectSummary,
+      recent_donations: demoDonations
+    };
+  }
+
+  async function loadDashboard(){
+    let data = null;
+    try {
+      const res = await fetch('/api/donations/dashboard', { credentials:'same-origin' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && (json.ok || json.success)) data = json.data || json;
+      }
+    } catch (_) {}
+    if (!data) data = buildDemoData();
+
+    document.getElementById('totalAmount').textContent = money(data.summary?.total_amount || 0);
+    document.getElementById('totalDonations').textContent = Number(data.summary?.donations_count || 0).toLocaleString('th-TH');
+    document.getElementById('totalProjects').textContent = Number(data.summary?.projects_count || 0).toLocaleString('th-TH');
+    document.getElementById('activeCases').textContent = Number(data.summary?.active_cases_count || 0).toLocaleString('th-TH');
+
+    const projectBody = document.getElementById('projectSummaryBody');
+    const projectRows = data.project_summary || [];
+    projectBody.innerHTML = projectRows.length ? projectRows.map(item => `
+      <tr>
+        <td>${item.title || '-'}</td>
+        <td>${Number(item.cases_count || 0).toLocaleString('th-TH')}</td>
+        <td>${money(item.amount_total || 0)}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="3" class="empty">ยังไม่มีข้อมูลโครงการ</td></tr>';
+
+    const recentBody = document.getElementById('recentDonationsBody');
+    const recentRows = data.recent_donations || [];
+    recentBody.innerHTML = recentRows.length ? recentRows.map(item => `
+      <tr>
+        <td>${item.is_anonymous ? 'ผู้ไม่ประสงค์เอ่ยนาม' : (item.donor_name || '-')}</td>
+        <td>${money(item.amount || 0)}</td>
+        <td><span class="badge ${statusClass(item.payment_status)}">${statusText(item.payment_status)}</span></td>
+      </tr>
+    `).join('') : '<tr><td colspan="3" class="empty">ยังไม่มีรายการบริจาค</td></tr>';
+  }
+
+  loadDashboard();
+})();
+</script>
+</body>
+</html>

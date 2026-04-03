@@ -4342,13 +4342,13 @@ const donationFlex = {
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
         "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-projects.html"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing"
       ),
       createProjectBubble(
         "การศึกษา",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education"
       ),
       createProjectBubble(
         "ที่อยู่อาศัย",

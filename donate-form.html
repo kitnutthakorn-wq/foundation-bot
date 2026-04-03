@@ -8,9 +8,9 @@
 <script>
 (async function(){
   const params = new URLSearchParams(location.search);
-  const caseKey = params.get('caseId') || '';
-  console.log("CASE ID FROM URL:", caseKey);
-  const projectSlug = params.get('project') || '';
+const caseKey = params.get('caseId') || '';
+const projectSlug = params.get('project') || '';
+console.log("CASE ID FROM URL:", caseKey);
   const money = n => `${Number(n || 0).toLocaleString('th-TH')} บาท`;
   const moneyNumber = n => Number(n || 0).toLocaleString('th-TH');
   const backLink = document.getElementById('backLink');

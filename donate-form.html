@@ -8,7 +8,8 @@
 <script>
 (async function(){
   const params = new URLSearchParams(location.search);
-  const caseKey = params.get('case') || '';
+  const caseKey = params.get('caseId') || '';
+  console.log("CASE ID FROM URL:", caseKey);
   const projectSlug = params.get('project') || '';
   const money = n => `${Number(n || 0).toLocaleString('th-TH')} บาท`;
   const moneyNumber = n => Number(n || 0).toLocaleString('th-TH');

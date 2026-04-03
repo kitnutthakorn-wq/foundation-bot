@@ -3956,13 +3956,13 @@ const donationFlex = {
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
         "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing"
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
       ),
       createProjectBubble(
         "การศึกษา",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img5.pic.in.th/file/secure-sv1/KCK2.png",
-        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education"
+        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
       ),
       createProjectBubble(
         "ที่อยู่อาศัย",
@@ -7890,46 +7890,6 @@ function normalizeDonationName(row = {}) {
   return String(row.donor_name || '').trim() || 'ไม่ระบุชื่อ';
 }
 
-
-function isUuidLike(value = '') {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || '').trim());
-}
-
-function pickDonationCaseForeignKey(row = {}) {
-  const candidates = [
-    row?.help_request_id,
-    row?.case_uuid,
-    row?.request_id,
-    row?.case_id,
-    row?.uuid,
-    row?.id
-  ];
-  const uuidValue = candidates.find((value) => isUuidLike(value));
-  if (uuidValue) return String(uuidValue).trim();
-  return row?.id ?? null;
-}
-
-async function getDonationCaseByColumn(columnName, value) {
-  try {
-    const { data, error } = await supabase
-      .from('donation_cases')
-      .select('*, donation_projects(title, slug)')
-      .eq(columnName, value)
-      .limit(1)
-      .maybeSingle();
-
-    if (error) {
-      console.warn(`DONATION CASE LOOKUP SKIP ${columnName}:`, error.message || error);
-      return null;
-    }
-
-    return data || null;
-  } catch (error) {
-    console.warn(`DONATION CASE LOOKUP CATCH ${columnName}:`, error.message || error);
-    return null;
-  }
-}
-
 async function getDonationProjects() {
   const { data, error } = await supabase
     .from('donation_projects')
@@ -7953,36 +7913,24 @@ async function getDonationProjectBySlug(projectSlug = '') {
   return data || null;
 }
 
-
 async function getDonationCaseByKey(caseKey = '') {
   const key = String(caseKey || '').trim();
   if (!key) return null;
-
   const numericId = /^\d+$/.test(key) ? Number(key) : null;
+  let query = supabase
+    .from('donation_cases')
+    .select('*, donation_projects(title, slug)')
+    .limit(1);
 
   if (numericId !== null) {
-    const numericCase = await getDonationCaseByColumn('id', numericId);
-    if (numericCase) return numericCase;
+    query = query.eq('id', numericId);
+  } else {
+    query = query.or(`slug.eq.${key},case_code.eq.${key}`);
   }
 
-  const directCase =
-    await getDonationCaseByColumn('slug', key) ||
-    await getDonationCaseByColumn('case_code', key);
-
-  if (directCase) return directCase;
-
-  if (isUuidLike(key)) {
-    const uuidCase =
-      await getDonationCaseByColumn('help_request_id', key) ||
-      await getDonationCaseByColumn('case_uuid', key) ||
-      await getDonationCaseByColumn('request_id', key) ||
-      await getDonationCaseByColumn('case_id', key) ||
-      await getDonationCaseByColumn('uuid', key);
-
-    if (uuidCase) return uuidCase;
-  }
-
-  return null;
+  const { data, error } = await query.maybeSingle();
+  if (error) throw error;
+  return data || null;
 }
 
 async function getDonationCasesByProjectSlug(projectSlug = '') {
@@ -7997,14 +7945,12 @@ async function getDonationCasesByProjectSlug(projectSlug = '') {
   return Array.isArray(data) ? data : [];
 }
 
-
 async function getDonationRecentByCase(caseId, limit = 10) {
   const safeLimit = Math.min(Math.max(Number(limit || 10), 1), 50);
   const { data, error } = await supabase
     .from('donations')
     .select('id, donor_name, is_anonymous, amount, payment_status, created_at, slip_url')
     .eq('case_id', caseId)
-    .eq('payment_status', 'approved')
     .order('created_at', { ascending: false })
     .limit(safeLimit);
   if (error) throw error;
@@ -8205,14 +8151,13 @@ app.get('/api/donations/cases/:caseKey/recent', async (req, res) => {
   try {
     const item = await getDonationCaseByKey(req.params.caseKey || '');
     if (!item) return res.status(404).json({ ok: false, error: 'case not found' });
-    const items = await getDonationRecentByCase(pickDonationCaseForeignKey(item), req.query.limit || 10);
+    const items = await getDonationRecentByCase(item.id, req.query.limit || 10);
     return res.json({ ok: true, items });
   } catch (error) {
     console.error('DONATION RECENT ERROR:', error);
     return res.status(500).json({ ok: false, error: error.message || 'load recent donations failed' });
   }
 });
-
 
 app.post('/api/donations/submit', upload.single('slip'), async (req, res) => {
   try {
@@ -8234,7 +8179,7 @@ app.post('/api/donations/submit', upload.single('slip'), async (req, res) => {
     }
 
     const insertPayload = {
-      case_id: pickDonationCaseForeignKey(donationCase),
+      case_id: donationCase.id,
       donor_name: donorName || null,
       is_anonymous: isAnonymous,
       amount,
@@ -8253,7 +8198,7 @@ app.post('/api/donations/submit', upload.single('slip'), async (req, res) => {
     try {
       broadcastSse('donation_created', {
         donation_id: data.id,
-        case_id: insertPayload.case_id,
+        case_id: donationCase.id,
         case_code: donationCase.case_code,
         amount,
         donor_name: isAnonymous ? 'ผู้ไม่ประสงค์เอ่ยนาม' : (donorName || 'ไม่ระบุชื่อ')

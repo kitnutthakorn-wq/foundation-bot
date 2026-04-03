@@ -8,43 +8,202 @@
 <script>
 (async function(){
   const params = new URLSearchParams(location.search);
-const caseKey = params.get('caseId') || '';
-const projectSlug = params.get('project') || '';
-console.log("CASE ID FROM URL:", caseKey);
+  const publicCaseKey = params.get('caseId') || '';
+  const projectSlug = params.get('project') || '';
+  const directCaseRef = params.get('caseRef') || '';
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
   const money = n => `${Number(n || 0).toLocaleString('th-TH')} บาท`;
   const moneyNumber = n => Number(n || 0).toLocaleString('th-TH');
   const backLink = document.getElementById('backLink');
   backLink.href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
+
   let currentCase = null;
-  function setAmount(value){ document.getElementById('amountInput').value = value || ''; document.getElementById('amountConfirm').value = value || ''; }
-  document.getElementById('applyAmountBtn').addEventListener('click', () => setAmount(document.getElementById('amountInput').value));
-  async function loadCase(){
-    const res = await fetch(`/api/donations/cases/${encodeURIComponent(caseKey)}`); const json = await res.json(); if (!res.ok || !json.ok) throw new Error(json.error || 'โหลดเคสไม่สำเร็จ');
-    currentCase = json.item; const item = currentCase; const percent = Math.max(0, Math.min(100, Math.round((Number(item.raised_amount||0)/Math.max(Number(item.target_amount||0),1))*100)));
-    document.getElementById('caseTitle').textContent = item.title || '-'; document.getElementById('provinceText').textContent = item.province || '-'; document.getElementById('moneyText').textContent = `ช่วยแล้ว ${moneyNumber(item.raised_amount)} / ${moneyNumber(item.target_amount)} บาท (${percent}%)`; document.getElementById('fillBar').style.width = `${percent}%`;
+  let backendCaseId = UUID_RE.test(directCaseRef) ? directCaseRef : (UUID_RE.test(publicCaseKey) ? publicCaseKey : '');
+  let latestCasePayload = null;
+
+  function setAmount(value){
+    document.getElementById('amountInput').value = value || '';
+    document.getElementById('amountConfirm').value = value || '';
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function pickUuid(source) {
+    const candidates = [
+      source?.case_uuid,
+      source?.case_id,
+      source?.help_request_id,
+      source?.request_id,
+      source?.uuid,
+      source?.id
+    ];
+    return candidates.find(value => UUID_RE.test(String(value || '').trim())) || '';
+  }
+
+  function isSameCase(item) {
+    const values = [
+      item?.id,
+      item?.case_id,
+      item?.case_code,
+      item?.slug,
+      item?.public_id,
+      item?.case_no
+    ].map(value => String(value || '').trim());
+    return values.includes(String(publicCaseKey).trim()) || (backendCaseId && values.includes(String(backendCaseId).trim()));
+  }
+
+  function renderCase(item, payload = {}) {
+    currentCase = item || null;
+    latestCasePayload = payload || latestCasePayload || {};
+
+    const percent = Math.max(0, Math.min(100, Math.round((Number(item?.raised_amount || 0) / Math.max(Number(item?.target_amount || 0), 1)) * 100)));
+    document.getElementById('caseTitle').textContent = item?.title || '-';
+    document.getElementById('provinceText').textContent = item?.province || '-';
+    document.getElementById('moneyText').textContent = `ช่วยแล้ว ${moneyNumber(item?.raised_amount)} / ${moneyNumber(item?.target_amount)} บาท (${percent}%)`;
+    document.getElementById('fillBar').style.width = `${percent}%`;
+
     const presetWrap = document.getElementById('presetButtons');
-    presetWrap.innerHTML = (json.presets || [100,300,500]).map(v => `<button class="preset" type="button" data-value="${v}">บริจาค ${v}</button>`).join('');
+    presetWrap.innerHTML = (payload.presets || [100,300,500]).map(v => `<button class="preset" type="button" data-value="${escapeHtml(v)}">บริจาค ${escapeHtml(v)}</button>`).join('');
     presetWrap.querySelectorAll('.preset').forEach(btn => btn.addEventListener('click', ()=>setAmount(btn.dataset.value)));
-    const qrImage = document.getElementById('qrImage'); const qrFallback = document.getElementById('qrFallback');
-    if (json.qr_image) { qrImage.src = json.qr_image; qrImage.style.display='inline-block'; qrFallback.style.display='none'; }
+
+    const qrImage = document.getElementById('qrImage');
+    const qrFallback = document.getElementById('qrFallback');
+    const qr = payload.qr_image || item?.qr_image || item?.qrCode || '';
+    if (qr) {
+      qrImage.src = qr;
+      qrImage.style.display = 'inline-block';
+      qrFallback.style.display = 'none';
+    } else {
+      qrImage.removeAttribute('src');
+      qrImage.style.display = 'none';
+      qrFallback.style.display = 'inline-flex';
+    }
   }
-  async function loadRecent(){
-    const res = await fetch(`/api/donations/cases/${encodeURIComponent(caseKey)}/recent?limit=8`); const json = await res.json(); const items = json.items || [];
-    document.getElementById('recentList').innerHTML = items.length ? items.map(item => `<div class="recent-item"><strong>${item.donor_name}</strong> — ${money(item.amount)}</div>`).join('') : '<div class="recent-item">ยังไม่มีผู้บริจาคล่าสุด</div>';
+
+  async function resolveCaseReferenceFromProject() {
+    if (!projectSlug) return null;
+    const res = await fetch(`/api/donations/projects/${encodeURIComponent(projectSlug)}/cases`);
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.error || 'โหลดรายการเคสไม่สำเร็จ');
+
+    const items = json.items || [];
+    const matched = items.find(isSameCase);
+    if (!matched) return null;
+
+    const resolvedUuid = pickUuid(matched);
+    if (resolvedUuid) backendCaseId = resolvedUuid;
+    return matched;
   }
-  function showMessage(type, text){ const el=document.getElementById('formMessage'); el.className=`message show ${type}`; el.textContent=text; }
+
+  async function loadCase() {
+    let detailError = null;
+
+    if (backendCaseId) {
+      try {
+        const res = await fetch(`/api/donations/cases/${encodeURIComponent(backendCaseId)}`);
+        const json = await res.json();
+        if (!res.ok || !json.ok) throw new Error(json.error || 'โหลดเคสไม่สำเร็จ');
+        renderCase(json.item, json);
+        return;
+      } catch (err) {
+        detailError = err;
+      }
+    }
+
+    const fallbackCase = await resolveCaseReferenceFromProject();
+    if (!fallbackCase) {
+      throw detailError || new Error('ไม่พบข้อมูลเคสที่ต้องการ');
+    }
+
+    renderCase(fallbackCase, latestCasePayload || { presets: [100,300,500] });
+
+    if (backendCaseId) {
+      const res = await fetch(`/api/donations/cases/${encodeURIComponent(backendCaseId)}`);
+      const json = await res.json();
+      if (res.ok && json.ok) {
+        renderCase(json.item, json);
+      }
+    }
+  }
+
+  async function loadRecent() {
+    if (!backendCaseId) {
+      document.getElementById('recentList').innerHTML = '<div class="recent-item">ยังไม่มีผู้บริจาคล่าสุด</div>';
+      return;
+    }
+
+    const res = await fetch(`/api/donations/cases/${encodeURIComponent(backendCaseId)}/recent?limit=8`);
+    const json = await res.json();
+    if (!res.ok || !json.ok) throw new Error(json.error || 'โหลดผู้บริจาคล่าสุดไม่สำเร็จ');
+
+    const items = json.items || [];
+    document.getElementById('recentList').innerHTML = items.length
+      ? items.map(item => `<div class="recent-item"><strong>${escapeHtml(item.donor_name || 'ผู้ไม่ประสงค์ออกนาม')}</strong> — ${money(item.amount)}</div>`).join('')
+      : '<div class="recent-item">ยังไม่มีผู้บริจาคล่าสุด</div>';
+  }
+
+  function showMessage(type, text){
+    const el = document.getElementById('formMessage');
+    el.className = `message show ${type}`;
+    el.textContent = text;
+  }
+
+  document.getElementById('applyAmountBtn').addEventListener('click', () => setAmount(document.getElementById('amountInput').value));
+
   document.getElementById('donationForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (!backendCaseId) {
+      showMessage('err', 'ยังไม่สามารถระบุเคสปลายทางได้');
+      return;
+    }
+
+    const amountValue = document.getElementById('amountConfirm').value || '0';
+    if (Number(amountValue) <= 0) {
+      showMessage('err', 'กรุณาระบุจำนวนเงินให้ถูกต้อง');
+      return;
+    }
+
     const fd = new FormData();
-    fd.append('case_id', caseKey);
+    fd.append('case_id', backendCaseId);
     fd.append('donor_name', document.getElementById('donorName').value || '');
     fd.append('is_anonymous', document.getElementById('anonymousCheck').checked ? 'true' : 'false');
-    fd.append('amount', document.getElementById('amountConfirm').value || '0');
+    fd.append('amount', amountValue);
     fd.append('note', document.getElementById('noteInput').value || '');
-    const slip = document.getElementById('slipInput').files[0]; if (slip) fd.append('slip', slip);
-    try { const res = await fetch('/api/donations/submit', { method:'POST', body:fd }); const json = await res.json(); if (!res.ok || !json.ok) throw new Error(json.error || 'ส่งข้อมูลไม่สำเร็จ'); showMessage('ok', json.message || 'รับข้อมูลการบริจาคแล้ว'); e.target.reset(); setAmount(''); await loadRecent(); }
-    catch (err) { console.error(err); showMessage('err', err.message || 'ส่งข้อมูลไม่สำเร็จ'); }
+
+    const slip = document.getElementById('slipInput').files[0];
+    if (slip) fd.append('slip', slip);
+
+    try {
+      const res = await fetch('/api/donations/submit', { method:'POST', body:fd });
+      const json = await res.json();
+      if (!res.ok || !json.ok) throw new Error(json.error || 'ส่งข้อมูลไม่สำเร็จ');
+      showMessage('ok', json.message || 'รับข้อมูลการบริจาคแล้ว');
+      e.target.reset();
+      setAmount('');
+      await loadRecent();
+      await loadCase();
+    } catch (err) {
+      console.error(err);
+      showMessage('err', err.message || 'ส่งข้อมูลไม่สำเร็จ');
+    }
   });
-  try { await loadCase(); await loadRecent(); } catch (err) { console.error(err); document.getElementById('caseTitle').textContent='โหลดข้อมูลไม่สำเร็จ'; showMessage('err', err.message || 'โหลดข้อมูลไม่สำเร็จ'); }
+
+  try {
+    await loadCase();
+    await loadRecent();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('caseTitle').textContent = 'โหลดข้อมูลไม่สำเร็จ';
+    showMessage('err', err.message || 'โหลดข้อมูลไม่สำเร็จ');
+  }
 })();
 </script></body></html>

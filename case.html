@@ -697,9 +697,11 @@ button:active{transform:translateY(0)}
   <div class="toast-wrap" id="toastWrap"></div>
  
   <script>
-    const params = new URLSearchParams(window.location.search);
-   const caseId = params.get("case_id") || params.get("case_code");
-    let eventSource = null;
+const params = new URLSearchParams(window.location.search);
+const caseId = params.get("id") || "";
+const caseCode = params.get("case_code") || "";
+    
+let eventSource = null;
 function statusThai(status) {
   const s = String(status || '').trim().toLowerCase();
 

@@ -273,87 +273,131 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const source = params.get("source") || "unknown";
-    const caseCode = params.get("case_code") || "";
-    const requesterName = params.get("requester_name") || "-";
-    const status = params.get("status") || "-";
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("source") || "unknown";
+  const caseCode = params.get("case_code") || "";
+  const requesterName = params.get("requester_name") || "-";
+  const status = params.get("status") || "-";
 
-    const sourceLabelMap = {
-      admin: "ADMIN DASHBOARD",
-      team: "TEAMWORK",
-      unknown: "ไม่ระบุ"
-    };
+  const sourceLabelMap = {
+    admin: "ADMIN DASHBOARD",
+    team: "TEAMWORK",
+    unknown: "ไม่ระบุ"
+  };
 
-    document.getElementById("sourceBadge").textContent = `SOURCE: ${sourceLabelMap[source] || source}`;
-    document.getElementById("sourceText").textContent = sourceLabelMap[source] || source;
-    document.getElementById("caseCodeText").textContent = caseCode || "-";
-    document.getElementById("requesterNameText").textContent = requesterName;
-    document.getElementById("statusText").textContent = status;
+  document.getElementById("sourceBadge").textContent = `SOURCE: ${sourceLabelMap[source] || source}`;
+  document.getElementById("sourceText").textContent = sourceLabelMap[source] || source;
+  document.getElementById("caseCodeText").textContent = caseCode || "-";
+  document.getElementById("requesterNameText").textContent = requesterName;
+  document.getElementById("statusText").textContent = status;
 
-    const workDateInput = document.getElementById("workDate");
-    if (!workDateInput.value) {
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-      const dd = String(now.getDate()).padStart(2, "0");
-      workDateInput.value = `${yyyy}-${mm}-${dd}`;
+  const workDateInput = document.getElementById("workDate");
+  if (!workDateInput.value) {
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    workDateInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  const fileInput = document.getElementById("workFiles");
+  const filePreview = document.getElementById("filePreview");
+
+  fileInput.addEventListener("change", () => {
+    const files = Array.from(fileInput.files || []);
+    if (!files.length) {
+      filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
+      return;
+    }
+    filePreview.innerHTML = files.map(file => {
+      const kb = Math.round(file.size / 1024);
+      return `• ${file.name} (${kb} KB)`;
+    }).join("<br>");
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.getElementById("uploadWorkForm").reset();
+    filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
+
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const dd = String(now.getDate()).padStart(2, "0");
+    workDateInput.value = `${yyyy}-${mm}-${dd}`;
+  });
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    if (document.referrer) {
+      history.back();
+      return;
+    }
+    if (source === "team") {
+      window.location.href = "/team.html";
+      return;
+    }
+    window.location.href = "/dashboard.html";
+  });
+
+  document.getElementById("uploadWorkForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!caseCode) {
+      alert("❌ กรุณาเลือกเคสก่อนอัปโหลดงาน");
+      return;
     }
 
-    const fileInput = document.getElementById("workFiles");
-    const filePreview = document.getElementById("filePreview");
+    const workType = document.getElementById("workType").value;
+    if (!workType) {
+      alert("⚠️ กรุณาเลือกประเภทงาน");
+      return;
+    }
 
-    fileInput.addEventListener("change", () => {
-      const files = Array.from(fileInput.files || []);
-      if (!files.length) {
-        filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
-        return;
-      }
-      filePreview.innerHTML = files.map(file => {
-        const kb = Math.round(file.size / 1024);
-        return `• ${file.name} (${kb} KB)`;
-      }).join("<br>");
-    });
+    const title = document.getElementById("workTitle").value.trim();
+    if (!title) {
+      alert("⚠️ กรุณากรอกหัวข้องาน");
+      return;
+    }
 
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      document.getElementById("uploadWorkForm").reset();
-      filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const oldText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "กำลังบันทึก...";
 
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, "0");
-      const dd = String(now.getDate()).padStart(2, "0");
-      workDateInput.value = `${yyyy}-${mm}-${dd}`;
-    });
-
-    document.getElementById("backBtn").addEventListener("click", () => {
-      if (document.referrer) {
-        history.back();
-        return;
-      }
-      if (source === "team") {
-        window.location.href = "/team.html";
-        return;
-      }
-      window.location.href = "/dashboard.html";
-    });
-
-    document.getElementById("uploadWorkForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
+    try {
       const payload = {
         source,
         case_code: caseCode,
-        work_type: document.getElementById("workType").value,
+        work_type: workType,
         work_date: document.getElementById("workDate").value,
-        title: document.getElementById("workTitle").value.trim(),
+        title,
         description: document.getElementById("workDescription").value.trim(),
         internal_note: document.getElementById("internalNote").value.trim()
       };
 
-      console.log("UPLOAD WORK PAYLOAD:", payload);
-      alert("บันทึกงานสำเร็จ (โหมดต้นแบบ) — ขั้นถัดไปจะเชื่อม API จริง");
-    });
-  </script>
-</body>
+      const res = await fetch("/api/work-uploads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
+      }
+
+      alert("✅ บันทึกงานสำเร็จ");
+
+      window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
+    } catch (err) {
+      console.error("upload work error:", err);
+      alert(`❌ ${err.message || "เกิดข้อผิดพลาด"}`);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = oldText;
+    }
+  });
+</script></body>
 </html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>อัปโหลดงาน | KCK</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#16324f;
+      --muted:#6b7280;
+      --line:#dbe3ea;
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --success:#1f8f4d;
+      --warn:#f59e0b;
+      --danger:#dc2626;
+      --shadow:0 12px 28px rgba(15,23,42,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .page{
+      max-width:980px;
+      margin:0 auto;
+      padding:20px 16px 40px;
+    }
+    .topbar{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .title-wrap h1{
+      margin:0;
+      font-size:28px;
+    }
+    .title-wrap p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      background:#e8f4f5;
+      color:var(--brand);
+      border:1px solid #c9e7ea;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      margin-bottom:16px;
+    }
+    .section-title{
+      margin:0 0 14px;
+      font-size:18px;
+      font-weight:700;
+    }
+    .case-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    .mini-box{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fafcff;
+    }
+    .mini-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .mini-value{
+      font-size:15px;
+      font-weight:700;
+      word-break:break-word;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .field.full{
+      grid-column:1 / -1;
+    }
+    label{
+      font-size:14px;
+      font-weight:700;
+    }
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+    textarea{
+      min-height:120px;
+      resize:vertical;
+    }
+    input[type="file"]{
+      padding:10px;
+      background:#fbfdff;
+    }
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+    }
+    .btn-primary{
+      background:var(--brand);
+      color:#fff;
+    }
+    .btn-secondary{
+      background:#eef2f7;
+      color:var(--brand-dark);
+      border:1px solid var(--line);
+    }
+    .btn-success{
+      background:var(--success);
+      color:#fff;
+    }
+    .preview-box{
+      margin-top:10px;
+      padding:12px;
+      border:1px dashed #c8d4e3;
+      border-radius:12px;
+      background:#fbfdff;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media (max-width: 720px){
+      .case-grid,
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+      .title-wrap h1{
+        font-size:22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="title-wrap">
+        <h1>อัปโหลดงาน</h1>
+        <p>เพิ่มผลงาน รูปภาพ เอกสาร หรือบันทึกภาคสนามผูกกับเคส</p>
+      </div>
+      <div id="sourceBadge" class="badge">SOURCE: -</div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">ข้อมูลอ้างอิงเคส</h2>
+      <div class="case-grid">
+        <div class="mini-box">
+          <div class="mini-label">เลขเคส</div>
+          <div id="caseCodeText" class="mini-value">-</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">ต้นทาง</div>
+          <div id="sourceText" class="mini-value">-</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">ชื่อผู้ขอความช่วยเหลือ</div>
+          <div id="requesterNameText" class="mini-value">-</div>
+        </div>
+        <div class="mini-box">
+          <div class="mini-label">สถานะปัจจุบัน</div>
+          <div id="statusText" class="mini-value">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">ฟอร์มอัปโหลดงาน</h2>
+
+      <form id="uploadWorkForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="workType">ประเภทงาน</label>
+            <select id="workType" required>
+              <option value="">-- เลือกประเภทงาน --</option>
+              <option value="before_help">รูปก่อนช่วยเหลือ</option>
+              <option value="during_help">ระหว่างดำเนินการ</option>
+              <option value="after_help">หลังช่วยเหลือ</option>
+              <option value="field_report">รายงานภาคสนาม</option>
+              <option value="document">เอกสารประกอบ</option>
+              <option value="other">อื่น ๆ</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="workDate">วันที่ดำเนินการ</label>
+            <input type="date" id="workDate" />
+          </div>
+
+          <div class="field full">
+            <label for="workTitle">หัวข้องาน</label>
+            <input type="text" id="workTitle" placeholder="เช่น ลงพื้นที่ตรวจสอบสภาพบ้าน / ส่งมอบถุงยังชีพ" required />
+          </div>
+
+          <div class="field full">
+            <label for="workDescription">รายละเอียดงาน</label>
+            <textarea id="workDescription" placeholder="อธิบายสิ่งที่ดำเนินการ ผลลัพธ์ หรือข้อมูลเพิ่มเติม"></textarea>
+          </div>
+
+          <div class="field full">
+            <label for="workFiles">แนบไฟล์</label>
+            <input type="file" id="workFiles" multiple accept="image/*,.pdf,.doc,.docx" />
+            <div class="hint">แนะนำ: รูปภาพไม่เกิน 1MB ต่อไฟล์ / เอกสาร PDF ไม่เกิน 3MB</div>
+            <div id="filePreview" class="preview-box">ยังไม่ได้เลือกไฟล์</div>
+          </div>
+
+          <div class="field full">
+            <label for="internalNote">หมายเหตุเพิ่มเติม</label>
+            <textarea id="internalNote" placeholder="ใช้สำหรับหมายเหตุเสริม หรือโน้ตภายใน"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-success">บันทึกงาน</button>
+          <button type="button" id="resetBtn" class="btn btn-secondary">ล้างฟอร์ม</button>
+          <button type="button" id="backBtn" class="btn btn-primary">กลับหน้าก่อนหน้า</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get("source") || "unknown";
+    const caseCode = params.get("case_code") || "";
+    const requesterName = params.get("requester_name") || "-";
+    const status = params.get("status") || "-";
+
+    const sourceLabelMap = {
+      admin: "ADMIN DASHBOARD",
+      team: "TEAMWORK",
+      unknown: "ไม่ระบุ"
+    };
+
+    document.getElementById("sourceBadge").textContent = `SOURCE: ${sourceLabelMap[source] || source}`;
+    document.getElementById("sourceText").textContent = sourceLabelMap[source] || source;
+    document.getElementById("caseCodeText").textContent = caseCode || "-";
+    document.getElementById("requesterNameText").textContent = requesterName;
+    document.getElementById("statusText").textContent = status;
+
+    const workDateInput = document.getElementById("workDate");
+    if (!workDateInput.value) {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      workDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    const fileInput = document.getElementById("workFiles");
+    const filePreview = document.getElementById("filePreview");
+
+    fileInput.addEventListener("change", () => {
+      const files = Array.from(fileInput.files || []);
+      if (!files.length) {
+        filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
+        return;
+      }
+      filePreview.innerHTML = files.map(file => {
+        const kb = Math.round(file.size / 1024);
+        return `• ${file.name} (${kb} KB)`;
+      }).join("<br>");
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      document.getElementById("uploadWorkForm").reset();
+      filePreview.textContent = "ยังไม่ได้เลือกไฟล์";
+
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, "0");
+      const dd = String(now.getDate()).padStart(2, "0");
+      workDateInput.value = `${yyyy}-${mm}-${dd}`;
+    });
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      if (document.referrer) {
+        history.back();
+        return;
+      }
+      if (source === "team") {
+        window.location.href = "/team.html";
+        return;
+      }
+      window.location.href = "/dashboard.html";
+    });
+
+    document.getElementById("uploadWorkForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = {
+        source,
+        case_code: caseCode,
+        work_type: document.getElementById("workType").value,
+        work_date: document.getElementById("workDate").value,
+        title: document.getElementById("workTitle").value.trim(),
+        description: document.getElementById("workDescription").value.trim(),
+        internal_note: document.getElementById("internalNote").value.trim()
+      };
+
+      console.log("UPLOAD WORK PAYLOAD:", payload);
+      alert("บันทึกงานสำเร็จ (โหมดต้นแบบ) — ขั้นถัดไปจะเชื่อม API จริง");
+    });
+  </script>
+</body>
+</html>

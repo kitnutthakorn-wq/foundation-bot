@@ -4049,6 +4049,24 @@ app.post("/api/work-uploads/files", upload.array("files", 10), async (req, res) 
       });
     }
 
+const imageUrls = uploaded.map(file => {
+  const { data } = supabase.storage
+    .from("work-uploads")
+    .getPublicUrl(file.file_path);
+
+  return data?.publicUrl || "";
+}).filter(Boolean);
+
+if (imageUrls.length) {
+  await supabase.from("case_updates").insert({
+    case_code,
+    message: "📎 แนบไฟล์งาน",
+    images: imageUrls,
+    updated_at: new Date().toISOString(),
+    updater_name: "UPLOAD WORK"
+  });
+}
+    
     return res.json({
       ok: true,
       files: uploaded

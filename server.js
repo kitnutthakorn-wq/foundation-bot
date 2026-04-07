@@ -4049,62 +4049,63 @@ app.post("/api/work-uploads/files", upload.array("files", 10), async (req, res) 
       });
     }
 
-const imageUrls = uploaded
-  .map(file => {
-    const { data } = supabase.storage
-      .from("work-uploads")
-      .getPublicUrl(file.file_path);
+    const imageUrls = uploaded
+      .map(file => {
+        const { data } = supabase.storage
+          .from("work-uploads")
+          .getPublicUrl(file.file_path);
 
-    return data?.publicUrl || "";
-  })
-  .filter(Boolean);
+        return data?.publicUrl || "";
+      })
+      .filter(Boolean);
 
-if (imageUrls.length) {
-  const { error: timelineInsertError } = await supabase
-    .from("case_updates")
-    .insert({
-      case_code,
-      message: "📎 แนบไฟล์งาน",
-      latest_note: "แนบไฟล์จากหน้าอัปโหลดงาน",
-      current_step: "work_upload_files",
-      progress_percent: null,
-      waiting_for: null,
-      updated_by: "upload-work",
-      updater_name: "UPLOAD WORK",
-      images: imageUrls,
-      updated_at: new Date().toISOString()
-    });
+    if (imageUrls.length) {
+      const { error: timelineInsertError } = await supabase
+        .from("case_updates")
+        .insert({
+          case_code,
+          message: "📎 แนบไฟล์งาน",
+          latest_note: "แนบไฟล์จากหน้าอัปโหลดงาน",
+          current_step: "work_upload_files",
+          progress_percent: null,
+          waiting_for: null,
+          updated_by: "upload-work",
+          updater_name: "UPLOAD WORK",
+          images: imageUrls,
+          updated_at: new Date().toISOString()
+        });
 
-  if (timelineInsertError) {
-    throw timelineInsertError;
-  }
-
-  try {
-    broadcastSse("case_update", {
-      scope: "upload_work_files",
-      item: {
-        case_code,
-        message: "📎 แนบไฟล์งาน",
-        latest_note: "แนบไฟล์จากหน้าอัปโหลดงาน",
-        updater_name: "UPLOAD WORK",
-        images: imageUrls,
-        updated_at: new Date().toISOString()
+      if (timelineInsertError) {
+        throw timelineInsertError;
       }
-    });
 
-    broadcastSse("recent_activity_refresh", {
-      scope: "upload_work_files",
-      case_code,
-      updated_at: new Date().toISOString()
-    });
-  } catch (broadcastErr) {
-    console.warn("broadcast upload files warning:", broadcastErr?.message || broadcastErr);
-  }
-}
-    
+      try {
+        broadcastSse("case_update", {
+          scope: "upload_work_files",
+          item: {
+            case_code,
+            message: "📎 แนบไฟล์งาน",
+            latest_note: "แนบไฟล์จากหน้าอัปโหลดงาน",
+            updater_name: "UPLOAD WORK",
+            images: imageUrls,
+            updated_at: new Date().toISOString()
+          }
+        });
+
+        broadcastSse("recent_activity_refresh", {
+          scope: "upload_work_files",
+          case_code,
+          updated_at: new Date().toISOString()
+        });
+      } catch (broadcastErr) {
+        console.warn("broadcast upload files warning:", broadcastErr?.message || broadcastErr);
+      }
+    }
+
     return res.json({
       ok: true,
-      files: uploaded
+      files: uploaded,
+      imageUrls
     });
   } catch (err) {
     console.error("POST /api/work-uploads/files error:", err);
@@ -4114,7 +4115,6 @@ if (imageUrls.length) {
     });
   }
 });
-
 app.get("/logo.png", (req, res) => {
   res.sendFile(path.join(__dirname, "Logo.png"));
 });

@@ -1,6 +1,8 @@
 // PRODUCTION LOCKED BASELINE
 require("dotenv").config();
 
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 const express = require("express");
 const crypto = require("crypto");
 const path = require("path");

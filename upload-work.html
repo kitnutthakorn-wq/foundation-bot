@@ -338,90 +338,103 @@
     window.location.href = "/dashboard.html";
   });
 
-  document.getElementById("uploadWorkForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+document.getElementById("uploadWorkForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    if (!caseCode) {
-      alert("❌ กรุณาเลือกเคสก่อนอัปโหลดงาน");
-      return;
+  if (!caseCode) {
+    alert("❌ กรุณาเลือกเคสก่อนอัปโหลดงาน");
+    return;
+  }
+
+  const workType = document.getElementById("workType").value;
+  if (!workType) {
+    alert("⚠️ กรุณาเลือกประเภทงาน");
+    return;
+  }
+
+  const title = document.getElementById("workTitle").value.trim();
+  if (!title) {
+    alert("⚠️ กรุณากรอกหัวข้องาน");
+    return;
+  }
+
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const oldText = submitBtn.textContent;
+
+  if (submitBtn.disabled) return;
+
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = "🔄 กำลังบันทึกข้อมูล...";
+
+  try {
+    // =====================
+    // 1️⃣ SAVE DATA
+    // =====================
+    const payload = {
+      source,
+      case_code: caseCode,
+      work_type: workType,
+      work_date: document.getElementById("workDate").value,
+      title,
+      description: document.getElementById("workDescription").value.trim(),
+      internal_note: document.getElementById("internalNote").value.trim()
+    };
+
+    const res = await fetch("/api/work-uploads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
     }
 
-    const workType = document.getElementById("workType").value;
-    if (!workType) {
-      alert("⚠️ กรุณาเลือกประเภทงาน");
-      return;
-    }
+    // =====================
+    // 2️⃣ UPLOAD FILE
+    // =====================
+    submitBtn.innerHTML = "⏳ กำลังอัปโหลดไฟล์...";
 
-    const title = document.getElementById("workTitle").value.trim();
-    if (!title) {
-      alert("⚠️ กรุณากรอกหัวข้องาน");
-      return;
-    }
+    const selectedFiles = Array.from(document.getElementById("workFiles").files || []);
 
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const oldText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "🔄 กำลังบันทึกข้อมูล...";
+    if (selectedFiles.length) {
+      const fd = new FormData();
+      fd.append("case_code", caseCode);
 
-    try {
-      const payload = {
-        source,
-        case_code: caseCode,
-        work_type: workType,
-        work_date: document.getElementById("workDate").value,
-        title,
-        description: document.getElementById("workDescription").value.trim(),
-        internal_note: document.getElementById("internalNote").value.trim()
-      };
-
-      const res = await fetch("/api/work-uploads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
+      selectedFiles.forEach(file => {
+        fd.append("files", file);
       });
 
-      const json = await res.json();
+      const fileRes = await fetch("/api/work-uploads/files", {
+        method: "POST",
+        body: fd
+      });
 
-      if (!res.ok || !json.ok) {
-        throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
+      const fileJson = await fileRes.json();
+
+      if (!fileRes.ok || !fileJson.ok) {
+        console.error("UPLOAD FILE ERROR:", fileJson);
+        throw new Error(fileJson.error || "อัปโหลดไฟล์ไม่สำเร็จ");
       }
-
-      submitBtn.innerHTML = "⏳ กำลังอัปโหลดไฟล์...";
-
-      const selectedFiles = Array.from(document.getElementById("workFiles").files || []);
-
-      if (selectedFiles.length) {
-        const fd = new FormData();
-        fd.append("case_code", caseCode);
-
-        selectedFiles.forEach(file => {
-          fd.append("files", file);
-        });
-
-        const fileRes = await fetch("/api/work-uploads/files", {
-          method: "POST",
-          body: fd
-        });
-
-        const fileJson = await fileRes.json();
-
-        if (!fileRes.ok || !fileJson.ok) {
-          console.error("UPLOAD FILE ERROR:", fileJson);
-          throw new Error(fileJson.error || "อัปโหลดไฟล์ไม่สำเร็จ");
-        }
-      }
-
-      alert("✅ บันทึกงานสำเร็จ");
-      window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
-    } catch (err) {
-      console.error("upload work error:", err);
-      alert(`❌ ${err.message || "เกิดข้อผิดพลาด"}`);
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = oldText;
     }
-  });
+
+    // =====================
+    // SUCCESS
+    // =====================
+    alert("✅ บันทึกงานสำเร็จ");
+    window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
+
+  } catch (err) {
+    console.error("upload work error:", err);
+    alert(`❌ ${err.message || "เกิดข้อผิดพลาด"}`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = oldText;
+  }
+});
 </script></body>
 </html>

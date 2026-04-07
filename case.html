@@ -698,7 +698,7 @@ button:active{transform:translateY(0)}
  
   <script>
     const params = new URLSearchParams(window.location.search);
-    const caseId = params.get("id");
+   const caseId = params.get("case_id") || params.get("case_code");
     let eventSource = null;
 function statusThai(status) {
   const s = String(status || '').trim().toLowerCase();

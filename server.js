@@ -4013,6 +4013,57 @@ app.post("/api/work-uploads", async (req, res) => {
   }
 });
 
+app.post("/api/work-uploads/files", upload.array("files", 10), async (req, res) => {
+  try {
+    const { case_code } = req.body || {};
+    const files = req.files || [];
+
+    if (!case_code) {
+      return res.status(400).json({ ok: false, error: "case_code is required" });
+    }
+
+    if (!files.length) {
+      return res.status(400).json({ ok: false, error: "no files uploaded" });
+    }
+
+    const uploaded = [];
+
+    for (const file of files) {
+      const safeName = `${Date.now()}-${file.originalname.replace(/\s+/g, "-")}`;
+      const storagePath = `${case_code}/${safeName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("work-uploads")
+        .upload(storagePath, file.buffer, {
+          contentType: file.mimetype,
+          upsert: false
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      uploaded.push({
+        file_name: file.originalname,
+        file_path: storagePath,
+        file_type: file.mimetype,
+        file_size: file.size
+      });
+    }
+
+    return res.json({
+      ok: true,
+      files: uploaded
+    });
+  } catch (err) {
+    console.error("POST /api/work-uploads/files error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "upload failed"
+    });
+  }
+});
+
 app.get("/logo.png", (req, res) => {
   res.sendFile(path.join(__dirname, "Logo.png"));
 });

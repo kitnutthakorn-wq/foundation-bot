@@ -3929,6 +3929,88 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
   }
 });
 
+app.post("/api/work-uploads", async (req, res) => {
+  try {
+    const {
+      case_code,
+      work_type,
+      work_date,
+      title,
+      description,
+      internal_note,
+      source
+    } = req.body || {};
+
+    if (!case_code) {
+      return res.status(400).json({ ok: false, error: "case_code is required" });
+    }
+
+    if (!work_type) {
+      return res.status(400).json({ ok: false, error: "work_type is required" });
+    }
+
+    if (!title || !String(title).trim()) {
+      return res.status(400).json({ ok: false, error: "title is required" });
+    }
+
+    const { data: helpRequest, error: caseError } = await supabase
+      .from("help_requests")
+      .select("id, case_code, full_name, status")
+      .eq("case_code", case_code)
+      .maybeSingle();
+
+    if (caseError) {
+      return res.status(500).json({ ok: false, error: caseError.message });
+    }
+
+    if (!helpRequest) {
+      return res.status(404).json({ ok: false, error: "case not found" });
+    }
+
+    const messageLines = [
+      `📤 อัปโหลดงาน: ${title}`,
+      `ประเภทงาน: ${work_type}`,
+      work_date ? `วันที่ดำเนินการ: ${work_date}` : null,
+      description ? `รายละเอียด: ${description}` : null,
+      internal_note ? `หมายเหตุ: ${internal_note}` : null,
+      source ? `ต้นทาง: ${source}` : null
+    ].filter(Boolean);
+
+    const payload = {
+      case_code: helpRequest.case_code,
+      message: messageLines.join("\n"),
+      current_step: "work_upload",
+      progress_percent: null,
+      waiting_for: null,
+      latest_note: internal_note || description || title,
+      status_after: null
+    };
+
+    const { data: insertedUpdate, error: insertError } = await supabase
+      .from("case_updates")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (insertError) {
+      return res.status(500).json({ ok: false, error: insertError.message });
+    }
+
+    return res.json({
+      ok: true,
+      message: "บันทึกงานสำเร็จ",
+      case_code: helpRequest.case_code,
+      update: insertedUpdate
+    });
+  } catch (err) {
+    console.error("POST /api/work-uploads error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal server error"
+    });
+  }
+});
+
 app.get("/logo.png", (req, res) => {
   res.sendFile(path.join(__dirname, "Logo.png"));
 });

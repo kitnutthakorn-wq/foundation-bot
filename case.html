@@ -407,6 +407,56 @@ button:active{transform:translateY(0)}
   }
 }
 
+/* ===== WORK FILES UI ===== */
+.work-files-wrap {
+  display: grid;
+  gap: 16px;
+}
+
+.work-file-group h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.work-file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.work-image-card {
+  display: block;
+  text-decoration: none;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.work-image-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.file-name {
+  padding: 8px;
+  font-size: 12px;
+}
+
+.work-doc-list {
+  display: grid;
+  gap: 8px;
+}
+
+.work-doc-item {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f8fafc;
+  text-decoration: none;
+  color: #16304e;
+}
+  
   </style>
 </head>
 <body>
@@ -1044,10 +1094,70 @@ document.getElementById("progress_text").innerText = percent + "%";
     }
 
 registerFormLocking();
-
 loadProjects().then(refreshCaseView);
-
 connectRealtime();
+
+async function loadWorkFiles(caseCode) {
+  const box = document.getElementById("workFilesSection");
+  if (!box) return;
+
+  box.innerHTML = "กำลังโหลดไฟล์...";
+
+  try {
+    const res = await fetch(`/api/work-uploads/files/${encodeURIComponent(caseCode)}`);
+    const json = await res.json();
+
+    if (!res.ok || !json.ok) {
+      throw new Error(json.error || "โหลดไฟล์ไม่สำเร็จ");
+    }
+
+    const files = json.files || [];
+
+    if (!files.length) {
+      box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
+      return;
+    }
+
+    const imageFiles = files.filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+    const docFiles = files.filter(f => !/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+
+    box.innerHTML = `
+      <div class="work-files-wrap">
+
+        ${imageFiles.length ? `
+          <div class="work-file-group">
+            <h4>📸 รูปภาพ</h4>
+            <div class="work-file-grid">
+              ${imageFiles.map(file => `
+                <a class="work-image-card" href="${file.url}" target="_blank">
+                  <img src="${file.url}" />
+                  <div class="file-name">${file.name}</div>
+                </a>
+              `).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        ${docFiles.length ? `
+          <div class="work-file-group">
+            <h4>📄 เอกสาร</h4>
+            <div class="work-doc-list">
+              ${docFiles.map(file => `
+                <a class="work-doc-item" href="${file.url}" target="_blank">
+                  📎 ${file.name}
+                </a>
+              `).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+      </div>
+    `;
+  } catch (err) {
+    console.error(err);
+    box.innerHTML = `❌ ${err.message}`;
+  }
+}    
   </script>  
 </body>
 </html>

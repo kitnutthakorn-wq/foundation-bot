@@ -272,7 +272,7 @@
     </div>
   </div>
 
-  <script>
+ <script>
   const params = new URLSearchParams(window.location.search);
   const source = params.get("source") || "unknown";
   const caseCode = params.get("case_code") || "";
@@ -361,50 +361,61 @@
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const oldText = submitBtn.textContent;
     submitBtn.disabled = true;
-submitBtn.innerHTML = "🔄 กำลังบันทึกข้อมูล...";
+    submitBtn.innerHTML = "🔄 กำลังบันทึกข้อมูล...";
 
-try {
-  // 1️⃣ SAVE DATA
-  const res = await fetch("/api/work-uploads", { ... });
+    try {
+      const payload = {
+        source,
+        case_code: caseCode,
+        work_type: workType,
+        work_date: document.getElementById("workDate").value,
+        title,
+        description: document.getElementById("workDescription").value.trim(),
+        internal_note: document.getElementById("internalNote").value.trim()
+      };
 
-  const json = await res.json();
+      const res = await fetch("/api/work-uploads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
 
-  if (!res.ok || !json.ok) {
-    throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
-  }
+      const json = await res.json();
 
-  // 2️⃣ เปลี่ยนสถานะตรงนี้
-submitBtn.innerHTML = "⏳ กำลังอัปโหลดไฟล์...";
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
+      }
 
-  // 3️⃣ UPLOAD FILE
-  const selectedFiles = Array.from(document.getElementById("workFiles").files || []);
+      submitBtn.innerHTML = "⏳ กำลังอัปโหลดไฟล์...";
 
-  if (selectedFiles.length) {
-    const fd = new FormData();
-    fd.append("case_code", caseCode);
+      const selectedFiles = Array.from(document.getElementById("workFiles").files || []);
 
-    selectedFiles.forEach(file => {
-      fd.append("files", file);
-    });
+      if (selectedFiles.length) {
+        const fd = new FormData();
+        fd.append("case_code", caseCode);
 
-    const fileRes = await fetch("/api/work-uploads/files", {
-      method: "POST",
-      body: fd
-    });
+        selectedFiles.forEach(file => {
+          fd.append("files", file);
+        });
 
-    const fileJson = await fileRes.json();
+        const fileRes = await fetch("/api/work-uploads/files", {
+          method: "POST",
+          body: fd
+        });
 
-    if (!fileRes.ok || !fileJson.ok) {
-  console.error("UPLOAD FILE ERROR:", fileJson);
-  throw new Error(fileJson.error || "อัปโหลดไฟล์ไม่สำเร็จ");
-}
-  }
+        const fileJson = await fileRes.json();
 
-  alert("✅ บันทึกงานสำเร็จ");
+        if (!fileRes.ok || !fileJson.ok) {
+          console.error("UPLOAD FILE ERROR:", fileJson);
+          throw new Error(fileJson.error || "อัปโหลดไฟล์ไม่สำเร็จ");
+        }
+      }
 
-  window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
-}   
-  } catch (err) {
+      alert("✅ บันทึกงานสำเร็จ");
+      window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
+    } catch (err) {
       console.error("upload work error:", err);
       alert(`❌ ${err.message || "เกิดข้อผิดพลาด"}`);
     } finally {

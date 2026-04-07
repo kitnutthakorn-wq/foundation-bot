@@ -388,8 +388,32 @@
         throw new Error(json.error || "บันทึกงานไม่สำเร็จ");
       }
 
-      alert("✅ บันทึกงานสำเร็จ");
+      
 
+const selectedFiles = Array.from(document.getElementById("workFiles").files || []);
+
+if (selectedFiles.length) {
+  const fd = new FormData();
+  fd.append("case_code", caseCode);
+
+  selectedFiles.forEach(file => {
+    fd.append("files", file);
+  });
+
+  const fileRes = await fetch("/api/work-uploads/files", {
+    method: "POST",
+    body: fd
+  });
+
+  const fileJson = await fileRes.json();
+
+  if (!fileRes.ok || !fileJson.ok) {
+    throw new Error(fileJson.error || "อัปโหลดไฟล์ไม่สำเร็จ");
+  }
+
+  console.log("UPLOAD FILE SUCCESS:", fileJson.files);
+}
+      alert("✅ บันทึกงานสำเร็จ");
       window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
     } catch (err) {
       console.error("upload work error:", err);

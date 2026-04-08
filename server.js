@@ -6807,14 +6807,16 @@ console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
   role,
 });
 
+if (String(text).trim().toLowerCase() === "test poster") {
+  return await safeReply(replyToken, [buildPosterModeFlex()]);
+}
+      
 if (!teamGuard.pass) {
   await replyGuardError(replyToken, teamGuard.reason);
   continue;
 }
 
-if (text === "test poster") {
-  return await safeReply(replyToken, [buildPosterModeFlex()]);
-}
+
       
 if (text === "เมนูทีมงาน") {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {

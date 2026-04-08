@@ -1917,6 +1917,14 @@
       }
     }
 
+function focusMapToPoint(lat, lng){
+  if (!window._warroomMap) return;
+
+  window._warroomMap.setCenter({ lat, lng });
+  window._warroomMap.setZoom(17);
+  focusWarRoomMap();
+}
+    
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
 

@@ -2206,30 +2206,31 @@ document.addEventListener("click", function(e){
     e.stopPropagation();
   }
 }, true);
-    
-    registerFormLocking();
-    bindTimelineUserInteraction();
-    setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");
 
-    loadProjects().then(async () => {
-      
-const bestPoint = getBestMapCoordinates({}, latestTimelineCache);
-if (bestPoint){
-  const focusTimelineId =
-    bestPoint?.item?.id ||
-    (bestPoint?.item ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0` : "");
+registerFormLocking();
+bindTimelineUserInteraction();
+setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");
 
-  setTimeout(() => {
-    safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
-  }, 320);
-}
-      await refreshCaseView();
-      decorateTimelineLatest(latestTimelineCache);
-      maybeAutoFocusLatestUpdate(latestTimelineCache, true);
-      setWarRoomLiveChip("● War Room พร้อมใช้งาน", "live");
-    });
+loadProjects().then(async () => {
+  await refreshCaseView();
 
-    connectRealtime();
+  const bestPoint = getBestMapCoordinates({}, latestTimelineCache);
+  if (bestPoint){
+    const focusTimelineId =
+      bestPoint?.item?.id ||
+      (bestPoint?.item ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0` : "");
+
+    setTimeout(() => {
+      safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
+    }, 320);
+  }
+
+  decorateTimelineLatest(latestTimelineCache);
+  maybeAutoFocusLatestUpdate(latestTimelineCache, true);
+  setWarRoomLiveChip("● War Room พร้อมใช้งาน", "live");
+});
+
+connectRealtime();
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 </body>

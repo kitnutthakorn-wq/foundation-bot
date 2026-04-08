@@ -874,13 +874,14 @@ function priorityBadge(priority, label){
     </div>
   `;
 }
-    async function loadCaseTimeline(){
+async function loadCaseTimeline(){
   const wrap = document.getElementById("case_updates_timeline");
   if (!wrap) return;
 
   let useCaseId = caseId;
 
   try {
+    // 🔥 FIX: ถ้ามีแต่ case_code → หา id ก่อน
     if (!useCaseId && caseCode) {
       const caseData = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
       useCaseId = caseData.id;
@@ -894,20 +895,27 @@ function priorityBadge(priority, label){
     wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
 
     let updates = [];
+
     try {
       updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
     } catch (primaryErr) {
       console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
+
       const caseData = await fetchJSON(`/api/case/${useCaseId}`);
-      updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
+      updates =
+        caseData.updates ||
+        caseData.case_updates ||
+        caseData.timeline ||
+        [];
     }
 
     if (!Array.isArray(updates) || updates.length === 0) {
-      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>`;
+      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
       return;
     }
 
     wrap.innerHTML = updates.map(renderTimelineItem).join("");
+
   } catch (err) {
     console.error("LOAD TIMELINE ERROR:", err);
     wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;

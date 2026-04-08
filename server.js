@@ -568,6 +568,48 @@ const row = {
   return normalizeCaseUpdateRecord(data || row);
 }
 
+async function uploadCaseInfoFilesToSupabase(caseCode, files = []) {
+  if (!files.length) return [];
+
+  const uploaded = [];
+
+  for (const file of files) {
+    const ext = path.extname(file.originalname || "") || "";
+    const safeBaseName = String(file.originalname || "file")
+      .replace(ext, "")
+      .replace(/[^\wก-๙.-]+/g, "_")
+      .slice(0, 80);
+
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
+    const filePath = `case-info/${caseCode}/${safeBaseName}-${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("work-uploads")
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype || "application/octet-stream",
+        upsert: false
+      });
+
+    if (uploadError) {
+      throw new Error(`upload failed: ${uploadError.message}`);
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("work-uploads")
+      .getPublicUrl(filePath);
+
+    uploaded.push({
+      name: file.originalname || fileName,
+      path: filePath,
+      url: publicData?.publicUrl || "",
+      size: file.size || 0,
+      mime_type: file.mimetype || ""
+    });
+  }
+
+  return uploaded;
+}
+
 async function upsertCaseUpdateLegacy({
   caseCode,
   updateStage,

@@ -1345,7 +1345,7 @@ function buildTeamMenuFlex() {
   layout: "vertical",
   spacing: "10px",
   paddingAll: "14px",
-  backgroundColor: "#1F2937",
+  backgroundColor: "#000000",
   contents: [
           messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
           messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),

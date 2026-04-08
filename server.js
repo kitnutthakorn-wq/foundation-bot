@@ -1356,13 +1356,13 @@ function buildTeamMenuFlex() {
     };
   }
 
- return {
+return {
   type: "flex",
   altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
   contents: {
     type: "bubble",
     size: "mega",
-    backgroundColor: "#111827",
+    backgroundColor: "#1F2937",
     hero: {
       type: "image",
       url: "https://img2.pic.in.th/TEAMWORK.png",

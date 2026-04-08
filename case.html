@@ -1927,6 +1927,11 @@
         const mapChanged = nextMapSignature !== lastMapSignature;
 
        renderWarRoomMapAdvanced(data, latestTimelineCache);
+        if (bestPoint && mapChanged){
+  setTimeout(() => {
+    safeAutoFocusMap(bestPoint.lat, bestPoint.lng);
+  }, 280);
+}
 
         const wrap = document.getElementById("case_updates_timeline");
         if (wrap) {

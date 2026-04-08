@@ -1390,6 +1390,81 @@ async function loadCase(){
       eventSource.onerror = ()=> document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
     }
 
+function focusWarRoomMap(){
+  const el = document.getElementById("warroomMapPanel");
+  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function scrollToTimelinePanel(){
+  const el = document.getElementById("case_updates_timeline");
+  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function scrollToFilesPanel(){
+  const el = document.getElementById("workFilesSection");
+  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function updateWarRoomCommandBar(data){
+  const statusEl = document.getElementById("wr_badge_status");
+  const priorityEl = document.getElementById("wr_badge_priority");
+  const caseCodeEl = document.getElementById("wr_badge_case_code");
+
+  if (statusEl) {
+    statusEl.className = `badge status-${["new","in_progress","done","cancelled"].includes(data?.status) ? data.status : "cancelled"}`;
+    statusEl.textContent = `สถานะ: ${statusThai(data?.status) || "-"}`;
+  }
+
+  if (priorityEl) {
+    const p = data?.priority === "urgent" ? "urgent" : "normal";
+    priorityEl.className = `badge priority-${p}`;
+    priorityEl.textContent = `ระดับ: ${data?.priority_th || priorityThai(data?.priority) || "-"}`;
+  }
+
+  if (caseCodeEl) {
+    caseCodeEl.className = "badge priority-normal";
+    caseCodeEl.textContent = `เคส: ${data?.case_code || "-"}`;
+  }
+}
+
+function renderWarRoomMap(data){
+  const box = document.getElementById("warroomMapBody");
+  const meta = document.getElementById("warroomMapMeta");
+  const link = document.getElementById("warroomMapLink");
+
+  if (!box || !meta || !link) return;
+
+  const lat = Number(data?.latitude);
+  const lng = Number(data?.longitude);
+  const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+
+  if (!hasCoords) {
+    box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
+    meta.textContent = "พิกัด: -";
+    link.href = "#";
+    link.style.pointerEvents = "none";
+    link.style.opacity = ".55";
+    return;
+  }
+
+  const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+  const googleUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+  box.innerHTML = `
+    <iframe
+      class="warroom-map-frame"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      src="${mapUrl}">
+    </iframe>
+  `;
+
+  meta.textContent = `พิกัด: ${lat}, ${lng}`;
+  link.href = googleUrl;
+  link.style.pointerEvents = "auto";
+  link.style.opacity = "1";
+}
+    
 registerFormLocking();
 loadProjects().then(refreshCaseView);
 connectRealtime();

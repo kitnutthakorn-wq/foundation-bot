@@ -1926,7 +1926,7 @@
         const nextMapSignature = getMapSignatureFromPoint(bestPoint);
         const mapChanged = nextMapSignature !== lastMapSignature;
 
-        renderWarRoomMapFromBestPoint(bestPoint);
+       renderWarRoomMapAdvanced(data, latestTimelineCache);
 
         const wrap = document.getElementById("case_updates_timeline");
         if (wrap) {

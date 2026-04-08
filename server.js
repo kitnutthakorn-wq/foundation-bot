@@ -1335,7 +1335,7 @@ function buildTeamMenuFlex() {
   size: "mega",
   hero: {
         type: "image",
-        url: "https://img2.pic.in.th/TEAMWORK.png",
+        url: "https://img2.pic.in.th/Teamwork.png",
         size: "full",
         aspectRatio: "1:1",
         aspectMode: "cover"

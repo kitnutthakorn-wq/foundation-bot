@@ -1313,7 +1313,6 @@ function buildTeamMenuFlex() {
     };
   }
 
-
   function uriButton(label, uri, color = "#F97316") {
     return {
       type: "button",
@@ -1328,38 +1327,40 @@ function buildTeamMenuFlex() {
     };
   }
 
-return {
-  type: "flex",
-  altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
-  contents: {
-    type: "bubble",
-    size: "mega",
-    backgroundColor: "#1F2937",
-    hero: {
-      type: "image",
-      url: "https://img2.pic.in.th/TEAMWORK.png",
-      size: "full",
-      aspectRatio: "1:1",
-      aspectMode: "cover"
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      spacing: "10px",
-      paddingAll: "14px",
-      contents: [
-        messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
-        messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
-        messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
-        uriButton(
-          "เปิดศูนย์ปฏิบัติการ",
-          "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-          "#F97316"
-        )
-      ]
+  return {
+    type: "flex",
+    altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      backgroundColor: "#1F2937",
+      hero: {
+        type: "image",
+        url: "https://img2.pic.in.th/TEAMWORK.png",
+        size: "full",
+        aspectRatio: "1:1",
+        aspectMode: "cover"
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "10px",
+        paddingAll: "14px",
+        contents: [
+          messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
+          messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
+          messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
+          uriButton(
+            "เปิดศูนย์ปฏิบัติการ",
+            "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+            "#F97316"
+          )
+        ]
+      }
     }
-  }
-};
+  };
+} // <- ตัวนี้หายอยู่ตอนนี้
+
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +
@@ -1371,8 +1372,7 @@ function buildTeamNewCaseText(item = {}) {
     `สถานะ: ${formatCaseStatusThai(item.status)}\n` +
     `ระดับ: ${formatPriorityThai(item.priority)}`
   );
-}
-// =========================
+}// =========================
 // GOLDEN SAFE: PRESENTATION NOTIFY
 // =========================
 async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {

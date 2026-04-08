@@ -38,646 +38,646 @@
     .mobile-actions{display:none}
     #latest_note{max-height:40px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
     #latest_note:hover{white-space:normal;max-height:200px}
+
     @media (max-width:780px){
       .container{padding:12px 12px 110px}
       .grid{grid-template-columns:1fr}
       input,select,button{width:100%}
-      .mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:rgba(237,242,245,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:999}
+      .mobile-actions{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        position:fixed;
+        left:0;right:0;bottom:0;
+        padding:10px 12px;
+        background:rgba(237,242,245,.96);
+        backdrop-filter:blur(6px);
+        border-top:1px solid var(--line);
+        z-index:999
+      }
       .topbar .actions{width:100%}
     }
 
-/* ===== PRO LEVEL UI : CONNECTED LAYOUT ===== */
-.field-progress-wrapper{
-  padding:16px !important;
-}
-
-.field-progress-pro-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0;
-  align-items:stretch;
-  background:#fff;
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.field-progress-hero{
-  background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
-  color:#fff;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  min-height:200px;
-}
-
-.field-progress-hero-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:12px;
-}
-
-.field-progress-kicker{
-  font-size:12px;
-  font-weight:700;
-  opacity:.92;
-}
-
-.field-progress-percent{
-  font-size:32px;
-  line-height:1;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.field-progress-label{
-  font-size:12px;
-  opacity:.92;
-  margin-bottom:6px;
-}
-
-.field-progress-note{
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:14px;
-  padding:12px;
-  min-height:96px;
-  font-size:15px;
-  line-height:1.5;
-  word-break:break-word;
-  margin-bottom:14px;
-}
-
-.field-progress-track.pro{
-  margin-top:auto;
-  background:rgba(255,255,255,.20);
-  border-radius:999px;
-  height:10px;
-  overflow:hidden;
-}
-
-.field-progress-bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#86efac,#22c55e);
-}
-
-.field-progress-side{
-  background:#f8fafc;
-  padding:18px;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  border-left:1px solid #e5e7eb;
-}
-
-.field-progress-stat-card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:12px;
-  min-height:104px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  box-shadow:none;
-}
-
-.field-progress-stat-label{
-  color:#6b7280;
-  font-size:12px;
-  margin-bottom:8px;
-}
-
-.field-progress-stat-value{
-  font-size:18px;
-  font-weight:800;
-  line-height:1.35;
-  color:#16304e;
-  word-break:break-word;
-}
-
-@media (max-width:980px){
-  .field-progress-pro-grid{
-    grid-template-columns:1fr;
-  }
-
-  .field-progress-side{
-    border-left:none;
-    border-top:1px solid #e5e7eb;
-  }
-}
-
-@media (max-width:640px){
-  .field-progress-wrapper{
-    padding:12px !important;
-  }
-
-  .field-progress-side{
-    grid-template-columns:1fr;
-  }
-
-  .field-progress-percent{
-    font-size:26px;
-  }
-
-  .field-progress-note{
-    min-height:84px;
-    font-size:14px;
-  }
-
-  .field-progress-stat-card{
-    min-height:88px;
-  }
-
-  .field-progress-stat-value{
-    font-size:16px;
-  }
-}
-    
-/* ===== FULL UI PRO MAX FIX ===== */
-.card{margin-bottom:18px}
-.panel-card{
-  border:1px solid #eef2f6;
-  box-shadow:0 12px 28px rgba(18,36,58,.08);
-}
-.panel-header{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  margin-bottom:14px;
-}
-.panel-title{
-  margin:0;
-  font-size:20px;
-  line-height:1.2;
-  font-weight:800;
-  color:#16304e;
-}
-.panel-sub{
-  margin:0;
-  color:var(--muted);
-  font-size:13px;
-}
-.summary-strip{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:14px;
-}
-.summary-item{
-  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
-  border:1px solid #e8edf3;
-  border-radius:16px;
-  padding:14px;
-  min-height:90px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-.summary-label{
-  color:var(--muted);
-  font-size:12px;
-  margin-bottom:8px;
-}
-.summary-value{
-  color:#16304e;
-  font-size:18px;
-  line-height:1.35;
-  font-weight:800;
-  word-break:break-word;
-}
-.case-info-grid .value,
-.manage-case-grid .value{
-  line-height:1.55;
-}
-.manage-case-grid{
-  margin-bottom:14px;
-}
-.input-shell{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.actions{gap:12px}
-button{
-  transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
-}
-button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 18px rgba(18,36,58,.10);
-}
-button:active{transform:translateY(0)}
-.live{border:1px solid #eef2f6}
-.status-help{
-  margin-top:6px;
-  font-size:12px;
-  color:#6b7280;
-  line-height:1.45;
-}
-.line-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  margin-left:8px;
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid #9fd7d2;
-  color:#0b7c86;
-  background:#e9fbf7;
-  font-size:11px;
-  font-weight:700;
-  vertical-align:middle;
-}
-@media (max-width:900px){
-  .summary-strip{grid-template-columns:1fr 1fr}
-}
-@media (max-width:640px){
-  .summary-strip{grid-template-columns:1fr}
-  .summary-item{min-height:auto}
-  .panel-title{font-size:18px}
-}
-
-/* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
-.timeline-list{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-.timeline-empty{
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:16px;
-  color:#6b7280;
-}
-.timeline-item{
-  border:1px solid #e5e7eb;
-  border-left:6px solid #0b7c86;
-  border-radius:20px;
-  background:#fff;
-  padding:16px;
-  box-shadow:none;
-}
-.timeline-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:10px;
-}
-.timeline-title{
-  font-size:18px;
-  line-height:1.35;
-  font-weight:800;
-  color:#16304e;
-}
-.timeline-time{
-  color:#6b7280;
-  font-size:13px;
-  font-weight:700;
-  white-space:nowrap;
-}
-.timeline-badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-bottom:12px;
-}
-.timeline-note{
-  line-height:1.65;
-  margin-bottom:12px;
-  white-space:pre-wrap;
-  word-break:break-word;
-  color:#16304e;
-}
-.timeline-mini-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:12px;
-}
-.timeline-mini-card{
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:12px;
-}
-.timeline-mini-label{
-  color:#6b7280;
-  font-size:12px;
-  margin-bottom:6px;
-}
-.timeline-mini-value{
-  font-size:15px;
-  line-height:1.55;
-  font-weight:700;
-  color:#16304e;
-  word-break:break-word;
-}
-.timeline-images{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-
-/* ===== STEP 5.3 : TIMELINE ATTACHMENTS ===== */
-.timeline-images{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:12px;
-}
-
-.timeline-images a{
-  display:block;
-  text-decoration:none;
-}
-      
-.timeline-images img{
-  width:110px;
-  height:110px;
-  object-fit:cover;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#fff;
-  box-shadow:0 6px 14px rgba(18,36,58,.08);
-  transition:all .15s ease;
-}
-
-.timeline-images img:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 20px rgba(18,36,58,.12);
-}
-
-.timeline-files{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-top:12px;
-}
-
-.timeline-file-link{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 12px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  background:#f8fafc;
-  color:#16304e;
-  text-decoration:none;
-  font-size:14px;
-  font-weight:600;
-}
-
-.timeline-file-link:hover{
-  background:#eef6ff;
-  border-color:#cfe0f5;
-}
-
-@media (max-width:640px){
-  .timeline-images img{
-    width:92px;
-    height:92px;
-  }
-}
-    
-@media (max-width:900px){
-  .timeline-mini-grid,
-  .timeline-images{
-    grid-template-columns:1fr 1fr;
-  }
-}
-@media (max-width:640px){
-  .timeline-mini-grid,
-  .timeline-images{
-    grid-template-columns:1fr;
-  }
-}
-
-/* ===== WORK FILES UI ===== */
-.work-files-wrap {
-  display: grid;
-  gap: 16px;
-}
-
-.work-file-group h4 {
-  margin: 0 0 10px;
-  font-size: 16px;
-}
-
-.work-file-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.work-image-card {
-  display: block;
-  text-decoration: none;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-}
-
-.work-image-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-}
-
-.file-name {
-  padding: 8px;
-  font-size: 12px;
-}
-
-.work-doc-list {
-  display: grid;
-  gap: 8px;
-}
-
-.work-doc-item {
-  padding: 10px;
-  border-radius: 10px;
-  background: #f8fafc;
-  text-decoration: none;
-  color: #16304e;
-}
-
-/* ===== WAR ROOM UI : STEP 1 SAFE LAYOUT ===== */
-.warroom-shell{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-
-.warroom-command{
-  background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
-  color:#fff;
-  border-radius:22px;
-  padding:18px;
-  box-shadow:0 14px 28px rgba(18,36,58,.12);
-  margin-bottom:16px;
-}
-
-.warroom-command-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:14px;
-  flex-wrap:wrap;
-}
-
-.warroom-command-left{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.warroom-kicker{
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.04em;
-  opacity:.92;
-}
-
-.warroom-title{
-  font-size:26px;
-  font-weight:800;
-  line-height:1.2;
-  margin:0;
-}
-
-.warroom-sub{
-  font-size:13px;
-  opacity:.9;
-  line-height:1.55;
-}
-
-.warroom-badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:10px;
-}
-
-.warroom-badges .badge{
-  box-shadow:none;
-}
-
-.warroom-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
-.warroom-actions button{
-  min-width:140px;
-}
-
-.warroom-grid{
-  display:grid;
-  grid-template-columns:1.05fr 1.15fr 0.92fr;
-  gap:16px;
-  align-items:start;
-}
-
-.warroom-col{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  min-width:0;
-}
-
-.warroom-sticky{
-  position:sticky;
-  top:16px;
-}
-
-.warroom-map-card{
-  min-height:420px;
-}
-
-.warroom-map-body{
-  min-height:320px;
-  border:1px solid #e5e7eb;
-  border-radius:18px;
-  overflow:hidden;
-  background:#f8fafc;
-}
-
-.warroom-map-frame{
-  width:100%;
-  height:320px;
-  border:0;
-  display:block;
-}
-
-.warroom-map-empty{
-  min-height:320px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  color:#6b7280;
-  text-align:center;
-  line-height:1.6;
-}
-
-.warroom-map-meta{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:12px;
-  font-size:13px;
-  color:#6b7280;
-}
-
-.warroom-map-link{
-  color:#0b7c86;
-  font-weight:800;
-  text-decoration:none;
-}
-
-@media (max-width:1200px){
-  .warroom-grid{
-    grid-template-columns:1fr;
-  }
-
-  .warroom-sticky{
-    position:static;
-  }
-
-  .warroom-map-card{
-    min-height:auto;
-  }
-}
-
-@media (max-width:640px){
-  .warroom-command{
-    padding:16px;
-    border-radius:18px;
-  }
-
-  .warroom-title{
-    font-size:22px;
-  }
-
-  .warroom-actions{
-    width:100%;
-  }
-
-  .warroom-actions button{
-    width:100%;
-  }
-}
-    
+    /* ===== PRO LEVEL UI : CONNECTED LAYOUT ===== */
+    .field-progress-wrapper{
+      padding:16px !important;
+    }
+
+    .field-progress-pro-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:0;
+      align-items:stretch;
+      background:#fff;
+      border-radius:20px;
+      overflow:hidden;
+    }
+
+    .field-progress-hero{
+      background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
+      color:#fff;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      min-height:200px;
+    }
+
+    .field-progress-hero-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .field-progress-kicker{
+      font-size:12px;
+      font-weight:700;
+      opacity:.92;
+    }
+
+    .field-progress-percent{
+      font-size:32px;
+      line-height:1;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .field-progress-label{
+      font-size:12px;
+      opacity:.92;
+      margin-bottom:6px;
+    }
+
+    .field-progress-note{
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:14px;
+      padding:12px;
+      min-height:96px;
+      font-size:15px;
+      line-height:1.5;
+      word-break:break-word;
+      margin-bottom:14px;
+    }
+
+    .field-progress-track.pro{
+      margin-top:auto;
+      background:rgba(255,255,255,.20);
+      border-radius:999px;
+      height:10px;
+      overflow:hidden;
+    }
+
+    .field-progress-bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#86efac,#22c55e);
+    }
+
+    .field-progress-side{
+      background:#f8fafc;
+      padding:18px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      border-left:1px solid #e5e7eb;
+    }
+
+    .field-progress-stat-card{
+      background:#fff;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      padding:12px;
+      min-height:104px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      box-shadow:none;
+    }
+
+    .field-progress-stat-label{
+      color:#6b7280;
+      font-size:12px;
+      margin-bottom:8px;
+    }
+
+    .field-progress-stat-value{
+      font-size:18px;
+      font-weight:800;
+      line-height:1.35;
+      color:#16304e;
+      word-break:break-word;
+    }
+
+    @media (max-width:980px){
+      .field-progress-pro-grid{
+        grid-template-columns:1fr;
+      }
+
+      .field-progress-side{
+        border-left:none;
+        border-top:1px solid #e5e7eb;
+      }
+    }
+
+    @media (max-width:640px){
+      .field-progress-wrapper{
+        padding:12px !important;
+      }
+
+      .field-progress-side{
+        grid-template-columns:1fr;
+      }
+
+      .field-progress-percent{
+        font-size:26px;
+      }
+
+      .field-progress-note{
+        min-height:84px;
+        font-size:14px;
+      }
+
+      .field-progress-stat-card{
+        min-height:88px;
+      }
+
+      .field-progress-stat-value{
+        font-size:16px;
+      }
+    }
+
+    /* ===== FULL UI PRO MAX FIX ===== */
+    .card{margin-bottom:18px}
+    .panel-card{
+      border:1px solid #eef2f6;
+      box-shadow:0 12px 28px rgba(18,36,58,.08);
+    }
+    .panel-header{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      margin-bottom:14px;
+    }
+    .panel-title{
+      margin:0;
+      font-size:20px;
+      line-height:1.2;
+      font-weight:800;
+      color:#16304e;
+    }
+    .panel-sub{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .summary-strip{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .summary-item{
+      background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+      border:1px solid #e8edf3;
+      border-radius:16px;
+      padding:14px;
+      min-height:90px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .summary-label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:8px;
+    }
+    .summary-value{
+      color:#16304e;
+      font-size:18px;
+      line-height:1.35;
+      font-weight:800;
+      word-break:break-word;
+    }
+    .case-info-grid .value,
+    .manage-case-grid .value{
+      line-height:1.55;
+    }
+    .manage-case-grid{
+      margin-bottom:14px;
+    }
+    .input-shell{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .actions{gap:12px}
+    button{
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    }
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(18,36,58,.10);
+    }
+    button:active{transform:translateY(0)}
+    .live{border:1px solid #eef2f6}
+    .status-help{
+      margin-top:6px;
+      font-size:12px;
+      color:#6b7280;
+      line-height:1.45;
+    }
+    .line-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-left:8px;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid #9fd7d2;
+      color:#0b7c86;
+      background:#e9fbf7;
+      font-size:11px;
+      font-weight:700;
+      vertical-align:middle;
+    }
+    @media (max-width:900px){
+      .summary-strip{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width:640px){
+      .summary-strip{grid-template-columns:1fr}
+      .summary-item{min-height:auto}
+      .panel-title{font-size:18px}
+    }
+
+    /* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
+    .timeline-list{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .timeline-empty{
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      padding:16px;
+      color:#6b7280;
+    }
+    .timeline-item{
+      border:1px solid #e5e7eb;
+      border-left:6px solid #0b7c86;
+      border-radius:20px;
+      background:#fff;
+      padding:16px;
+      box-shadow:none;
+    }
+    .timeline-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .timeline-title{
+      font-size:18px;
+      line-height:1.35;
+      font-weight:800;
+      color:#16304e;
+    }
+    .timeline-time{
+      color:#6b7280;
+      font-size:13px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .timeline-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .timeline-note{
+      line-height:1.65;
+      margin-bottom:12px;
+      white-space:pre-wrap;
+      word-break:break-word;
+      color:#16304e;
+    }
+    .timeline-mini-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .timeline-mini-card{
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      padding:12px;
+    }
+    .timeline-mini-label{
+      color:#6b7280;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .timeline-mini-value{
+      font-size:15px;
+      line-height:1.55;
+      font-weight:700;
+      color:#16304e;
+      word-break:break-word;
+    }
+    .timeline-images{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .timeline-images a{
+      display:block;
+      text-decoration:none;
+    }
+
+    .timeline-images img{
+      width:110px;
+      height:110px;
+      object-fit:cover;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      background:#fff;
+      box-shadow:0 6px 14px rgba(18,36,58,.08);
+      transition:all .15s ease;
+    }
+
+    .timeline-images img:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 20px rgba(18,36,58,.12);
+    }
+
+    .timeline-files{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .timeline-file-link{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#f8fafc;
+      color:#16304e;
+      text-decoration:none;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .timeline-file-link:hover{
+      background:#eef6ff;
+      border-color:#cfe0f5;
+    }
+
+    @media (max-width:900px){
+      .timeline-mini-grid{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    @media (max-width:640px){
+      .timeline-mini-grid{
+        grid-template-columns:1fr;
+      }
+      .timeline-images img{
+        width:92px;
+        height:92px;
+      }
+    }
+
+    /* ===== WORK FILES UI ===== */
+    .work-files-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .work-file-group h4 {
+      margin: 0 0 10px;
+      font-size: 16px;
+    }
+
+    .work-file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .work-image-card {
+      display: block;
+      text-decoration: none;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+
+    .work-image-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .file-name {
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    .work-doc-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .work-doc-item {
+      padding: 10px;
+      border-radius: 10px;
+      background: #f8fafc;
+      text-decoration: none;
+      color: #16304e;
+    }
+
+    /* ===== WAR ROOM UI : STEP 1 SAFE LAYOUT ===== */
+    .warroom-shell{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .warroom-command{
+      background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
+      color:#fff;
+      border-radius:22px;
+      padding:18px;
+      box-shadow:0 14px 28px rgba(18,36,58,.12);
+      margin-bottom:16px;
+    }
+
+    .warroom-command-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .warroom-command-left{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .warroom-kicker{
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.04em;
+      opacity:.92;
+    }
+
+    .warroom-title{
+      font-size:26px;
+      font-weight:800;
+      line-height:1.2;
+      margin:0;
+    }
+
+    .warroom-sub{
+      font-size:13px;
+      opacity:.9;
+      line-height:1.55;
+    }
+
+    .warroom-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .warroom-badges .badge{
+      box-shadow:none;
+    }
+
+    .warroom-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .warroom-actions button{
+      min-width:140px;
+    }
+
+    .warroom-grid{
+      display:grid;
+      grid-template-columns:1.05fr 1.15fr 0.92fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .warroom-col{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      min-width:0;
+    }
+
+    .warroom-sticky{
+      position:sticky;
+      top:16px;
+    }
+
+    .warroom-map-card{
+      min-height:420px;
+    }
+
+    .warroom-map-body{
+      min-height:320px;
+      border:1px solid #e5e7eb;
+      border-radius:18px;
+      overflow:hidden;
+      background:#f8fafc;
+    }
+
+    .warroom-map-frame{
+      width:100%;
+      height:320px;
+      border:0;
+      display:block;
+    }
+
+    .warroom-map-empty{
+      min-height:320px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      color:#6b7280;
+      text-align:center;
+      line-height:1.6;
+    }
+
+    .warroom-map-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      font-size:13px;
+      color:#6b7280;
+    }
+
+    .warroom-map-link{
+      color:#0b7c86;
+      font-weight:800;
+      text-decoration:none;
+    }
+
+    @media (max-width:1200px){
+      .warroom-grid{
+        grid-template-columns:1fr;
+      }
+
+      .warroom-sticky{
+        position:static;
+      }
+
+      .warroom-map-card{
+        min-height:auto;
+      }
+    }
+
+    @media (max-width:640px){
+      .warroom-command{
+        padding:16px;
+        border-radius:18px;
+      }
+
+      .warroom-title{
+        font-size:22px;
+      }
+
+      .warroom-actions{
+        width:100%;
+      }
+
+      .warroom-actions button{
+        width:100%;
+      }
+    }
   </style>
 </head>
 <body>
@@ -694,15 +694,12 @@ button:active{transform:translateY(0)}
         <div class="live"><span class="live-dot"></span><span id="liveStatus">กำลังเชื่อมต่อข้อมูลสด...</span></div>
         <div class="actions">
           <button class="secondary" onclick="window.location.href='/dashboard'">กลับ Dashboard</button>
-
           <button class="secondary" onclick="refreshCaseView()">รีเฟรช</button>
-
         </div>
       </div>
     </div>
 
     <div class="warroom-shell">
-
       <div class="warroom-command">
         <div class="warroom-command-top">
           <div class="warroom-command-left">
@@ -729,53 +726,96 @@ button:active{transform:translateY(0)}
       </div>
 
       <div class="warroom-grid">
+        <!-- LEFT -->
         <div class="warroom-col" id="warroomColLeft">
-    
-    <div class="card panel-card">
-      <div class="panel-header">
-        <h2 class="panel-title">ข้อมูลเคส</h2>
-        <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
-      </div>
-      <div class="summary-strip">
-        <div class="summary-item">
-          <div class="summary-label">เลขเคส</div>
-          <div class="summary-value" id="summary_case_code">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">สถานะล่าสุด</div>
-          <div class="summary-value" id="summary_status">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">ระดับความเร่งด่วน</div>
-          <div class="summary-value" id="summary_priority">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">ผู้รับเคส</div>
-          <div class="summary-value" id="summary_assigned_to">-</div>
-        </div>
-      </div>
-      <div class="grid case-info-grid">
-        <div><div class="label">เลขเคส</div><div class="value" id="case_code">-</div></div>
-        <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
-        <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
-        <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-        <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
-        <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
-        <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
-       <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
-<div><div class="label">โครงการของเคส</div><div class="value" id="project_name">-</div></div>
-<div><div class="label">สร้างเมื่อ</div><div class="value" id="created_at">-</div></div>
-<div class="full"><div class="label">รายละเอียดปัญหา</div><div class="value" id="problem">-</div></div>
-       
-        </div> 
-      </div>
+          <div class="card panel-card">
+            <div class="panel-header">
+              <h2 class="panel-title">ข้อมูลเคส</h2>
+              <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
+            </div>
 
-<div class="card panel-card field-progress-wrapper">
-  <div class="panel-header">
-    <h2 class="panel-title">ความคืบหน้าภาคสนาม</h2>
-    <div class="panel-sub">สรุปความคืบหน้าล่าสุดจากทีมปฏิบัติงานภาคสนามแบบอ่านง่ายและน่าเชื่อถือมากขึ้น</div>
-  </div>
+            <div class="summary-strip">
+              <div class="summary-item">
+                <div class="summary-label">เลขเคส</div>
+                <div class="summary-value" id="summary_case_code">-</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">สถานะล่าสุด</div>
+                <div class="summary-value" id="summary_status">-</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">ระดับความเร่งด่วน</div>
+                <div class="summary-value" id="summary_priority">-</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">ผู้รับเคส</div>
+                <div class="summary-value" id="summary_assigned_to">-</div>
+              </div>
+            </div>
 
+            <div class="grid case-info-grid">
+              <div><div class="label">เลขเคส</div><div class="value" id="case_code">-</div></div>
+              <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
+              <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
+              <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
+              <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
+              <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
+              <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
+              <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
+              <div><div class="label">โครงการของเคส</div><div class="value" id="project_name">-</div></div>
+              <div><div class="label">สร้างเมื่อ</div><div class="value" id="created_at">-</div></div>
+              <div class="full"><div class="label">รายละเอียดปัญหา</div><div class="value" id="problem">-</div></div>
+            </div>
+          </div>
+
+          <div class="card panel-card field-progress-wrapper">
+            <div class="panel-header">
+              <h2 class="panel-title">ความคืบหน้าภาคสนาม</h2>
+              <div class="panel-sub">สรุปความคืบหน้าล่าสุดจากทีมปฏิบัติงานภาคสนามแบบอ่านง่ายและน่าเชื่อถือมากขึ้น</div>
+            </div>
+
+            <div class="field-progress-pro-grid">
+              <div class="field-progress-hero">
+                <div class="field-progress-hero-head">
+                  <div class="field-progress-kicker">Field Progress</div>
+                  <div class="field-progress-percent" id="progress_text">0%</div>
+                </div>
+
+                <div class="field-progress-label">หมายเหตุล่าสุด</div>
+                <div class="field-progress-note" id="latest_note">-</div>
+
+                <div class="field-progress-track pro">
+                  <div id="progress_bar" class="field-progress-bar"></div>
+                </div>
+              </div>
+
+              <div class="field-progress-side">
+                <div class="field-progress-stat-card">
+                  <div class="field-progress-stat-label">สถานะล่าสุด</div>
+                  <div class="field-progress-stat-value" id="latest_step">-</div>
+                  <div class="status-help" id="latest_step_help">-</div>
+                </div>
+
+                <div class="field-progress-stat-card">
+                  <div class="field-progress-stat-label">กำลังรอ</div>
+                  <div class="field-progress-stat-value" id="latest_waiting">-</div>
+                </div>
+
+                <div class="field-progress-stat-card">
+                  <div class="field-progress-stat-label">รายงานโดย</div>
+                  <div class="field-progress-stat-value" id="latest_by">-</div>
+                </div>
+
+                <div class="field-progress-stat-card">
+                  <div class="field-progress-stat-label">เวลารายงานล่าสุด</div>
+                  <div class="field-progress-stat-value" id="latest_at">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER -->
         <div class="warroom-col" id="warroomColCenter">
           <div class="card panel-card warroom-map-card" id="warroomMapPanel">
             <div class="panel-header">
@@ -792,133 +832,94 @@ button:active{transform:translateY(0)}
               <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
             </div>
           </div>
-  
-  <div class="field-progress-pro-grid">
-    <div class="field-progress-hero">
-      <div class="field-progress-hero-head">
-        <div class="field-progress-kicker">Field Progress</div>
-        <div class="field-progress-percent" id="progress_text">0%</div>
-      </div>
 
-      <div class="field-progress-label">หมายเหตุล่าสุด</div>
-      <div class="field-progress-note" id="latest_note">-</div>
-
-      <div class="field-progress-track pro">
-        <div id="progress_bar" class="field-progress-bar"></div>
-      </div>
-    </div>
-
-    <div class="field-progress-side">
-      <div class="field-progress-stat-card">
-        <div class="field-progress-stat-label">สถานะล่าสุด</div>
-        <div class="field-progress-stat-value" id="latest_step">-</div>
-        <div class="status-help" id="latest_step_help">-</div>
-      </div>
-
-      <div class="field-progress-stat-card">
-        <div class="field-progress-stat-label">กำลังรอ</div>
-        <div class="field-progress-stat-value" id="latest_waiting">-</div>
-      </div>
-
-      <div class="field-progress-stat-card">
-        <div class="field-progress-stat-label">รายงานโดย</div>
-        <div class="field-progress-stat-value" id="latest_by">-</div>
-      </div>
-
-      <div class="field-progress-stat-card">
-        <div class="field-progress-stat-label">เวลารายงานล่าสุด</div>
-        <div class="field-progress-stat-value" id="latest_at">-</div>
-      </div>
-    </div>
-  </div>
-</div>
-    
-<div class="card panel-card">
-  <div class="panel-header">
-    <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-    <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
-  </div>
-
-          </div>
-
-        <div class="warroom-col" id="warroomColCenter">
-
-  <!-- MAP -->
-  <div class="card panel-card warroom-map-card">...</div>
-
-  <!-- 🔥 TIMELINE (ต้องอยู่ตรงนี้) -->
-  <div class="card panel-card">
-    <div class="panel-header">
-      <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-    </div>
-
-    <div id="case_updates_timeline" class="timeline-list">
-      <div class="timeline-empty">กำลังโหลด Timeline...</div>
-    </div>
-  </div>
-
-</div>
-
-<div class="card panel-card">
-  <div class="panel-header">
-    <h2 class="panel-title">ไฟล์แนบงาน</h2>
-    <p class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</p>
-  </div>
-
-  <div id="workFilesSection" class="timeline-empty">
-    กำลังโหลดไฟล์...
-  </div>
-</div>
-    
-    <div class="card panel-card">
-      <div class="panel-header">
-        <h2 class="panel-title">จัดการเคส</h2>
-        <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
-      </div>
-      <div class="grid manage-case-grid">
-        <div>
-          <div class="input-shell"><div class="label">ชื่อผู้รับเคส</div>
-          <input id="staffName" placeholder="ชื่อทีมงาน เช่น ทีมลงพื้นที่ A" style="width:100%">
+          <div class="card panel-card">
+            <div class="panel-header">
+              <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
+              <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
+            </div>
+            <div id="case_updates_timeline" class="timeline-list">
+              <div class="timeline-empty">กำลังโหลด Timeline...</div>
+            </div>
           </div>
         </div>
-       </div>
-        <div>
-          <div class="input-shell"><div class="label">สถานะที่จะบันทึก</div>
-          <select id="statusSelect" style="width:100%">
-            <option value="new">ใหม่</option>
-            <option value="in_progress">กำลังดำเนินการ</option>
-            <option value="done">ปิดเคส/เสร็จแล้ว</option>
-            <option value="cancelled">ยกเลิก</option>
-          </select>
+
+        <!-- RIGHT -->
+        <div class="warroom-col warroom-sticky" id="warroomColRight">
+          <div class="card panel-card">
+            <div class="panel-header">
+              <h2 class="panel-title">ไฟล์แนบงาน</h2>
+              <p class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</p>
+            </div>
+
+            <div id="workFilesSection" class="timeline-empty">
+              กำลังโหลดไฟล์...
+            </div>
+          </div>
+
+          <div class="card panel-card">
+            <div class="panel-header">
+              <h2 class="panel-title">จัดการเคส</h2>
+              <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
+            </div>
+
+            <div class="grid manage-case-grid">
+              <div>
+                <div class="input-shell">
+                  <div class="label">ชื่อผู้รับเคส</div>
+                  <input id="staffName" placeholder="ชื่อทีมงาน เช่น ทีมลงพื้นที่ A" style="width:100%">
+                </div>
+              </div>
+
+              <div>
+                <div class="input-shell">
+                  <div class="label">สถานะที่จะบันทึก</div>
+                  <select id="statusSelect" style="width:100%">
+                    <option value="new">ใหม่</option>
+                    <option value="in_progress">กำลังดำเนินการ</option>
+                    <option value="done">ปิดเคส/เสร็จแล้ว</option>
+                    <option value="cancelled">ยกเลิก</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div class="input-shell">
+                  <div class="label">ระดับเคส</div>
+                  <select id="prioritySelect" style="width:100%">
+                    <option value="normal">ปกติ</option>
+                    <option value="urgent">ด่วน</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <div class="input-shell">
+                  <div class="label">โครงการที่สังกัด</div>
+                  <select id="projectSelect" style="width:100%">
+                    <option value="">- เลือกโครงการ -</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="full">
+                <div class="input-shell">
+                  <div class="label">แนวทางใช้งาน</div>
+                  <div class="value" style="min-height:44px;display:flex;align-items:center">
+                    เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button onclick="saveCaseSettings()" class="secondary">บันทึกค่าที่เลือก</button>
+              <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
+              <button onclick="closeCase()">ปิดเคส</button>
+              <button onclick="resetForm()" class="secondary">รีเซ็ตค่า</button>
+            </div>
           </div>
         </div>
-        <div>
-          <div class="input-shell"><div class="label">ระดับเคส</div>
-          <select id="prioritySelect" style="width:100%">
-            <option value="normal">ปกติ</option>
-            <option value="urgent">ด่วน</option>
-          </select>
-          </div>
-        </div>
-<div>
-  <div class="input-shell"><div class="label">โครงการที่สังกัด</div>
-  <select id="projectSelect" style="width:100%">
-    <option value="">- เลือกโครงการ -</option>
-  </select>
-  </div>
-</div>
-        
-        <div>
-          <div class="input-shell"><div class="label">แนวทางใช้งาน</div>
-          <div class="value" style="min-height:44px;display:flex;align-items:center">เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ</div>
-          </div>
-        </div>
-      </div>
-      <div class="actions">
-        <button onclick="saveCaseSettings()" class="secondary">บันทึกค่าที่เลือก</button>
-        <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
-        <button onclick="closeCase()">ปิดเคส</button>
-        <button onclick="resetForm()" class="secondary">รีเซ็ตค่า</button>
       </div>
     </div>
   </div>
@@ -929,46 +930,45 @@ button:active{transform:translateY(0)}
   </div>
 
   <div class="toast-wrap" id="toastWrap"></div>
- 
+
   <script>
-const params = new URLSearchParams(window.location.search);
-const caseId = params.get("id") || "";
-const caseCode = params.get("case_code") || "";
-    
-let eventSource = null;
-function statusThai(status) {
-  const s = String(status || '').trim().toLowerCase();
+    const params = new URLSearchParams(window.location.search);
+    const caseId = params.get("id") || "";
+    const caseCode = params.get("case_code") || "";
+    let resolvedCaseId = caseId || "";
+    let eventSource = null;
 
-  if (s === 'progress') return 'กำลังดำเนินการ';
-  if (s === 'in_progress') return 'กำลังดำเนินการ';
-  if (s === 'new') return 'รับเรื่องแล้ว';
-  if (s === 'done') return 'เสร็จสิ้นแล้ว';
-  if (s === 'cancelled') return 'ยกเลิก';
+    function statusThai(status) {
+      const s = String(status || '').trim().toLowerCase();
+      if (s === 'progress') return 'กำลังดำเนินการ';
+      if (s === 'in_progress') return 'กำลังดำเนินการ';
+      if (s === 'new') return 'รับเรื่องแล้ว';
+      if (s === 'done') return 'เสร็จสิ้นแล้ว';
+      if (s === 'cancelled') return 'ยกเลิก';
+      return status || '-';
+    }
 
-  return status || '-';
-}
+    function priorityThai(priority) {
+      const p = String(priority || '').toLowerCase();
+      if (p === 'urgent') return 'ด่วน';
+      if (p === 'normal') return 'ปกติ';
+      return priority || '-';
+    }
 
-function priorityThai(priority) {
-  const p = String(priority || '').toLowerCase();
-  if (p === 'urgent') return 'ด่วน';
-  if (p === 'normal') return 'ปกติ';
-  return priority || '-';
-} 
-    
     const formState = {
       initialized: false,
       editing: {
-  staffName: false,
-  statusSelect: false,
-  prioritySelect: false,
-  projectSelect: false,
-},
-dirty: {
-  staffName: false,
-  statusSelect: false,
-  prioritySelect: false,
-  projectSelect: false,
-},
+        staffName: false,
+        statusSelect: false,
+        prioritySelect: false,
+        projectSelect: false,
+      },
+      dirty: {
+        staffName: false,
+        statusSelect: false,
+        prioritySelect: false,
+        projectSelect: false,
+      },
     };
 
     function registerFormLocking() {
@@ -1000,25 +1000,49 @@ dirty: {
       formState.dirty.projectSelect = false;
     }
 
-    function escapeHtml(value){return String(value ?? "-").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
-    function formatThaiDateTime(dateString){if(!dateString) return "-"; return new Date(dateString).toLocaleString("th-TH")}
+    function escapeHtml(value){
+      return String(value ?? "-")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+    }
+
+    function formatThaiDateTime(dateString){
+      if(!dateString) return "-";
+      return new Date(dateString).toLocaleString("th-TH");
+    }
+
     function statusBadge(status, label){
-  const value = status || "cancelled";
-  const cls = ["new","in_progress","done","cancelled"].includes(value) ? value : "cancelled";
-  const text = label || value || "-";
-  return `<span class="badge status-${cls}">${escapeHtml(text)}</span>`;
-}
+      const value = status || "cancelled";
+      const cls = ["new","in_progress","done","cancelled"].includes(value) ? value : "cancelled";
+      const text = label || value || "-";
+      return `<span class="badge status-${cls}">${escapeHtml(text)}</span>`;
+    }
 
-function priorityBadge(priority, label){
-  const value = priority || "normal";
-  const cls = value === "urgent" ? "urgent" : "normal";
-  const text = label || value || "-";
-  return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
-}
-    function showToast(title, message){const wrap=document.getElementById("toastWrap");const div=document.createElement("div");div.className="toast";div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;wrap.appendChild(div);setTimeout(()=>div.remove(),5000);}
-    async function fetchJSON(url, options={}){const res=await fetch(url, options);const data=await res.json();if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");return data.data}
+    function priorityBadge(priority, label){
+      const value = priority || "normal";
+      const cls = value === "urgent" ? "urgent" : "normal";
+      const text = label || value || "-";
+      return `<span class="badge priority-${cls}">${escapeHtml(text)}</span>`;
+    }
 
-   
+    function showToast(title, message){
+      const wrap=document.getElementById("toastWrap");
+      const div=document.createElement("div");
+      div.className="toast";
+      div.innerHTML=`<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;
+      wrap.appendChild(div);
+      setTimeout(()=>div.remove(),5000);
+    }
+
+    async function fetchJSON(url, options={}){
+      const res=await fetch(url, options);
+      const data=await res.json();
+      if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");
+      return data.data;
+    }
 
     function normalizeTimelineStatus(status){
       const s = String(status || "").trim().toLowerCase();
@@ -1055,107 +1079,106 @@ function priorityBadge(priority, label){
       return singleFields.filter(Boolean).map(String);
     }
 
-   function renderTimelineItem(item){
-  const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
-  const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
-  const note = item.note || item.message || item.update_note || "-";
-  const currentStep = item.current_step || item.step_label || item.step_name || "-";
-  const waitingFor = item.waiting_for || item.pending_on || item.waiting_on || "-";
-  const locationText = item.location_text || item.geo_text || item.area || "-";
-  const progress = Number(item.progress_percent ?? item.progress ?? 0);
-  const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
-  const statusLabel = statusThai(statusRaw);
-  const images = normalizeTimelineImages(item);
+    function renderTimelineItem(item){
+      const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
+      const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
+      const note = item.note || item.message || item.update_note || "-";
+      const currentStep = item.current_step || item.step_label || item.step_name || "-";
+      const waitingFor = item.waiting_for || item.pending_on || item.waiting_on || "-";
+      const locationText = item.location_text || item.geo_text || item.area || "-";
+      const progress = Number(item.progress_percent ?? item.progress ?? 0);
+      const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
+      const statusLabel = statusThai(statusRaw);
+      const images = normalizeTimelineImages(item);
 
-  return `
-    <div class="timeline-item">
-      <div class="timeline-head">
-        <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
-        <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
-      </div>
+      return `
+        <div class="timeline-item">
+          <div class="timeline-head">
+            <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
+            <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
+          </div>
 
-      <div class="timeline-badges">
-        ${statusBadge(statusRaw, statusLabel)}
-        <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
-      </div>
+          <div class="timeline-badges">
+            ${statusBadge(statusRaw, statusLabel)}
+            <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
+          </div>
 
-      <div class="timeline-note">${escapeHtml(note)}</div>
+          <div class="timeline-note">${escapeHtml(note)}</div>
 
-      <div class="timeline-mini-grid">
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
-          <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
+          <div class="timeline-mini-grid">
+            <div class="timeline-mini-card">
+              <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
+              <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
+            </div>
+            <div class="timeline-mini-card">
+              <div class="timeline-mini-label">กำลังรอ</div>
+              <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
+            </div>
+            <div class="timeline-mini-card">
+              <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
+              <div class="timeline-mini-value">${escapeHtml(locationText)}</div>
+            </div>
+          </div>
+
+          ${images.length ? `
+            <div class="timeline-images">
+              ${images.map(img => `
+                <a href="${escapeHtml(img)}" target="_blank" rel="noopener noreferrer">
+                  <img src="${escapeHtml(img)}" alt="timeline image" loading="lazy" />
+                </a>
+              `).join("")}
+            </div>
+          ` : ""}
         </div>
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">กำลังรอ</div>
-          <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
-        </div>
-        <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-          <div class="timeline-mini-value">${escapeHtml(locationText)}</div>
-        </div>
-      </div>
-
-      ${images.length ? `
-        <div class="timeline-images" style="margin-top:12px">
-          ${images.map(img => `
-            <a href="${escapeHtml(img)}" target="_blank" rel="noopener noreferrer">
-              <img src="${escapeHtml(img)}" alt="timeline image" loading="lazy" />
-            </a>
-          `).join("")}
-        </div>
-      ` : ""}
-    </div>
-  `;
-}
-async function loadCaseTimeline(){
-  const wrap = document.getElementById("case_updates_timeline");
-  if (!wrap) return;
-
-  let useCaseId = caseId;
-
-  try {
-    // 🔥 FIX: ถ้ามีแต่ case_code → หา id ก่อน
-    if (!useCaseId && caseCode) {
-      const caseData = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
-      useCaseId = caseData.id;
+      `;
     }
 
-    if (!useCaseId) {
-      wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
-      return;
+    async function loadCaseTimeline(){
+      const wrap = document.getElementById("case_updates_timeline");
+      if (!wrap) return;
+
+      let useCaseId = resolvedCaseId || caseId;
+
+      try {
+        if (!useCaseId && caseCode) {
+          const caseData = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+          useCaseId = caseData.id;
+          resolvedCaseId = caseData.id || "";
+        }
+
+        if (!useCaseId) {
+          wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
+          return;
+        }
+
+        wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
+
+        let updates = [];
+
+        try {
+          updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
+        } catch (primaryErr) {
+          console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
+
+          const caseData = await fetchJSON(`/api/case/${useCaseId}`);
+          updates =
+            caseData.updates ||
+            caseData.case_updates ||
+            caseData.timeline ||
+            [];
+        }
+
+        if (!Array.isArray(updates) || updates.length === 0) {
+          wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+          return;
+        }
+
+        wrap.innerHTML = updates.map(renderTimelineItem).join("");
+      } catch (err) {
+        console.error("LOAD TIMELINE ERROR:", err);
+        wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
+      }
     }
-
-    wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
-
-    let updates = [];
-
-    try {
-      updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
-    } catch (primaryErr) {
-      console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
-
-      const caseData = await fetchJSON(`/api/case/${useCaseId}`);
-      updates =
-        caseData.updates ||
-        caseData.case_updates ||
-        caseData.timeline ||
-        [];
-    }
-
-    if (!Array.isArray(updates) || updates.length === 0) {
-      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-      return;
-    }
-
-    wrap.innerHTML = updates.map(renderTimelineItem).join("");
-
-  } catch (err) {
-    console.error("LOAD TIMELINE ERROR:", err);
-    wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
-  }
-}
-
 
     function populateForm(data){
       const staffNameEl = document.getElementById("staffName");
@@ -1171,7 +1194,6 @@ async function loadCaseTimeline(){
         staffNameEl.value = data.assigned_to || "";
       }
 
-
       if (!formState.initialized || (!formState.editing.statusSelect && !formState.dirty.statusSelect)) {
         statusEl.value = nextStatus;
       }
@@ -1180,374 +1202,412 @@ async function loadCaseTimeline(){
         priorityEl.value = nextPriority;
       }
 
-if (projectEl && (!formState.initialized || (!formState.editing.projectSelect && !formState.dirty.projectSelect))) {
-  projectEl.value = nextProject;
-}
-      
+      if (projectEl && (!formState.initialized || (!formState.editing.projectSelect && !formState.dirty.projectSelect))) {
+        projectEl.value = nextProject;
+      }
+
       formState.initialized = true;
     }
 
-async function loadProjects(){
-  try{
-    const projects = await fetchJSON("/api/projects/options");
-    const select = document.getElementById("projectSelect");
-    if(!select) return;
+    async function loadProjects(){
+      try{
+        const projects = await fetchJSON("/api/projects/options");
+        const select = document.getElementById("projectSelect");
+        if(!select) return;
 
-    const currentValue = select.value;
-    select.innerHTML = '<option value="">- เลือกโครงการ -</option>';
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">- เลือกโครงการ -</option>';
 
-    (projects || []).forEach(item => {
-      const opt = document.createElement("option");
-      opt.value = item.value;
-      opt.textContent = item.label;
-      select.appendChild(opt);
-    });
+        (projects || []).forEach(item => {
+          const opt = document.createElement("option");
+          opt.value = item.value;
+          opt.textContent = item.label;
+          select.appendChild(opt);
+        });
 
-    if (currentValue) {
-      select.value = currentValue;
-    }
-  }catch(err){
-    console.error("LOAD PROJECTS ERROR:", err);
-  }
-}
-    
-async function loadCase(){
-  try{
-    let data;
-
-    if (caseId) {
-      data = await fetchJSON(`/api/case/${caseId}`);
-    } else if (caseCode) {
-      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
-    } else {
-      alert("ไม่พบ id หรือ case_code");
-      return;
-    }
-
-    document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
-    document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
-    document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
-    document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-
-    const locationTextEl = document.getElementById("location_text");
-    if (locationTextEl) {
-      const locationText =
-        data.location_text ||
-        (data.latitude && data.longitude
-          ? `${data.latitude}, ${data.longitude}`
-          : "-");
-
-      if (data.case_code && locationText !== "-") {
-        locationTextEl.innerHTML = `
-          <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
-             target="_blank"
-             rel="noopener"
-             style="color:#0b7c86;font-weight:700;text-decoration:none;">
-            ${escapeHtml(locationText)}
-          </a>
-        `;
-      } else {
-        locationTextEl.innerHTML = escapeHtml(locationText);
+        if (currentValue) {
+          select.value = currentValue;
+        }
+      }catch(err){
+        console.error("LOAD PROJECTS ERROR:", err);
       }
     }
 
-    document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
-    document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
-    document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
-    document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
-    document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
-    document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
+    async function loadCase(){
+      try{
+        let data;
 
-    const summaryCaseCodeEl = document.getElementById("summary_case_code");
-    if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
+        if (caseId) {
+          data = await fetchJSON(`/api/case/${caseId}`);
+        } else if (caseCode) {
+          data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+        } else {
+          alert("ไม่พบ id หรือ case_code");
+          return;
+        }
 
-    const summaryStatusEl = document.getElementById("summary_status");
-    if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
+        resolvedCaseId = data.id || resolvedCaseId || "";
 
-    const summaryPriorityEl = document.getElementById("summary_priority");
-    if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
+        document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
+        document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
+        document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
+        document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
 
-    const summaryAssignedToEl = document.getElementById("summary_assigned_to");
-    if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
+        const locationTextEl = document.getElementById("location_text");
+        if (locationTextEl) {
+          const locationText =
+            data.location_text ||
+            (data.latitude && data.longitude
+              ? `${data.latitude}, ${data.longitude}`
+              : "-");
 
-    const latest = data.latest_update || data || {};
+          if (data.case_code && locationText !== "-") {
+            locationTextEl.innerHTML = `
+              <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
+                 target="_blank"
+                 rel="noopener"
+                 style="color:#0b7c86;font-weight:700;text-decoration:none;">
+                ${escapeHtml(locationText)}
+              </a>
+            `;
+          } else {
+            locationTextEl.innerHTML = escapeHtml(locationText);
+          }
+        }
 
-    document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
-    document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
+        document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
+        document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
+        document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
+        document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
+        document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
+        document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
 
-    const latestByText = escapeHtml(latest.updated_by || "-");
-    const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
-    document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
-      ? latestByText
-      : `${latestByText}<span class="line-badge">LINE</span>`;
+        const summaryCaseCodeEl = document.getElementById("summary_case_code");
+        if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 
-    document.getElementById("latest_at").innerHTML = escapeHtml(
-      latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
-    );
+        const summaryStatusEl = document.getElementById("summary_status");
+        if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
 
-    document.getElementById("latest_note").innerHTML = escapeHtml(
-      latest.note || latest.message || latest.update_note || "-"
-    );
+        const summaryPriorityEl = document.getElementById("summary_priority");
+        if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
 
-    const stepHelpMap = {
-      "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
-      "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
-      "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
-      "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
-      "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
-      "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
-      "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
-    };
+        const summaryAssignedToEl = document.getElementById("summary_assigned_to");
+        if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
 
-    const latestStepHelpEl = document.getElementById("latest_step_help");
-    if (latestStepHelpEl) {
-      latestStepHelpEl.innerText =
-        stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
+        const latest = data.latest_update || data || {};
+
+        document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
+        document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
+
+        const latestByText = escapeHtml(latest.updated_by || "-");
+        const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
+        document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
+          ? latestByText
+          : `${latestByText}<span class="line-badge">LINE</span>`;
+
+        document.getElementById("latest_at").innerHTML = escapeHtml(
+          latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
+        );
+
+        document.getElementById("latest_note").innerHTML = escapeHtml(
+          latest.note || latest.message || latest.update_note || "-"
+        );
+
+        const stepHelpMap = {
+          "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
+          "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
+          "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
+          "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
+          "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
+          "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
+          "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
+        };
+
+        const latestStepHelpEl = document.getElementById("latest_step_help");
+        if (latestStepHelpEl) {
+          latestStepHelpEl.innerText =
+            stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
+        }
+
+        const percent = Number(latest.progress_percent || 0);
+        document.getElementById("progress_bar").style.width = percent + "%";
+        document.getElementById("progress_text").innerText = percent + "%";
+
+        updateWarRoomCommandBar(data);
+        renderWarRoomMap(data);
+        populateForm(data);
+      } catch(err) {
+        alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
+      }
     }
 
-    const percent = Number(latest.progress_percent || 0);
-    document.getElementById("progress_bar").style.width = percent + "%";
-    document.getElementById("progress_text").innerText = percent + "%";
-
-    updateWarRoomCommandBar(data);
-    renderWarRoomMap(data);
-    
-    populateForm(data);
-  } catch(err) {
-    alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
-  }
-}
+    function getTargetCaseIdOrAlert(){
+      const targetCaseId = resolvedCaseId || caseId;
+      if (!targetCaseId) {
+        alert("ไม่พบ case id สำหรับการบันทึก");
+        return "";
+      }
+      return targetCaseId;
+    }
 
     async function saveCaseSettings(){
+      const targetCaseId = getTargetCaseIdOrAlert();
+      if (!targetCaseId) return;
+
       const staff_name = document.getElementById("staffName").value.trim();
       const status = document.getElementById("statusSelect").value;
       const priority = document.getElementById("prioritySelect").value;
       const project_ref = document.getElementById("projectSelect").value;
+
       try{
-        await fetchJSON(`/api/case/${caseId}/update`, {
+        await fetchJSON(`/api/case/${targetCaseId}/update`, {
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({staff_name,status,priority,project_ref})
         });
         showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
         resetFormLocking();
-        await loadCase();
-      }catch(err){ alert("บันทึกไม่สำเร็จ: " + err.message); }
+        await refreshCaseView();
+      }catch(err){
+        alert("บันทึกไม่สำเร็จ: " + err.message);
+      }
     }
 
     async function assignCase(){
+      const targetCaseId = getTargetCaseIdOrAlert();
+      if (!targetCaseId) return;
+
       const staff_name = document.getElementById("staffName").value.trim() || "ทีมงาน";
       let status = document.getElementById("statusSelect").value;
       const priority = document.getElementById("prioritySelect").value;
- const project_ref = document.getElementById("projectSelect").value;
+      const project_ref = document.getElementById("projectSelect").value;
 
       if(status === "new") status = "in_progress";
+
       try{
-        await fetchJSON(`/api/case/${caseId}/assign`, {
+        await fetchJSON(`/api/case/${targetCaseId}/assign`, {
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body: JSON.stringify({staff_name,status,priority,project_ref})
         });
         showToast("รับเคสเรียบร้อย", "ระบบอัปเดตผู้รับเคสและสถานะแล้ว");
         resetFormLocking();
-        await loadCase();
-      }catch(err){ alert("รับเคสไม่สำเร็จ: " + err.message); }
+        await refreshCaseView();
+      }catch(err){
+        alert("รับเคสไม่สำเร็จ: " + err.message);
+      }
     }
 
     async function closeCase(){
+      const targetCaseId = getTargetCaseIdOrAlert();
+      if (!targetCaseId) return;
       if(!confirm("ยืนยันปิดเคสนี้ใช่หรือไม่?")) return;
+
       try{
-        await fetchJSON(`/api/case/${caseId}/close`, {method:"POST"});
+        await fetchJSON(`/api/case/${targetCaseId}/close`, {method:"POST"});
         showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
         resetFormLocking();
-        await loadCase();
-      }catch(err){ alert("ปิดเคสไม่สำเร็จ: " + err.message); }
+        await refreshCaseView();
+      }catch(err){
+        alert("ปิดเคสไม่สำเร็จ: " + err.message);
+      }
     }
 
     function resetForm(){
-  document.getElementById("staffName").value = "";
-  document.getElementById("statusSelect").value = "new";
-  document.getElementById("prioritySelect").value = "normal";
-  const projectEl = document.getElementById("projectSelect");
-  if (projectEl) projectEl.value = "";
-  resetFormLocking();
-  formState.initialized = true;
-}
+      document.getElementById("staffName").value = "";
+      document.getElementById("statusSelect").value = "new";
+      document.getElementById("prioritySelect").value = "normal";
+      const projectEl = document.getElementById("projectSelect");
+      if (projectEl) projectEl.value = "";
+      resetFormLocking();
+      formState.initialized = true;
+    }
+
     async function refreshCaseView(){
       await loadCase();
       await loadCaseTimeline();
+      if (caseCode) {
+        await loadWorkFiles(caseCode);
+      }
     }
-      
+
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
-      eventSource.addEventListener("connected", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
-      eventSource.addEventListener("heartbeat", ()=> document.getElementById("liveStatus").textContent = "เชื่อมต่อข้อมูลสดแล้ว");
+      eventSource.addEventListener("connected", ()=> {
+        const el = document.getElementById("liveStatus");
+        if (el) el.textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+      });
+      eventSource.addEventListener("heartbeat", ()=> {
+        const el = document.getElementById("liveStatus");
+        if (el) el.textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+      });
+
       const onChange = (ev)=>{
         const data = JSON.parse(ev.data || "{}");
+        const sameCase =
+          (resolvedCaseId && String(data.case_id) === String(resolvedCaseId)) ||
+          (caseId && String(data.case_id) === String(caseId)) ||
+          (caseCode && String(data.case_code) === String(caseCode));
 
-        
-        if(String(data.case_id) === String(caseId)){ 
-          refreshCaseView().catch(console.error); 
+        if (sameCase){
+          refreshCaseView().catch(console.error);
           showToast(
-          "มีอัปเดตจากระบบ",
-          (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect) 
-          ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้" 
-          : (data.case_code || "เคสนี้ถูกอัปเดต")
+            "มีอัปเดตจากระบบ",
+            (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect)
+              ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้"
+              : (data.case_code || "เคสนี้ถูกอัปเดต")
           );
         }
-
       };
+
       eventSource.addEventListener("case_updated", onChange);
       eventSource.addEventListener("case_created", onChange);
-      eventSource.onerror = ()=> document.getElementById("liveStatus").textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
+      eventSource.onerror = ()=> {
+        const el = document.getElementById("liveStatus");
+        if (el) el.textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
+      };
     }
 
-function focusWarRoomMap(){
-  const el = document.getElementById("warroomMapPanel");
-  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-}
-
-function scrollToTimelinePanel(){
-  const el = document.getElementById("case_updates_timeline");
-  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-}
-
-function scrollToFilesPanel(){
-  const el = document.getElementById("workFilesSection");
-  if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-}
-
-function updateWarRoomCommandBar(data){
-  const statusEl = document.getElementById("wr_badge_status");
-  const priorityEl = document.getElementById("wr_badge_priority");
-  const caseCodeEl = document.getElementById("wr_badge_case_code");
-
-  if (statusEl) {
-    statusEl.className = `badge status-${["new","in_progress","done","cancelled"].includes(data?.status) ? data.status : "cancelled"}`;
-    statusEl.textContent = `สถานะ: ${statusThai(data?.status) || "-"}`;
-  }
-
-  if (priorityEl) {
-    const p = data?.priority === "urgent" ? "urgent" : "normal";
-    priorityEl.className = `badge priority-${p}`;
-    priorityEl.textContent = `ระดับ: ${data?.priority_th || priorityThai(data?.priority) || "-"}`;
-  }
-
-  if (caseCodeEl) {
-    caseCodeEl.className = "badge priority-normal";
-    caseCodeEl.textContent = `เคส: ${data?.case_code || "-"}`;
-  }
-}
-
-function renderWarRoomMap(data){
-  const box = document.getElementById("warroomMapBody");
-  const meta = document.getElementById("warroomMapMeta");
-  const link = document.getElementById("warroomMapLink");
-
-  if (!box || !meta || !link) return;
-
-  const lat = Number(data?.latitude);
-  const lng = Number(data?.longitude);
-  const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
-
-  if (!hasCoords) {
-    box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
-    meta.textContent = "พิกัด: -";
-    link.href = "#";
-    link.style.pointerEvents = "none";
-    link.style.opacity = ".55";
-    return;
-  }
-
-  const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-  const googleUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-
-  box.innerHTML = `
-    <iframe
-      class="warroom-map-frame"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      src="${mapUrl}">
-    </iframe>
-  `;
-
-  meta.textContent = `พิกัด: ${lat}, ${lng}`;
-  link.href = googleUrl;
-  link.style.pointerEvents = "auto";
-  link.style.opacity = "1";
-}
-    
-registerFormLocking();
-loadProjects().then(async () => {
-  await refreshCaseView();
-  if (caseCode) {
-    loadWorkFiles(caseCode);
-  }
-});
-    
-connectRealtime();
-
-async function loadWorkFiles(caseCode) {
-  const box = document.getElementById("workFilesSection");
-  if (!box) return;
-
-  box.innerHTML = "กำลังโหลดไฟล์...";
-
-  try {
-    const res = await fetch(`/api/work-uploads/files/${encodeURIComponent(caseCode)}`);
-    const json = await res.json();
-
-    if (!res.ok || !json.ok) {
-      throw new Error(json.error || "โหลดไฟล์ไม่สำเร็จ");
+    function focusWarRoomMap(){
+      const el = document.getElementById("warroomMapPanel");
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
     }
 
-    const files = json.files || [];
-
-    if (!files.length) {
-      box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
-      return;
+    function scrollToTimelinePanel(){
+      const el = document.getElementById("case_updates_timeline");
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
     }
 
-    const imageFiles = files.filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f.name));
-    const docFiles = files.filter(f => !/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+    function scrollToFilesPanel(){
+      const el = document.getElementById("workFilesSection");
+      if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
 
-    box.innerHTML = `
-      <div class="work-files-wrap">
+    function updateWarRoomCommandBar(data){
+      const statusEl = document.getElementById("wr_badge_status");
+      const priorityEl = document.getElementById("wr_badge_priority");
+      const caseCodeEl = document.getElementById("wr_badge_case_code");
 
-        ${imageFiles.length ? `
-          <div class="work-file-group">
-            <h4>📸 รูปภาพ</h4>
-            <div class="work-file-grid">
-              ${imageFiles.map(file => `
-                <a class="work-image-card" href="${file.url}" target="_blank">
-                  <img src="${file.url}" />
-                  <div class="file-name">${file.name}</div>
-                </a>
-              `).join("")}
-            </div>
+      if (statusEl) {
+        statusEl.className = `badge status-${["new","in_progress","done","cancelled"].includes(data?.status) ? data.status : "cancelled"}`;
+        statusEl.textContent = `สถานะ: ${statusThai(data?.status) || "-"}`;
+      }
+
+      if (priorityEl) {
+        const p = data?.priority === "urgent" ? "urgent" : "normal";
+        priorityEl.className = `badge priority-${p}`;
+        priorityEl.textContent = `ระดับ: ${data?.priority_th || priorityThai(data?.priority) || "-"}`;
+      }
+
+      if (caseCodeEl) {
+        caseCodeEl.className = "badge priority-normal";
+        caseCodeEl.textContent = `เคส: ${data?.case_code || "-"}`;
+      }
+    }
+
+    function renderWarRoomMap(data){
+      const box = document.getElementById("warroomMapBody");
+      const meta = document.getElementById("warroomMapMeta");
+      const link = document.getElementById("warroomMapLink");
+
+      if (!box || !meta || !link) return;
+
+      const lat = Number(data?.latitude);
+      const lng = Number(data?.longitude);
+      const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
+
+      if (!hasCoords) {
+        box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
+        meta.textContent = "พิกัด: -";
+        link.href = "#";
+        link.style.pointerEvents = "none";
+        link.style.opacity = ".55";
+        return;
+      }
+
+      const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+      const googleUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      box.innerHTML = `
+        <iframe
+          class="warroom-map-frame"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="${mapUrl}">
+        </iframe>
+      `;
+
+      meta.textContent = `พิกัด: ${lat}, ${lng}`;
+      link.href = googleUrl;
+      link.style.pointerEvents = "auto";
+      link.style.opacity = "1";
+    }
+
+    async function loadWorkFiles(caseCodeValue) {
+      const box = document.getElementById("workFilesSection");
+      if (!box) return;
+
+      box.innerHTML = "กำลังโหลดไฟล์...";
+
+      try {
+        const res = await fetch(`/api/work-uploads/files/${encodeURIComponent(caseCodeValue)}`);
+        const json = await res.json();
+
+        if (!res.ok || !json.ok) {
+          throw new Error(json.error || "โหลดไฟล์ไม่สำเร็จ");
+        }
+
+        const files = json.files || [];
+
+        if (!files.length) {
+          box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
+          return;
+        }
+
+        const imageFiles = files.filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f.name));
+        const docFiles = files.filter(f => !/\.(jpg|jpeg|png|webp)$/i.test(f.name));
+
+        box.innerHTML = `
+          <div class="work-files-wrap">
+            ${imageFiles.length ? `
+              <div class="work-file-group">
+                <h4>📸 รูปภาพ</h4>
+                <div class="work-file-grid">
+                  ${imageFiles.map(file => `
+                    <a class="work-image-card" href="${file.url}" target="_blank" rel="noopener noreferrer">
+                      <img src="${file.url}" alt="${escapeHtml(file.name || 'image')}" />
+                      <div class="file-name">${escapeHtml(file.name)}</div>
+                    </a>
+                  `).join("")}
+                </div>
+              </div>
+            ` : ""}
+
+            ${docFiles.length ? `
+              <div class="work-file-group">
+                <h4>📄 เอกสาร</h4>
+                <div class="work-doc-list">
+                  ${docFiles.map(file => `
+                    <a class="work-doc-item" href="${file.url}" target="_blank" rel="noopener noreferrer">
+                      📎 ${escapeHtml(file.name)}
+                    </a>
+                  `).join("")}
+                </div>
+              </div>
+            ` : ""}
           </div>
-        ` : ""}
+        `;
+      } catch (err) {
+        console.error(err);
+        box.innerHTML = `❌ ${escapeHtml(err.message)}`;
+      }
+    }
 
-        ${docFiles.length ? `
-          <div class="work-file-group">
-            <h4>📄 เอกสาร</h4>
-            <div class="work-doc-list">
-              ${docFiles.map(file => `
-                <a class="work-doc-item" href="${file.url}" target="_blank">
-                  📎 ${file.name}
-                </a>
-              `).join("")}
-            </div>
-          </div>
-        ` : ""}
-
-      </div>
-    `;
-  } catch (err) {
-    console.error(err);
-    box.innerHTML = `❌ ${err.message}`;
-  }
-}    
-  </script>  
+    registerFormLocking();
+    loadProjects().then(async () => {
+      await refreshCaseView();
+    });
+    connectRealtime();
+  </script>
 </body>
 </html>

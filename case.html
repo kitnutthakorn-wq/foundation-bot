@@ -1503,48 +1503,100 @@
       }
     }
 
-    function renderWarRoomMapFromBestPoint(bestPoint){
-      const box = document.getElementById("warroomMapBody");
-      const meta = document.getElementById("warroomMapMeta");
-      const link = document.getElementById("warroomMapLink");
-      const sourceEl = document.getElementById("warroomMapSource");
+    function renderWarRoomMapAdvanced(caseData, timelineItems = []){
+  const box = document.getElementById("warroomMapBody");
+  const meta = document.getElementById("warroomMapMeta");
+  const link = document.getElementById("warroomMapLink");
+  const sourceEl = document.getElementById("warroomMapSource");
 
-      if (!box || !meta || !link || !sourceEl) return;
+  if (!box || !meta || !link || !sourceEl) return;
 
-      if (!bestPoint) {
-        currentMapCoords = null;
-        box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
-        meta.textContent = "พิกัด: -";
-        sourceEl.textContent = "แหล่งพิกัด: -";
-        link.href = "#";
-        link.style.pointerEvents = "none";
-        link.style.opacity = ".55";
-        lastMapSignature = getMapSignatureFromPoint(null);
-        return;
-      }
+  const points = [];
 
-      const mapUrl = `https://maps.google.com/maps?q=${bestPoint.lat},${bestPoint.lng}&z=15&output=embed`;
-      const googleUrl = `https://www.google.com/maps?q=${bestPoint.lat},${bestPoint.lng}`;
-      currentMapCoords = bestPoint;
-
-      box.innerHTML = `
-        <div class="map-update-pulse" title="จุดอัปเดตล่าสุด"></div>
-        <iframe
-          class="warroom-map-frame"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          src="${mapUrl}">
-        </iframe>
-      `;
-
-      meta.textContent = `พิกัด: ${bestPoint.lat}, ${bestPoint.lng}`;
-      sourceEl.textContent = `แหล่งพิกัด: ${bestPoint.sourceText || "-"}`;
-      link.href = googleUrl;
-      link.style.pointerEvents = "auto";
-      link.style.opacity = "1";
-      lastMapSignature = getMapSignatureFromPoint(bestPoint);
+  timelineItems.forEach(item => {
+    const gps = getTimelineLatLng(item);
+    if (gps) {
+      points.push({
+        lat: gps.lat,
+        lng: gps.lng,
+        updated_at: item.updated_at || item.created_at || "",
+        isLatest: false
+      });
     }
+  });
 
+  // sort newest → oldest
+  points.sort((a,b)=> new Date(b.updated_at) - new Date(a.updated_at));
+
+  if (points.length){
+    points[0].isLatest = true;
+  }
+
+  // fallback case
+  if (!points.length){
+    const lat = Number(caseData?.latitude);
+    const lng = Number(caseData?.longitude);
+    if (Number.isFinite(lat) && Number.isFinite(lng)){
+      points.push({lat,lng,isLatest:true});
+    }
+  }
+
+  if (!points.length){
+    box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัด</div>`;
+    return;
+  }
+
+  currentMapCoords = points[0];
+
+  const markersJS = points.map((p, i)=>`
+    const marker${i} = new google.maps.Marker({
+      position:{lat:${p.lat}, lng:${p.lng}},
+      map,
+      icon:{
+        path: google.maps.SymbolPath.CIRCLE,
+        scale:${p.isLatest ? 10 : 6},
+        fillColor:"${p.isLatest ? "#22c55e" : "#2563eb"}",
+        fillOpacity:1,
+        strokeWeight:2,
+        strokeColor:"#fff"
+      }
+    });
+  `).join("");
+
+  const routePath = points.map(p=>`{lat:${p.lat}, lng:${p.lng}}`).join(",");
+
+  box.innerHTML = `
+    <div id="mapCanvas" style="width:100%;height:320px;"></div>
+  `;
+
+  const script = document.createElement("script");
+  script.innerHTML = `
+    (function(){
+      const map = new google.maps.Map(document.getElementById("mapCanvas"), {
+        center:{lat:${points[0].lat}, lng:${points[0].lng}},
+        zoom:15
+      });
+
+      ${markersJS}
+
+      const route = new google.maps.Polyline({
+        path:[${routePath}],
+        geodesic:true,
+        strokeColor:"#0b7c86",
+        strokeOpacity:0.9,
+        strokeWeight:4
+      });
+      route.setMap(map);
+
+      window._warroomMap = map;
+    })();
+  `;
+  document.body.appendChild(script);
+
+  meta.textContent = `พิกัดล่าสุด: ${points[0].lat}, ${points[0].lng}`;
+  sourceEl.textContent = "แหล่งพิกัด: Timeline Route";
+  link.href = `https://www.google.com/maps?q=${points[0].lat},${points[0].lng}`;
+}
     function renderWarRoomMap(caseData){
       const bestPoint = getBestMapCoordinates(caseData, latestTimelineCache);
       renderWarRoomMapFromBestPoint(bestPoint);

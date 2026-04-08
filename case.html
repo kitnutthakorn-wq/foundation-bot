@@ -1598,9 +1598,8 @@
   link.href = `https://www.google.com/maps?q=${points[0].lat},${points[0].lng}`;
 }
     function renderWarRoomMap(caseData){
-      const bestPoint = getBestMapCoordinates(caseData, latestTimelineCache);
-      renderWarRoomMapFromBestPoint(bestPoint);
-    }
+  renderWarRoomMapAdvanced(caseData, latestTimelineCache);
+}
 
     async function loadCaseTimeline(){
       const wrap = document.getElementById("case_updates_timeline");

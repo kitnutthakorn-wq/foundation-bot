@@ -9,6 +9,14 @@ const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
 
 const upload = multer({ storage: multer.memoryStorage() });
+const caseInfoUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024,
+    files: 10
+  }
+});
+
 
 const supabase = createClient(
   process.env.SUPABASE_URL,

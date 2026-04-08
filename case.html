@@ -507,7 +507,177 @@ button:active{transform:translateY(0)}
   text-decoration: none;
   color: #16304e;
 }
-  
+
+/* ===== WAR ROOM UI : STEP 1 SAFE LAYOUT ===== */
+.warroom-shell{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.warroom-command{
+  background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
+  color:#fff;
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 14px 28px rgba(18,36,58,.12);
+  margin-bottom:16px;
+}
+
+.warroom-command-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.warroom-command-left{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.warroom-kicker{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.04em;
+  opacity:.92;
+}
+
+.warroom-title{
+  font-size:26px;
+  font-weight:800;
+  line-height:1.2;
+  margin:0;
+}
+
+.warroom-sub{
+  font-size:13px;
+  opacity:.9;
+  line-height:1.55;
+}
+
+.warroom-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+
+.warroom-badges .badge{
+  box-shadow:none;
+}
+
+.warroom-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.warroom-actions button{
+  min-width:140px;
+}
+
+.warroom-grid{
+  display:grid;
+  grid-template-columns:1.05fr 1.15fr 0.92fr;
+  gap:16px;
+  align-items:start;
+}
+
+.warroom-col{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  min-width:0;
+}
+
+.warroom-sticky{
+  position:sticky;
+  top:16px;
+}
+
+.warroom-map-card{
+  min-height:420px;
+}
+
+.warroom-map-body{
+  min-height:320px;
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+  overflow:hidden;
+  background:#f8fafc;
+}
+
+.warroom-map-frame{
+  width:100%;
+  height:320px;
+  border:0;
+  display:block;
+}
+
+.warroom-map-empty{
+  min-height:320px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  color:#6b7280;
+  text-align:center;
+  line-height:1.6;
+}
+
+.warroom-map-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+  font-size:13px;
+  color:#6b7280;
+}
+
+.warroom-map-link{
+  color:#0b7c86;
+  font-weight:800;
+  text-decoration:none;
+}
+
+@media (max-width:1200px){
+  .warroom-grid{
+    grid-template-columns:1fr;
+  }
+
+  .warroom-sticky{
+    position:static;
+  }
+
+  .warroom-map-card{
+    min-height:auto;
+  }
+}
+
+@media (max-width:640px){
+  .warroom-command{
+    padding:16px;
+    border-radius:18px;
+  }
+
+  .warroom-title{
+    font-size:22px;
+  }
+
+  .warroom-actions{
+    width:100%;
+  }
+
+  .warroom-actions button{
+    width:100%;
+  }
+}
+    
   </style>
 </head>
 <body>

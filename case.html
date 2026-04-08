@@ -2144,6 +2144,12 @@ function safeAutoFocusMap(lat, lng){
       }
     }
 
+document.addEventListener("click", function(e){
+  if (e.target.closest(".no-map-focus")){
+    e.stopPropagation();
+  }
+}, true);
+    
     registerFormLocking();
     bindTimelineUserInteraction();
     setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");

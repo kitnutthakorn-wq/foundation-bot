@@ -2053,14 +2053,14 @@ function highlightTimelineItem(timelineId){
   }, 1500);
 }
     
-function safeAutoFocusMap(lat, lng){
+function safeAutoFocusMap(lat, lng, timelineId = ""){
   if (!lat || !lng) return;
 
   let retry = 0;
 
   const tryFocus = () => {
     if (window._warroomMap){
-      focusMapToPoint(lat, lng);
+      focusMapToPoint(lat, lng, timelineId);
     } else if (retry < 10){
       retry++;
       setTimeout(tryFocus, 120);

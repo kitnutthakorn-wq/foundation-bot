@@ -5,8 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>รายละเอียดเคส V16 PRO MAX | คนช่วยฅน</title>
   <style>
-    :root{--brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--card:#fff;--line:#dbe3ea;--muted:#6b7280;--shadow:0 10px 24px rgba(18,36,58,.08)}
+    :root{
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --accent:#1f8f4d;
+      --bg:#edf2f5;
+      --card:#fff;
+      --line:#dbe3ea;
+      --muted:#6b7280;
+      --shadow:0 10px 24px rgba(18,36,58,.08)
+    }
     *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
     body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#16304e}
     .container{max-width:1040px;margin:0 auto;padding:18px 18px 96px}
     .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:16px}
@@ -32,7 +42,11 @@
     .priority-urgent{background:#fee2e2;color:#b91c1c}
     .live{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:10px 14px;border-radius:999px;box-shadow:var(--shadow)}
     .live-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;animation:pulse 1.6s infinite}
-    @keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}100%{opacity:.4;transform:scale(.9)}}
+    @keyframes pulse{
+      0%{opacity:.4;transform:scale(.9)}
+      50%{opacity:1;transform:scale(1.1)}
+      100%{opacity:.4;transform:scale(.9)}
+    }
     .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:9999}
     .toast{background:#163c72;color:#fff;padding:14px 16px;border-radius:16px;box-shadow:var(--shadow);min-width:260px;max-width:360px}
     .mobile-actions{display:none}
@@ -311,7 +325,7 @@
       .panel-title{font-size:18px}
     }
 
-    /* ===== TIMELINE PANEL : GOLDEN SAFE PATCH ===== */
+    /* ===== TIMELINE PANEL ===== */
     .timeline-list{
       display:flex;
       flex-direction:column;
@@ -331,6 +345,8 @@
       background:#fff;
       padding:16px;
       box-shadow:none;
+      scroll-margin-top:24px;
+      transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;
     }
     .timeline-head{
       display:flex;
@@ -395,12 +411,10 @@
       gap:10px;
       margin-top:12px;
     }
-
     .timeline-images a{
       display:block;
       text-decoration:none;
     }
-
     .timeline-images img{
       width:110px;
       height:110px;
@@ -411,48 +425,16 @@
       box-shadow:0 6px 14px rgba(18,36,58,.08);
       transition:all .15s ease;
     }
-
     .timeline-images img:hover{
       transform:translateY(-2px);
       box-shadow:0 10px 20px rgba(18,36,58,.12);
     }
 
-    .timeline-files{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .timeline-file-link{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border:1px solid #e5e7eb;
-      border-radius:12px;
-      background:#f8fafc;
-      color:#16304e;
-      text-decoration:none;
-      font-size:14px;
-      font-weight:600;
-    }
-
-    .timeline-file-link:hover{
-      background:#eef6ff;
-      border-color:#cfe0f5;
-    }
-
     @media (max-width:900px){
-      .timeline-mini-grid{
-        grid-template-columns:1fr 1fr;
-      }
+      .timeline-mini-grid{grid-template-columns:1fr 1fr}
     }
-
     @media (max-width:640px){
-      .timeline-mini-grid{
-        grid-template-columns:1fr;
-      }
+      .timeline-mini-grid{grid-template-columns:1fr}
       .timeline-images img{
         width:92px;
         height:92px;
@@ -464,18 +446,15 @@
       display: grid;
       gap: 16px;
     }
-
     .work-file-group h4 {
       margin: 0 0 10px;
       font-size: 16px;
     }
-
     .work-file-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 12px;
     }
-
     .work-image-card {
       display: block;
       text-decoration: none;
@@ -484,23 +463,19 @@
       border: 1px solid #e5e7eb;
       background: #fff;
     }
-
     .work-image-card img {
       width: 100%;
       height: 140px;
       object-fit: cover;
     }
-
     .file-name {
       padding: 8px;
       font-size: 12px;
     }
-
     .work-doc-list {
       display: grid;
       gap: 8px;
     }
-
     .work-doc-item {
       padding: 10px;
       border-radius: 10px;
@@ -509,13 +484,12 @@
       color: #16304e;
     }
 
-    /* ===== WAR ROOM UI : STEP 1 SAFE LAYOUT ===== */
+    /* ===== WAR ROOM UI ===== */
     .warroom-shell{
       display:flex;
       flex-direction:column;
       gap:16px;
     }
-
     .warroom-command{
       background:linear-gradient(135deg,#0b7c86 0%, #163c72 100%);
       color:#fff;
@@ -524,7 +498,6 @@
       box-shadow:0 14px 28px rgba(18,36,58,.12);
       margin-bottom:16px;
     }
-
     .warroom-command-top{
       display:flex;
       justify-content:space-between;
@@ -532,93 +505,79 @@
       gap:14px;
       flex-wrap:wrap;
     }
-
     .warroom-command-left{
       display:flex;
       flex-direction:column;
       gap:8px;
     }
-
     .warroom-kicker{
       font-size:12px;
       font-weight:800;
       letter-spacing:.04em;
       opacity:.92;
     }
-
     .warroom-title{
       font-size:26px;
       font-weight:800;
       line-height:1.2;
       margin:0;
     }
-
     .warroom-sub{
       font-size:13px;
       opacity:.9;
       line-height:1.55;
     }
-
     .warroom-badges{
       display:flex;
       flex-wrap:wrap;
       gap:8px;
       margin-top:10px;
     }
-
     .warroom-badges .badge{
       box-shadow:none;
     }
-
     .warroom-actions{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       align-items:center;
     }
-
     .warroom-actions button{
       min-width:140px;
     }
-
     .warroom-grid{
       display:grid;
       grid-template-columns:1.05fr 1.15fr 0.92fr;
       gap:16px;
       align-items:start;
     }
-
     .warroom-col{
       display:flex;
       flex-direction:column;
       gap:16px;
       min-width:0;
     }
-
     .warroom-sticky{
       position:sticky;
       top:16px;
     }
-
     .warroom-map-card{
       min-height:420px;
     }
-
     .warroom-map-body{
       min-height:320px;
       border:1px solid #e5e7eb;
       border-radius:18px;
       overflow:hidden;
       background:#f8fafc;
+      position:relative;
     }
-
     .warroom-map-frame{
       width:100%;
       height:320px;
       border:0;
       display:block;
     }
-
     .warroom-map-empty{
       min-height:320px;
       display:flex;
@@ -629,7 +588,6 @@
       text-align:center;
       line-height:1.6;
     }
-
     .warroom-map-meta{
       display:flex;
       justify-content:space-between;
@@ -639,44 +597,114 @@
       font-size:13px;
       color:#6b7280;
     }
-
     .warroom-map-link{
       color:#0b7c86;
       font-weight:800;
       text-decoration:none;
     }
-
-    @media (max-width:1200px){
-      .warroom-grid{
-        grid-template-columns:1fr;
-      }
-
-      .warroom-sticky{
-        position:static;
-      }
-
-      .warroom-map-card{
-        min-height:auto;
-      }
+    .warroom-map-source{
+      font-weight:800;
+      color:#0b7c86;
     }
 
+    @media (max-width:1200px){
+      .warroom-grid{grid-template-columns:1fr}
+      .warroom-sticky{position:static}
+      .warroom-map-card{min-height:auto}
+    }
     @media (max-width:640px){
       .warroom-command{
         padding:16px;
         border-radius:18px;
       }
+      .warroom-title{font-size:22px}
+      .warroom-actions{width:100%}
+      .warroom-actions button{width:100%}
+    }
 
-      .warroom-title{
-        font-size:22px;
-      }
+    /* ===== STEP 2 : REALTIME PRO MAX++ ===== */
+    .timeline-item.is-latest{
+      border-left-color:#1f8f4d;
+      box-shadow:0 0 0 2px rgba(31,143,77,.10), 0 12px 24px rgba(18,36,58,.08);
+    }
+    .timeline-item.flash-sync{
+      animation:timelineFlash 1.35s ease;
+    }
+    @keyframes timelineFlash{
+      0%{transform:scale(.995); box-shadow:0 0 0 0 rgba(11,124,134,.00)}
+      30%{transform:scale(1.005); box-shadow:0 0 0 4px rgba(11,124,134,.10)}
+      100%{transform:scale(1); box-shadow:0 0 0 0 rgba(11,124,134,.00)}
+    }
+    .warroom-map-body.flash-sync{
+      animation:mapFlash 1.35s ease;
+    }
+    @keyframes mapFlash{
+      0%{box-shadow:0 0 0 0 rgba(11,124,134,0)}
+      35%{box-shadow:0 0 0 4px rgba(11,124,134,.14)}
+      100%{box-shadow:0 0 0 0 rgba(11,124,134,0)}
+    }
+    .live-sync-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#ecfeff;
+      color:#0f766e;
+      border:1px solid #a5f3fc;
+      font-size:12px;
+      font-weight:800;
+    }
+    .latest-update-banner{
+      display:none;
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #d1fae5;
+      background:#f0fdf4;
+      color:#166534;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .latest-update-banner.show{
+      display:block;
+    }
 
-      .warroom-actions{
-        width:100%;
-      }
-
-      .warroom-actions button{
-        width:100%;
-      }
+    /* ===== STEP 3 : LATEST GPS + AUTO FOCUS ===== */
+    .timeline-item.gps-highlight{
+      border-left-color:#2563eb;
+    }
+    .warroom-focus-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      background:#eff6ff;
+      color:#1d4ed8;
+      border:1px solid #bfdbfe;
+    }
+    .map-update-pulse{
+      position:absolute;
+      right:14px;
+      top:14px;
+      width:14px;
+      height:14px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 0 rgba(34,197,94,.5);
+      animation:markerPulse 1.8s infinite;
+      z-index:2;
+    }
+    @keyframes markerPulse{
+      0%{transform:scale(.9); box-shadow:0 0 0 0 rgba(34,197,94,.45)}
+      70%{transform:scale(1.15); box-shadow:0 0 0 14px rgba(34,197,94,0)}
+      100%{transform:scale(.9); box-shadow:0 0 0 0 rgba(34,197,94,0)}
+    }
+    .timeline-auto-focus{
+      outline:3px solid rgba(37,99,235,.14);
     }
   </style>
 </head>
@@ -717,10 +745,11 @@
           </div>
 
           <div class="warroom-actions">
-            <button class="secondary" onclick="refreshCaseView()">รีเฟรช War Room</button>
+            <button class="secondary" onclick="softRefreshWarRoom('manual')">รีเฟรช War Room</button>
             <button class="secondary" onclick="focusWarRoomMap()">เปิดแผนที่</button>
             <button class="secondary" onclick="scrollToTimelinePanel()">ไป Timeline</button>
             <button class="secondary" onclick="scrollToFilesPanel()">ไปไฟล์แนบ</button>
+            <div id="warroomLiveChip" class="live-sync-chip">● Realtime พร้อมทำงาน</div>
           </div>
         </div>
       </div>
@@ -820,7 +849,7 @@
           <div class="card panel-card warroom-map-card" id="warroomMapPanel">
             <div class="panel-header">
               <h2 class="panel-title">แผนที่ปฏิบัติการ</h2>
-              <div class="panel-sub">พิกัดเคสหลักและการเข้าถึงตำแหน่งหน้างานแบบรวดเร็ว</div>
+              <div class="panel-sub">พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</div>
             </div>
 
             <div class="warroom-map-body" id="warroomMapBody">
@@ -829,6 +858,7 @@
 
             <div class="warroom-map-meta">
               <div id="warroomMapMeta">พิกัด: -</div>
+              <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
               <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
             </div>
           </div>
@@ -838,6 +868,11 @@
               <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
               <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
             </div>
+
+            <div id="latestUpdateBanner" class="latest-update-banner">
+              ยังไม่มีอัปเดตล่าสุด
+            </div>
+
             <div id="case_updates_timeline" class="timeline-list">
               <div class="timeline-empty">กำลังโหลด Timeline...</div>
             </div>
@@ -935,8 +970,18 @@
     const params = new URLSearchParams(window.location.search);
     const caseId = params.get("id") || "";
     const caseCode = params.get("case_code") || "";
+
     let resolvedCaseId = caseId || "";
     let eventSource = null;
+
+    let lastRealtimeAt = 0;
+    let lastTimelineSignature = "";
+    let lastMapSignature = "";
+    let lastFocusedTimelineId = "";
+    let latestTimelineCache = [];
+    let currentMapCoords = null;
+    let userTimelineInteracting = false;
+    let userTimelineInteractionTimer = null;
 
     function statusThai(status) {
       const s = String(status || '').trim().toLowerCase();
@@ -990,6 +1035,23 @@
       bind("statusSelect", "change");
       bind("prioritySelect", "change");
       bind("projectSelect", "change");
+    }
+
+    function bindTimelineUserInteraction(){
+      const wrap = document.getElementById("case_updates_timeline");
+      if (!wrap) return;
+
+      const markInteraction = () => {
+        userTimelineInteracting = true;
+        clearTimeout(userTimelineInteractionTimer);
+        userTimelineInteractionTimer = setTimeout(() => {
+          userTimelineInteracting = false;
+        }, 6000);
+      };
+
+      wrap.addEventListener("wheel", markInteraction, { passive: true });
+      wrap.addEventListener("touchstart", markInteraction, { passive: true });
+      wrap.addEventListener("pointerdown", markInteraction);
     }
 
     function resetFormLocking() {
@@ -1079,7 +1141,57 @@
       return singleFields.filter(Boolean).map(String);
     }
 
-    function renderTimelineItem(item){
+    function getTimelineLatLng(item){
+      const lat = Number(
+        item?.latitude ??
+        item?.lat ??
+        item?.gps_lat ??
+        item?.location_lat
+      );
+      const lng = Number(
+        item?.longitude ??
+        item?.lng ??
+        item?.gps_lng ??
+        item?.location_lng
+      );
+
+      if (Number.isFinite(lat) && Number.isFinite(lng)) {
+        return { lat, lng };
+      }
+      return null;
+    }
+
+    function getBestMapCoordinates(caseData, timelineItems = []){
+      for (const item of timelineItems) {
+        const point = getTimelineLatLng(item);
+        if (point) {
+          return {
+            lat: point.lat,
+            lng: point.lng,
+            source: "timeline",
+            sourceText: "Timeline ล่าสุด",
+            item
+          };
+        }
+      }
+
+      const caseLat = Number(caseData?.latitude);
+      const caseLng = Number(caseData?.longitude);
+
+      if (Number.isFinite(caseLat) && Number.isFinite(caseLng)) {
+        return {
+          lat: caseLat,
+          lng: caseLng,
+          source: "case",
+          sourceText: "เคสหลัก",
+          item: null
+        };
+      }
+
+      return null;
+    }
+
+    function renderTimelineItem(item, idx = 0){
       const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
       const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
       const note = item.note || item.message || item.update_note || "-";
@@ -1090,9 +1202,16 @@
       const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
       const statusLabel = statusThai(statusRaw);
       const images = normalizeTimelineImages(item);
+      const gps = getTimelineLatLng(item);
+      const itemId = item.id || `${updatedAt || ""}_${idx}`;
+      const isGpsItem = !!gps;
 
       return `
-        <div class="timeline-item">
+        <div
+          class="timeline-item ${isGpsItem ? 'gps-highlight' : ''}"
+          data-timeline-id="${escapeHtml(itemId)}"
+          data-updated-at="${escapeHtml(updatedAt || '')}"
+        >
           <div class="timeline-head">
             <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
             <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
@@ -1101,6 +1220,7 @@
           <div class="timeline-badges">
             ${statusBadge(statusRaw, statusLabel)}
             <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
+            ${isGpsItem ? `<span class="warroom-focus-badge">📍 มีพิกัดล่าสุด</span>` : ""}
           </div>
 
           <div class="timeline-note">${escapeHtml(note)}</div>
@@ -1116,7 +1236,10 @@
             </div>
             <div class="timeline-mini-card">
               <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-              <div class="timeline-mini-value">${escapeHtml(locationText)}</div>
+              <div class="timeline-mini-value">
+                ${escapeHtml(locationText)}
+                ${isGpsItem ? `<br><span class="warroom-focus-badge">Lat ${escapeHtml(String(gps.lat))} / Lng ${escapeHtml(String(gps.lng))}</span>` : ""}
+              </div>
             </div>
           </div>
 
@@ -1131,6 +1254,300 @@
           ` : ""}
         </div>
       `;
+    }
+
+    function setWarRoomLiveChip(text, mode = "idle"){
+      const el = document.getElementById("warroomLiveChip");
+      if (!el) return;
+
+      el.textContent = text;
+
+      if (mode === "live") {
+        el.style.background = "#ecfeff";
+        el.style.color = "#0f766e";
+        el.style.borderColor = "#a5f3fc";
+      } else if (mode === "syncing") {
+        el.style.background = "#eff6ff";
+        el.style.color = "#1d4ed8";
+        el.style.borderColor = "#bfdbfe";
+      } else if (mode === "warn") {
+        el.style.background = "#fff7ed";
+        el.style.color = "#c2410c";
+        el.style.borderColor = "#fed7aa";
+      } else {
+        el.style.background = "#f3f4f6";
+        el.style.color = "#374151";
+        el.style.borderColor = "#d1d5db";
+      }
+    }
+
+    function flashTimelinePanel(){
+      const latest = document.querySelector("#case_updates_timeline .timeline-item");
+      if (latest) {
+        latest.classList.remove("flash-sync");
+        void latest.offsetWidth;
+        latest.classList.add("flash-sync");
+      }
+    }
+
+    function flashMapPanel(){
+      const mapBody = document.getElementById("warroomMapBody");
+      if (mapBody) {
+        mapBody.classList.remove("flash-sync");
+        void mapBody.offsetWidth;
+        mapBody.classList.add("flash-sync");
+      }
+    }
+
+    function updateLatestTimelineBanner(item){
+      const el = document.getElementById("latestUpdateBanner");
+      if (!el) return;
+
+      if (!item) {
+        el.classList.remove("show");
+        el.textContent = "ยังไม่มีอัปเดตล่าสุด";
+        return;
+      }
+
+      const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
+      const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
+      const note = item.note || item.message || item.update_note || "-";
+      const progress = Number(item.progress_percent ?? item.progress ?? 0);
+      const gps = getTimelineLatLng(item);
+
+      el.innerHTML = `
+        <strong>อัปเดตล่าสุด:</strong>
+        ${escapeHtml(updatedBy)}
+        • ${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}
+        • ความคืบหน้า ${escapeHtml(String(progress))}%
+        ${gps ? ` • Lat ${escapeHtml(String(gps.lat))}, Lng ${escapeHtml(String(gps.lng))}` : ""}
+        <br>
+        ${escapeHtml(note)}
+      `;
+      el.classList.add("show");
+    }
+
+    function getTimelineSignature(items){
+      if (!Array.isArray(items) || !items.length) return "empty";
+      const first = items[0] || {};
+      const gps = getTimelineLatLng(first);
+      return JSON.stringify({
+        id: first.id || "",
+        updated_at: first.updated_at || first.created_at || "",
+        note: first.note || first.message || first.update_note || "",
+        progress: first.progress_percent ?? first.progress ?? "",
+        gps: gps ? `${gps.lat},${gps.lng}` : ""
+      });
+    }
+
+    function getMapSignatureFromPoint(point){
+      return JSON.stringify({
+        lat: point?.lat ?? "",
+        lng: point?.lng ?? "",
+        source: point?.source ?? "",
+        updated_at: point?.item?.updated_at || point?.item?.created_at || ""
+      });
+    }
+
+    function decorateTimelineLatest(items = []){
+      const nodes = document.querySelectorAll("#case_updates_timeline .timeline-item");
+      const firstGpsId = (() => {
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const gps = getTimelineLatLng(item);
+          if (gps) return String(item.id || `${item.updated_at || item.created_at || ""}_${i}`);
+        }
+        return "";
+      })();
+
+      nodes.forEach((el, idx) => {
+        const itemId = String(el.getAttribute("data-timeline-id") || "");
+        if (idx === 0) {
+          el.classList.add("is-latest");
+        } else {
+          el.classList.remove("is-latest");
+        }
+
+        if (firstGpsId && itemId === firstGpsId) {
+          el.classList.add("gps-highlight");
+        }
+      });
+    }
+
+    function maybeAutoFocusLatestUpdate(items = [], force = false){
+      if (!Array.isArray(items) || !items.length) return;
+
+      const first = items[0];
+      const targetId = String(first.id || `${first.updated_at || first.created_at || ""}_0`);
+
+      if (!force && userTimelineInteracting) return;
+      if (!force && lastFocusedTimelineId === targetId) return;
+
+      const target = document.querySelector(`[data-timeline-id="${CSS.escape(targetId)}"]`);
+      if (!target) return;
+
+      target.classList.add("timeline-auto-focus");
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      setTimeout(() => {
+        target.classList.remove("timeline-auto-focus");
+      }, 2200);
+
+      lastFocusedTimelineId = targetId;
+    }
+
+    function updateCaseStaticFields(data){
+      document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
+      document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
+      document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
+      document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
+
+      const locationTextEl = document.getElementById("location_text");
+      if (locationTextEl) {
+        const locationText =
+          data.location_text ||
+          (data.latitude && data.longitude ? `${data.latitude}, ${data.longitude}` : "-");
+
+        if (data.case_code && locationText !== "-") {
+          locationTextEl.innerHTML = `
+            <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
+               target="_blank"
+               rel="noopener"
+               style="color:#0b7c86;font-weight:700;text-decoration:none;">
+              ${escapeHtml(locationText)}
+            </a>
+          `;
+        } else {
+          locationTextEl.innerHTML = escapeHtml(locationText);
+        }
+      }
+
+      document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
+      document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
+      document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
+      document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
+      document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
+      document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
+
+      const summaryCaseCodeEl = document.getElementById("summary_case_code");
+      if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
+
+      const summaryStatusEl = document.getElementById("summary_status");
+      if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
+
+      const summaryPriorityEl = document.getElementById("summary_priority");
+      if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
+
+      const summaryAssignedToEl = document.getElementById("summary_assigned_to");
+      if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
+
+      const latest = data.latest_update || data || {};
+
+      document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
+      document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
+
+      const latestByText = escapeHtml(latest.updated_by || "-");
+      const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
+      document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
+        ? latestByText
+        : `${latestByText}<span class="line-badge">LINE</span>`;
+
+      document.getElementById("latest_at").innerHTML = escapeHtml(
+        latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
+      );
+
+      document.getElementById("latest_note").innerHTML = escapeHtml(
+        latest.note || latest.message || latest.update_note || "-"
+      );
+
+      const stepHelpMap = {
+        "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
+        "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
+        "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
+        "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
+        "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
+        "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
+        "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
+      };
+
+      const latestStepHelpEl = document.getElementById("latest_step_help");
+      if (latestStepHelpEl) {
+        latestStepHelpEl.innerText =
+          stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
+      }
+
+      const percent = Number(latest.progress_percent || 0);
+      document.getElementById("progress_bar").style.width = percent + "%";
+      document.getElementById("progress_text").innerText = percent + "%";
+    }
+
+    function updateWarRoomCommandBar(data){
+      const statusEl = document.getElementById("wr_badge_status");
+      const priorityEl = document.getElementById("wr_badge_priority");
+      const caseCodeEl = document.getElementById("wr_badge_case_code");
+
+      if (statusEl) {
+        statusEl.className = `badge status-${["new","in_progress","done","cancelled"].includes(data?.status) ? data.status : "cancelled"}`;
+        statusEl.textContent = `สถานะ: ${statusThai(data?.status) || "-"}`;
+      }
+
+      if (priorityEl) {
+        const p = data?.priority === "urgent" ? "urgent" : "normal";
+        priorityEl.className = `badge priority-${p}`;
+        priorityEl.textContent = `ระดับ: ${data?.priority_th || priorityThai(data?.priority) || "-"}`;
+      }
+
+      if (caseCodeEl) {
+        caseCodeEl.className = "badge priority-normal";
+        caseCodeEl.textContent = `เคส: ${data?.case_code || "-"}`;
+      }
+    }
+
+    function renderWarRoomMapFromBestPoint(bestPoint){
+      const box = document.getElementById("warroomMapBody");
+      const meta = document.getElementById("warroomMapMeta");
+      const link = document.getElementById("warroomMapLink");
+      const sourceEl = document.getElementById("warroomMapSource");
+
+      if (!box || !meta || !link || !sourceEl) return;
+
+      if (!bestPoint) {
+        currentMapCoords = null;
+        box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
+        meta.textContent = "พิกัด: -";
+        sourceEl.textContent = "แหล่งพิกัด: -";
+        link.href = "#";
+        link.style.pointerEvents = "none";
+        link.style.opacity = ".55";
+        lastMapSignature = getMapSignatureFromPoint(null);
+        return;
+      }
+
+      const mapUrl = `https://maps.google.com/maps?q=${bestPoint.lat},${bestPoint.lng}&z=15&output=embed`;
+      const googleUrl = `https://www.google.com/maps?q=${bestPoint.lat},${bestPoint.lng}`;
+      currentMapCoords = bestPoint;
+
+      box.innerHTML = `
+        <div class="map-update-pulse" title="จุดอัปเดตล่าสุด"></div>
+        <iframe
+          class="warroom-map-frame"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="${mapUrl}">
+        </iframe>
+      `;
+
+      meta.textContent = `พิกัด: ${bestPoint.lat}, ${bestPoint.lng}`;
+      sourceEl.textContent = `แหล่งพิกัด: ${bestPoint.sourceText || "-"}`;
+      link.href = googleUrl;
+      link.style.pointerEvents = "auto";
+      link.style.opacity = "1";
+      lastMapSignature = getMapSignatureFromPoint(bestPoint);
+    }
+
+    function renderWarRoomMap(caseData){
+      const bestPoint = getBestMapCoordinates(caseData, latestTimelineCache);
+      renderWarRoomMapFromBestPoint(bestPoint);
     }
 
     async function loadCaseTimeline(){
@@ -1148,7 +1565,10 @@
 
         if (!useCaseId) {
           wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
-          return;
+          updateLatestTimelineBanner(null);
+          lastTimelineSignature = "missing";
+          latestTimelineCache = [];
+          return [];
         }
 
         wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
@@ -1159,24 +1579,29 @@
           updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
         } catch (primaryErr) {
           console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
-
           const caseData = await fetchJSON(`/api/case/${useCaseId}`);
-          updates =
-            caseData.updates ||
-            caseData.case_updates ||
-            caseData.timeline ||
-            [];
+          updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
         }
+
+        latestTimelineCache = Array.isArray(updates) ? updates : [];
 
         if (!Array.isArray(updates) || updates.length === 0) {
           wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-          return;
+          updateLatestTimelineBanner(null);
+          lastTimelineSignature = "empty";
+          return [];
         }
 
-        wrap.innerHTML = updates.map(renderTimelineItem).join("");
+        wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
+        decorateTimelineLatest(updates);
+        updateLatestTimelineBanner(updates[0] || null);
+        lastTimelineSignature = getTimelineSignature(updates);
+        return updates;
       } catch (err) {
         console.error("LOAD TIMELINE ERROR:", err);
         wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
+        updateLatestTimelineBanner(null);
+        return [];
       }
     }
 
@@ -1243,101 +1668,18 @@
           data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
         } else {
           alert("ไม่พบ id หรือ case_code");
-          return;
+          return null;
         }
 
         resolvedCaseId = data.id || resolvedCaseId || "";
-
-        document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
-        document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
-        document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
-        document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-
-        const locationTextEl = document.getElementById("location_text");
-        if (locationTextEl) {
-          const locationText =
-            data.location_text ||
-            (data.latitude && data.longitude
-              ? `${data.latitude}, ${data.longitude}`
-              : "-");
-
-          if (data.case_code && locationText !== "-") {
-            locationTextEl.innerHTML = `
-              <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
-                 target="_blank"
-                 rel="noopener"
-                 style="color:#0b7c86;font-weight:700;text-decoration:none;">
-                ${escapeHtml(locationText)}
-              </a>
-            `;
-          } else {
-            locationTextEl.innerHTML = escapeHtml(locationText);
-          }
-        }
-
-        document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
-        document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
-        document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
-        document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
-        document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
-        document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
-
-        const summaryCaseCodeEl = document.getElementById("summary_case_code");
-        if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
-
-        const summaryStatusEl = document.getElementById("summary_status");
-        if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
-
-        const summaryPriorityEl = document.getElementById("summary_priority");
-        if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
-
-        const summaryAssignedToEl = document.getElementById("summary_assigned_to");
-        if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
-
-        const latest = data.latest_update || data || {};
-
-        document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
-        document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
-
-        const latestByText = escapeHtml(latest.updated_by || "-");
-        const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
-        document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
-          ? latestByText
-          : `${latestByText}<span class="line-badge">LINE</span>`;
-
-        document.getElementById("latest_at").innerHTML = escapeHtml(
-          latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
-        );
-
-        document.getElementById("latest_note").innerHTML = escapeHtml(
-          latest.note || latest.message || latest.update_note || "-"
-        );
-
-        const stepHelpMap = {
-          "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
-          "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
-          "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
-          "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
-          "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
-          "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
-          "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
-        };
-
-        const latestStepHelpEl = document.getElementById("latest_step_help");
-        if (latestStepHelpEl) {
-          latestStepHelpEl.innerText =
-            stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
-        }
-
-        const percent = Number(latest.progress_percent || 0);
-        document.getElementById("progress_bar").style.width = percent + "%";
-        document.getElementById("progress_text").innerText = percent + "%";
-
+        updateCaseStaticFields(data);
         updateWarRoomCommandBar(data);
         renderWarRoomMap(data);
         populateForm(data);
+        return data;
       } catch(err) {
         alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
+        return null;
       }
     }
 
@@ -1424,22 +1766,119 @@
     }
 
     async function refreshCaseView(){
-      await loadCase();
-      await loadCaseTimeline();
+      const data = await loadCase();
+      const timelineItems = await loadCaseTimeline();
+      if (data) {
+        renderWarRoomMap(data);
+      }
+      decorateTimelineLatest(timelineItems);
       if (caseCode) {
         await loadWorkFiles(caseCode);
       }
     }
 
+    async function softRefreshWarRoom(reason = "system"){
+      const now = Date.now();
+      if (now - lastRealtimeAt < 1200) return;
+      lastRealtimeAt = now;
+
+      try {
+        setWarRoomLiveChip("● กำลังซิงก์ข้อมูลสด...", "syncing");
+
+        let data;
+        if (resolvedCaseId) {
+          data = await fetchJSON(`/api/case/${resolvedCaseId}`);
+        } else if (caseId) {
+          data = await fetchJSON(`/api/case/${caseId}`);
+        } else if (caseCode) {
+          data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+        } else {
+          setWarRoomLiveChip("● ไม่พบเคสสำหรับซิงก์", "warn");
+          return;
+        }
+
+        resolvedCaseId = data.id || resolvedCaseId || "";
+        updateCaseStaticFields(data);
+        updateWarRoomCommandBar(data);
+        populateForm(data);
+
+        let timelineItems = [];
+        try {
+          timelineItems = await fetchJSON(`/api/case/${resolvedCaseId}/updates`);
+        } catch (err) {
+          console.warn("SOFT REFRESH TIMELINE FALLBACK:", err);
+          const caseDetail = await fetchJSON(`/api/case/${resolvedCaseId}`);
+          timelineItems = caseDetail.updates || caseDetail.case_updates || caseDetail.timeline || [];
+        }
+
+        latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
+        const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
+        const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
+
+        const bestPoint = getBestMapCoordinates(data, latestTimelineCache);
+        const nextMapSignature = getMapSignatureFromPoint(bestPoint);
+        const mapChanged = nextMapSignature !== lastMapSignature;
+
+        renderWarRoomMapFromBestPoint(bestPoint);
+
+        const wrap = document.getElementById("case_updates_timeline");
+        if (wrap) {
+          if (!Array.isArray(latestTimelineCache) || !latestTimelineCache.length) {
+            wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+            updateLatestTimelineBanner(null);
+          } else {
+            wrap.innerHTML = latestTimelineCache.map((item, idx) => renderTimelineItem(item, idx)).join("");
+            decorateTimelineLatest(latestTimelineCache);
+            updateLatestTimelineBanner(latestTimelineCache[0]);
+          }
+        }
+
+        if (caseCode) {
+          loadWorkFiles(caseCode).catch(console.error);
+        }
+
+        if (mapChanged) {
+          flashMapPanel();
+          lastMapSignature = nextMapSignature;
+        }
+
+        if (timelineChanged) {
+          flashTimelinePanel();
+          lastTimelineSignature = nextTimelineSignature;
+          maybeAutoFocusLatestUpdate(latestTimelineCache, false);
+        }
+
+        const changedParts = [];
+        if (mapChanged) changedParts.push("Map");
+        if (timelineChanged) changedParts.push("Timeline");
+
+        if (changedParts.length) {
+          showToast("War Room Sync", `${changedParts.join(" + ")} อัปเดตแล้ว`);
+        }
+
+        setWarRoomLiveChip(
+          reason === "manual" ? "● รีเฟรชล่าสุดเรียบร้อย" : "● Realtime ซิงก์ล่าสุดแล้ว",
+          "live"
+        );
+      } catch (err) {
+        console.error("SOFT REFRESH WAR ROOM ERROR:", err);
+        setWarRoomLiveChip("● ซิงก์สดมีปัญหา กำลังรอรอบถัดไป", "warn");
+      }
+    }
+
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");
+
       eventSource.addEventListener("connected", ()=> {
         const el = document.getElementById("liveStatus");
         if (el) el.textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+        setWarRoomLiveChip("● Realtime พร้อมทำงาน", "live");
       });
+
       eventSource.addEventListener("heartbeat", ()=> {
         const el = document.getElementById("liveStatus");
         if (el) el.textContent = "เชื่อมต่อข้อมูลสดแล้ว";
+        setWarRoomLiveChip("● Realtime พร้อมทำงาน", "live");
       });
 
       const onChange = (ev)=>{
@@ -1450,21 +1889,24 @@
           (caseCode && String(data.case_code) === String(caseCode));
 
         if (sameCase){
-          refreshCaseView().catch(console.error);
+          softRefreshWarRoom("realtime").catch(console.error);
+
           showToast(
             "มีอัปเดตจากระบบ",
             (formState.dirty.staffName || formState.dirty.statusSelect || formState.dirty.prioritySelect || formState.dirty.projectSelect)
               ? "ข้อมูลหน้าเคสอัปเดตแล้ว แต่ค่าที่คุณกำลังแก้ยังถูกล็อคไว้"
-              : (data.case_code || "เคสนี้ถูกอัปเดต")
+              : ((data.case_code || "เคสนี้") + " ถูกซิงก์เข้า War Room แล้ว")
           );
         }
       };
 
       eventSource.addEventListener("case_updated", onChange);
       eventSource.addEventListener("case_created", onChange);
+
       eventSource.onerror = ()=> {
         const el = document.getElementById("liveStatus");
         if (el) el.textContent = "การเชื่อมต่อสดขาดหาย กำลังลองใหม่...";
+        setWarRoomLiveChip("● การเชื่อมต่อสดสะดุด กำลังลองใหม่", "warn");
       };
     }
 
@@ -1481,66 +1923,6 @@
     function scrollToFilesPanel(){
       const el = document.getElementById("workFilesSection");
       if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
-    }
-
-    function updateWarRoomCommandBar(data){
-      const statusEl = document.getElementById("wr_badge_status");
-      const priorityEl = document.getElementById("wr_badge_priority");
-      const caseCodeEl = document.getElementById("wr_badge_case_code");
-
-      if (statusEl) {
-        statusEl.className = `badge status-${["new","in_progress","done","cancelled"].includes(data?.status) ? data.status : "cancelled"}`;
-        statusEl.textContent = `สถานะ: ${statusThai(data?.status) || "-"}`;
-      }
-
-      if (priorityEl) {
-        const p = data?.priority === "urgent" ? "urgent" : "normal";
-        priorityEl.className = `badge priority-${p}`;
-        priorityEl.textContent = `ระดับ: ${data?.priority_th || priorityThai(data?.priority) || "-"}`;
-      }
-
-      if (caseCodeEl) {
-        caseCodeEl.className = "badge priority-normal";
-        caseCodeEl.textContent = `เคส: ${data?.case_code || "-"}`;
-      }
-    }
-
-    function renderWarRoomMap(data){
-      const box = document.getElementById("warroomMapBody");
-      const meta = document.getElementById("warroomMapMeta");
-      const link = document.getElementById("warroomMapLink");
-
-      if (!box || !meta || !link) return;
-
-      const lat = Number(data?.latitude);
-      const lng = Number(data?.longitude);
-      const hasCoords = Number.isFinite(lat) && Number.isFinite(lng);
-
-      if (!hasCoords) {
-        box.innerHTML = `<div class="warroom-map-empty">ยังไม่มีพิกัดสำหรับเคสนี้<br>เมื่อมี latitude / longitude ระบบจะแสดงแผนที่ตรงนี้ทันที</div>`;
-        meta.textContent = "พิกัด: -";
-        link.href = "#";
-        link.style.pointerEvents = "none";
-        link.style.opacity = ".55";
-        return;
-      }
-
-      const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-      const googleUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-
-      box.innerHTML = `
-        <iframe
-          class="warroom-map-frame"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          src="${mapUrl}">
-        </iframe>
-      `;
-
-      meta.textContent = `พิกัด: ${lat}, ${lng}`;
-      link.href = googleUrl;
-      link.style.pointerEvents = "auto";
-      link.style.opacity = "1";
     }
 
     async function loadWorkFiles(caseCodeValue) {
@@ -1604,9 +1986,16 @@
     }
 
     registerFormLocking();
+    bindTimelineUserInteraction();
+    setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");
+
     loadProjects().then(async () => {
       await refreshCaseView();
+      decorateTimelineLatest(latestTimelineCache);
+      maybeAutoFocusLatestUpdate(latestTimelineCache, true);
+      setWarRoomLiveChip("● War Room พร้อมใช้งาน", "live");
     });
+
     connectRealtime();
   </script>
 </body>

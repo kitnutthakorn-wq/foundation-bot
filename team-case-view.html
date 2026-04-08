@@ -317,5 +317,271 @@ Golden Safe Patch (Add Only)
     </div>
   </div>
 </div>  
+  <script>
+/* =========================
+PRO MAX IMAGE VIEWER
+Golden Safe Patch (Scoped JS)
+========================= */
+window.__PMX_IMAGE_VIEWER__ = {
+  items: [],
+  index: 0,
+  scale: 1,
+  translateX: 0,
+  translateY: 0,
+  startX: 0,
+  startY: 0,
+  moveX: 0,
+  moveY: 0,
+  touching: false,
+  pinchStartDistance: 0,
+  pinchStartScale: 1,
+  lastTapAt: 0
+};
+
+function getPmxViewerEls() {
+  return {
+    root: document.getElementById("pmxImageViewer"),
+    stage: document.getElementById("pmxViewerStage"),
+    img: document.getElementById("pmxViewerImage"),
+    counter: document.getElementById("pmxViewerCounter")
+  };
+}
+
+function applyPmxImageTransform() {
+  const { img } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!img) return;
+  img.style.transform =
+    `translate3d(${st.translateX}px, ${st.translateY}px, 0) scale(${st.scale})`;
+}
+
+function updatePmxViewerCounter() {
+  const { counter } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!counter) return;
+  counter.textContent = `${st.index + 1} / ${st.items.length || 1}`;
+}
+
+function resetPmxTransform() {
+  const st = window.__PMX_IMAGE_VIEWER__;
+  st.scale = 1;
+  st.translateX = 0;
+  st.translateY = 0;
+  applyPmxImageTransform();
+}
+
+function renderPmxViewerImage() {
+  const { img } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!img || !st.items.length) return;
+
+  img.src = st.items[st.index] || "";
+  updatePmxViewerCounter();
+  resetPmxTransform();
+}
+
+function openPmxImageViewer(items, startIndex) {
+  const { root } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+
+  st.items = Array.isArray(items) ? items.filter(Boolean) : [];
+  st.index = Math.max(0, Math.min(Number(startIndex) || 0, st.items.length - 1));
+
+  if (!root || !st.items.length) return;
+
+  root.style.display = "block";
+  requestAnimationFrame(() => root.classList.add("is-open"));
+  root.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+
+  renderPmxViewerImage();
+}
+
+function closePmxImageViewer() {
+  const { root, img } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!root) return;
+
+  root.classList.remove("is-open");
+  root.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+
+  setTimeout(() => {
+    if (!root.classList.contains("is-open")) {
+      root.style.display = "none";
+      if (img) img.src = "";
+    }
+  }, 220);
+
+  st.items = [];
+  st.index = 0;
+  resetPmxTransform();
+}
+
+function pmxPrevImage() {
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!st.items.length) return;
+  st.index = (st.index - 1 + st.items.length) % st.items.length;
+  renderPmxViewerImage();
+}
+
+function pmxNextImage() {
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!st.items.length) return;
+  st.index = (st.index + 1) % st.items.length;
+  renderPmxViewerImage();
+}
+
+function pmxZoomIn() {
+  const st = window.__PMX_IMAGE_VIEWER__;
+  st.scale = Math.min(5, +(st.scale + 0.25).toFixed(2));
+  applyPmxImageTransform();
+}
+
+function pmxZoomOut() {
+  const st = window.__PMX_IMAGE_VIEWER__;
+  st.scale = Math.max(1, +(st.scale - 0.25).toFixed(2));
+  if (st.scale === 1) {
+    st.translateX = 0;
+    st.translateY = 0;
+  }
+  applyPmxImageTransform();
+}
+
+function pmxResetZoom() {
+  resetPmxTransform();
+}
+
+function pmxTouchDistance(touches) {
+  if (!touches || touches.length < 2) return 0;
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function bindPmxViewerEvents() {
+  const { stage, img, root } = getPmxViewerEls();
+  const st = window.__PMX_IMAGE_VIEWER__;
+  if (!stage || !img || !root || stage.dataset.bound === "1") return;
+
+  stage.dataset.bound = "1";
+
+  stage.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    if (e.deltaY < 0) pmxZoomIn();
+    else pmxZoomOut();
+  }, { passive: false });
+
+  stage.addEventListener("touchstart", function(e) {
+    st.touching = true;
+
+    if (e.touches.length === 2) {
+      st.pinchStartDistance = pmxTouchDistance(e.touches);
+      st.pinchStartScale = st.scale;
+      return;
+    }
+
+    const touch = e.touches[0];
+    st.startX = touch.clientX;
+    st.startY = touch.clientY;
+    st.moveX = 0;
+    st.moveY = 0;
+
+    const now = Date.now();
+    if (now - st.lastTapAt < 280) {
+      if (st.scale > 1) {
+        pmxResetZoom();
+      } else {
+        st.scale = 2;
+        applyPmxImageTransform();
+      }
+    }
+    st.lastTapAt = now;
+  }, { passive: true });
+
+  stage.addEventListener("touchmove", function(e) {
+    if (!st.touching) return;
+
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const currentDistance = pmxTouchDistance(e.touches);
+      if (st.pinchStartDistance > 0) {
+        const ratio = currentDistance / st.pinchStartDistance;
+        st.scale = Math.max(1, Math.min(5, +(st.pinchStartScale * ratio).toFixed(2)));
+        applyPmxImageTransform();
+      }
+      return;
+    }
+
+    const touch = e.touches[0];
+    st.moveX = touch.clientX - st.startX;
+    st.moveY = touch.clientY - st.startY;
+
+    if (st.scale > 1) {
+      st.translateX += st.moveX * 0.12;
+      st.translateY += st.moveY * 0.12;
+      st.startX = touch.clientX;
+      st.startY = touch.clientY;
+      applyPmxImageTransform();
+    }
+  }, { passive: false });
+
+  stage.addEventListener("touchend", function() {
+    if (st.scale === 1) {
+      if (Math.abs(st.moveX) > 60 && Math.abs(st.moveY) < 60) {
+        if (st.moveX < 0) pmxNextImage();
+        else pmxPrevImage();
+      }
+    }
+
+    st.touching = false;
+    st.pinchStartDistance = 0;
+    st.pinchStartScale = st.scale;
+    st.moveX = 0;
+    st.moveY = 0;
+  });
+
+  let mouseDown = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+
+  stage.addEventListener("mousedown", function(e) {
+    if (st.scale <= 1) return;
+    mouseDown = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    img.style.transition = "none";
+  });
+
+  window.addEventListener("mousemove", function(e) {
+    if (!mouseDown || st.scale <= 1) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    st.translateX += dx;
+    st.translateY += dy;
+    applyPmxImageTransform();
+  });
+
+  window.addEventListener("mouseup", function() {
+    mouseDown = false;
+    img.style.transition = "";
+  });
+
+  window.addEventListener("keydown", function(e) {
+    if (!root.classList.contains("is-open")) return;
+
+    if (e.key === "Escape") closePmxImageViewer();
+    if (e.key === "ArrowLeft") pmxPrevImage();
+    if (e.key === "ArrowRight") pmxNextImage();
+    if (e.key === "+" || e.key === "=") pmxZoomIn();
+    if (e.key === "-") pmxZoomOut();
+    if (e.key === "0") pmxResetZoom();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", bindPmxViewerEvents);
+</script>
 </body>
 </html>

@@ -1215,75 +1215,77 @@
     }
 
     function renderTimelineItem(item, idx = 0){
-      const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
-      const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
-      const note = item.note || item.message || item.update_note || "-";
-      const currentStep = item.current_step || item.step_label || item.step_name || "-";
-      const waitingFor = item.waiting_for || item.pending_on || item.waiting_on || "-";
-      const locationText = item.location_text || item.geo_text || item.area || "-";
-      const progress = Number(item.progress_percent ?? item.progress ?? 0);
-      const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
-      const statusLabel = statusThai(statusRaw);
-      const images = normalizeTimelineImages(item);
-      const gps = getTimelineLatLng(item);
-      const itemId = item.id || `${updatedAt || ""}_${idx}`;
-      const isGpsItem = !!gps;
+  const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
+  const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
+  const note = item.note || item.message || item.update_note || "-";
+  const currentStep = item.current_step || item.step_label || item.step_name || "-";
+  const waitingFor = item.waiting_for || item.pending_on || item.waiting_on || "-";
+  const locationText = item.location_text || item.geo_text || item.area || "-";
+  const progress = Number(item.progress_percent ?? item.progress ?? 0);
+  const statusRaw = normalizeTimelineStatus(item.status || "in_progress");
+  const statusLabel = statusThai(statusRaw);
+  const images = normalizeTimelineImages(item);
+  const gps = getTimelineLatLng(item);
+  const itemId = item.id || `${updatedAt || ""}_${idx}`;
+  const isGpsItem = !!gps;
 
-      return `
-  <div
-  class="timeline-item map-linked ${isGpsItem ? 'gps-highlight' : ''}"
-  data-timeline-id="${escapeHtml(itemId)}"
-  data-updated-at="${escapeHtml(updatedAt || '')}"
- ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng}, '${escapeHtml(itemId)}')"` : ""}
-  style="${gps ? 'cursor:pointer;' : ''}"
->
-          <div class="timeline-head">
-            <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
-            <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
-          </div>
+  return `
+    <div
+      class="timeline-item map-linked ${isGpsItem ? 'gps-highlight' : ''}"
+      data-timeline-id="${escapeHtml(itemId)}"
+      data-updated-at="${escapeHtml(updatedAt || '')}"
+      ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng}, '${escapeHtml(itemId)}')"` : ""}
+      style="${gps ? 'cursor:pointer;' : ''}"
+    >
+      <div class="timeline-head">
+        <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
+        <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>
+      </div>
 
-          <div class="timeline-badges">
-            ${statusBadge(statusRaw, statusLabel)}
-            <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
-            ${isGpsItem ? `<span class="warroom-focus-badge">📍 มีพิกัดล่าสุด</span>` : ""}
-          </div>
+      <div class="timeline-badges">
+        ${statusBadge(statusRaw, statusLabel)}
+        <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
+        ${isGpsItem ? `<span class="warroom-focus-badge">📍 มีพิกัดล่าสุด</span>` : ""}
+      </div>
 
-          <div class="timeline-note">${escapeHtml(note)}</div>
+      <div class="timeline-note">${escapeHtml(note)}</div>
 
-          <div class="timeline-mini-grid">
-            <div class="timeline-mini-card">
-              <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
-              <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
-            </div>
-            <div class="timeline-mini-card">
-              <div class="timeline-mini-label">กำลังรอ</div>
-              <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
-            </div>
-            <div class="timeline-mini-card">
-              <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-              <div class="timeline-mini-value">
-                ${escapeHtml(locationText)}
-                ${isGpsItem ? `<br><span class="warroom-focus-badge">Lat ${escapeHtml(String(gps.lat))} / Lng ${escapeHtml(String(gps.lng))}</span>` : ""}
-              </div>
-            </div>
-          </div>
-
- <a 
-  class="no-map-focus"
-  href="${escapeHtml(img)}" 
-  target="_blank" 
-  rel="noopener noreferrer"
-  onclick="event.stopPropagation()"
->
-                  <img src="${escapeHtml(img)}" alt="timeline image" loading="lazy" />
-                </a>
-              `).join("")}
-            </div>
-          ` : ""}
+      <div class="timeline-mini-grid">
+        <div class="timeline-mini-card">
+          <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
+          <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
         </div>
-      `;
-    }
+        <div class="timeline-mini-card">
+          <div class="timeline-mini-label">กำลังรอ</div>
+          <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
+        </div>
+        <div class="timeline-mini-card">
+          <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
+          <div class="timeline-mini-value">
+            ${escapeHtml(locationText)}
+            ${isGpsItem ? `<br><span class="warroom-focus-badge">Lat ${escapeHtml(String(gps.lat))} / Lng ${escapeHtml(String(gps.lng))}</span>` : ""}
+          </div>
+        </div>
+      </div>
 
+      ${images.length ? `
+        <div class="timeline-images">
+          ${images.map(img => `
+            <a
+              class="no-map-focus"
+              href="${escapeHtml(img)}"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="event.stopPropagation()"
+            >
+              <img src="${escapeHtml(img)}" alt="timeline image" loading="lazy" />
+            </a>
+          `).join("")}
+        </div>
+      ` : ""}
+    </div>
+  `;
+}
     function setWarRoomLiveChip(text, mode = "idle"){
       const el = document.getElementById("warroomLiveChip");
       if (!el) return;

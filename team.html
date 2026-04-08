@@ -869,7 +869,14 @@ function connectRealtime() {
 }
 
 async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
+async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);}
 
+// ✅ วางตรงนี้เลย
+function openUpdateCaseInfo(caseCode){
+  window.location.href = `update-case-info.html?case_code=${encodeURIComponent(caseCode)}`;
+}
+
+bootstrap();
 bootstrap();
 </script>
 </body>

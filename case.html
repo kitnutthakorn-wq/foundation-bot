@@ -1234,7 +1234,7 @@
   class="timeline-item map-linked ${isGpsItem ? 'gps-highlight' : ''}"
   data-timeline-id="${escapeHtml(itemId)}"
   data-updated-at="${escapeHtml(updatedAt || '')}"
-  ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng})"` : ""}
+ ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng}, '${escapeHtml(itemId)}')"` : ""}
   style="${gps ? 'cursor:pointer;' : ''}"
 >
           <div class="timeline-head">

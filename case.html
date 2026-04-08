@@ -2205,12 +2205,17 @@ document.addEventListener("click", function(e){
     setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");
 
     loadProjects().then(async () => {
-     const bestPoint = getBestMapCoordinates({}, latestTimelineCache);
+      
+const bestPoint = getBestMapCoordinates({}, latestTimelineCache);
 if (bestPoint){
+  const focusTimelineId =
+    bestPoint?.item?.id ||
+    (bestPoint?.item ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0` : "");
+
   setTimeout(() => {
-    safeAutoFocusMap(bestPoint.lat, bestPoint.lng);
+    safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
   }, 320);
-} 
+}
       await refreshCaseView();
       decorateTimelineLatest(latestTimelineCache);
       maybeAutoFocusLatestUpdate(latestTimelineCache, true);

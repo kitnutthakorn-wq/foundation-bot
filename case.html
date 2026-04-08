@@ -1976,8 +1976,24 @@
 function focusMapToPoint(lat, lng){
   if (!window._warroomMap) return;
 
-  window._warroomMap.setCenter({ lat, lng });
+  window._warroomMap.panTo({ lat, lng });
   window._warroomMap.setZoom(17);
+
+  if (Array.isArray(window._warroomMarkers)) {
+    window._warroomMarkers.forEach(marker => {
+      const pos = marker.getPosition();
+      const isTarget =
+        Math.abs(pos.lat() - lat) < 0.000001 &&
+        Math.abs(pos.lng() - lng) < 0.000001;
+
+      marker.setAnimation(isTarget ? google.maps.Animation.BOUNCE : null);
+
+      if (isTarget) {
+        setTimeout(() => marker.setAnimation(null), 1400);
+      }
+    });
+  }
+
   focusWarRoomMap();
 }
 

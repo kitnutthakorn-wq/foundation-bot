@@ -701,6 +701,36 @@ button:active{transform:translateY(0)}
       </div>
     </div>
 
+    <div class="warroom-shell">
+
+      <div class="warroom-command">
+        <div class="warroom-command-top">
+          <div class="warroom-command-left">
+            <div class="warroom-kicker">WAR ROOM UI</div>
+            <h2 class="warroom-title">Command Center + Map + Document + Timeline</h2>
+            <div class="warroom-sub">
+              ศูนย์บัญชาการเคสแบบหน้าเดียวสำหรับผู้บริหาร แอดมิน และทีมปฏิบัติการ
+            </div>
+
+            <div class="warroom-badges">
+              <span class="badge status-new" id="wr_badge_status">สถานะ: -</span>
+              <span class="badge priority-normal" id="wr_badge_priority">ระดับ: -</span>
+              <span class="badge priority-normal" id="wr_badge_case_code">เคส: -</span>
+            </div>
+          </div>
+
+          <div class="warroom-actions">
+            <button class="secondary" onclick="refreshCaseView()">รีเฟรช War Room</button>
+            <button class="secondary" onclick="focusWarRoomMap()">เปิดแผนที่</button>
+            <button class="secondary" onclick="scrollToTimelinePanel()">ไป Timeline</button>
+            <button class="secondary" onclick="scrollToFilesPanel()">ไปไฟล์แนบ</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="warroom-grid">
+        <div class="warroom-col" id="warroomColLeft">
+    
     <div class="card panel-card">
       <div class="panel-header">
         <h2 class="panel-title">ข้อมูลเคส</h2>

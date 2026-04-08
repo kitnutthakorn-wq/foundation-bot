@@ -291,20 +291,35 @@ async function safeFetchJson(url, options={}){ const res = await fetch(url, opti
 function renderSummary(caseItem={}){ safeText("sumCaseCode", caseItem.case_code || "-"); safeText("sumAssignedTo", caseItem.assigned_to || "-"); safeText("fullName", caseItem.full_name || "-"); safeText("phone", caseItem.phone || "-"); safeText("location", caseItem.location || "-"); safeText("problemCategory", caseItem.problem_category || caseItem.problem_group || caseItem.problem_type || "-"); safeText("assignedTo", caseItem.assigned_to || "-"); safeText("projectName", caseItem.project_name || "-"); safeText("problemDetail", caseItem.problem || "-"); safeText("createdAt", formatThaiDateTime(caseItem.created_at)); safeText("lastActionAt", formatThaiDateTime(caseItem.last_action_at || caseItem.created_at)); const statusText = formatStatusThai(caseItem.status); const priorityText = formatPriorityThai(caseItem.priority); safeText("sumStatus", statusText); safeText("sumPriority", priorityText); document.getElementById("statusBox").innerHTML = `<span class="badge ${getStatusBadgeClass(caseItem.status)}">${escapeHtml(statusText)}</span>`; document.getElementById("priorityBox").innerHTML = `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`; }
 function renderProgress(caseItem={}, updates=[]){ const latest = updates[0] || {}; const progress = Number(latest.progress_percent ?? caseItem.progress_percent ?? 0); const currentStep = latest.current_step || caseItem.current_step || "-"; const waitingFor = latest.waiting_for || caseItem.waiting_for || "-"; const statusAfter = latest.status_after || caseItem.status || "-"; const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-"; const locationText = latest.location_text || "-"; safeText("progressPercent", `${progress}%`); safeText("currentStep", currentStep); safeText("waitingFor", waitingFor); safeText("statusAfter", formatStatusThai(statusAfter)); safeText("locationText", locationText); safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`); document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`; }
   
-function renderLatestImages(updates=[]){ 
-  const latestWithImages = updates.find(item => Array.isArray(item.images) && item.images.length > 0); 
+function renderLatestImages(updates=[]) { 
+  const latestWithImages = updates.find(item => 
+    Array.isArray(item.images) && item.images.length > 0
+  ); 
+
   const root = document.getElementById("latestImages"); 
+
+  // ไม่มีรูป
   if(!latestWithImages){ 
+    root.innerHTML = `
+      <div class="empty-state" style="grid-column:1 / -1;">
+        ยังไม่มีรูปภาพภาคสนาม
+      </div>
+    `;
+    return;
+  }
+
+  // มีรูป
   const imageList = latestWithImages.images.filter(Boolean);
 
-root.innerHTML = imageList.map((src, idx) => `
-  <img 
-    src="${escapeHtml(src)}"
-    class="pmx-case-thumb"
-    alt="field image ${idx+1}"
-    onclick='openPmxImageViewer(${JSON.stringify(imageList)}, ${idx})'
-  />
-`).join("");
+  root.innerHTML = imageList.map((src, idx) => `
+    <img 
+      src="${escapeHtml(src)}"
+      class="pmx-case-thumb"
+      alt="field image ${idx+1}"
+      onclick='openPmxImageViewer(${JSON.stringify(imageList)}, ${idx})'
+    />
+  `).join("");
+}
   
 function renderTimeline(updates=[]){ const root = document.getElementById("timelineList");
          document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;

@@ -1356,39 +1356,39 @@ function buildTeamMenuFlex() {
     };
   }
 
-  return {
-    type: "flex",
-    altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
-    contents: {
-      type: "bubble",
-      size: "mega",
-      hero: {
-        type: "image",
-        url: "https://img2.pic.in.th/TEAMWORK.png",
-        size: "full",
-        aspectRatio: "1:1",
-        aspectMode: "cover"
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "10px",
-        paddingAll: "14px",
-        contents: [
-          messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
-          messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
-          messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
-         uriButton(
-  "เปิดศูนย์ปฏิบัติการ",
-  "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-  "#F97316"
-)
-        ]
-      }
+ return {
+  type: "flex",
+  altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
+  contents: {
+    type: "bubble",
+    size: "mega",
+    backgroundColor: "#1F2937",
+    hero: {
+      type: "image",
+      url: "https://img2.pic.in.th/TEAMWORK.png",
+      size: "full",
+      aspectRatio: "1:1",
+      aspectMode: "cover"
+    },
+    body: {
+      type: "box",
+      layout: "vertical",
+      spacing: "10px",
+      paddingAll: "14px",
+      contents: [
+        messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
+        messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
+        messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
+        uriButton(
+          "เปิดศูนย์ปฏิบัติการ",
+          "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+          "#F97316"
+        )
+      ]
     }
-  };
-}
-
+  }
+};
+  
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +

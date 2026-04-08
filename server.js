@@ -1360,7 +1360,6 @@ return {
     }
   }
 };
-  
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +

@@ -1300,6 +1300,9 @@ async function loadCase(){
     document.getElementById("progress_bar").style.width = percent + "%";
     document.getElementById("progress_text").innerText = percent + "%";
 
+    updateWarRoomCommandBar(data);
+    renderWarRoomMap(data);
+    
     populateForm(data);
   } catch(err) {
     alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);

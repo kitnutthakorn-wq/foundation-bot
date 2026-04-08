@@ -1207,11 +1207,13 @@
       const isGpsItem = !!gps;
 
       return `
-        <div
-          class="timeline-item ${isGpsItem ? 'gps-highlight' : ''}"
-          data-timeline-id="${escapeHtml(itemId)}"
-          data-updated-at="${escapeHtml(updatedAt || '')}"
-        >
+  <div
+    class="timeline-item ${isGpsItem ? 'gps-highlight' : ''}"
+    data-timeline-id="${escapeHtml(itemId)}"
+    data-updated-at="${escapeHtml(updatedAt || '')}"
+    ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng})"` : ""}
+    style="${gps ? 'cursor:pointer;' : ''}"
+  >
           <div class="timeline-head">
             <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
             <div class="timeline-time">${escapeHtml(updatedAt ? formatThaiDateTime(updatedAt) : "-")}</div>

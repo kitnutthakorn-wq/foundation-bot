@@ -875,37 +875,44 @@ function priorityBadge(priority, label){
   `;
 }
     async function loadCaseTimeline(){
-      const wrap = document.getElementById("case_updates_timeline");
-      if (!wrap) return;
-      if (!caseId) {
-        wrap.innerHTML = `<div class="timeline-empty">ไม่พบ id ของเคส</div>`;
-        return;
-      }
+  const wrap = document.getElementById("case_updates_timeline");
+  if (!wrap) return;
 
-      wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
+  let useCaseId = caseId;
 
-      try{
-        let updates = [];
-        try{
-          updates = await fetchJSON(`/api/case/${caseId}/updates`);
-        }catch(primaryErr){
-          console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
-          const caseData = await fetchJSON(`/api/case/${caseId}`);
-          updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
-        }
-
-        if (!Array.isArray(updates) || updates.length === 0){
-          wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>`;
-          return;
-        }
-
-        wrap.innerHTML = updates.map(renderTimelineItem).join("");
-      }catch(err){
-        console.error("LOAD TIMELINE ERROR:", err);
-        wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
-      }
+  try {
+    if (!useCaseId && caseCode) {
+      const caseData = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+      useCaseId = caseData.id;
     }
 
+    if (!useCaseId) {
+      wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
+      return;
+    }
+
+    wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
+
+    let updates = [];
+    try {
+      updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
+    } catch (primaryErr) {
+      console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
+      const caseData = await fetchJSON(`/api/case/${useCaseId}`);
+      updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
+    }
+
+    if (!Array.isArray(updates) || updates.length === 0) {
+      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดตภาคสนามสำหรับเคสนี้</div>`;
+      return;
+    }
+
+    wrap.innerHTML = updates.map(renderTimelineItem).join("");
+  } catch (err) {
+    console.error("LOAD TIMELINE ERROR:", err);
+    wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
+  }
+}
 
 
     function populateForm(data){

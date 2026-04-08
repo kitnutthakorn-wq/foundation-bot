@@ -1953,9 +1953,14 @@
         const mapChanged = nextMapSignature !== lastMapSignature;
 
        renderWarRoomMapAdvanced(data, latestTimelineCache);
-        if (bestPoint && mapChanged){
+        
+  if (bestPoint && mapChanged){
+  const focusTimelineId =
+    bestPoint?.item?.id ||
+    (bestPoint?.item ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0` : "");
+
   setTimeout(() => {
-    safeAutoFocusMap(bestPoint.lat, bestPoint.lng);
+    safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
   }, 280);
 }
 

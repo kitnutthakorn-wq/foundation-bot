@@ -962,104 +962,109 @@ async function loadProjects(){
   }
 }
     
-    async function loadCase(){
-      if(!caseId){ alert("ไม่พบ id ของเคส"); return; }
-      try{
-        const data = await fetchJSON(`/api/case/${caseId}`);
-        document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
-        document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
-        document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
-        document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
-        const locationTextEl = document.getElementById("location_text");
+async function loadCase(){
+  try{
+    let data;
 
-if (locationTextEl) {
-  const locationText =
-    data.location_text ||
-    (data.latitude && data.longitude
-      ? `${data.latitude}, ${data.longitude}`
-      : "-");
-
-  if (data.case_code && locationText !== "-") {
-    locationTextEl.innerHTML = `
-      <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
-         target="_blank"
-         rel="noopener"
-         style="color:#0b7c86;font-weight:700;text-decoration:none;">
-        ${escapeHtml(locationText)}
-      </a>
-    `;
-  } else {
-    locationTextEl.innerHTML = escapeHtml(locationText);
-  }
-}      
-        document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
-        document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
-        document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
-        // ✅ โครงการ
-document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
-
-// ✅ เปลี่ยนสถานะเป็นไทย
-
-document.getElementById("status").innerHTML = statusBadge(
-  data.status,
-  statusThai(data.status)
-);
-
-// ✅ เปลี่ยนระดับเป็นไทย
-document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
-
-
-// ✅ summary strip ด้านบน
-const summaryCaseCodeEl = document.getElementById("summary_case_code");
-if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
-
-const summaryStatusEl = document.getElementById("summary_status");
-if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
-
-const summaryPriorityEl = document.getElementById("summary_priority");
-if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
-
-
-const summaryAssignedToEl = document.getElementById("summary_assigned_to");
-if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
-
-// ✅ latest update
-const latest = data.latest_update || data || {};
-
-document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
-document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
-
-const latestByText = escapeHtml(latest.updated_by || "-");
-const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
-document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
-  ? latestByText
-  : `${latestByText}<span class="line-badge">LINE</span>`;
-
-document.getElementById("latest_at").innerHTML = escapeHtml(
-  latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
-);
-
-document.getElementById("latest_note").innerHTML = escapeHtml(latest.note || latest.message || latest.update_note || "-");
-
-const stepHelpMap = {
-  "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
-  "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
-  "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
-  "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
-  "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
-  "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
-  "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
-};
-const latestStepHelpEl = document.getElementById("latest_step_help");
-if (latestStepHelpEl) latestStepHelpEl.innerText = stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
-
-// ✅ progress bar
-const percent = Number(latest.progress_percent || 0);
-document.getElementById("progress_bar").style.width = percent + "%";
-document.getElementById("progress_text").innerText = percent + "%";
-        populateForm(data);
-      }catch(err){ alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message); }
+    if (caseId) {
+      data = await fetchJSON(`/api/case/${caseId}`);
+    } else if (caseCode) {
+      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+    } else {
+      alert("ไม่พบ id หรือ case_code");
+      return;
     }
+
+    document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
+    document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
+    document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
+    document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
+
+    const locationTextEl = document.getElementById("location_text");
+    if (locationTextEl) {
+      const locationText =
+        data.location_text ||
+        (data.latitude && data.longitude
+          ? `${data.latitude}, ${data.longitude}`
+          : "-");
+
+      if (data.case_code && locationText !== "-") {
+        locationTextEl.innerHTML = `
+          <a href="/map.html?case_code=${encodeURIComponent(data.case_code)}"
+             target="_blank"
+             rel="noopener"
+             style="color:#0b7c86;font-weight:700;text-decoration:none;">
+            ${escapeHtml(locationText)}
+          </a>
+        `;
+      } else {
+        locationTextEl.innerHTML = escapeHtml(locationText);
+      }
+    }
+
+    document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
+    document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
+    document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");
+    document.getElementById("project_name").innerHTML = escapeHtml(data.project_name || "-");
+    document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
+    document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
+
+    const summaryCaseCodeEl = document.getElementById("summary_case_code");
+    if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
+
+    const summaryStatusEl = document.getElementById("summary_status");
+    if (summaryStatusEl) summaryStatusEl.innerText = statusThai(data.status);
+
+    const summaryPriorityEl = document.getElementById("summary_priority");
+    if (summaryPriorityEl) summaryPriorityEl.innerText = data.priority_th || priorityThai(data.priority);
+
+    const summaryAssignedToEl = document.getElementById("summary_assigned_to");
+    if (summaryAssignedToEl) summaryAssignedToEl.innerText = data.assigned_to || "-";
+
+    const latest = data.latest_update || data || {};
+
+    document.getElementById("latest_step").innerHTML = escapeHtml(latest.current_step || "-");
+    document.getElementById("latest_waiting").innerHTML = escapeHtml(latest.waiting_for || "-");
+
+    const latestByText = escapeHtml(latest.updated_by || "-");
+    const latestByLooksLikeLine = /^U[a-fA-F0-9]{32}$/.test(String(latest.updated_by || "").trim());
+    document.getElementById("latest_by").innerHTML = latestByLooksLikeLine
+      ? latestByText
+      : `${latestByText}<span class="line-badge">LINE</span>`;
+
+    document.getElementById("latest_at").innerHTML = escapeHtml(
+      latest.updated_at ? formatThaiDateTime(latest.updated_at) : "-"
+    );
+
+    document.getElementById("latest_note").innerHTML = escapeHtml(
+      latest.note || latest.message || latest.update_note || "-"
+    );
+
+    const stepHelpMap = {
+      "รับมอบหมายแล้ว": "ทีมงานรับเคสเข้าสู่กระบวนการแล้ว",
+      "นัดหมายลงพื้นที่แล้ว": "ทีมภาคสนามนัดหมายการลงพื้นที่เรียบร้อยแล้ว",
+      "ลงพื้นที่แล้ว": "ทีมภาคสนามลงพื้นที่และเริ่มเก็บข้อมูลแล้ว",
+      "อยู่ระหว่างตรวจสอบข้อมูล": "ทีมงานกำลังตรวจสอบข้อมูลและหลักฐานเพิ่มเติม",
+      "รอเอกสาร/ข้อมูลเพิ่มเติม": "ระบบกำลังรอเอกสารหรือข้อมูลจากผู้เกี่ยวข้อง",
+      "ส่งผลสำรวจแล้ว": "ผลสำรวจถูกส่งเข้าสู่ขั้นตอนถัดไปแล้ว",
+      "ส่งเข้าพิจารณาแล้ว": "ข้อมูลถูกส่งให้ผู้บริหารพิจารณาแล้ว"
+    };
+
+    const latestStepHelpEl = document.getElementById("latest_step_help");
+    if (latestStepHelpEl) {
+      latestStepHelpEl.innerText =
+        stepHelpMap[latest.current_step] || "สถานะนี้สะท้อนความคืบหน้าล่าสุดจากทีมงานภาคสนาม";
+    }
+
+    const percent = Number(latest.progress_percent || 0);
+    document.getElementById("progress_bar").style.width = percent + "%";
+    document.getElementById("progress_text").innerText = percent + "%";
+
+    populateForm(data);
+  } catch(err) {
+    alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
+  }
+}
 
     async function saveCaseSettings(){
       const staff_name = document.getElementById("staffName").value.trim();

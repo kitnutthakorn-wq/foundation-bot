@@ -1222,21 +1222,6 @@ function getTeamLiffUrl(baseView = "") {
     : `${raw}?view=${encodeURIComponent(baseView)}`;
 }
 
-function buildTeamMenuFlex() {
-  function messageButton(label, text, color = "#22C55E") {
-    return {
-      type: "button",
-      style: "primary",
-      height: "sm",
-      color,
-      action: {
-        type: "message",
-        label: label.slice(0, 20),
-        text
-      }
-    };
-  }
-
 function buildPosterModeFlex() {
   return {
     type: "flex",
@@ -1339,6 +1324,24 @@ function buildPosterModeFlex() {
 }
 
   
+
+
+function buildTeamMenuFlex() {
+  function messageButton(label, text, color = "#22C55E") {
+    return {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color,
+      action: {
+        type: "message",
+        label: label.slice(0, 20),
+        text
+      }
+    };
+  }
+
+
   function uriButton(label, uri, color = "#F97316") {
     return {
       type: "button",

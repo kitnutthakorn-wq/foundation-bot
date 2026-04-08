@@ -1544,6 +1544,7 @@
   timelineItems.forEach((item, idx) => {
     const gps = getTimelineLatLng(item);
     if (gps) {
+      
       points.push({
         lat: gps.lat,
         lng: gps.lng,
@@ -1626,24 +1627,28 @@
   const markers = [];
 
   points.forEach((p) => {
-    const marker = new google.maps.Marker({
-      position: { lat: p.lat, lng: p.lng },
-      map,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: p.isLatest ? 10 : 6,
-        fillColor: p.isLatest ? "#22c55e" : "#2563eb",
-        fillOpacity: 1,
-        strokeWeight: 2,
-        strokeColor: "#fff"
-      }
-    });
-
-    marker.__timelineId = p.timelineId;
-    markers.push(marker);
-    bounds.extend(marker.getPosition());
+  const marker = new google.maps.Marker({
+    position: { lat: p.lat, lng: p.lng },
+    map,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: p.isLatest ? 10 : 6,
+      fillColor: p.isLatest ? "#22c55e" : "#2563eb",
+      fillOpacity: 1,
+      strokeWeight: 2,
+      strokeColor: "#fff"
+    }
   });
 
+  marker.__timelineId = p.timelineId;
+
+  marker.addListener("click", () => {
+    focusMapToPoint(p.lat, p.lng, p.timelineId);
+  });
+
+  markers.push(marker);
+  bounds.extend(marker.getPosition());
+});
   if (points.length > 1) {
     const route = new google.maps.Polyline({
       path: points.map(p => ({ lat: p.lat, lng: p.lng })),

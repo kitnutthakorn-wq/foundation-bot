@@ -1343,8 +1343,8 @@ function buildTeamMenuFlex() {
       body: {
   type: "box",
   layout: "vertical",
-  spacing: "10px",
-  paddingAll: "14px",
+  spacing: "12px",
+  paddingAll: "18px",
   backgroundColor: "#000000",
  contents: [
   whiteButton("ดูเคสวันนี้", "เคสวันนี้"),

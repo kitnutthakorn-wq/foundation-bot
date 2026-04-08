@@ -1926,6 +1926,23 @@ function focusMapToPoint(lat, lng){
   window._warroomMap.setZoom(17);
   focusWarRoomMap();
 }
+
+function safeAutoFocusMap(lat, lng){
+  if (!lat || !lng) return;
+
+  let retry = 0;
+
+  const tryFocus = () => {
+    if (window._warroomMap){
+      focusMapToPoint(lat, lng);
+    } else if (retry < 10){
+      retry++;
+      setTimeout(tryFocus, 120);
+    }
+  };
+
+  tryFocus();
+}
     
     function connectRealtime(){
       eventSource = new EventSource("/api/stream");

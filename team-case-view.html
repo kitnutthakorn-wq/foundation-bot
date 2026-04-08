@@ -110,5 +110,37 @@ function connectRealtime(){ try{ if(eventSource){ eventSource.close(); eventSour
 async function bootstrap(){ try{ currentCaseCode = qs("case_code").trim(); if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL"); await liff.init({ liffId: CONFIG.LIFF_ID }).catch(()=>{}); await loadCaseReport(); connectRealtime(); setInterval(()=>{ if(!document.hidden){ loadCaseReport().catch(err=>console.error("fallback refresh error", err)); } }, 45000); } catch(err){ console.error(err); alert(`เปิดรายงานเคสไม่สำเร็จ: ${err.message}`); } finally { setLoading(false); } }
 bootstrap();
 </script>
+
+<!-- =========================
+PRO MAX IMAGE VIEWER
+Golden Safe Patch (Add Only)
+========================= -->
+<div id="pmxImageViewer" class="pmx-image-viewer" aria-hidden="true">
+  <div class="pmx-image-viewer__backdrop" onclick="closePmxImageViewer()"></div>
+
+  <div class="pmx-image-viewer__chrome">
+    <div class="pmx-image-viewer__topbar">
+      <div class="pmx-image-viewer__counter" id="pmxViewerCounter">1 / 1</div>
+
+      <div class="pmx-image-viewer__actions">
+        <button type="button" class="pmx-viewer-btn" onclick="pmxZoomOut()">－</button>
+        <button type="button" class="pmx-viewer-btn" onclick="pmxResetZoom()">100%</button>
+        <button type="button" class="pmx-viewer-btn" onclick="pmxZoomIn()">＋</button>
+        <button type="button" class="pmx-viewer-btn pmx-viewer-btn--close" onclick="closePmxImageViewer()">✕</button>
+      </div>
+    </div>
+
+    <button type="button" class="pmx-nav-btn pmx-nav-btn--prev" onclick="pmxPrevImage()">‹</button>
+    <button type="button" class="pmx-nav-btn pmx-nav-btn--next" onclick="pmxNextImage()">›</button>
+
+    <div id="pmxViewerStage" class="pmx-image-viewer__stage">
+      <img id="pmxViewerImage" class="pmx-image-viewer__img" src="" alt="preview" />
+    </div>
+
+    <div class="pmx-image-viewer__hint">
+      Swipe เพื่อเลื่อนภาพ • Scroll / ปุ่ม +/- เพื่อซูม • Double tap เพื่อซูมเร็ว
+    </div>
+  </div>
+</div>  
 </body>
 </html>

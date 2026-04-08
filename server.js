@@ -6810,6 +6810,10 @@ if (!teamGuard.pass) {
   continue;
 }
 
+if (text === "test poster") {
+  return await safeReply(replyToken, [buildPosterModeFlex()]);
+}
+      
 if (text === "เมนูทีมงาน") {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {
     await safeReply(replyToken, [

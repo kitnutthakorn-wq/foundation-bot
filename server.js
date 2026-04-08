@@ -3984,6 +3984,87 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
   } catch (err) {
     console.error("CASE UPDATE ERROR:", err);
     return res.status(500).json({ ok: false, error: err.message });
+  } 
+});
+
+app.post("/api/team/case-info/upload", caseInfoUpload.array("files", 10), async (req, res) => {
+  try {
+    const caseCode = String(req.body.case_code || "").trim();
+    const docType = String(req.body.doc_type || "").trim();
+    const docTitle = String(req.body.doc_title || "").trim();
+    const docNote = String(req.body.doc_note || "").trim();
+
+    if (!caseCode) {
+      return res.status(400).json({ ok: false, error: "case_code is required" });
+    }
+
+    const { data: caseItem, error: caseError } = await supabase
+      .from("help_requests")
+      .select("case_code, full_name, status")
+      .eq("case_code", caseCode)
+      .maybeSingle();
+
+    if (caseError) {
+      return res.status(500).json({ ok: false, error: caseError.message });
+    }
+
+    if (!caseItem) {
+      return res.status(404).json({ ok: false, error: "case not found" });
+    }
+
+    const files = Array.isArray(req.files) ? req.files : [];
+    const uploadedFiles = await uploadCaseInfoFilesToSupabase(caseCode, files);
+
+    const fileUrls = uploadedFiles.map(f => f.url);
+    const fileNames = uploadedFiles.map(f => f.name);
+
+    const createdBy = String(req.body.created_by || "team");
+    const createdByUserId = String(req.body.created_by_user_id || "");
+
+    const payload = {
+      case_code: caseCode,
+      doc_type: docType || null,
+      doc_title: docTitle || null,
+      doc_note: docNote || null,
+      file_urls: fileUrls,
+      file_names: fileNames,
+      created_by: createdBy || null,
+      created_by_user_id: createdByUserId || null
+    };
+
+    const { data: inserted, error: insertError } = await supabase
+      .from("case_info_updates")
+      .insert(payload)
+      .select()
+      .single();
+
+    if (insertError) {
+      return res.status(500).json({ ok: false, error: insertError.message });
+    }
+
+    try {
+      broadcastSse("recent_activity_refresh", {
+        scope: "case_info_upload",
+        case_code: caseCode,
+        updated_at: new Date().toISOString()
+      });
+    } catch (broadcastErr) {
+      console.warn("broadcast case info upload warning:", broadcastErr?.message || broadcastErr);
+    }
+
+    return res.json({
+      ok: true,
+      message: "case info uploaded successfully",
+      item: inserted,
+      files: uploadedFiles
+    });
+
+  } catch (err) {
+    console.error("POST /api/team/case-info/upload error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal server error"
+    });
   }
 });
 

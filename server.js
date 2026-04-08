@@ -1237,6 +1237,108 @@ function buildTeamMenuFlex() {
     };
   }
 
+function buildPosterModeFlex() {
+  return {
+    type: "flex",
+    altText: "ศูนย์ปฏิบัติการเคส",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "0px",
+        spacing: "0px",
+        contents: [
+          {
+            type: "image",
+            url: "https://your-image-url.com/warroom-poster.jpg",
+            size: "full",
+            aspectMode: "cover",
+            aspectRatio: "3:4",
+            gravity: "top"
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            position: "absolute",
+            offsetTop: "68%",
+            offsetStart: "5%",
+            offsetEnd: "5%",
+            backgroundColor: "#FFFFFFEE",
+            cornerRadius: "20px",
+            paddingAll: "14px",
+            spacing: "10px",
+            contents: [
+              {
+                type: "text",
+                text: "ศูนย์ปฏิบัติการเคส",
+                weight: "bold",
+                size: "lg",
+                color: "#16324F",
+                align: "center"
+              },
+              {
+                type: "text",
+                text: "เลือกเมนูที่ต้องการใช้งาน",
+                size: "sm",
+                color: "#6B7280",
+                align: "center",
+                margin: "sm"
+              },
+              {
+                type: "button",
+                style: "primary",
+                height: "sm",
+                color: "#22C55E",
+                action: {
+                  type: "message",
+                  label: "ดูเคสวันนี้",
+                  text: "เคสวันนี้"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                height: "sm",
+                color: "#22C55E",
+                action: {
+                  type: "message",
+                  label: "ดูเคสด่วน",
+                  text: "ดูเคสด่วน"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                height: "sm",
+                color: "#22C55E",
+                action: {
+                  type: "message",
+                  label: "ค้นหาเคส",
+                  text: "ค้นหาเคส"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                height: "sm",
+                color: "#F97316",
+                action: {
+                  type: "uri",
+                  label: "เปิดศูนย์ปฏิบัติการ",
+                  uri: "https://your-domain.com/command-center"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  };
+}
+
+  
   function uriButton(label, uri, color = "#F97316") {
     return {
       type: "button",

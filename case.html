@@ -2004,7 +2004,7 @@
       }
     }
 
-function focusMapToPoint(lat, lng){
+function focusMapToPoint(lat, lng, timelineId = ""){
   if (!window._warroomMap) return;
 
   window._warroomMap.panTo({ lat, lng });
@@ -2025,9 +2025,12 @@ function focusMapToPoint(lat, lng){
     });
   }
 
+  if (timelineId) {
+    highlightTimelineItem(timelineId);
+  }
+
   focusWarRoomMap();
 }
-
 function clearTimelineHighlight(){
   document.querySelectorAll("#case_updates_timeline .timeline-item").forEach(el => {
     el.classList.remove("map-linked-active");

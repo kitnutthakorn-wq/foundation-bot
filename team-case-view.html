@@ -1063,11 +1063,13 @@ function renderInfoUpdates(infoUpdates = []) {
       const data = await safeFetchJson(url);
       const caseItem = data?.case || {};
       const updates = Array.isArray(data?.updates) ? data.updates : [];
+      const infoUpdates = Array.isArray(data?.info_updates) ? data.info_updates : [];
 
       renderSummary(caseItem);
       renderProgress(caseItem, updates);
       renderLatestImages(updates);
       renderTimeline(updates);
+      renderInfoUpdates(infoUpdates);
     }
 
     function goBack(){

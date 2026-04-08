@@ -2028,6 +2028,28 @@ function focusMapToPoint(lat, lng){
   focusWarRoomMap();
 }
 
+function clearTimelineHighlight(){
+  document.querySelectorAll("#case_updates_timeline .timeline-item").forEach(el => {
+    el.classList.remove("map-linked-active");
+    el.classList.remove("map-linked-pulse");
+  });
+}
+
+function highlightTimelineItem(timelineId){
+  const target = document.querySelector(`[data-timeline-id="${CSS.escape(String(timelineId))}"]`);
+  if (!target) return;
+
+  clearTimelineHighlight();
+
+  target.classList.add("map-linked-active");
+  void target.offsetWidth;
+  target.classList.add("map-linked-pulse");
+
+  setTimeout(() => {
+    target.classList.remove("map-linked-pulse");
+  }, 1500);
+}
+    
 function safeAutoFocusMap(lat, lng){
   if (!lat || !lng) return;
 

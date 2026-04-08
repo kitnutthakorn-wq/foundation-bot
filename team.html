@@ -760,11 +760,24 @@ function renderCases() {
 
       <div class="meta-row">อัปเดตล่าสุด: ${escapeHtml(item.updated_at || '-')}</div>
 
-      <div class="case-actions">
-        <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
-        <button class="btn-progress ${readOnly ? 'is-disabled' : ''}" onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">ตั้งเป็นกำลังดำเนินการ</button>
-        <button class="btn-update-case ${readOnly ? 'is-disabled' : ''}" onclick="openCaseUpdateLiff('${escapeHtml(item.case_code)}')">อัปเดตเคส</button>
-      </div>
+    <div class="case-actions">
+  <button onclick="viewCase('${escapeHtml(item.case_code)}')">ดูรายละเอียด</button>
+
+  <button class="btn-progress ${readOnly ? 'is-disabled' : ''}"
+    onclick="updateCaseStatus('${escapeHtml(item.case_code)}','progress')">
+    ตั้งเป็นกำลังดำเนินการ
+  </button>
+
+  <button class="btn-update-case ${readOnly ? 'is-disabled' : ''}"
+    onclick="openCaseUpdateLiff('${escapeHtml(item.case_code)}')">
+    อัปเดตเคส
+  </button>
+
+  <button class="btn-secondary ${readOnly ? 'is-disabled' : ''}"
+    onclick="openUpdateCaseInfo('${escapeHtml(item.case_code)}')">
+    อัปเดตข้อมูลเคส
+  </button>
+</div>
     </div>
   `).join('');
 }

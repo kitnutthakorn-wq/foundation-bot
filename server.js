@@ -1346,20 +1346,71 @@ function buildTeamMenuFlex() {
   spacing: "10px",
   paddingAll: "14px",
   backgroundColor: "#000000",
-  contents: [
-          messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
-          messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
-          messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
-          uriButton(
-            "เปิดศูนย์ปฏิบัติการ",
-            "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-            "#F97316"
-          )
-        ]
+ contents: [
+  whiteButton("ดูเคสวันนี้", "เคสวันนี้"),
+  whiteButton("ดูเคสด่วน", "ดูเคสด่วน"),
+  whiteButton("ค้นหาเคส", "ค้นหาเคส"),
+  orangeButton(
+    "เปิดศูนย์ปฏิบัติการ",
+    "https://satisfied-stillness-production-7942.up.railway.app/team.html"
+  )
+]
       }
     }
   };
 } // <- ตัวนี้หายอยู่ตอนนี้
+
+function whiteButton(label, text) {
+  return {
+    type: "box",
+    layout: "vertical",
+    backgroundColor: "#FFFFFF",
+    cornerRadius: "14px",
+    paddingAll: "14px",
+    margin: "sm",
+    contents: [
+      {
+        type: "text",
+        text: label,
+        weight: "bold",
+        size: "md",
+        color: "#111827",
+        align: "center",
+        action: {
+          type: "message",
+          label: label,
+          text: text
+        }
+      }
+    ]
+  };
+}
+
+function orangeButton(label, uri) {
+  return {
+    type: "box",
+    layout: "vertical",
+    backgroundColor: "#F97316",
+    cornerRadius: "14px",
+    paddingAll: "14px",
+    margin: "sm",
+    contents: [
+      {
+        type: "text",
+        text: label,
+        weight: "bold",
+        size: "md",
+        color: "#FFFFFF",
+        align: "center",
+        action: {
+          type: "uri",
+          label: label,
+          uri: uri
+        }
+      }
+    ]
+  };
+}
 
 function buildTeamNewCaseText(item = {}) {
   return (

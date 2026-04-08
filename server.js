@@ -1364,9 +1364,11 @@ function whiteButton(label, text) {
   return {
     type: "box",
     layout: "vertical",
-    backgroundColor: "#FFFFFF",
-    cornerRadius: "14px",
-    paddingAll: "14px",
+    backgroundColor: "#F9FAFB",
+    borderColor: "#E5E7EB",
+    borderWidth: "1px",
+    cornerRadius: "16px",
+    paddingAll: "16px",
     margin: "sm",
     contents: [
       {

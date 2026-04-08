@@ -1469,7 +1469,13 @@ function renderWarRoomMap(data){
 }
     
 registerFormLocking();
-loadProjects().then(refreshCaseView);
+loadProjects().then(async () => {
+  await refreshCaseView();
+  if (caseCode) {
+    loadWorkFiles(caseCode);
+  }
+});
+    
 connectRealtime();
 
 async function loadWorkFiles(caseCode) {

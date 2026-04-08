@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>อัปเดตข้อมูลเคส | KCK FD</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    :root{
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --accent:#1f8f4d;
+      --bg:#edf2f5;
+      --panel:#f7fbfc;
+      --card:#ffffff;
+      --line:#dbe3ea;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --warn:#c56608;
+      --danger:#b91c1c;
+      --info:#2563eb;
+      --shadow:0 14px 35px rgba(18,36,58,.08);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(11,124,134,.10), transparent 25%),
+        linear-gradient(180deg,#f8fbfc 0%,var(--bg) 100%);
+    }
+
+    .hidden{display:none!important}
+
+    .loading{
+      min-height:40vh;
+      display:grid;
+      place-items:center;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .app{
+      max-width:1180px;
+      margin:0 auto;
+      padding:18px 14px 40px;
+      display:grid;
+      gap:16px;
+    }
+
+    .topbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      align-items:center;
+    }
+
+    .brand-wrap{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:64px;
+      height:64px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      object-fit:contain;
+      padding:6px;
+    }
+
+    .brand-title h1{
+      margin:0;
+      font-size:2rem;
+      line-height:1.1;
+      color:#102a43;
+    }
+
+    .brand-title p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow:var(--shadow);
+      color:#234;
+      font-weight:700;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:#6b7280;
+    }
+
+    .dot.live{background:#22c55e}
+
+    button{
+      border:0;
+      border-radius:14px;
+      cursor:pointer;
+      font:inherit;
+      transition:transform .15s ease;
+      padding:12px 16px;
+      font-weight:700;
+    }
+
+    button:hover{transform:translateY(-1px)}
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:#fff;
+      color:var(--brand-dark);
+      border:1px solid var(--line);
+    }
+
+    .btn-accent{
+      background:linear-gradient(135deg,var(--accent),#2ea95f);
+      color:#fff;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .stack{display:grid;gap:16px}
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(219,227,234,.9);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .headline{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .headline h2{
+      margin:0;
+      font-size:1.12rem;
+      color:#102a43;
+    }
+
+    .headline p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+
+    .summary-box{
+      background:#f8fbfc;
+      border:1px solid #e8eef3;
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .summary-box strong{
+      display:block;
+      color:var(--muted);
+      font-size:.82rem;
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    .summary-box span{
+      display:block;
+      font-size:1.05rem;
+      font-weight:800;
+      color:#102a43;
+      line-height:1.35;
+      word-break:break-word;
+    }
+
+    .detail-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
+    .field{display:grid;gap:6px}
+    .field.full{grid-column:1 / -1}
+
+    .field label{
+      font-size:.9rem;
+      color:#49566a;
+      font-weight:700;
+    }
+
+    .value-box,
+    .input,
+    .select,
+    .textarea{
+      width:100%;
+      min-height:50px;
+      background:#f8fbfc;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      color:#102a43;
+      font:inherit;
+      line-height:1.5;
+    }
+
+    .value-box{
+      display:flex;
+      align-items:center;
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .value-box.multiline{
+      align-items:flex-start;
+      white-space:pre-wrap;
+    }
+
+    .textarea{
+      min-height:140px;
+      resize:vertical;
+    }
+
+    .file-drop{
+      border:1.5px dashed #bfd2dc;
+      background:#fbfdfe;
+      border-radius:18px;
+      padding:16px;
+      display:grid;
+      gap:10px;
+    }
+
+    .file-note{
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.6;
+    }
+
+    .file-list{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .file-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+    }
+
+    .file-meta{
+      min-width:0;
+    }
+
+    .file-name{
+      font-weight:800;
+      color:#102a43;
+      word-break:break-all;
+    }
+
+    .file-size{
+      color:var(--muted);
+      font-size:.86rem;
+      margin-top:4px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:.84rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .badge.status-new{background:#dbeafe;color:#1d4ed8}
+    .badge.status-progress{background:#fef3c7;color:#b45309}
+    .badge.status-done{background:#dcfce7;color:#15803d}
+    .badge.status-cancelled{background:#e5e7eb;color:#4b5563}
+    .badge.priority-urgent{background:#fee2e2;color:#b91c1c}
+    .badge.priority-normal{background:#e0f2fe;color:#0369a1}
+    .badge.info{background:#eefaf3;color:#166534}
+
+    .hint-box{
+      background:#f8fbfc;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      color:#475569;
+      line-height:1.7;
+    }
+
+    .action-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .save-status{
+      margin-top:10px;
+      padding:14px;
+      border-radius:14px;
+      background:#f8fbfc;
+      border:1px solid var(--line);
+      color:#475569;
+      font-weight:700;
+    }
+
+    .footer-note{
+      text-align:center;
+      color:var(--muted);
+      font-size:.84rem;
+      margin-top:6px;
+    }
+
+    @media (max-width:1024px){
+      .layout{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:repeat(2,1fr)}
+      .detail-grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width:640px){
+      .topbar{grid-template-columns:1fr}
+      .top-actions{justify-content:flex-start}
+      .summary-grid{grid-template-columns:1fr}
+      .brand-title h1{font-size:1.5rem}
+      .action-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading">กำลังเปิดหน้าอัปเดตข้อมูลเคส...</div>
+
+  <div id="app" class="app hidden">
+    <div class="topbar">
+      <div class="brand-wrap">
+        <img class="brand-logo" src="/logo.png" alt="logo" />
+        <div class="brand-title">
+          <h1>อัปเดตข้อมูลเคส</h1>
+          <p>แนบเอกสาร • บันทึกหมายเหตุ • จัดเก็บข้อมูลประกอบเคส</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="status-pill">
+          <span class="dot live"></span>
+          <span id="liveStatusText">พร้อมใช้งาน</span>
+        </div>
+        <button class="btn-secondary" onclick="goBackToCaseView()">กลับหน้ารายละเอียดเคส</button>
+        <button class="btn-secondary" onclick="refreshPageData()">รีเฟรช</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="stack">
+        <div class="card">
+          <div class="headline">
+            <div>
+              <h2>ข้อมูลเคส</h2>
+              <p>แสดงข้อมูลสรุปของเคสที่กำลังจะอัปเดตเอกสารและรายละเอียดเพิ่มเติม</p>
+            </div>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-box"><strong>เลขเคส</strong><span id="sumCaseCode">-</span></div>
+            <div class="summary-box"><strong>สถานะล่าสุด</strong><span id="sumStatus">-</span></div>
+            <div class="summary-box"><strong>ระดับความเร่งด่วน</strong><span id="sumPriority">-</span></div>
+            <div class="summary-box"><strong>ผู้รับเคส</strong><span id="sumAssignedTo">-</span></div>
+          </div>
+
+          <div class="detail-grid" style="margin-top:14px;">
+            <div class="field">
+              <label>ชื่อผู้ขอความช่วยเหลือ</label>
+              <div id="fullName" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>เบอร์โทร</label>
+              <div id="phone" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>พื้นที่</label>
+              <div id="location" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>หมวดปัญหา</label>
+              <div id="problemCategory" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>สถานะ</label>
+              <div id="statusBox" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>ระดับ</label>
+              <div id="priorityBox" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>ผู้รับเคส</label>
+              <div id="assignedTo" class="value-box">-</div>
+            </div>
+
+            <div class="field">
+              <label>โครงการของเคส</label>
+              <div id="projectName" class="value-box">-</div>
+            </div>
+
+            <div class="field full">
+              <label>รายละเอียดปัญหา</label>
+              <div id="problemDetail" class="value-box multiline">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="headline">
+            <div>
+              <h2>ฟอร์มอัปเดตข้อมูลเคส</h2>
+              <p>สำหรับเอกสารประกอบเคส รายละเอียดเพิ่ม และหลักฐานที่ไม่ใช่งานภาคสนามโดยตรง</p>
+            </div>
+            <span class="badge info">Case Info Update</span>
+          </div>
+
+          <div class="detail-grid">
+            <div class="field">
+              <label for="docType">ประเภทเอกสาร / ข้อมูล</label>
+              <select id="docType" class="select">
+                <option value="general_info">ข้อมูลเพิ่มเติมทั่วไป</option>
+                <option value="request_document">เอกสารคำร้อง</option>
+                <option value="id_document">เอกสารยืนยันตัวตน</option>
+                <option value="medical_document">เอกสารทางการแพทย์</option>
+                <option value="education_document">เอกสารการศึกษา</option>
+                <option value="income_document">เอกสารรายได้ / อาชีพ</option>
+                <option value="home_document">เอกสารที่อยู่อาศัย</option>
+                <option value="approval_document">เอกสารอนุมัติ / หนังสือรับรอง</option>
+                <option value="other_document">เอกสารอื่นๆ</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="docTitle">ชื่อหัวข้อเอกสาร / รายการข้อมูล</label>
+              <input id="docTitle" class="input" type="text" placeholder="เช่น หนังสือรับรองแพทย์ / เอกสารคำร้องเพิ่มเติม" />
+            </div>
+
+            <div class="field full">
+              <label for="docNote">หมายเหตุ / รายละเอียดเพิ่มเติม</label>
+              <textarea id="docNote" class="textarea" placeholder="พิมพ์รายละเอียดที่ต้องการบันทึก เช่น เอกสารชุดนี้ใช้ประกอบการพิจารณาเคส, ได้รับจากญาติเมื่อวันที่..., มีข้อมูลเพิ่มเติมที่ต้องติดตาม..."></textarea>
+            </div>
+
+            <div class="field full">
+              <label>แนบไฟล์ประกอบ</label>
+              <div class="file-drop">
+                <input id="docFiles" type="file" multiple />
+                <div class="file-note">
+                  รองรับเอกสารและไฟล์ประกอบ เช่น PDF, DOC, DOCX, XLS, XLSX, JPG, PNG<br>
+                  เหมาะสำหรับหลักฐานข้อมูลเคส เอกสารยืนยัน หนังสือรับรอง และไฟล์ประกอบอื่น ๆ
+                </div>
+                <div id="selectedFileList" class="file-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="btn-accent" onclick="submitCaseInfoUpdate()">บันทึกข้อมูลเคสเพิ่มเติม</button>
+            <button class="btn-secondary" onclick="clearCaseInfoForm()">ล้างแบบฟอร์ม</button>
+            <button class="btn-primary" onclick="goBackToCaseView()">กลับหน้ารายละเอียดเคส</button>
+          </div>
+
+          <div id="saveStatus" class="save-status">พร้อมบันทึกข้อมูล</div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <div class="headline">
+            <div>
+              <h2>คำแนะนำการใช้งาน</h2>
+              <p>แยกจากงานภาคสนาม เพื่อให้ตรวจสอบเอกสารและข้อมูลย้อนหลังได้ง่าย</p>
+            </div>
+          </div>
+
+          <div class="hint-box">
+            ใช้หน้านี้เมื่อมีการแนบเอกสารหรือข้อมูลเพิ่มเติมที่เกี่ยวกับเคส เช่น
+            หนังสือรับรอง เอกสารยืนยันตัวตน เอกสารแพทย์ เอกสารเรียน หนังสือคำร้อง
+            หรือหมายเหตุเชิงข้อมูลที่ต้องเก็บไว้สำหรับการตรวจสอบย้อนหลัง
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="headline">
+            <div>
+              <h2>สถานะการแนบไฟล์</h2>
+              <p>ตรวจรายการไฟล์ก่อนบันทึกข้อมูลเข้าระบบ</p>
+            </div>
+          </div>
+
+          <div id="uploadSummary" class="hint-box">
+            ยังไม่มีไฟล์ที่เลือก
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="headline">
+            <div>
+              <h2>ปลายทางหลังบันทึก</h2>
+              <p>เมื่อบันทึกสำเร็จ ระบบควรกลับไปหน้าเคสเดิมหรือรีเฟรชรายละเอียดเคส</p>
+            </div>
+          </div>
+
+          <div class="hint-box">
+            หลังบันทึกสำเร็จ คุณสามารถกลับไปยังหน้า
+            <strong>รายละเอียดเคสภาคสนาม</strong>
+            เพื่อดูข้อมูลล่าสุดของเคสเดียวกันได้ทันที
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">Update Case Info • Documents • Notes • Golden Safe Patch</div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      LIFF_ID: "2009446483-2q6biMUk",
+      API_BASE_URL: "https://satisfied-stillness-production-7942.up.railway.app",
+      TEAM_CASE_DETAIL_ENDPOINT: "/api/team/case-detail",
+
+      // แก้ endpoint นี้ตาม backend จริงของคุณ
+      CASE_INFO_UPLOAD_ENDPOINT: "/api/team/case-info/upload"
+    };
+
+    let currentCaseCode = "";
+    let currentCaseData = null;
+    let selectedFiles = [];
+
+    function qs(name){
+      return new URLSearchParams(window.location.search).get(name) || "";
+    }
+
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function formatThaiDateTime(value){
+      if(!value) return "-";
+      const d = new Date(value);
+      if(Number.isNaN(d.getTime())) return String(value);
+      return d.toLocaleString("th-TH",{
+        year:"numeric",
+        month:"short",
+        day:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+    }
+
+    function setLoading(v){
+      document.getElementById("loading").classList.toggle("hidden", !v);
+      document.getElementById("app").classList.toggle("hidden", v);
+    }
+
+    function safeText(id, value){
+      const el = document.getElementById(id);
+      if(el) el.textContent = value ?? "-";
+    }
+
+    function formatStatusThai(status=""){
+      switch(String(status).toLowerCase()){
+        case "new": return "รับเรื่องแล้ว";
+        case "in_progress": return "กำลังดำเนินการ";
+        case "done": return "เสร็จสิ้นแล้ว";
+        case "cancelled": return "ยกเลิก";
+        default: return status || "-";
+      }
+    }
+
+    function formatPriorityThai(priority=""){
+      switch(String(priority).toLowerCase()){
+        case "urgent": return "ด่วน";
+        case "high": return "สูง";
+        case "normal": return "ปกติ";
+        case "low": return "ต่ำ";
+        default: return priority || "-";
+      }
+    }
+
+    function getStatusBadgeClass(status=""){
+      switch(String(status).toLowerCase()){
+        case "new": return "status-new";
+        case "in_progress": return "status-progress";
+        case "done": return "status-done";
+        case "cancelled": return "status-cancelled";
+        default: return "status-new";
+      }
+    }
+
+    function getPriorityBadgeClass(priority=""){
+      return String(priority).toLowerCase() === "urgent" ? "priority-urgent" : "priority-normal";
+    }
+
+    async function safeFetchJson(url, options={}){
+      const res = await fetch(url, options);
+      const text = await res.text();
+      let data = {};
+      try{
+        data = text ? JSON.parse(text) : {};
+      }catch{
+        data = { ok:false, error:text || `HTTP ${res.status}` };
+      }
+      if(!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      return data;
+    }
+
+    function renderSummary(caseItem={}){
+      currentCaseData = caseItem;
+
+      safeText("sumCaseCode", caseItem.case_code || "-");
+      safeText("sumAssignedTo", caseItem.assigned_to || "-");
+      safeText("fullName", caseItem.full_name || "-");
+      safeText("phone", caseItem.phone || "-");
+      safeText("location", caseItem.location || "-");
+      safeText("problemCategory", caseItem.problem_category || caseItem.problem_group || caseItem.problem_type || "-");
+      safeText("assignedTo", caseItem.assigned_to || "-");
+      safeText("projectName", caseItem.project_name || "-");
+      safeText("problemDetail", caseItem.problem || "-");
+
+      const statusText = formatStatusThai(caseItem.status);
+      const priorityText = formatPriorityThai(caseItem.priority);
+
+      safeText("sumStatus", statusText);
+      safeText("sumPriority", priorityText);
+
+      document.getElementById("statusBox").innerHTML =
+        `<span class="badge ${getStatusBadgeClass(caseItem.status)}">${escapeHtml(statusText)}</span>`;
+
+      document.getElementById("priorityBox").innerHTML =
+        `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`;
+    }
+
+    async function loadCaseInfo(){
+      if(!currentCaseCode) throw new Error("ไม่พบเลขเคส");
+      const url = `${CONFIG.API_BASE_URL}${CONFIG.TEAM_CASE_DETAIL_ENDPOINT}?case_code=${encodeURIComponent(currentCaseCode)}`;
+      const data = await safeFetchJson(url);
+      const caseItem = data?.case || {};
+      renderSummary(caseItem);
+    }
+
+    function goBackToCaseView(){
+      if(!currentCaseCode){
+        window.location.href = "team.html";
+        return;
+      }
+      window.location.href = `team-case-view.html?case_code=${encodeURIComponent(currentCaseCode)}`;
+    }
+
+    async function refreshPageData(){
+      try{
+        document.getElementById("liveStatusText").textContent = "กำลังรีเฟรชข้อมูล...";
+        await loadCaseInfo();
+        document.getElementById("liveStatusText").textContent = "พร้อมใช้งาน";
+      }catch(err){
+        console.error(err);
+        document.getElementById("liveStatusText").textContent = "รีเฟรชไม่สำเร็จ";
+        alert(`โหลดข้อมูลไม่สำเร็จ: ${err.message}`);
+      }
+    }
+
+    function formatFileSize(bytes){
+      if(!bytes && bytes !== 0) return "-";
+      if(bytes < 1024) return `${bytes} B`;
+      if(bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    function renderSelectedFiles(){
+      const root = document.getElementById("selectedFileList");
+      const summary = document.getElementById("uploadSummary");
+
+      if(!selectedFiles.length){
+        root.innerHTML = "";
+        summary.textContent = "ยังไม่มีไฟล์ที่เลือก";
+        return;
+      }
+
+      root.innerHTML = selectedFiles.map((file, index) => `
+        <div class="file-item">
+          <div class="file-meta">
+            <div class="file-name">${escapeHtml(file.name)}</div>
+            <div class="file-size">${escapeHtml(formatFileSize(file.size))}</div>
+          </div>
+          <button class="btn-secondary" type="button" onclick="removeSelectedFile(${index})">ลบ</button>
+        </div>
+      `).join("");
+
+      summary.innerHTML = `
+        เลือกไฟล์แล้ว <strong>${selectedFiles.length}</strong> ไฟล์
+        <br>รวมขนาดประมาณ <strong>${escapeHtml(formatFileSize(selectedFiles.reduce((sum, f) => sum + (f.size || 0), 0)))}</strong>
+      `;
+    }
+
+    function removeSelectedFile(index){
+      selectedFiles.splice(index, 1);
+      syncFileInputWithState();
+      renderSelectedFiles();
+    }
+
+    function syncFileInputWithState(){
+      // browser ส่วนใหญ่ไม่ให้ set files กลับตรง ๆ
+      // จึง reset input เฉย ๆ เพื่อป้องกัน state mismatch
+      const input = document.getElementById("docFiles");
+      if(selectedFiles.length === 0 && input){
+        input.value = "";
+      }
+    }
+
+    function handleFileSelection(event){
+      const files = Array.from(event.target.files || []);
+      if(!files.length){
+        selectedFiles = [];
+        renderSelectedFiles();
+        return;
+      }
+      selectedFiles = files;
+      renderSelectedFiles();
+    }
+
+    function clearCaseInfoForm(){
+      document.getElementById("docType").value = "general_info";
+      document.getElementById("docTitle").value = "";
+      document.getElementById("docNote").value = "";
+      document.getElementById("docFiles").value = "";
+      selectedFiles = [];
+      renderSelectedFiles();
+      document.getElementById("saveStatus").textContent = "ล้างแบบฟอร์มแล้ว";
+    }
+
+    async function submitCaseInfoUpdate(){
+      const docType = document.getElementById("docType").value;
+      const docTitle = document.getElementById("docTitle").value.trim();
+      const docNote = document.getElementById("docNote").value.trim();
+      const saveStatus = document.getElementById("saveStatus");
+
+      if(!currentCaseCode){
+        alert("ไม่พบเลขเคส");
+        return;
+      }
+
+      if(!docTitle && !docNote && !selectedFiles.length){
+        alert("กรุณากรอกข้อมูลหรือแนบไฟล์อย่างน้อย 1 อย่าง");
+        return;
+      }
+
+      try{
+        saveStatus.textContent = "กำลังบันทึกข้อมูล...";
+        document.getElementById("liveStatusText").textContent = "กำลังบันทึก...";
+
+        const formData = new FormData();
+        formData.append("case_code", currentCaseCode);
+        formData.append("doc_type", docType);
+        formData.append("doc_title", docTitle);
+        formData.append("doc_note", docNote);
+
+        selectedFiles.forEach(file => {
+          formData.append("files", file);
+        });
+
+        const res = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.CASE_INFO_UPLOAD_ENDPOINT}`, {
+          method: "POST",
+          body: formData
+        });
+
+        const text = await res.text();
+        let data = {};
+        try{
+          data = text ? JSON.parse(text) : {};
+        }catch{
+          data = { ok:false, error:text || `HTTP ${res.status}` };
+        }
+
+        if(!res.ok){
+          throw new Error(data?.error || `HTTP ${res.status}`);
+        }
+
+        saveStatus.textContent = "บันทึกข้อมูลเคสสำเร็จ";
+        document.getElementById("liveStatusText").textContent = "บันทึกสำเร็จ";
+        alert("บันทึกข้อมูลเคสเพิ่มเติมสำเร็จ");
+        clearCaseInfoForm();
+
+      }catch(err){
+        console.error(err);
+        saveStatus.textContent = `บันทึกไม่สำเร็จ: ${err.message}`;
+        document.getElementById("liveStatusText").textContent = "บันทึกไม่สำเร็จ";
+        alert(`บันทึกข้อมูลไม่สำเร็จ: ${err.message}`);
+      }
+    }
+
+    async function bootstrap(){
+      try{
+        currentCaseCode = qs("case_code").trim();
+        if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
+
+        await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+        await loadCaseInfo();
+
+        const fileInput = document.getElementById("docFiles");
+        if(fileInput){
+          fileInput.addEventListener("change", handleFileSelection);
+        }
+
+        renderSelectedFiles();
+      }catch(err){
+        console.error(err);
+        alert(`เปิดหน้าอัปเดตข้อมูลเคสไม่สำเร็จ: ${err.message}`);
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", bootstrap);
+  </script>
+</body>
+</html>

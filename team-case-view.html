@@ -24,6 +24,181 @@
     .image-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.image-grid a{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}.image-grid img{width:100%;height:180px;object-fit:cover;display:block}.empty-state{padding:18px;border-radius:16px;background:#f8fbfc;border:1px dashed #d7e3ea;color:#6b7280;text-align:center;font-weight:700}.footer-note{text-align:center;color:var(--muted);font-size:.84rem;margin-top:6px}
     @media (max-width:1024px){.layout{grid-template-columns:1fr}.summary-grid{grid-template-columns:repeat(2,1fr)}.detail-grid{grid-template-columns:1fr}.mini-grid{grid-template-columns:1fr}.timeline-grid{grid-template-columns:1fr}.image-grid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:640px){.topbar{grid-template-columns:1fr}.top-actions{justify-content:flex-start}.summary-grid{grid-template-columns:1fr}.image-grid{grid-template-columns:1fr}.brand-title h1{font-size:1.5rem}}
+
+    /* =========================
+PRO MAX IMAGE VIEWER
+Golden Safe Patch (Scoped CSS)
+========================= */
+.pmx-image-viewer{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .22s ease;
+}
+
+.pmx-image-viewer.is-open{
+  display:block;
+  opacity:1;
+  pointer-events:auto;
+}
+
+.pmx-image-viewer__backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(5,10,18,.88);
+  backdrop-filter:blur(4px);
+}
+
+.pmx-image-viewer__chrome{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+.pmx-image-viewer__topbar{
+  position:absolute;
+  top:14px;
+  left:14px;
+  right:14px;
+  z-index:3;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.pmx-image-viewer__counter{
+  display:inline-flex;
+  align-items:center;
+  min-height:42px;
+  padding:0 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  backdrop-filter:blur(10px);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+
+.pmx-image-viewer__actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.pmx-viewer-btn{
+  min-width:42px;
+  height:42px;
+  border:none;
+  border-radius:12px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+
+.pmx-viewer-btn:hover{
+  transform:translateY(-1px);
+}
+
+.pmx-viewer-btn--close{
+  background:rgba(255,80,80,.22);
+}
+
+.pmx-nav-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:3;
+  width:52px;
+  height:52px;
+  border:none;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:34px;
+  line-height:1;
+  cursor:pointer;
+  backdrop-filter:blur(10px);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+
+.pmx-nav-btn--prev{ left:16px; }
+.pmx-nav-btn--next{ right:16px; }
+
+.pmx-image-viewer__stage{
+  position:absolute;
+  inset:78px 18px 68px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+}
+
+.pmx-image-viewer__img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  transform:translate3d(0,0,0) scale(1);
+  transform-origin:center center;
+  transition:transform .14s ease;
+  will-change:transform;
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+}
+
+.pmx-image-viewer__hint{
+  position:absolute;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%);
+  z-index:3;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  color:rgba(255,255,255,.88);
+  font-size:12px;
+  white-space:nowrap;
+  backdrop-filter:blur(10px);
+}
+
+@media (max-width: 768px){
+  .pmx-image-viewer__topbar{
+    top:10px;
+    left:10px;
+    right:10px;
+  }
+
+  .pmx-image-viewer__stage{
+    inset:84px 8px 62px 8px;
+  }
+
+  .pmx-nav-btn{
+    width:46px;
+    height:46px;
+    font-size:28px;
+  }
+
+  .pmx-nav-btn--prev{ left:10px; }
+  .pmx-nav-btn--next{ right:10px; }
+
+  .pmx-image-viewer__hint{
+    max-width:90%;
+    white-space:normal;
+    text-align:center;
+  }
+}
+  
   </style>
 </head>
 <body>

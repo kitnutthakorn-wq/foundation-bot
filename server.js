@@ -4115,6 +4115,50 @@ app.post("/api/work-uploads/files", upload.array("files", 10), async (req, res) 
     });
   }
 });
+app.get("/api/help-requests/by-case-code/:caseCode", async (req, res) => {
+  try {
+    const caseCode = String(req.params.caseCode || "").trim();
+
+    if (!caseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: "caseCode is required"
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("case_code", caseCode)
+      .maybeSingle();
+
+    if (error) {
+      console.error("GET BY CASE CODE ERROR:", error);
+      return res.status(500).json({
+        ok: false,
+        error: error.message || "query failed"
+      });
+    }
+
+    if (!data) {
+      return res.status(404).json({
+        ok: false,
+        error: "case not found"
+      });
+    }
+
+    return res.json({
+      ok: true,
+      data
+    });
+  } catch (err) {
+    console.error("GET /api/help-requests/by-case-code/:caseCode ERROR:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal server error"
+    });
+  }
+});
 app.get("/logo.png", (req, res) => {
   res.sendFile(path.join(__dirname, "Logo.png"));
 });

@@ -249,7 +249,12 @@
     }
     .summary-strip{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
+     .summary-strip{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(120px,1fr));
+  gap:12px;
+  margin-bottom:14px;
+}
       gap:12px;
       margin-bottom:14px;
     }

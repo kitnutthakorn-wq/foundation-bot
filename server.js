@@ -1393,8 +1393,8 @@ function orangeButton(label, uri) {
     type: "box",
     layout: "vertical",
     backgroundColor: "#F97316",
-    cornerRadius: "14px",
-    paddingAll: "14px",
+    cornerRadius: "16px",
+    paddingAll: "16px",
     margin: "sm",
     contents: [
       {
@@ -1413,7 +1413,6 @@ function orangeButton(label, uri) {
     ]
   };
 }
-
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +

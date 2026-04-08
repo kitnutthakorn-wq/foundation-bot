@@ -2139,12 +2139,93 @@ function buildHelpRequestChoiceFlex() {
   };
 }
 
+function buildHelpFirstContactFlex() {
+  return {
+    type: "flex",
+    altText: "เลือกวิธีแจ้งขอความช่วยเหลือ",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#0b7c86",
+        paddingAll: "18px",
+        contents: [
+          { type: "text", text: "ขอความช่วยเหลือครั้งแรก", color: "#ffffff", weight: "bold", size: "lg", wrap: true },
+          { type: "text", text: "เลือกวิธีที่สะดวกที่สุดได้เลยครับ", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        paddingAll: "18px",
+        contents: [
+          {
+            type: "text",
+            text: "เราพร้อมรับฟังและช่วยเหลือท่านครับ",
+            weight: "bold",
+            size: "md",
+            color: "#16324F",
+            wrap: true
+          },
+          {
+            type: "text",
+            text: "หากไม่สะดวกกรอกฟอร์ม สามารถเลือกพิมพ์คุยกับเจ้าหน้าที่ได้ทันทีนะครับ",
+            size: "sm",
+            color: "#5B6575",
+            wrap: true
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            cornerRadius: "14px",
+            paddingAll: "14px",
+            backgroundColor: "#F4FBFC",
+            borderColor: "#D9EEF0",
+            borderWidth: "1px",
+            contents: [
+              { type: "text", text: "1) กรอกข้อมูลแบบง่าย", weight: "bold", size: "md", color: "#0b7c86", wrap: true },
+              { type: "text", text: "เหมาะสำหรับผู้ที่สะดวกพิมพ์ตามแบบตัวอย่าง ใช้เวลาไม่นานครับ", size: "sm", color: "#5B6575", margin: "sm", wrap: true }
+            ]
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            cornerRadius: "14px",
+            paddingAll: "14px",
+            backgroundColor: "#F7F9FC",
+            borderColor: "#E5E7EB",
+            borderWidth: "1px",
+            contents: [
+              { type: "text", text: "2) พิมพ์คุยกับเจ้าหน้าที่", weight: "bold", size: "md", color: "#163C72", wrap: true },
+              { type: "text", text: "เหมาะสำหรับผู้ที่ไม่สะดวกกรอกตามแบบ สามารถค่อยๆ พิมพ์คุยกับเราได้เลยครับ", size: "sm", color: "#5B6575", margin: "sm", wrap: true }
+            ]
+          }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        paddingAll: "16px",
+        contents: [
+          { type: "button", style: "primary", height: "sm", color: "#1F8F4D", action: { type: "message", label: "กรอกข้อมูลแบบง่าย", text: "ขอความช่วยเหลือแบบฟอร์ม" } },
+          { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "พิมพ์คุยกับเจ้าหน้าที่", text: "ขอความช่วยเหลือแบบแชท" } },
+          { type: "text", text: "ไม่ต้องกังวลนะครับ เลือกแบบที่ท่านสะดวกที่สุดได้เลย", size: "xs", color: "#7A8594", wrap: true, align: "center", margin: "md" }
+        ]
+      }
+    }
+  };
+}
+
 function buildHelpFormFlex() {
   const prefill = encodeURIComponent("ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:");
   const useUri = LINE_OA_ID && LINE_OA_ID.startsWith("@");
   const primaryAction = useUri
-    ? { type: "uri", label: "กรอกข้อมูลตามนี้", uri: `https://line.me/R/oaMessage/${LINE_OA_ID}/?${prefill}` }
-    : { type: "message", label: "กรอกข้อมูลตามนี้", text: "ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:" };
+    ? { type: "uri", label: "เปิดช่องพิมพ์ตามแบบ", uri: `https://line.me/R/oaMessage/${LINE_OA_ID}/?${prefill}` }
+    : { type: "message", label: "ส่งหัวข้อให้พิมพ์ต่อ", text: "ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:" };
 
   return {
     type: "flex",
@@ -2158,8 +2239,8 @@ function buildHelpFormFlex() {
         backgroundColor: "#0b7c86",
         paddingAll: "16px",
         contents: [
-          { type: "text", text: "แบบฟอร์มขอความช่วยเหลือ", color: "#ffffff", weight: "bold", size: "lg", align: "center" },
-          { type: "text", text: "กรุณากรอกข้อมูลตามตัวอย่างด้านล่าง", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true, align: "center" }
+          { type: "text", text: "กรอกข้อมูลแบบง่าย", color: "#ffffff", weight: "bold", size: "lg", align: "center" },
+          { type: "text", text: "ค่อยๆ พิมพ์ตามหัวข้อด้านล่างได้เลยครับ", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true, align: "center" }
         ]
       },
       body: {
@@ -2184,7 +2265,7 @@ function buildHelpFormFlex() {
           },
           {
             type: "text",
-            text: useUri ? "กดปุ่มด้านล่างเพื่อเปิดช่องพิมพ์พร้อมหัวข้อฟอร์ม" : "คัดลอกหัวข้อด้านบน แล้วพิมพ์ข้อมูลต่อท้ายได้เลย",
+            text: useUri ? "กดปุ่มด้านล่างเพื่อเปิดช่องพิมพ์พร้อมหัวข้อได้เลยครับ" : "กดปุ่มด้านล่าง แล้วค่อยๆ พิมพ์ข้อมูลต่อท้ายได้เลยครับ",
             size: "sm",
             color: "#6B7280",
             wrap: true,
@@ -2199,6 +2280,7 @@ function buildHelpFormFlex() {
         paddingAll: "16px",
         contents: [
           { type: "button", style: "primary", height: "sm", color: "#0b7c86", action: primaryAction },
+          { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "พิมพ์คุยกับเจ้าหน้าที่", text: "ขอความช่วยเหลือแบบแชท" } },
           { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "กลับไปเลือกประเภท", text: "ขอความช่วยเหลือ" } }
         ]
       }
@@ -7207,15 +7289,46 @@ if (text === "ขอความช่วยเหลือ") {
 }
 
 if (text === "ขอความช่วยเหลือครั้งแรก") {
+  await safeReply(replyToken, [buildHelpFirstContactFlex()], [
+    {
+      type: "text",
+      text:
+        "สวัสดีครับ ท่านสามารถเลือกวิธีแจ้งเรื่องที่สะดวกที่สุดได้เลยครับ\n\n" +
+        "1) กรอกข้อมูลแบบง่าย\n" +
+        "2) พิมพ์คุยกับเจ้าหน้าที่",
+    },
+  ]);
+  continue;
+}
+
+if (text === "ขอความช่วยเหลือแบบฟอร์ม") {
   await safeReply(replyToken, [buildHelpFormFlex()], [
     {
       type: "text",
       text:
-        "กรุณาส่งข้อมูลดังนี้\n" +
+        "หากสะดวก รบกวนค่อยๆ พิมพ์ข้อมูลตามนี้ได้เลยครับ\n\n" +
         "ชื่อ:\n" +
         "พื้นที่:\n" +
         "รายละเอียด:\n" +
-        "เบอร์:",
+        "เบอร์:\n\n" +
+        "หากยังพิมพ์ไม่ครบในครั้งเดียวก็ไม่เป็นไรนะครับ ค่อยๆ ส่งมาได้ครับ",
+    },
+  ]);
+  continue;
+}
+
+if (text === "ขอความช่วยเหลือแบบแชท") {
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text:
+        "สวัสดีครับ เรายินดีรับฟังและพร้อมช่วยเหลือท่านนะครับ\n\n" +
+        "หากสะดวก รบกวนค่อยๆ พิมพ์ข้อมูลตามนี้ได้เลยครับ\n\n" +
+        "ชื่อ:\n" +
+        "พื้นที่:\n" +
+        "รายละเอียด:\n" +
+        "เบอร์:\n\n" +
+        "หากยังพิมพ์ไม่ครบในครั้งเดียวก็ไม่เป็นไรนะครับ ค่อยๆ ส่งมาได้ครับ",
     },
   ]);
   continue;

@@ -1233,48 +1233,23 @@ function buildPosterModeFlex() {
         type: "box",
         layout: "vertical",
         paddingAll: "0px",
-        spacing: "0px",
         contents: [
           {
             type: "image",
-            url: "https://your-image-url.com/warroom-poster.jpg",
+            url: "https://img2.pic.in.th/pic/kck-poster.jpg",
             size: "full",
             aspectMode: "cover",
-            aspectRatio: "3:4",
-            gravity: "top"
+            aspectRatio: "3:4"
           },
           {
             type: "box",
             layout: "vertical",
-            position: "absolute",
-            offsetTop: "68%",
-            offsetStart: "5%",
-            offsetEnd: "5%",
-            backgroundColor: "#FFFFFFEE",
-            cornerRadius: "20px",
-            paddingAll: "14px",
+            paddingAll: "16px",
             spacing: "10px",
             contents: [
               {
-                type: "text",
-                text: "ศูนย์ปฏิบัติการเคส",
-                weight: "bold",
-                size: "lg",
-                color: "#16324F",
-                align: "center"
-              },
-              {
-                type: "text",
-                text: "เลือกเมนูที่ต้องการใช้งาน",
-                size: "sm",
-                color: "#6B7280",
-                align: "center",
-                margin: "sm"
-              },
-              {
                 type: "button",
                 style: "primary",
-                height: "sm",
                 color: "#22C55E",
                 action: {
                   type: "message",
@@ -1285,7 +1260,6 @@ function buildPosterModeFlex() {
               {
                 type: "button",
                 style: "primary",
-                height: "sm",
                 color: "#22C55E",
                 action: {
                   type: "message",
@@ -1296,7 +1270,6 @@ function buildPosterModeFlex() {
               {
                 type: "button",
                 style: "primary",
-                height: "sm",
                 color: "#22C55E",
                 action: {
                   type: "message",
@@ -1307,12 +1280,11 @@ function buildPosterModeFlex() {
               {
                 type: "button",
                 style: "primary",
-                height: "sm",
                 color: "#F97316",
                 action: {
                   type: "uri",
                   label: "เปิดศูนย์ปฏิบัติการ",
-                  uri: "https://your-domain.com/command-center"
+                  uri: "https://your-domain.com/team.html"
                 }
               }
             ]

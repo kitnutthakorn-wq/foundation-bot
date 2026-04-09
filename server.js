@@ -1444,6 +1444,49 @@ function orangeButton(label, uri) {
 }
 
 // =========================
+// TEAM MENU IMAGEMAP (SAFE PATCH)
+// วางหลัง orangeButton()
+// และก่อน buildTeamNewCaseText()
+// =========================
+function buildTeamMenuImagemap(baseUrlOverride = "") {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/team-menu`,
+    altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
+    baseSize: {
+      width: 1040,
+      height: 2080
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เคสวันนี้",
+        area: { x: 140, y: 1200, width: 760, height: 150 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสด่วน",
+        area: { x: 140, y: 1385, width: 760, height: 150 }
+      },
+      {
+        type: "message",
+        text: "ค้นหาเคส",
+        area: { x: 140, y: 1570, width: 760, height: 150 }
+      },
+      {
+        type: "uri",
+        linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+        area: { x: 140, y: 1760, width: 760, height: 165 }
+      }
+    ]
+  };
+}
+
+// =========================
 // OVERLAY MENU (PRO MAX++)
 // วางหลัง orangeButton()
 // และก่อน buildTeamNewCaseText()

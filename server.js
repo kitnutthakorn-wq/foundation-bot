@@ -1461,6 +1461,13 @@ function buildTeamMenuImagemap(baseUrlOverride = "") {
       width: 1040,
       height: 1740
     },
+    
+// BACKUP OLD HITBOX
+// area: { x: 120, y: 950, width: 800, height: 140 }
+// area: { x: 120, y: 1110, width: 800, height: 140 }
+// area: { x: 120, y: 1270, width: 800, height: 140 }
+// area: { x: 120, y: 1430, width: 800, height: 140 }
+    
 actions: [
   {
     type: "message",
@@ -1475,7 +1482,7 @@ actions: [
   {
     type: "message",
     text: "ค้นหาเคส",
-    area: { x: 120, y: 1270, width: 800, height: 140 }
+   area: { x: 120, y: 1270, width: 800, height: 140 }
   },
   {
     type: "uri",

@@ -6964,14 +6964,18 @@ console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
 if (String(text).trim().toLowerCase() === "test poster") {
   return await safeReply(replyToken, [buildPosterModeFlex()]);
 }
+
+if (String(text || "").trim().toLowerCase() === "test overlay") {
+  return await safeReply(replyToken, [buildTeamMenuOverlayFlex()]);
+}
+    
       
 if (!teamGuard.pass) {
   await replyGuardError(replyToken, teamGuard.reason);
   continue;
 }
 
-
-      
+  
 if (text === "เมนูทีมงาน") {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {
     await safeReply(replyToken, [

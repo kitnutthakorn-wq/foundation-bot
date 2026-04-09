@@ -1477,7 +1477,7 @@ actions: [
   {
     type: "message",
     text: "ดูเคสด่วน",
-    area: { x: 70, y: 1120, width: 900, height: 140 }
+    area: { x: 70, y: 1050, width: 900, height: 140 }
   },
   {
     type: "message",

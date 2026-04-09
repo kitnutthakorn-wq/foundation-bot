@@ -1467,7 +1467,7 @@ function buildTeamMenuOverlayFlex() {
             contents: [
               {
                 type: "image",
-                https://img2.pic.in.th/LineDesign.png
+                url: "https://img2.pic.in.th/LineDesign.png",
                 size: "full",
                 aspectMode: "cover",
                 aspectRatio: "3:4"

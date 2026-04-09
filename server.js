@@ -4344,6 +4344,44 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
       images: mergedImages
     });
 
+try {
+  const lat = latitude;
+  const lng = longitude;
+
+  const hasGps =
+    lat !== null &&
+    lng !== null &&
+    lat !== "" &&
+    lng !== "";
+
+  if (hasGps) {
+    const geo = await reverseGeocodeLatLng(lat, lng);
+
+    const resolvedLocationText =
+      geo?.location_text ||
+      `${Number(lat)}, ${Number(lng)}`;
+
+    await supabase
+      .from("help_requests")
+      .update({
+        latitude: Number(lat),
+        longitude: Number(lng),
+        location_text: resolvedLocationText,
+        last_action_at: new Date().toISOString()
+      })
+      .eq("case_code", case_code);
+
+    console.log("GPS sync success:", {
+      case_code,
+      latitude: Number(lat),
+      longitude: Number(lng),
+      location_text: resolvedLocationText
+    });
+  }
+} catch (geoErr) {
+  console.warn("GPS sync / reverse geocoding warning:", geoErr?.message || geoErr);
+}
+    
     const latestFields = {
       latest_note: insertedUpdate.latest_note || note || null,
       last_action_at: insertedUpdate.updated_at || new Date().toISOString(),

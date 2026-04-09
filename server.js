@@ -1453,14 +1453,14 @@ function buildTeamMenuImagemap(baseUrlOverride = "") {
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
     "https://satisfied-stillness-production-7942.up.railway.app";
 
-  return {
-    type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/team-menu`,
-    altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
-    baseSize: {
-      width: 1040,
-      height: 1739
-    },
+return {
+  type: "imagemap",
+  baseUrl: `${baseUrl}/imagemap/team-menu`,
+  altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
+  baseSize: {
+    width: 1040,
+    height: 1739
+  },
     
 // BACKUP OLD HITBOX
 // area: { x: 120, y: 950, width: 800, height: 140 }
@@ -1469,28 +1469,28 @@ function buildTeamMenuImagemap(baseUrlOverride = "") {
 // area: { x: 120, y: 1430, width: 800, height: 140 }
     
 actions: [
-  {
-    type: "message",
-    text: "เคสวันนี้",
-    area: { x: 120, y: 985, width: 798, height: 128 }
-  },
-  {
-    type: "message",
-    text: "ดูเคสด่วน",
-    area: { x: 120, y: 1151, width: 798, height: 128 }
-  },
-  {
-    type: "message",
-    text: "ค้นหาเคส",
-    area: { x: 120, y: 1318, width: 798, height: 128 }
-  },
-  {
-    type: "uri",
-    linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 122, y: 1480, width: 794, height: 123 }
-  }
-]
-  };
+    {
+      type: "message",
+      text: "เคสวันนี้",
+      area: { x: 70, y: 1100, width: 900, height: 150 }
+    },
+    {
+      type: "message",
+      text: "ดูเคสด่วน",
+      area: { x: 70, y: 1275, width: 900, height: 150 }
+    },
+    {
+      type: "message",
+      text: "ค้นหาเคส",
+      area: { x: 70, y: 1450, width: 900, height: 150 }
+    },
+    {
+      type: "uri",
+      linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+      area: { x: 70, y: 1625, width: 900, height: 95 }
+    }
+  ]
+};
 }
 
 

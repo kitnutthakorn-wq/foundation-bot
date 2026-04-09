@@ -1469,27 +1469,27 @@ return {
 // area: { x: 120, y: 1430, width: 800, height: 140 }
     
 actions: [
-    {
-      type: "message",
-      text: "เคสวันนี้",
-      area: { x: 70, y: 1100, width: 900, height: 150 }
-    },
-    {
-      type: "message",
-      text: "ดูเคสด่วน",
-      area: { x: 70, y: 1275, width: 900, height: 150 }
-    },
-    {
-      type: "message",
-      text: "ค้นหาเคส",
-      area: { x: 70, y: 1450, width: 900, height: 150 }
-    },
-    {
-      type: "uri",
-      linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-      area: { x: 70, y: 1625, width: 900, height: 95 }
-    }
-  ]
+  {
+    type: "message",
+    text: "เคสวันนี้",
+    area: { x: 82, y: 1295, width: 1058, height: 176 }
+  },
+  {
+    type: "message",
+    text: "ดูเคสด่วน",
+    area: { x: 82, y: 1498, width: 1058, height: 176 }
+  },
+  {
+    type: "message",
+    text: "ค้นหาเคส",
+    area: { x: 82, y: 1702, width: 1058, height: 176 }
+  },
+  {
+    type: "uri",
+    linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+    area: { x: 82, y: 1905, width: 1058, height: 110 }
+  }
+]
 };
 }
 

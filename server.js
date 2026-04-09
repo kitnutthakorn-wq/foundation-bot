@@ -1472,7 +1472,7 @@ actions: [
   {
     type: "message",
     text: "เคสวันนี้",
-    area: { x: 70, y: 950, width: 900, height: 140 }
+    area: { x: 70, y: 880, width: 900, height: 140 }
   },
   {
     type: "message",

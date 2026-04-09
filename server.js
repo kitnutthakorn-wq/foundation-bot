@@ -1472,22 +1472,22 @@ actions: [
   {
     type: "message",
     text: "เคสวันนี้",
-    area: { x: 70, y: 930, width: 900, height: 140 }
+    area: { x: 70, y: 950, width: 900, height: 140 }
   },
   {
     type: "message",
     text: "ดูเคสด่วน",
-    area: { x: 70, y: 1100, width: 900, height: 140 }
+    area: { x: 70, y: 1120, width: 900, height: 140 }
   },
   {
     type: "message",
     text: "ค้นหาเคส",
-    area: { x: 70, y: 1270, width: 900, height: 140 }
+    area: { x: 70, y: 1290, width: 900, height: 140 }
   },
   {
     type: "uri",
     linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 70, y: 1440, width: 900, height: 110 }
+    area: { x: 70, y: 1460, width: 900, height: 100 }
   }
 ]
 };

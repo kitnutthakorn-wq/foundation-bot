@@ -1406,23 +1406,38 @@ function orangeButton(label, uri) {
   return {
     type: "box",
     layout: "vertical",
-    backgroundColor: "#F97316",
-    cornerRadius: "16px",
-    paddingAll: "16px",
     margin: "sm",
     contents: [
       {
-        type: "text",
-        text: label,
-        weight: "bold",
-        size: "md",
-        color: "#FFFFFF",
-        align: "center",
-        action: {
-          type: "uri",
-          label: label,
-          uri: uri
-        }
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#7F1D1D",
+        cornerRadius: "16px",
+        paddingAll: "2px",
+        contents: [
+          {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#DC2626",
+            cornerRadius: "14px",
+            paddingAll: "12px",
+            contents: [
+              {
+                type: "text",
+                text: label,
+                weight: "bold",
+                size: "md",
+                color: "#FFFFFF",
+                align: "center",
+                action: {
+                  type: "uri",
+                  label: label,
+                  uri: uri
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   };

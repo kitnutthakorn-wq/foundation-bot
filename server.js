@@ -1442,6 +1442,104 @@ function orangeButton(label, uri) {
     ]
   };
 }
+
+// =========================
+// 🔥 OVERLAY MENU (PRO MAX++)
+// =========================
+function buildTeamMenuOverlayFlex() {
+  return {
+    type: "flex",
+    altText: "เมนูทีมงาน (Overlay)",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "0px",
+        contents: [
+          {
+            type: "box",
+            layout: "vertical",
+            flex: 70,
+            contents: [
+              {
+                type: "image",
+                url: "https://your-image-url.com/overlay-3-4.png",
+                size: "full",
+                aspectMode: "cover",
+                aspectRatio: "3:4"
+              }
+            ]
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            flex: 30,
+            paddingAll: "10px",
+            contents: [
+              hit("ดูเคสวันนี้", "เคสวันนี้"),
+              hit("ดูเคสด่วน", "ดูเคสด่วน"),
+              hit("ค้นหาเคส", "ค้นหาเคส"),
+              hitUri(
+                "เปิดศูนย์ปฏิบัติการ",
+                "https://satisfied-stillness-production-7942.up.railway.app/team.html"
+              )
+            ]
+          }
+        ]
+      }
+    }
+  };
+}
+
+// =========================
+// 🔥 HITBOX
+// =========================
+function hit(label, text) {
+  return {
+    type: "box",
+    layout: "vertical",
+    height: "44px",
+    margin: "sm",
+    backgroundColor: "#00000000",
+    contents: [
+      {
+        type: "text",
+        text: label,
+        color: "#00000000",
+        action: {
+          type: "message",
+          label: label,
+          text: text
+        }
+      }
+    ]
+  };
+}
+
+function hitUri(label, uri) {
+  return {
+    type: "box",
+    layout: "vertical",
+    height: "48px",
+    margin: "sm",
+    backgroundColor: "#00000000",
+    contents: [
+      {
+        type: "text",
+        text: label,
+        color: "#00000000",
+        action: {
+          type: "uri",
+          label: label,
+          uri: uri
+        }
+      }
+    ]
+  };
+}
+
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +

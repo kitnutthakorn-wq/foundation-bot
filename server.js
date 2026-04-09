@@ -1510,7 +1510,7 @@ function buildTeamMenuOverlayFlex() {
             contents: [
               {
                 type: "image",
-                url: "https://img2.pic.in.th/LineDesign2.png",
+                url: "https://img2.pic.in.th/New_WorkTeam.png",
                 size: "full",
                 aspectMode: "cover",
              

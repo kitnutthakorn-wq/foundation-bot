@@ -1239,7 +1239,7 @@ function buildPosterModeFlex() {
             url: "https://img2.pic.in.th/pic/kck-poster.jpg",
             size: "full",
             aspectMode: "cover",
-            aspectRatio: "3:4"
+            
           },
           {
             type: "box",

@@ -417,12 +417,22 @@
 
     const caseCode = caseItem.case_code || currentCaseCode || "-";
     const fullName = caseItem.full_name || caseItem.name || "-";
-    const location =
-      caseItem.location_text ||
-      caseItem.location ||
-      caseItem.area ||
-      caseItem.province ||
-      "-";
+    let location =
+  caseItem.location ||
+  caseItem.area ||
+  caseItem.province ||
+  caseItem.location_text ||
+  "-";
+
+const lat = caseItem.latitude;
+const lng = caseItem.longitude;
+
+if (
+  (!location || location === "-" || String(location).includes(",")) &&
+  lat && lng
+) {
+  location = `${lat}, ${lng}`;
+}
 
     const status = statusThai(caseItem.status);
     const priority = priorityThai(caseItem.priority);

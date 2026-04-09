@@ -1461,29 +1461,28 @@ function buildTeamMenuImagemap(baseUrlOverride = "") {
       width: 1040,
       height: 2080
     },
-    actions: [
-      {
-        type: "message",
-        text: "เคสวันนี้",
-        area: { x: 140, y: 1200, width: 760, height: 150 }
-      },
-      {
-        type: "message",
-        text: "ดูเคสด่วน",
-        area: { x: 140, y: 1385, width: 760, height: 150 }
-      },
-      {
-        type: "message",
-        text: "ค้นหาเคส",
-        area: { x: 140, y: 1570, width: 760, height: 150 }
-      },
-      {
-        type: "uri",
-        linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-        area: { x: 140, y: 1760, width: 760, height: 165 }
-      }
-    ]
-  };
+   actions: [
+  {
+    type: "message",
+    text: "เคสวันนี้",
+    area: { x: 140, y: 1020, width: 760, height: 140 }
+  },
+  {
+    type: "message",
+    text: "ดูเคสด่วน",
+    area: { x: 140, y: 1180, width: 760, height: 140 }
+  },
+  {
+    type: "message",
+    text: "ค้นหาเคส",
+    area: { x: 140, y: 1340, width: 760, height: 140 }
+  },
+  {
+    type: "uri",
+    linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+    area: { x: 140, y: 1500, width: 760, height: 150 }
+  }
+]  };
 }
 
 // =========================

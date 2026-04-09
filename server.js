@@ -1444,7 +1444,9 @@ function orangeButton(label, uri) {
 }
 
 // =========================
-// 🔥 OVERLAY MENU (PRO MAX++)
+// OVERLAY MENU (PRO MAX++)
+// วางหลัง orangeButton()
+// และก่อน buildTeamNewCaseText()
 // =========================
 function buildTeamMenuOverlayFlex() {
   return {
@@ -1465,7 +1467,7 @@ function buildTeamMenuOverlayFlex() {
             contents: [
               {
                 type: "image",
-                url: "https://your-image-url.com/overlay-3-4.png",
+                url: "https://YOUR-IMAGE-URL-HERE.png",
                 size: "full",
                 aspectMode: "cover",
                 aspectRatio: "3:4"
@@ -1477,6 +1479,7 @@ function buildTeamMenuOverlayFlex() {
             layout: "vertical",
             flex: 30,
             paddingAll: "10px",
+            backgroundColor: "#000000",
             contents: [
               hit("ดูเคสวันนี้", "เคสวันนี้"),
               hit("ดูเคสด่วน", "ดูเคสด่วน"),
@@ -1493,9 +1496,6 @@ function buildTeamMenuOverlayFlex() {
   };
 }
 
-// =========================
-// 🔥 HITBOX
-// =========================
 function hit(label, text) {
   return {
     type: "box",
@@ -1508,6 +1508,7 @@ function hit(label, text) {
         type: "text",
         text: label,
         color: "#00000000",
+        size: "sm",
         action: {
           type: "message",
           label: label,
@@ -1530,6 +1531,7 @@ function hitUri(label, uri) {
         type: "text",
         text: label,
         color: "#00000000",
+        size: "sm",
         action: {
           type: "uri",
           label: label,
@@ -1539,7 +1541,6 @@ function hitUri(label, uri) {
     ]
   };
 }
-
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +

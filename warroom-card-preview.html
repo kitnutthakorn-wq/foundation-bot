@@ -295,5 +295,272 @@
 
     <div class="footer">มูลนิธิคนช่วยฅน</div>
   </main>
+
+<script>
+(function () {
+  const API_BASE = window.location.origin;
+
+  const el = {
+    caseCodeText: document.getElementById("caseCodeText"),
+    caseFullName: document.getElementById("caseFullName"),
+    caseLocation: document.getElementById("caseLocation"),
+    caseStatus: document.getElementById("caseStatus"),
+    casePriority: document.getElementById("casePriority"),
+    caseUpdatedAt: document.getElementById("caseUpdatedAt"),
+    caseSlaText: document.getElementById("caseSlaText"),
+    caseProgressText: document.getElementById("caseProgressText"),
+    caseProgressBar: document.getElementById("caseProgressBar"),
+    trackCaseBtn: document.getElementById("trackCaseBtn"),
+    openCommandBtn: document.getElementById("openCommandBtn")
+  };
+
+  let currentCaseCode = "";
+
+  function getCaseCodeFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return (
+      params.get("case_code") ||
+      params.get("caseCode") ||
+      params.get("case") ||
+      ""
+    ).trim();
+  }
+
+  function statusThai(status) {
+    const s = String(status || "").toLowerCase().trim();
+    if (s === "new") return "รับเรื่องแล้ว";
+    if (s === "in_progress" || s === "progress") return "กำลังดำเนินการ";
+    if (s === "done") return "เสร็จสิ้น";
+    if (s === "cancelled" || s === "canceled") return "ยกเลิก";
+    return status || "-";
+  }
+
+  function priorityThai(priority) {
+    const p = String(priority || "").toLowerCase().trim();
+    if (p === "urgent") return "ด่วน";
+    if (p === "normal") return "ปกติ";
+    return priority || "-";
+  }
+
+  function formatRelativeThai(dateValue) {
+    if (!dateValue) return "-";
+    const date = new Date(dateValue);
+    if (isNaN(date.getTime())) return "-";
+
+    const diffMs = Date.now() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+
+    if (diffMin < 1) return "เมื่อสักครู่";
+    if (diffMin < 60) return `${diffMin} นาทีที่แล้ว`;
+
+    const diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return `${diffHour} ชั่วโมงที่แล้ว`;
+
+    const diffDay = Math.floor(diffHour / 24);
+    return `${diffDay} วันที่แล้ว`;
+  }
+
+  function clampProgress(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.min(100, Math.round(n)));
+  }
+
+  function checkSla(caseItem) {
+    const createdAt = caseItem.last_action_at || caseItem.updated_at || caseItem.created_at;
+    if (!createdAt) return { level: "normal", text: "ปกติ" };
+
+    const priority = String(caseItem.priority || "").toLowerCase();
+    const createdMs = new Date(createdAt).getTime();
+    if (!Number.isFinite(createdMs)) return { level: "normal", text: "ปกติ" };
+
+    const diffHours = (Date.now() - createdMs) / (1000 * 60 * 60);
+
+    if (priority === "urgent" && diffHours >= 4) {
+      return { level: "breach", text: "เกินกำหนดแล้ว" };
+    }
+
+    if (priority === "urgent" && diffHours >= 2) {
+      return { level: "warning", text: "ใกล้เกินกำหนด" };
+    }
+
+    return { level: "normal", text: "ปกติ" };
+  }
+
+  function applySlaStyle(slaLevel) {
+    if (!el.caseSlaText || !el.caseProgressBar) return;
+
+    if (slaLevel === "breach") {
+      el.caseSlaText.textContent = "🚨 SLA: เกินกำหนดแล้ว";
+      el.caseSlaText.style.color = "#dc2626";
+      el.caseProgressBar.style.background = "linear-gradient(90deg, #ff7878 0%, #ef4444 100%)";
+      el.caseProgressBar.style.boxShadow = "0 0 12px rgba(239,68,68,.65)";
+      return;
+    }
+
+    if (slaLevel === "warning") {
+      el.caseSlaText.textContent = "⚠ SLA: ใกล้เกินกำหนด";
+      el.caseSlaText.style.color = "#d97706";
+      el.caseProgressBar.style.background = "linear-gradient(90deg, #ffd000 0%, #c9f218 48%, #55d14f 100%)";
+      el.caseProgressBar.style.boxShadow = "0 0 12px rgba(255,214,10,.8)";
+      return;
+    }
+
+    el.caseSlaText.textContent = "✅ SLA: ปกติ";
+    el.caseSlaText.style.color = "#16a34a";
+    el.caseProgressBar.style.background = "linear-gradient(90deg, #86efac 0%, #22c55e 100%)";
+    el.caseProgressBar.style.boxShadow = "0 0 10px rgba(34,197,94,.45)";
+  }
+
+  function applyCaseData(caseItem) {
+    if (!caseItem) return;
+
+    const caseCode = caseItem.case_code || currentCaseCode || "-";
+    const fullName = caseItem.full_name || caseItem.name || "-";
+    const location =
+      caseItem.location_text ||
+      caseItem.location ||
+      caseItem.area ||
+      caseItem.province ||
+      "-";
+
+    const status = statusThai(caseItem.status);
+    const priority = priorityThai(caseItem.priority);
+
+    const progress =
+      clampProgress(
+        caseItem.progress_percent ??
+        caseItem.progress ??
+        caseItem.percent ??
+        0
+      );
+
+    const updatedAt =
+      caseItem.last_action_at ||
+      caseItem.updated_at ||
+      caseItem.created_at ||
+      null;
+
+    const sla = checkSla(caseItem);
+
+    el.caseCodeText.textContent = caseCode;
+    el.caseFullName.textContent = fullName;
+    el.caseLocation.textContent = location;
+    el.caseStatus.textContent = status;
+    el.casePriority.textContent = priority;
+    el.caseUpdatedAt.textContent = `อัปเดตล่าสุด: ${formatRelativeThai(updatedAt)}`;
+    el.caseProgressText.textContent = `${progress}%`;
+    el.caseProgressBar.style.width = `${progress}%`;
+
+    applySlaStyle(sla.level);
+
+    el.trackCaseBtn.onclick = function () {
+      window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
+    };
+
+    el.openCommandBtn.onclick = function () {
+      window.location.href = `/command-center.html?case_code=${encodeURIComponent(caseCode)}`;
+    };
+  }
+
+  async function fetchCaseData(caseCode) {
+    const url = `${API_BASE}/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`;
+    const res = await fetch(url, { cache: "no-store" });
+
+    if (!res.ok) {
+      throw new Error(`โหลดข้อมูลไม่สำเร็จ (${res.status})`);
+    }
+
+    const data = await res.json();
+
+    // รองรับหลายรูปแบบ response
+    return (
+      data?.case ||
+      data?.item ||
+      data?.data ||
+      data ||
+      null
+    );
+  }
+
+  async function loadCaseCard() {
+    try {
+      if (!currentCaseCode) {
+        el.caseCodeText.textContent = "ไม่พบ case_code";
+        el.caseFullName.textContent = "-";
+        el.caseLocation.textContent = "-";
+        el.caseStatus.textContent = "-";
+        el.casePriority.textContent = "-";
+        el.caseUpdatedAt.textContent = "อัปเดตล่าสุด: -";
+        el.caseSlaText.textContent = "⚠ SLA: -";
+        el.caseProgressText.textContent = "0%";
+        el.caseProgressBar.style.width = "0%";
+        return;
+      }
+
+      el.caseCodeText.textContent = "กำลังโหลด...";
+      const caseItem = await fetchCaseData(currentCaseCode);
+      applyCaseData(caseItem);
+    } catch (err) {
+      console.error("loadCaseCard error:", err);
+      el.caseCodeText.textContent = currentCaseCode || "โหลดไม่สำเร็จ";
+      el.caseFullName.textContent = "โหลดข้อมูลไม่ได้";
+      el.caseLocation.textContent = "-";
+      el.caseStatus.textContent = "-";
+      el.casePriority.textContent = "-";
+      el.caseUpdatedAt.textContent = "อัปเดตล่าสุด: -";
+      el.caseSlaText.textContent = "⚠ SLA: โหลดข้อมูลไม่สำเร็จ";
+      el.caseProgressText.textContent = "0%";
+      el.caseProgressBar.style.width = "0%";
+    }
+  }
+
+  function startRealtime() {
+    try {
+      const es = new EventSource(`${API_BASE}/api/stream`);
+
+      es.onmessage = function (event) {
+        try {
+          const payload = JSON.parse(event.data || "{}");
+
+          const payloadCaseCode =
+            payload.case_code ||
+            payload.caseCode ||
+            payload.data?.case_code ||
+            payload.data?.caseCode ||
+            "";
+
+          const payloadType = String(payload.type || "").toLowerCase();
+
+          const isSameCase = payloadCaseCode && payloadCaseCode === currentCaseCode;
+          const isRelevantType =
+            payloadType.includes("case") ||
+            payloadType.includes("update") ||
+            payloadType === "";
+
+          if (isSameCase && isRelevantType) {
+            loadCaseCard();
+          }
+        } catch (e) {
+          console.warn("SSE parse warning:", e);
+        }
+      };
+
+      es.onerror = function (err) {
+        console.warn("SSE error:", err);
+      };
+    } catch (err) {
+      console.warn("Realtime unavailable:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    currentCaseCode = getCaseCodeFromUrl();
+    loadCaseCard();
+    startRealtime();
+  });
+})();
+</script>
+  
 </body>
 </html>

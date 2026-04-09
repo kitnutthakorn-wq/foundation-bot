@@ -421,16 +421,17 @@
   caseItem.location ||
   caseItem.area ||
   caseItem.province ||
-  caseItem.location_text ||
   "-";
 
+const locationText = String(caseItem.location_text || "").trim();
 const lat = caseItem.latitude;
 const lng = caseItem.longitude;
 
-if (
-  (!location || location === "-" || String(location).includes(",")) &&
-  lat && lng
-) {
+if (location === "-" && locationText && !locationText.includes(",")) {
+  location = locationText;
+}
+
+if (location === "-" && lat && lng) {
   location = `${lat}, ${lng}`;
 }
 

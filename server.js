@@ -1459,7 +1459,7 @@ return {
   altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
   baseSize: {
     width: 1040,
-    height: 1560
+    height: 1559
   },
     
 // BACKUP OLD HITBOX

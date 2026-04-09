@@ -1458,8 +1458,8 @@ return {
   baseUrl: `${baseUrl}/imagemap/team-menu`,
   altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
   baseSize: {
-    width: 1224,
-    height: 2048
+    width: 1040,
+    height: 1508
   },
     
 // BACKUP OLD HITBOX
@@ -1472,22 +1472,22 @@ actions: [
   {
     type: "message",
     text: "เคสวันนี้",
-    area: { x: 70, y: 1120, width: 900, height: 155 }
+    area: { x: 70, y: 930, width: 900, height: 135 }
   },
   {
     type: "message",
     text: "ดูเคสด่วน",
-    area: { x: 70, y: 1300, width: 900, height: 155 }
+    area: { x: 70, y: 1090, width: 900, height: 135 }
   },
   {
     type: "message",
     text: "ค้นหาเคส",
-    area: { x: 70, y: 1480, width: 900, height: 155 }
+    area: { x: 70, y: 1250, width: 900, height: 135 }
   },
   {
     type: "uri",
     linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 70, y: 1660, width: 900, height: 110 }
+    area: { x: 70, y: 1410, width: 900, height: 80 }
   }
 ]
 };

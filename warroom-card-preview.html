@@ -255,25 +255,39 @@
     <section class="card">
       <div class="card-header">04042026-999</div>
       <div class="card-body">
-        <div class="row"><div class="label">ชื่อ:</div><div class="value">TEST USER</div></div>
-        <div class="row"><div class="label">พื้นที่:</div><div class="value">นราธิวาส</div></div>
-        <div class="row"><div class="label">สถานะ:</div><div class="value status">กำลังดำเนินการ</div></div>
-        <div class="row"><div class="label">ระดับ:</div><div class="value priority">ด่วน</div></div>
+       <div class="row">
+  <div class="label">ชื่อ:</div>
+  <div class="value" id="caseFullName">-</div>
+</div>
 
-        <hr class="divider" />
+<div class="row">
+  <div class="label">พื้นที่:</div>
+  <div class="value" id="caseLocation">-</div>
+</div>
 
-        <div class="meta">🕒 อัปเดตล่าสุด: 12 นาทีที่แล้ว</div>
+<div class="row">
+  <div class="label">สถานะ:</div>
+  <div class="value status" id="caseStatus">-</div>
+</div>
 
-        <div class="sla-box">
-          <div class="sla-top">
-            <div class="sla-left">⚠ SLA: ใกล้เกินกำหนด</div>
-            <div class="percent">60%</div>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar"></div>
-          </div>
-        </div>
-      </div>
+<div class="row">
+  <div class="label">ระดับ:</div>
+  <div class="value priority" id="casePriority">-</div>
+</div>
+
+<hr class="divider" />
+
+<div class="meta">🕒 <span id="caseUpdatedAt">อัปเดตล่าสุด: -</span></div>
+
+<div class="sla-box">
+  <div class="sla-top">
+    <div class="sla-left" id="caseSlaText">⚠ SLA: -</div>
+    <div class="percent" id="caseProgressText">0%</div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-bar" id="caseProgressBar" style="width:0%"></div>
+  </div>
+</div>      </div>
     </section>
 
     <button class="btn btn-track" type="button">ติดตามเคสนี้</button>

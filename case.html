@@ -1644,6 +1644,37 @@
       document.getElementById("progress_text").innerText = percent + "%";
     }
 
+// ===== HERO BINDING =====
+const heroCaseCode = document.getElementById("hero_case_code");
+if(heroCaseCode) heroCaseCode.innerText = data.case_code || "-";
+
+const heroName = document.getElementById("hero_full_name");
+if(heroName) heroName.innerText = data.full_name || "-";
+
+const heroLocation = document.getElementById("hero_location");
+if(heroLocation){
+  heroLocation.innerText =
+    data.location_text ||
+    (data.latitude && data.longitude
+      ? `${data.latitude}, ${data.longitude}`
+      : "-");
+}
+
+const heroStatus = document.getElementById("hero_status");
+if(heroStatus) heroStatus.innerText = statusThai(data.status);
+
+const heroPriority = document.getElementById("hero_priority");
+if(heroPriority) heroPriority.innerText = priorityThai(data.priority);
+
+const heroUpdated = document.getElementById("hero_updated");
+if(heroUpdated){
+  heroUpdated.innerText =
+    "⏱ อัปเดตล่าสุด: " +
+    (data.last_action_at
+      ? formatThaiDateTime(data.last_action_at)
+      : "-");
+}
+    
     function updateWarRoomCommandBar(data){
       const statusEl = document.getElementById("wr_badge_status");
       const priorityEl = document.getElementById("wr_badge_priority");

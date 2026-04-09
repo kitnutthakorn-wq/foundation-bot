@@ -610,6 +610,84 @@ async function uploadCaseInfoFilesToSupabase(caseCode, files = []) {
   return uploaded;
 }
 
+// =========================
+// REVERSE GEOCODING (OSM / NOMINATIM)
+// Golden Safe Patch
+// =========================
+async function reverseGeocodeLatLng(lat, lng) {
+  try {
+    const latNum = Number(lat);
+    const lngNum = Number(lng);
+
+    if (!Number.isFinite(latNum) || !Number.isFinite(lngNum)) {
+      return null;
+    }
+
+    const url =
+      `https://nominatim.openstreetmap.org/reverse` +
+      `?format=jsonv2&lat=${encodeURIComponent(latNum)}` +
+      `&lon=${encodeURIComponent(lngNum)}` +
+      `&zoom=18&addressdetails=1`;
+
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "khonchuaykhon-foundation/1.0",
+        "Accept-Language": "th"
+      }
+    });
+
+    if (!res.ok) {
+      console.warn("reverseGeocodeLatLng failed:", res.status);
+      return null;
+    }
+
+    const data = await res.json();
+    const addr = data?.address || {};
+
+    // เก็บแบบเผื่อหลายประเทศ/หลายโครงสร้าง
+    const province =
+      addr.state ||
+      addr.province ||
+      addr.region ||
+      "";
+
+    const district =
+      addr.county ||
+      addr.state_district ||
+      addr.city_district ||
+      addr.suburb ||
+      "";
+
+    const subdistrict =
+      addr.town ||
+      addr.city ||
+      addr.village ||
+      addr.hamlet ||
+      addr.neighbourhood ||
+      "";
+
+    // เรียงจากละเอียด -> กว้าง
+    const parts = [subdistrict, district, province]
+      .map(v => String(v || "").trim())
+      .filter(Boolean);
+
+    const prettyText =
+      parts.length > 0
+        ? parts.join(", ")
+        : (data?.display_name ? String(data.display_name).trim() : null);
+
+    return {
+      latitude: latNum,
+      longitude: lngNum,
+      location_text: prettyText || `${latNum}, ${lngNum}`,
+      raw: data
+    };
+  } catch (err) {
+    console.warn("reverseGeocodeLatLng error:", err?.message || err);
+    return null;
+  }
+}
+
 async function upsertCaseUpdateLegacy({
   caseCode,
   updateStage,

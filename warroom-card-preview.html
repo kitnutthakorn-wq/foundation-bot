@@ -329,7 +329,7 @@
   function statusThai(status) {
     const s = String(status || "").toLowerCase().trim();
     if (s === "new") return "รับเรื่องแล้ว";
-    if (s === "in_progress" || s === "progress") return "กำลังดำเนินการ";
+    if (s === "in_progress" || s === "in progress" || s === "progress") return "กำลังดำเนินการ";
     if (s === "done") return "เสร็จสิ้น";
     if (s === "cancelled" || s === "canceled") return "ยกเลิก";
     return status || "-";
@@ -367,14 +367,14 @@
   }
 
   function checkSla(caseItem) {
-    const createdAt = caseItem.last_action_at || caseItem.updated_at || caseItem.created_at;
-    if (!createdAt) return { level: "normal", text: "ปกติ" };
+    const baseTime = caseItem.last_action_at || caseItem.updated_at || caseItem.created_at;
+    if (!baseTime) return { level: "normal", text: "ปกติ" };
 
     const priority = String(caseItem.priority || "").toLowerCase();
-    const createdMs = new Date(createdAt).getTime();
-    if (!Number.isFinite(createdMs)) return { level: "normal", text: "ปกติ" };
+    const baseMs = new Date(baseTime).getTime();
+    if (!Number.isFinite(baseMs)) return { level: "normal", text: "ปกติ" };
 
-    const diffHours = (Date.now() - createdMs) / (1000 * 60 * 60);
+    const diffHours = (Date.now() - baseMs) / (1000 * 60 * 60);
 
     if (priority === "urgent" && diffHours >= 4) {
       return { level: "breach", text: "เกินกำหนดแล้ว" };
@@ -412,63 +412,124 @@
     el.caseProgressBar.style.boxShadow = "0 0 10px rgba(34,197,94,.45)";
   }
 
-  <script>
-function applyCaseData(caseItem) {
-  if (!caseItem) return;
+  function applyCaseData(caseItem) {
+    if (!caseItem) return;
 
-  const caseCode = caseItem.case_code || currentCaseCode || "-";
-  const fullName = caseItem.full_name || caseItem.name || "-";
-  const location =
-    caseItem.location_text ||
-    caseItem.location ||
-    caseItem.area ||
-    caseItem.province ||
-    "-";
+    const caseCode = caseItem.case_code || currentCaseCode || "-";
+    const fullName = caseItem.full_name || caseItem.name || "-";
+    const location =
+      caseItem.location_text ||
+      caseItem.location ||
+      caseItem.area ||
+      caseItem.province ||
+      "-";
 
-  const status = statusThai(caseItem.status);
-  const priority = priorityThai(caseItem.priority);
-
-  const progress =
-    clampProgress(
+    const status = statusThai(caseItem.status);
+    const priority = priorityThai(caseItem.priority);
+    const progress = clampProgress(
       caseItem.progress_percent ??
       caseItem.progress ??
       caseItem.percent ??
       0
     );
+    const updatedAt =
+      caseItem.last_action_at ||
+      caseItem.updated_at ||
+      caseItem.created_at ||
+      null;
+    const sla = checkSla(caseItem);
 
-  const updatedAt =
-    caseItem.last_action_at ||
-    caseItem.updated_at ||
-    caseItem.created_at ||
-    null;
+    if (el.caseCodeText) el.caseCodeText.textContent = caseCode;
+    if (el.caseFullName) el.caseFullName.textContent = fullName;
+    if (el.caseLocation) el.caseLocation.textContent = location;
+    if (el.caseStatus) el.caseStatus.textContent = status;
+    if (el.casePriority) el.casePriority.textContent = priority;
+    if (el.caseUpdatedAt) el.caseUpdatedAt.textContent = `อัปเดตล่าสุด: ${formatRelativeThai(updatedAt)}`;
+    if (el.caseProgressText) el.caseProgressText.textContent = `${progress}%`;
+    if (el.caseProgressBar) el.caseProgressBar.style.width = `${progress}%`;
 
-  const sla = checkSla(caseItem);
+    applySlaStyle(sla.level);
 
-  if (el.caseCodeText) el.caseCodeText.textContent = caseCode;
-  if (el.caseFullName) el.caseFullName.textContent = fullName;
-  if (el.caseLocation) el.caseLocation.textContent = location;
-  if (el.caseStatus) el.caseStatus.textContent = status;
-  if (el.casePriority) el.casePriority.textContent = priority;
-  if (el.caseUpdatedAt) el.caseUpdatedAt.textContent = `อัปเดตล่าสุด: ${formatRelativeThai(updatedAt)}`;
-  if (el.caseProgressText) el.caseProgressText.textContent = `${progress}%`;
-  if (el.caseProgressBar) el.caseProgressBar.style.width = `${progress}%`;
+    if (el.trackCaseBtn) {
+      el.trackCaseBtn.onclick = function () {
+        window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
+      };
+    }
 
-  applySlaStyle(sla.level);
+    if (el.openCommandBtn) {
+      el.openCommandBtn.onclick = function () {
+        window.location.href = `/command-center.html?case_code=${encodeURIComponent(caseCode)}`;
+      };
+    }
 
-  if (el.trackCaseBtn) {
-    el.trackCaseBtn.onclick = function () {
-      window.location.href = `/case.html?case_code=${encodeURIComponent(caseCode)}`;
-    };
+    console.log("applyCaseData success:", caseItem);
   }
 
-  if (el.openCommandBtn) {
-    el.openCommandBtn.onclick = function () {
-      window.location.href = `/command-center.html?case_code=${encodeURIComponent(caseCode)}`;
-    };
+  async function fetchCaseData(caseCode) {
+    const url = `${API_BASE}/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`;
+    const res = await fetch(url, { cache: "no-store" });
+
+    if (!res.ok) {
+      throw new Error(`โหลดข้อมูลไม่สำเร็จ (${res.status})`);
+    }
+
+    const data = await res.json();
+    return data?.data || data?.case || data?.item || data;
   }
 
-  console.log("applyCaseData success:", caseItem);
-}
+  async function loadCaseCard() {
+    try {
+      if (!currentCaseCode) {
+        if (el.caseCodeText) el.caseCodeText.textContent = "ไม่พบ case_code";
+        return;
+      }
+
+      if (el.caseCodeText) el.caseCodeText.textContent = "กำลังโหลด...";
+      const caseItem = await fetchCaseData(currentCaseCode);
+      applyCaseData(caseItem);
+    } catch (err) {
+      console.error("loadCaseCard error:", err);
+      if (el.caseCodeText) el.caseCodeText.textContent = currentCaseCode || "โหลดไม่สำเร็จ";
+      if (el.caseFullName) el.caseFullName.textContent = "โหลดข้อมูลไม่ได้";
+    }
+  }
+
+  function startRealtime() {
+    try {
+      const es = new EventSource(`${API_BASE}/api/stream`);
+
+      es.onmessage = function (event) {
+        try {
+          const payload = JSON.parse(event.data || "{}");
+          const payloadCaseCode =
+            payload.case_code ||
+            payload.caseCode ||
+            payload.data?.case_code ||
+            payload.data?.caseCode ||
+            "";
+
+          if (payloadCaseCode && payloadCaseCode === currentCaseCode) {
+            loadCaseCard();
+          }
+        } catch (e) {
+          console.warn("SSE parse warning:", e);
+        }
+      };
+
+      es.onerror = function (err) {
+        console.warn("SSE error:", err);
+      };
+    } catch (err) {
+      console.warn("Realtime unavailable:", err);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    currentCaseCode = getCaseCodeFromUrl();
+    loadCaseCard();
+    startRealtime();
+  });
+})();
 </script>
   
 </body>

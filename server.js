@@ -102,7 +102,7 @@ const fetch = globalThis.fetch;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 
 
 const PUBLIC_WEB_ORIGINS = [

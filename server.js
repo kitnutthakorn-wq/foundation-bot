@@ -135,6 +135,23 @@ function applyPublicCors(req, res) {
 }
 
 
+function getPublicBaseUrl() {
+  return String(
+    process.env.PUBLIC_BASE_URL ||
+    process.env.APP_ORIGIN ||
+    process.env.PUBLIC_SITE_URL ||
+    process.env.URL ||
+    ""
+  ).replace(/\/+$/, "");
+}
+
+const TEAM_MENU_IMAGEMAP_SOURCE_URL =
+  process.env.TEAM_MENU_IMAGEMAP_SOURCE_URL ||
+  "https://img2.pic.in.th/LineDesign.png";
+const TEAM_MENU_IMAGEMAP_BASE_WIDTH = 1040;
+const TEAM_MENU_IMAGEMAP_BASE_HEIGHT = 1992;
+
+
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN;
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || "";
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -1222,82 +1239,6 @@ function getTeamLiffUrl(baseView = "") {
     : `${raw}?view=${encodeURIComponent(baseView)}`;
 }
 
-function buildPosterModeFlex() {
-  return {
-    type: "flex",
-    altText: "ศูนย์ปฏิบัติการเคส",
-    contents: {
-      type: "bubble",
-      size: "mega",
-      body: {
-        type: "box",
-        layout: "vertical",
-        paddingAll: "0px",
-        contents: [
-          {
-            type: "image",
-            url: "https://img2.pic.in.th/pic/kck-poster.jpg",
-            size: "full",
-            aspectMode: "cover",
-            
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            paddingAll: "16px",
-            spacing: "10px",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#22C55E",
-                action: {
-                  type: "message",
-                  label: "ดูเคสวันนี้",
-                  text: "เคสวันนี้"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#22C55E",
-                action: {
-                  type: "message",
-                  label: "ดูเคสด่วน",
-                  text: "ดูเคสด่วน"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#22C55E",
-                action: {
-                  type: "message",
-                  label: "ค้นหาเคส",
-                  text: "ค้นหาเคส"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#F97316",
-                action: {
-                  type: "uri",
-                  label: "เปิดศูนย์ปฏิบัติการ",
-                  uri: "https://your-domain.com/team.html"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
-  };
-}
-
-  
-
-
 function buildTeamMenuFlex() {
   function messageButton(label, text, color = "#22C55E") {
     return {
@@ -1331,216 +1272,35 @@ function buildTeamMenuFlex() {
     type: "flex",
     altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
     contents: {
-  type: "bubble",
-  size: "mega",
-  hero: {
+      type: "bubble",
+      size: "mega",
+      hero: {
         type: "image",
-        url: "https://img2.pic.in.th/Teamwork.png",
+        url: "https://img2.pic.in.th/TEAMWORK.png",
         size: "full",
         aspectRatio: "1:1",
         aspectMode: "cover"
       },
       body: {
-  type: "box",
-  layout: "vertical",
-  spacing: "12px",
-  paddingAll: "18px",
-  backgroundColor: "#000000",
- contents: [
-  whiteButton("ดูเคสวันนี้", "เคสวันนี้"),
-  whiteButton("ดูเคสด่วน", "ดูเคสด่วน"),
-  whiteButton("ค้นหาเคส", "ค้นหาเคส"),
-  orangeButton(
-    "เปิดศูนย์ปฏิบัติการ",
-    "https://satisfied-stillness-production-7942.up.railway.app/team.html"
-  )
-]
-      }
-    }
-  };
-} // <- ตัวนี้หายอยู่ตอนนี้
-
-function whiteButton(label, text) {
-  return {
-    type: "box",
-    layout: "vertical",
-    margin: "sm",
-    contents: [
-      {
-        // 👇 ชั้นล่าง (เงา)
         type: "box",
         layout: "vertical",
-        backgroundColor: "#D1D5DB",
-        cornerRadius: "16px",
-        paddingAll: "2px",
+        spacing: "10px",
+        paddingAll: "14px",
         contents: [
-          {
-            // 👇 ชั้นบน (ปุ่มจริง)
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#F9FAFB",
-            cornerRadius: "14px",
-            paddingAll: "12px",
-            contents: [
-              {
-                type: "text",
-                text: label,
-                weight: "bold",
-                size: "md",
-                color: "#111827",
-                align: "center",
-                action: {
-                  type: "message",
-                  label: label,
-                  text: text
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
-}
-function orangeButton(label, uri) {
-  return {
-    type: "box",
-    layout: "vertical",
-    margin: "sm",
-    contents: [
-      {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#7F1D1D",
-        cornerRadius: "16px",
-        paddingAll: "2px",
-        contents: [
-          {
-            type: "box",
-            layout: "vertical",
-            backgroundColor: "#DC2626",
-            cornerRadius: "14px",
-            paddingAll: "12px",
-            contents: [
-              {
-                type: "text",
-                text: label,
-                weight: "bold",
-                size: "md",
-                color: "#FFFFFF",
-                align: "center",
-                action: {
-                  type: "uri",
-                  label: label,
-                  uri: uri
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  };
-}
-
-// =========================
-// OVERLAY MENU (PRO MAX++)
-// วางหลัง orangeButton()
-// และก่อน buildTeamNewCaseText()
-// =========================
-function buildTeamMenuOverlayFlex() {
-  return {
-    type: "flex",
-    altText: "เมนูทีมงาน (Overlay)",
-    contents: {
-      type: "bubble",
-      size: "mega",
-      body: {
-        type: "box",
-        layout: "vertical",
-        paddingAll: "0px",
-        contents: [
-          {
-            type: "box",
-            layout: "vertical",
-            flex: 85,
-            contents: [
-              {
-                type: "image",
-                url: "https://img2.pic.in.th/LineDesign.png",
-                size: "full",
-                aspectMode: "cover",
-             
-              }
-            ]
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            flex: 15,
-            paddingAll: "4px",
-            backgroundColor: "#000000",
-            contents: [
-              hit("ดูเคสวันนี้", "เคสวันนี้"),
-              hit("ดูเคสด่วน", "ดูเคสด่วน"),
-              hit("ค้นหาเคส", "ค้นหาเคส"),
-              hitUri(
-                "เปิดศูนย์ปฏิบัติการ",
-                "https://satisfied-stillness-production-7942.up.railway.app/team.html"
-              )
-            ]
-          }
+          messageButton("ดูเคสวันนี้", "เคสวันนี้", "#22C55E"),
+          messageButton("ดูเคสด่วน", "ดูเคสด่วน", "#22C55E"),
+          messageButton("ค้นหาเคส", "ค้นหาเคส", "#22C55E"),
+         uriButton(
+  "เปิดศูนย์ปฏิบัติการ",
+  "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+  "#F97316"
+)
         ]
       }
     }
   };
 }
 
-function hit(label, text) {
-  return {
-    type: "box",
-    layout: "vertical",
-    height: "44px",
-    margin: "sm",
-    backgroundColor: "#00000000",
-    contents: [
-      {
-        type: "text",
-        text: label,
-        color: "#00000000",
-        size: "sm",
-        action: {
-          type: "message",
-          label: label,
-          text: text
-        }
-      }
-    ]
-  };
-}
-
-function hitUri(label, uri) {
-  return {
-    type: "box",
-    layout: "vertical",
-    height: "48px",
-    margin: "sm",
-    backgroundColor: "#00000000",
-    contents: [
-      {
-        type: "text",
-        text: label,
-        color: "#00000000",
-        size: "sm",
-        action: {
-          type: "uri",
-          label: label,
-          uri: uri
-        }
-      }
-    ]
-  };
-}
 function buildTeamNewCaseText(item = {}) {
   return (
     "มีเคสใหม่เข้าระบบ\n\n" +
@@ -1552,7 +1312,8 @@ function buildTeamNewCaseText(item = {}) {
     `สถานะ: ${formatCaseStatusThai(item.status)}\n` +
     `ระดับ: ${formatPriorityThai(item.priority)}`
   );
-}// =========================
+}
+// =========================
 // GOLDEN SAFE: PRESENTATION NOTIFY
 // =========================
 async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {
@@ -1899,9 +1660,6 @@ function buildAdminMenuFlex(sla = {}) {
     };
   }
 
-
-
-  
   function uriButton(label, uri, color = "#20C44A") {
     return {
       type: "button",
@@ -2398,93 +2156,12 @@ function buildHelpRequestChoiceFlex() {
   };
 }
 
-function buildHelpFirstContactFlex() {
-  return {
-    type: "flex",
-    altText: "เลือกวิธีแจ้งขอความช่วยเหลือ",
-    contents: {
-      type: "bubble",
-      size: "mega",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#0b7c86",
-        paddingAll: "18px",
-        contents: [
-          { type: "text", text: "ขอความช่วยเหลือครั้งแรก", color: "#ffffff", weight: "bold", size: "lg", wrap: true },
-          { type: "text", text: "เลือกวิธีที่สะดวกที่สุดได้เลยครับ", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true }
-        ]
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        paddingAll: "18px",
-        contents: [
-          {
-            type: "text",
-            text: "เราพร้อมรับฟังและช่วยเหลือท่านครับ",
-            weight: "bold",
-            size: "md",
-            color: "#16324F",
-            wrap: true
-          },
-          {
-            type: "text",
-            text: "หากไม่สะดวกกรอกฟอร์ม สามารถเลือกพิมพ์คุยกับเจ้าหน้าที่ได้ทันทีนะครับ",
-            size: "sm",
-            color: "#5B6575",
-            wrap: true
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            cornerRadius: "14px",
-            paddingAll: "14px",
-            backgroundColor: "#F4FBFC",
-            borderColor: "#D9EEF0",
-            borderWidth: "1px",
-            contents: [
-              { type: "text", text: "1) กรอกข้อมูลแบบง่าย", weight: "bold", size: "md", color: "#0b7c86", wrap: true },
-              { type: "text", text: "เหมาะสำหรับผู้ที่สะดวกพิมพ์ตามแบบตัวอย่าง ใช้เวลาไม่นานครับ", size: "sm", color: "#5B6575", margin: "sm", wrap: true }
-            ]
-          },
-          {
-            type: "box",
-            layout: "vertical",
-            cornerRadius: "14px",
-            paddingAll: "14px",
-            backgroundColor: "#F7F9FC",
-            borderColor: "#E5E7EB",
-            borderWidth: "1px",
-            contents: [
-              { type: "text", text: "2) พิมพ์คุยกับเจ้าหน้าที่", weight: "bold", size: "md", color: "#163C72", wrap: true },
-              { type: "text", text: "เหมาะสำหรับผู้ที่ไม่สะดวกกรอกตามแบบ สามารถค่อยๆ พิมพ์คุยกับเราได้เลยครับ", size: "sm", color: "#5B6575", margin: "sm", wrap: true }
-            ]
-          }
-        ]
-      },
-      footer: {
-        type: "box",
-        layout: "vertical",
-        spacing: "sm",
-        paddingAll: "16px",
-        contents: [
-          { type: "button", style: "primary", height: "sm", color: "#1F8F4D", action: { type: "message", label: "กรอกข้อมูลแบบง่าย", text: "ขอความช่วยเหลือแบบฟอร์ม" } },
-          { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "พิมพ์คุยกับเจ้าหน้าที่", text: "ขอความช่วยเหลือแบบแชท" } },
-          { type: "text", text: "ไม่ต้องกังวลนะครับ เลือกแบบที่ท่านสะดวกที่สุดได้เลย", size: "xs", color: "#7A8594", wrap: true, align: "center", margin: "md" }
-        ]
-      }
-    }
-  };
-}
-
 function buildHelpFormFlex() {
   const prefill = encodeURIComponent("ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:");
   const useUri = LINE_OA_ID && LINE_OA_ID.startsWith("@");
   const primaryAction = useUri
-    ? { type: "uri", label: "เปิดช่องพิมพ์ตามแบบ", uri: `https://line.me/R/oaMessage/${LINE_OA_ID}/?${prefill}` }
-    : { type: "message", label: "ส่งหัวข้อให้พิมพ์ต่อ", text: "ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:" };
+    ? { type: "uri", label: "กรอกข้อมูลตามนี้", uri: `https://line.me/R/oaMessage/${LINE_OA_ID}/?${prefill}` }
+    : { type: "message", label: "กรอกข้อมูลตามนี้", text: "ชื่อ:\nพื้นที่:\nรายละเอียด:\nเบอร์:" };
 
   return {
     type: "flex",
@@ -2498,8 +2175,8 @@ function buildHelpFormFlex() {
         backgroundColor: "#0b7c86",
         paddingAll: "16px",
         contents: [
-          { type: "text", text: "กรอกข้อมูลแบบง่าย", color: "#ffffff", weight: "bold", size: "lg", align: "center" },
-          { type: "text", text: "ค่อยๆ พิมพ์ตามหัวข้อด้านล่างได้เลยครับ", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true, align: "center" }
+          { type: "text", text: "แบบฟอร์มขอความช่วยเหลือ", color: "#ffffff", weight: "bold", size: "lg", align: "center" },
+          { type: "text", text: "กรุณากรอกข้อมูลตามตัวอย่างด้านล่าง", color: "#d9f3f5", size: "sm", margin: "sm", wrap: true, align: "center" }
         ]
       },
       body: {
@@ -2524,7 +2201,7 @@ function buildHelpFormFlex() {
           },
           {
             type: "text",
-            text: useUri ? "กดปุ่มด้านล่างเพื่อเปิดช่องพิมพ์พร้อมหัวข้อได้เลยครับ" : "กดปุ่มด้านล่าง แล้วค่อยๆ พิมพ์ข้อมูลต่อท้ายได้เลยครับ",
+            text: useUri ? "กดปุ่มด้านล่างเพื่อเปิดช่องพิมพ์พร้อมหัวข้อฟอร์ม" : "คัดลอกหัวข้อด้านบน แล้วพิมพ์ข้อมูลต่อท้ายได้เลย",
             size: "sm",
             color: "#6B7280",
             wrap: true,
@@ -2539,7 +2216,6 @@ function buildHelpFormFlex() {
         paddingAll: "16px",
         contents: [
           { type: "button", style: "primary", height: "sm", color: "#0b7c86", action: primaryAction },
-          { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "พิมพ์คุยกับเจ้าหน้าที่", text: "ขอความช่วยเหลือแบบแชท" } },
           { type: "button", style: "secondary", height: "sm", action: { type: "message", label: "กลับไปเลือกประเภท", text: "ขอความช่วยเหลือ" } }
         ]
       }
@@ -6961,21 +6637,11 @@ console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
   role,
 });
 
-if (String(text).trim().toLowerCase() === "test poster") {
-  return await safeReply(replyToken, [buildPosterModeFlex()]);
-}
-
-if (String(text || "").trim().toLowerCase() === "test overlay") {
-  return await safeReply(replyToken, [buildTeamMenuOverlayFlex()]);
-}
-    
-      
 if (!teamGuard.pass) {
   await replyGuardError(replyToken, teamGuard.reason);
   continue;
 }
 
-  
 if (text === "เมนูทีมงาน") {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {
     await safeReply(replyToken, [
@@ -6993,7 +6659,7 @@ if (text === "เมนูทีมงาน") {
     continue;
   }
 
-  await safeReply(replyToken, [buildTeamMenuFlex()]);
+  await safeReply(replyToken, [buildTeamMenuImagemap()]);
   continue;
 }
       
@@ -7465,7 +7131,7 @@ if (text === "เมนูทีมงาน" || text === "เปิดเมน
   }
 
   const counts = await getTeamMenuCounts();
-  await safeReply(replyToken, [buildTeamMenuFlex(counts)], [
+  await safeReply(replyToken, [buildTeamMenuImagemap()], [
     {
       type: "text",
       text:
@@ -7558,46 +7224,15 @@ if (text === "ขอความช่วยเหลือ") {
 }
 
 if (text === "ขอความช่วยเหลือครั้งแรก") {
-  await safeReply(replyToken, [buildHelpFirstContactFlex()], [
-    {
-      type: "text",
-      text:
-        "สวัสดีครับ ท่านสามารถเลือกวิธีแจ้งเรื่องที่สะดวกที่สุดได้เลยครับ\n\n" +
-        "1) กรอกข้อมูลแบบง่าย\n" +
-        "2) พิมพ์คุยกับเจ้าหน้าที่",
-    },
-  ]);
-  continue;
-}
-
-if (text === "ขอความช่วยเหลือแบบฟอร์ม") {
   await safeReply(replyToken, [buildHelpFormFlex()], [
     {
       type: "text",
       text:
-        "หากสะดวก รบกวนค่อยๆ พิมพ์ข้อมูลตามนี้ได้เลยครับ\n\n" +
+        "กรุณาส่งข้อมูลดังนี้\n" +
         "ชื่อ:\n" +
         "พื้นที่:\n" +
         "รายละเอียด:\n" +
-        "เบอร์:\n\n" +
-        "หากยังพิมพ์ไม่ครบในครั้งเดียวก็ไม่เป็นไรนะครับ ค่อยๆ ส่งมาได้ครับ",
-    },
-  ]);
-  continue;
-}
-
-if (text === "ขอความช่วยเหลือแบบแชท") {
-  await safeReply(replyToken, [
-    {
-      type: "text",
-      text:
-        "สวัสดีครับ เรายินดีรับฟังและพร้อมช่วยเหลือท่านนะครับ\n\n" +
-        "หากสะดวก รบกวนค่อยๆ พิมพ์ข้อมูลตามนี้ได้เลยครับ\n\n" +
-        "ชื่อ:\n" +
-        "พื้นที่:\n" +
-        "รายละเอียด:\n" +
-        "เบอร์:\n\n" +
-        "หากยังพิมพ์ไม่ครบในครั้งเดียวก็ไม่เป็นไรนะครับ ค่อยๆ ส่งมาได้ครับ",
+        "เบอร์:",
     },
   ]);
   continue;
@@ -9267,6 +8902,19 @@ app.get("/debug/push-team-test", async (req, res) => {
     });
   }
 });
+app.get("/imagemap/team-menu/:size", (req, res) => {
+  const allowedSizes = new Set(["240", "300", "460", "700", "1040"]);
+  const requestedSize = String(req.params.size || "");
+
+  if (!allowedSizes.has(requestedSize)) {
+    return res.redirect(302, TEAM_MENU_IMAGEMAP_SOURCE_URL);
+  }
+
+  res.setHeader("Cache-Control", "public, max-age=86400");
+  return res.redirect(302, TEAM_MENU_IMAGEMAP_SOURCE_URL);
+});
+
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log("✅ Server started on port " + PORT);
 });

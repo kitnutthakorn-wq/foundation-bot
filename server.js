@@ -1482,12 +1482,12 @@ actions: [
   {
     type: "message",
     text: "ค้นหาเคส",
-    area: { x: 70, y: 1290, width: 900, height: 140 }
+    area: { x: 70, y: 1220, width: 900, height: 140 }
   },
   {
     type: "uri",
     linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 70, y: 1460, width: 900, height: 100 }
+    area: { x: 70, y: 1390, width: 900, height: 120 }
   }
 ]
 };

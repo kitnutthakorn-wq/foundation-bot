@@ -6694,6 +6694,13 @@ async function getTeamMenuCounts() {
   };
 }
 
+// =========================
+// IMAGEMAP STATIC SERVE (วางตรงนี้)
+// =========================
+app.get("/imagemap/team-menu/1040", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/imagemap/team-menu.png"));
+});
+
 /* =========================
    WEBHOOK
 ========================= */

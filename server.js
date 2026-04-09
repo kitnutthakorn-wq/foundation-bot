@@ -7038,7 +7038,7 @@ if (!teamGuard.pass) {
 }
 
   
-if (text === "เมนูทีมงาน") {
+if (String(text || "").trim() === "เมนูทีมงาน") {
   if (!isGroupEvent(event) || !isAllowedTeamGroup(event)) {
     await safeReply(replyToken, [
       { type: "text", text: "คำสั่งนี้ใช้ได้เฉพาะในกลุ่มทีมงานเท่านั้น" }
@@ -7055,7 +7055,9 @@ if (text === "เมนูทีมงาน") {
     continue;
   }
 
-  await safeReply(replyToken, [buildTeamMenuFlex()]);
+  await safeReply(replyToken, [
+    buildTeamMenuImagemap()
+  ]);
   continue;
 }
       

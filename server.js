@@ -1470,7 +1470,7 @@ function buildTeamMenuOverlayFlex() {
                 url: "https://img2.pic.in.th/LineDesign.png",
                 size: "full",
                 aspectMode: "cover",
-                aspectRatio: "3:4"
+             
               }
             ]
           },

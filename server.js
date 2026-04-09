@@ -8334,7 +8334,7 @@ app.get("/api/executive/decision-board", async (req, res) => {
 // =========================
 app.get("/imagemap/team-menu/:size", async (req, res) => {
   try {
-    const imageUrl = "https://img2.pic.in.th/LineDesign2.png";
+    const imageUrl = "https://img2.pic.in.th/New_WorkTeam.png";
 
     const upstream = await fetch(imageUrl);
     if (!upstream.ok) {

@@ -1459,7 +1459,7 @@ function buildTeamMenuImagemap(baseUrlOverride = "") {
     altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
     baseSize: {
       width: 1040,
-      height: 2080
+      height: 1740
     },
    actions: [
   {

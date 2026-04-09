@@ -1463,7 +1463,7 @@ function buildTeamMenuOverlayFlex() {
           {
             type: "box",
             layout: "vertical",
-            flex: 70,
+            flex: 85,
             contents: [
               {
                 type: "image",
@@ -1477,8 +1477,8 @@ function buildTeamMenuOverlayFlex() {
           {
             type: "box",
             layout: "vertical",
-            flex: 30,
-            paddingAll: "10px",
+            flex: 15,
+            paddingAll: "4px",
             backgroundColor: "#000000",
             contents: [
               hit("ดูเคสวันนี้", "เคสวันนี้"),

@@ -1458,8 +1458,8 @@ return {
   baseUrl: `${baseUrl}/imagemap/team-menu`,
   altText: "เมนูทีมงาน | ศูนย์ปฏิบัติการ",
   baseSize: {
-    width: 1040,
-    height: 1739
+    width: 1224,
+    height: 2048
   },
     
 // BACKUP OLD HITBOX

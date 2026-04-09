@@ -7004,6 +7004,10 @@ console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
   role,
 });
 
+if (String(text || "").trim().toLowerCase() === "test imagemap") {
+  return await safeReply(replyToken, [buildTeamMenuImagemap()]);
+}
+      
 if (String(text).trim().toLowerCase() === "test poster") {
   return await safeReply(replyToken, [buildPosterModeFlex()]);
 }

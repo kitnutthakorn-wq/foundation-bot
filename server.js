@@ -8318,6 +8318,30 @@ app.get("/api/executive/decision-board", async (req, res) => {
   }
 });
 
+// =========================
+// TEAM MENU IMAGEMAP IMAGE ROUTE
+// =========================
+app.get("/imagemap/team-menu/:size", async (req, res) => {
+  try {
+    const imageUrl = "https://img2.pic.in.th/LineDesign.png";
+
+    const upstream = await fetch(imageUrl);
+    if (!upstream.ok) {
+      return res.status(502).send("Failed to load imagemap source");
+    }
+
+    const contentType = upstream.headers.get("content-type") || "image/png";
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.send(buffer);
+  } catch (err) {
+    console.error("IMAGEMAP ROUTE ERROR:", err);
+    return res.status(500).send("Imagemap route error");
+  }
+});
+
 /**
  * Phase PRO MAX UI - Golden-safe patch
  * เพิ่ม block นี้ก่อน app.listen(...)

@@ -1364,30 +1364,44 @@ function whiteButton(label, text) {
   return {
     type: "box",
     layout: "vertical",
-    backgroundColor: "#F9FAFB",
-    borderColor: "#E5E7EB",
-    borderWidth: "1px",
-    cornerRadius: "16px",
-    paddingAll: "16px",
     margin: "sm",
     contents: [
       {
-        type: "text",
-        text: label,
-        weight: "bold",
-        size: "md",
-        color: "#111827",
-        align: "center",
-        action: {
-          type: "message",
-          label: label,
-          text: text
-        }
+        // 👇 ชั้นล่าง (เงา)
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#D1D5DB",
+        cornerRadius: "16px",
+        paddingAll: "2px",
+        contents: [
+          {
+            // 👇 ชั้นบน (ปุ่มจริง)
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#F9FAFB",
+            cornerRadius: "14px",
+            paddingAll: "12px",
+            contents: [
+              {
+                type: "text",
+                text: label,
+                weight: "bold",
+                size: "md",
+                color: "#111827",
+                align: "center",
+                action: {
+                  type: "message",
+                  label: label,
+                  text: text
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   };
 }
-
 function orangeButton(label, uri) {
   return {
     type: "box",

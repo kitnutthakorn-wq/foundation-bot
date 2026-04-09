@@ -6700,7 +6700,7 @@ async function getTeamMenuCounts() {
 // IMAGEMAP STATIC SERVE (วางตรงนี้)
 // =========================
 app.get("/imagemap/team-menu/1040", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/imagemap/New-WorkTeam.png"));
+  res.sendFile(path.join(__dirname, "imagemap/New-WorkTeam.png"));
 });
 
 /* =========================

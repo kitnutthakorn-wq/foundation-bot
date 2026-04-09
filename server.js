@@ -4605,6 +4605,42 @@ app.post("/api/work-uploads", async (req, res) => {
       return res.status(500).json({ ok: false, error: insertError.message });
     }
 
+try {
+  const lat = helpRequest?.latitude ?? null;
+  const lng = helpRequest?.longitude ?? null;
+
+  const hasGps =
+    lat !== null &&
+    lng !== null &&
+    lat !== "" &&
+    lng !== "";
+
+  if (hasGps) {
+    const geo = await reverseGeocodeLatLng(lat, lng);
+
+    const resolvedLocationText =
+      geo?.location_text ||
+      `${Number(lat)}, ${Number(lng)}`;
+
+    await supabase
+      .from("help_requests")
+      .update({
+        location_text: resolvedLocationText,
+        last_action_at: new Date().toISOString()
+      })
+      .eq("case_code", helpRequest.case_code);
+
+    console.log("WORK UPLOAD reverse geocoding success:", {
+      case_code: helpRequest.case_code,
+      latitude: Number(lat),
+      longitude: Number(lng),
+      location_text: resolvedLocationText
+    });
+  }
+} catch (geoErr) {
+  console.warn("WORK UPLOAD reverse geocoding warning:", geoErr?.message || geoErr);
+}
+    
     return res.json({
       ok: true,
       message: "บันทึกงานสำเร็จ",

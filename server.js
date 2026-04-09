@@ -6706,10 +6706,29 @@ async function getTeamMenuCounts() {
 // =========================
 // IMAGEMAP STATIC SERVE (วางตรงนี้)
 // =========================
-app.get("/imagemap/team-menu/1040", (req, res) => {
-  res.sendFile(path.join(__dirname, "imagemap/New_WorkTeam.png"));
-});
+//app.get("/imagemap/team-menu/1040", (req, res) => {
+//  res.sendFile(path.join(__dirname, "imagemap/New_WorkTeam.png"));
+//});
+app.get("/imagemap/team-menu/1040", async (req, res) => {
+  try {
+    const imageUrl = "https://img1.pic.in.th/images/New_WorkTeam.png";
 
+    const upstream = await fetch(imageUrl);
+    if (!upstream.ok) {
+      return res.status(502).send("Failed to load imagemap source");
+    }
+
+    const contentType = upstream.headers.get("content-type") || "image/png";
+    const buffer = Buffer.from(await upstream.arrayBuffer());
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Cache-Control", "no-store");
+    return res.send(buffer);
+  } catch (err) {
+    console.error("IMAGEMAP URL ROUTE ERROR:", err);
+    return res.status(500).send("Imagemap route error");
+  }
+});
 /* =========================
    WEBHOOK
 ========================= */

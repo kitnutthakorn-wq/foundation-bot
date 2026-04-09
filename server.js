@@ -1487,7 +1487,7 @@ actions: [
   {
     type: "uri",
     linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 70, y: 1390, width: 900, height: 120 }
+    area: { x: 70, y: 1380, width: 900, height: 120 }
   }
 ]
 };

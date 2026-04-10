@@ -1589,7 +1589,7 @@ function buildUrgentCasePosterImagemap(baseUrlOverride = "") {
       {
         type: "message",
         text: "เปิดการ์ดเคสด่วน",
-        area: { x: 140, y: 1350, width: 760, height: 120 }
+        area: { x: 100, y: 1300, width: 840, height: 200 }
       },
       {
         type: "uri",

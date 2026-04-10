@@ -998,6 +998,7 @@ function buildUrgentCasePosterSvg(item = {}) {
       : "ปกติ";
 
   return `
+ return `
   <svg width="1040" height="1559" viewBox="0 0 1040 1559" xmlns="http://www.w3.org/2000/svg">
     <style>
       .t1 { font: 700 52px sans-serif; fill: #ffffff; }

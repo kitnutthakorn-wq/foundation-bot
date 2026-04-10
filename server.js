@@ -8,12 +8,11 @@ const fs = require("fs");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
+const upload = multer({ storage: multer.memoryStorage() });
 const { createCanvas, loadImage, registerFont } = require("canvas");
 const sharp = require("sharp");
-const upload = multer({ storage: multer.memoryStorage() });
-const caseInfoUpload = multer({
 
- try {
+try {
   registerFont(path.join(__dirname, "fonts", "NotoSansThai-Bold.ttf"), {
     family: "ThaiBold"
   });
@@ -23,7 +22,19 @@ const caseInfoUpload = multer({
   console.log("✅ Thai fonts registered");
 } catch (e) {
   console.warn("⚠️ Font register failed:", e.message);
-} 
+}
+
+const upload = multer({ storage: multer.memoryStorage() });
+const caseInfoUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024,
+    files: 10
+  }
+});
+const caseInfoUpload = multer({
+
+ 
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 15 * 1024 * 1024,

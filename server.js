@@ -12,6 +12,18 @@ const { createCanvas, loadImage, registerFont } = require("canvas");
 const sharp = require("sharp");
 const upload = multer({ storage: multer.memoryStorage() });
 const caseInfoUpload = multer({
+
+ try {
+  registerFont(path.join(__dirname, "fonts", "NotoSansThai-Bold.ttf"), {
+    family: "ThaiBold"
+  });
+  registerFont(path.join(__dirname, "fonts", "NotoSansThai-Regular.ttf"), {
+    family: "ThaiRegular"
+  });
+  console.log("✅ Thai fonts registered");
+} catch (e) {
+  console.warn("⚠️ Font register failed:", e.message);
+} 
   storage: multer.memoryStorage(),
   limits: {
     fileSize: 15 * 1024 * 1024,

@@ -6953,30 +6953,18 @@ if (text === "ดูเคสด่วน") {
   }
 
   if (!data || data.length === 0) {
-    await safeReply(replyToken, [
-      { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนที่เปิดอยู่" }
-    ]);
-    continue;
-  }
-
-  // 🔥 จุดสำคัญ: ส่ง Flex card
   await safeReply(replyToken, [
-    buildCaseTrackingFlex(data[0])
+    { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนที่เปิดอยู่" }
   ]);
-
   continue;
 }
-  const textLines = data.map((item, index) =>
-    `${index + 1}. ${item.case_code || "-"} | ${item.full_name || "-"} | ${item.location || "-"}`
-  );
 
-  await safeReply(replyToken, [
-    {
-      type: "text",
-      text: ("เคสด่วน\n\n" + textLines.join("\n")).slice(0, 4900)
-    }
-  ]);
-  continue;
+// 🔥 จุดสำคัญ: ส่ง Flex card
+await safeReply(replyToken, [
+  buildCaseTrackingFlex(data[0])
+]);
+
+continue;
 }
 
 if (text === "ค้นหาเคส") {

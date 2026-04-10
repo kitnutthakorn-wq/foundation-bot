@@ -1029,7 +1029,7 @@ function buildCaseTrackingFlex(item = {}) {
           {
             type: "button",
             style: "primary",
-            height: "lg",
+            height: "md",
             color: "#0F8AA4",
             action: {
               type: "message",
@@ -1040,7 +1040,7 @@ function buildCaseTrackingFlex(item = {}) {
           {
             type: "button",
             style: "primary",
-            height: "lg",
+            height: "md",
             color: "#EF2B1D",
             action: {
               type: "uri",

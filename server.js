@@ -832,11 +832,7 @@ function formatThaiDateTime(value) {
 
 function buildCaseTrackingFlex(item = {}) {
   const statusText = formatCaseStatusThai(item.status);
-const priorityText = formatPriorityThai(item.priority);
-const headerTheme = getCaseHeaderTheme(item);
-const progressText = `${item.progress_percent ?? 0}%`;
-  const currentStepText = item.current_step || "รอทีมงานรับเรื่อง";
-  const waitingForText = item.waiting_for || "รอการอัปเดต";
+  const priorityText = formatPriorityThai(item.priority);
   const updatedAtText = formatThaiDateTime(
     item.last_action_at ||
     item.closed_at ||
@@ -844,209 +840,208 @@ const progressText = `${item.progress_percent ?? 0}%`;
     item.created_at
   );
 
+  const progress = Number(item.progress_percent ?? 60);
+  const progressText = `${progress}%`;
+
+  const bgImage =
+    "https://img2.pic.in.th/pic/warroom-case-bg.png"; // เปลี่ยนเป็นภาพจริงของคุณได้
+
+  const slaText =
+    item.sla_level === "breached"
+      ? "ใกล้เกินกำหนด"
+      : item.sla_level === "warning"
+      ? "ต้องเฝ้าระวัง"
+      : "ปกติ";
+
   return {
     type: "flex",
     altText: `ติดตามเคส ${item.case_code || "-"}`,
     contents: {
       type: "bubble",
-      size: "mega",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: headerTheme.color,
-        paddingAll: "18px",
-        contents: [
-          {
-            type: "text",
-            text: "สถานะเคส",
-            color: "#ffffff",
-            weight: "bold",
-            size: "lg",
-            align: "center",
-          },
-          {
-  type: "text",
-  text: item.case_code || "-",
-  color: "#d9f3f5",
-  size: "sm",
-  margin: "sm",
-  align: "center",
-},
-{
-  type: "text",
-  text: `ระดับการตอบสนอง: ${headerTheme.label}`,
-  color: "#d9f3f5",
-  size: "xs",
-  margin: "sm",
-  align: "center",
-}
-        ]
+      size: "giga",
+      hero: {
+        type: "image",
+        url: bgImage,
+        size: "full",
+        aspectRatio: "3:4",
+        aspectMode: "cover"
       },
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
-        paddingAll: "20px",
+        paddingAll: "0px",
+        backgroundColor: "#0B0F1A",
         contents: [
           {
-            type: "text",
-            text: `ชื่อ: ${item.full_name || "-"}`,
-            wrap: true,
-            align: "center",
-          },
-          {
-            type: "text",
-            text: `พื้นที่: ${item.location || "-"}`,
-            wrap: true,
-            align: "center",
-          },
-          {
             type: "box",
-            layout: "horizontal",
-            spacing: "sm",
+            layout: "vertical",
+            paddingTop: "16px",
+            paddingBottom: "8px",
             contents: [
               {
-                type: "box",
-                layout: "vertical",
-                backgroundColor: "#F3F4F6",
-                cornerRadius: "10px",
-                paddingAll: "10px",
-                flex: 1,
-                contents: [
-                  {
-                    type: "text",
-                    text: "สถานะ",
-                    size: "xs",
-                    color: "#6B7280",
-                    align: "center",
-                  },
-                  {
-                    type: "text",
-                    text: statusText,
-                    color: getStatusColor(item.status),
-                    weight: "bold",
-                    size: "sm",
-                    align: "center",
-                    wrap: true,
-                  },
-                ],
-              },
-              {
-                type: "box",
-                layout: "vertical",
-                backgroundColor: "#F3F4F6",
-                cornerRadius: "10px",
-                paddingAll: "10px",
-                flex: 1,
-                contents: [
-                  {
-                    type: "text",
-                    text: "ระดับ",
-                    size: "xs",
-                    color: "#6B7280",
-                    align: "center",
-                  },
-                  {
-                    type: "text",
-                    text: priorityText,
-                    color: getPriorityColor(item.priority),
-                    weight: "bold",
-                    size: "sm",
-                    align: "center",
-                    wrap: true,
-                  },
-                ],
-              },
-            ],
+                type: "text",
+                text: "ศูนย์ปฏิบัติการเคส",
+                color: "#FFFFFF",
+                weight: "bold",
+                size: "xxl",
+                align: "center"
+              }
+            ]
           },
           {
             type: "box",
             layout: "vertical",
-            backgroundColor: "#EFF6FF",
-            cornerRadius: "12px",
-            paddingAll: "12px",
+            margin: "md",
+            cornerRadius: "18px",
+            backgroundColor: "#FFFFFF",
+            paddingAll: "0px",
+            offsetTop: "-6px",
             contents: [
               {
-                type: "text",
-                text: "ความคืบหน้า",
-                size: "xs",
-                color: "#6B7280",
-                align: "center",
+                type: "box",
+                layout: "vertical",
+                backgroundColor: "#EF2B1D",
+                cornerRadius: "18px",
+                paddingTop: "18px",
+                paddingBottom: "18px",
+                contents: [
+                  {
+                    type: "text",
+                    text: item.case_code || "-",
+                    color: "#FFFFFF",
+                    weight: "bold",
+                    size: "lg",
+                    align: "center"
+                  }
+                ]
               },
               {
-                type: "text",
-                text: progressText,
-                size: "xl",
-                weight: "bold",
-                color: "#1D4ED8",
-                align: "center",
-                margin: "sm",
-              },
-            ],
-          },
-          {
-            type: "separator",
-            margin: "sm",
-          },
-          {
-            type: "text",
-            text: `ขั้นตอนล่าสุด: ${currentStepText}`,
-            wrap: true,
-            size: "sm",
-          },
-          {
-            type: "text",
-            text: `ขณะนี้กำลังรอ: ${waitingForText}`,
-            wrap: true,
-            size: "sm",
-          },
-          {
-            type: "text",
-            text: `ผู้รับเคส: ${item.assigned_to || "ยังไม่มีผู้รับผิดชอบ"}`,
-            wrap: true,
-            size: "sm",
-          },
-          {
-            type: "separator",
-            margin: "sm",
-          },
-          {
-            type: "text",
-            text: `อัปเดตล่าสุด: ${updatedAtText}`,
-            size: "xs",
-            color: "#666666",
-            wrap: true,
-            align: "center",
+                type: "box",
+                layout: "vertical",
+                paddingAll: "16px",
+                spacing: "md",
+                contents: [
+                  {
+                    type: "text",
+                    text: `ชื่อ: ${item.full_name || "-"}`,
+                    wrap: true,
+                    color: "#333333",
+                    size: "md"
+                  },
+                  {
+                    type: "text",
+                    text: `📍 ${item.location || "ยังไม่ระบุพื้นที่"}`,
+                    wrap: true,
+                    color: "#555555",
+                    size: "sm"
+                  },
+                  {
+                    type: "text",
+                    text: `สถานะ: ${statusText}`,
+                    wrap: true,
+                    color: "#E67E22",
+                    weight: "bold",
+                    size: "md"
+                  },
+                  {
+                    type: "text",
+                    text: `ระดับ: ${priorityText}`,
+                    wrap: true,
+                    color: "#DC2626",
+                    weight: "bold",
+                    size: "md"
+                  },
+                  {
+                    type: "separator",
+                    margin: "sm"
+                  },
+                  {
+                    type: "text",
+                    text: `อัปเดตล่าสุด: ${updatedAtText}`,
+                    color: "#666666",
+                    size: "sm",
+                    wrap: true
+                  },
+                  {
+                    type: "box",
+                    layout: "horizontal",
+                    margin: "md",
+                    contents: [
+                      {
+                        type: "text",
+                        text: `⚠ SLA: ${slaText}`,
+                        color: "#F59E0B",
+                        weight: "bold",
+                        size: "md",
+                        flex: 4
+                      },
+                      {
+                        type: "text",
+                        text: progressText,
+                        align: "end",
+                        color: "#333333",
+                        weight: "bold",
+                        size: "xl",
+                        flex: 2
+                      }
+                    ]
+                  },
+                  {
+                    type: "box",
+                    layout: "vertical",
+                    backgroundColor: "#E5E7EB",
+                    cornerRadius: "20px",
+                    height: "16px",
+                    contents: [
+                      {
+                        type: "box",
+                        layout: "horizontal",
+                        backgroundColor: "#C7F000",
+                        cornerRadius: "20px",
+                        width: `${Math.max(8, Math.min(progress, 100))}%`,
+                        height: "16px",
+                        contents: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
       footer: {
         type: "box",
         layout: "vertical",
+        backgroundColor: "#0B0F1A",
         spacing: "md",
-        paddingAll: "20px",
+        paddingTop: "8px",
+        paddingBottom: "20px",
+        paddingStart: "20px",
+        paddingEnd: "20px",
         contents: [
           {
             type: "button",
             style: "primary",
-            height: "md",
-            color: "#0b7c86",
+            height: "lg",
+            color: "#0F8AA4",
             action: {
               type: "message",
-              label: "ติดตามอีกครั้ง",
-              text: `ติดตามอีกครั้ง ${item.case_code || "-"}`,
-            },
+              label: "ติดตามเคสนี้",
+              text: `ติดตามอีกครั้ง ${item.case_code || "-"}`
+            }
           },
           {
             type: "button",
-            style: "secondary",
-            height: "md",
+            style: "primary",
+            height: "lg",
+            color: "#EF2B1D",
             action: {
-              type: "message",
-              label: "ติดต่อเจ้าหน้าที่",
-              text: "ติดต่อเจ้าหน้าที่",
-            },
-          },
+              type: "uri",
+              label: "เปิดศูนย์ปฏิบัติการ",
+              uri: "https://satisfied-stillness-production-7942.up.railway.app/team.html"
+            }
+          }
         ]
       }
     }

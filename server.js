@@ -111,44 +111,43 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
     let data = null;
-    console.log("🚨 BEFORE QUERY caseCode =", JSON.stringify(caseCode));
-    if (caseCode) {
-      const result = await supabase
-        .from("help_requests")
-        .select("*")
-        .eq("case_code", caseCode)
-        .maybeSingle();
 
-      console.log("🧪 [STEP1] caseCode =", caseCode);
-      console.log("🧪 [STEP1] error =", result.error);
-      console.log("🧪 [STEP1] data =", result.data);
+if (caseCode) {
+  const result = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("case_code", caseCode)
+    .maybeSingle();
 
-      if (!result.error && result.data) {
-        data = result.data;
-      }
-    }
+  console.log("🧪 [STEP1] caseCode =", caseCode);
+  console.log("🧪 [STEP1] error =", result.error);
+  console.log("🧪 [STEP1] data =", result.data);
 
-    if (!data) {
-      const latest = await supabase
-        .from("help_requests")
-        .select("*")
-        .eq("priority", "urgent")
-        .neq("status", "done")
-        .neq("status", "cancelled")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+  if (!result.error && result.data) {
+    data = result.data;
+  }
+}
 
-      console.log("🧪 [STEP2] latest error =", latest.error);
-      console.log("🧪 [STEP2] latest data =", latest.data);
+if (!data) {
+  const latest = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("priority", "urgent")
+    .neq("status", "done")
+    .neq("status", "cancelled")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-      if (!latest.error && latest.data) {
-        data = latest.data;
-      }
-    }
+  console.log("🧪 [STEP2] latest error =", latest.error);
+  console.log("🧪 [STEP2] latest data =", latest.data);
 
-    console.log("🚨 FINAL DATA =", data);
+  if (!latest.error && latest.data) {
+    data = latest.data;
+  }
+}
 
+console.log("🚨 FINAL DATA =", data);
     if (!data) {
       return res.sendFile(imagePath);
     }

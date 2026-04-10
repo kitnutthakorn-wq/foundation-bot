@@ -119,65 +119,139 @@ const PORT = process.env.PORT || 3000;
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 app.get("/imagemap/urgent-case-poster", async (req, res) => {
   try {
-    let caseCode = String(req.query.case_code || "").trim();
+    const caseCode = String(req.query.case_code || "").trim();
     console.log("🔥 render poster main:", caseCode);
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
-    let data = null;
 
-if (caseCode) {
-  const result = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("case_code", caseCode)
-    .maybeSingle();
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("case_code", caseCode)
+      .maybeSingle();
 
-  console.log("🧪 [STEP1] caseCode =", caseCode);
-  console.log("🧪 [STEP1] error =", result.error);
-  console.log("🧪 [STEP1] data =", result.data);
-
-  if (!result.error && result.data) {
-    data = result.data;
-  }
-}
-
-if (!data) {
-  const latest = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("priority", "urgent")
-    .neq("status", "done")
-    .neq("status", "cancelled")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  console.log("🧪 [STEP2] latest error =", latest.error);
-  console.log("🧪 [STEP2] latest data =", latest.data);
-
-  if (!latest.error && latest.data) {
-    data = latest.data;
-  }
-}
-
-console.log("🚨 FINAL DATA =", data);
-    if (!data) {
-      return res.sendFile(imagePath);
+    if (error) {
+      console.error("❌ supabase error:", error);
     }
 
-    const base = sharp(imagePath);
-    const svg = Buffer.from(buildUrgentCasePosterSvg(data), "utf8");
+    const baseImage = await loadImage(imagePath);
+    const canvas = createCanvas(baseImage.width, baseImage.height);
+    const ctx = canvas.getContext("2d");
 
-    const output = await base
-      .composite([{ input: svg, top: 0, left: 0 }])
-      .png()
-      .toBuffer();
+    // วาดภาพพื้นหลัง
+    ctx.drawImage(baseImage, 0, 0, baseImage.width, baseImage.height);
 
-    res.setHeader("Content-Type", "image/png");
-    return res.send(output);
+    // helper
+    function drawText(text, x, y, options = {}) {
+      const {
+        font = 'bold 42px "ThaiBold", sans-serif',
+        color = "#ffffff",
+        align = "left",
+        maxWidth = 700
+      } = options;
+
+      ctx.font = font;
+      ctx.fillStyle = color;
+      ctx.textAlign = align;
+      ctx.textBaseline = "top";
+
+      const lines = wrapText(ctx, String(text || "-"), maxWidth);
+      const lineHeight = getLineHeight(font);
+
+      lines.forEach((line, i) => {
+        ctx.fillText(line, x, y + i * lineHeight);
+      });
+
+      return lines.length * lineHeight;
+    }
+
+    function wrapText(ctx, text, maxWidth) {
+      const paragraphs = String(text).split("\n");
+      const lines = [];
+
+      for (const para of paragraphs) {
+        let line = "";
+        for (const ch of para) {
+          const testLine = line + ch;
+          const width = ctx.measureText(testLine).width;
+          if (width > maxWidth && line) {
+            lines.push(line);
+            line = ch;
+          } else {
+            line = testLine;
+          }
+        }
+        if (line) lines.push(line);
+      }
+
+      return lines.length ? lines : ["-"];
+    }
+
+    function getLineHeight(font) {
+      const m = /(\d+)px/.exec(font);
+      const size = m ? parseInt(m[1], 10) : 40;
+      return Math.round(size * 1.35);
+    }
+
+    function trimText(text, max = 120) {
+      const s = String(text || "").trim();
+      if (!s) return "-";
+      return s.length > max ? s.slice(0, max) + "..." : s;
+    }
+
+    const case_code = data?.case_code || caseCode || "-";
+    const full_name = trimText(data?.full_name || "ไม่ระบุชื่อ", 40);
+    const phone = trimText(data?.phone || "-", 25);
+    const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
+    const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
+
+    // debug box ได้ถ้าต้องการ
+    // ctx.strokeStyle = "red";
+    // ctx.lineWidth = 2;
+    // ctx.strokeRect(70, 180, 900, 500);
+
+    // ========= วาดข้อความ =========
+    drawText(`เคสด่วน ${case_code}`, 80, 90, {
+      font: 'bold 54px "ThaiBold", sans-serif',
+      color: "#ffffff",
+      maxWidth: 850
+    });
+
+    drawText(`ชื่อ: ${full_name}`, 80, 210, {
+      font: 'bold 38px "ThaiBold", sans-serif',
+      color: "#ffffff",
+      maxWidth: 820
+    });
+
+    drawText(`โทร: ${phone}`, 80, 280, {
+      font: 'bold 34px "ThaiRegular", sans-serif',
+      color: "#ffffff",
+      maxWidth: 820
+    });
+
+    drawText(`พื้นที่: ${location}`, 80, 340, {
+      font: 'bold 34px "ThaiRegular", sans-serif',
+      color: "#ffffff",
+      maxWidth: 820
+    });
+
+    drawText(`รายละเอียด: ${problem}`, 80, 420, {
+      font: 'bold 34px "ThaiRegular", sans-serif',
+      color: "#ffffff",
+      maxWidth: 820
+    });
+
+    // ========= ส่งเป็นภาพใหม่จาก canvas =========
+    const buffer = canvas.toBuffer("image/png");
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
+    return res.send(buffer);
+
   } catch (err) {
-    console.error("URGENT POSTER MAIN RENDER ERROR:", err);
-    return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
+    console.error("❌ render poster main error:", err);
+    return res.status(500).send("render poster failed");
   }
 });
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {

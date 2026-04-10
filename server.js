@@ -1566,6 +1566,38 @@ actions: [
 };
 }
 
+function buildUrgentCasePosterImagemap(baseUrlOverride = "") {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster`,
+    altText: "ศูนย์ปฏิบัติการเคสด่วน",
+    baseSize: {
+      width: 1040,
+      height: 1740
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เปิดการ์ดเคสด่วน",
+        area: { x: 140, y: 1350, width: 760, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+        area: { x: 140, y: 1510, width: 760, height: 120 }
+      },
+      {
+        type: "message",
+        text: "ติดต่อเจ้าหน้าที่",
+        area: { x: 140, y: 1670, width: 760, height: 70 }
+      }
+    ]
+  };
+}
 
 // =========================
 // OVERLAY MENU (PRO MAX++)

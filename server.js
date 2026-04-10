@@ -997,19 +997,22 @@ function buildUrgentCasePosterSvg(item = {}) {
       ? "ต้องเฝ้าระวัง"
       : "ปกติ";
 
+   const embeddedFontCss = buildEmbeddedFontCss();
+
   return `
- return `
   <svg width="1040" height="1559" viewBox="0 0 1040 1559" xmlns="http://www.w3.org/2000/svg">
     <style>
-      .t1 { font: 700 52px sans-serif; fill: #ffffff; }
-      .t2 { font: 700 40px sans-serif; fill: #ffffff; }
-      .t3 { font: 700 28px sans-serif; fill: #444444; }
-      .t4 { font: 400 28px sans-serif; fill: #444444; }
-      .t5 { font: 700 30px sans-serif; fill: #d97706; }
-      .t6 { font: 700 30px sans-serif; fill: #dc2626; }
-      .t7 { font: 400 24px sans-serif; fill: #666666; }
-      .t8 { font: 700 30px sans-serif; fill: #f59e0b; }
-      .t9 { font: 700 42px sans-serif; fill: #444444; }
+      ${embeddedFontCss}
+
+      .t1 { font-family: 'PromptEmbedded', sans-serif; font-size: 52px; font-weight: 700; fill: #ffffff; }
+      .t2 { font-family: 'PromptEmbedded', sans-serif; font-size: 40px; font-weight: 700; fill: #ffffff; }
+      .t3 { font-family: 'PromptEmbedded', sans-serif; font-size: 28px; font-weight: 700; fill: #444444; }
+      .t4 { font-family: 'PromptEmbedded', sans-serif; font-size: 28px; font-weight: 400; fill: #444444; }
+      .t5 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #d97706; }
+      .t6 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #dc2626; }
+      .t7 { font-family: 'PromptEmbedded', sans-serif; font-size: 24px; font-weight: 400; fill: #666666; }
+      .t8 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #f59e0b; }
+      .t9 { font-family: 'PromptEmbedded', sans-serif; font-size: 42px; font-weight: 700; fill: #444444; }
     </style>
 
     <!-- code -->

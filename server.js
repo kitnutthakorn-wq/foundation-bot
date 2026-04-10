@@ -7772,16 +7772,8 @@ if (text === "เมนูทีมงาน" || text === "เปิดเมน
     continue;
   }
 
-  const counts = await getTeamMenuCounts();
-  await safeReply(replyToken, [buildTeamMenuFlex(counts)], [
-    {
-      type: "text",
-      text:
-        "เมนูทีมงาน\n\n" +
-        `ดูเคสใหม่ (${counts.new_cases})\n` +
-        `เคสด่วน (${counts.urgent_cases})\n` +
-        `เคสวันนี้ (${counts.today_cases})`,
-    },
+  await safeReply(replyToken, [
+    buildTeamMenuImagemap()
   ]);
   continue;
 }

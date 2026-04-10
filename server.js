@@ -971,7 +971,6 @@ function buildEmbeddedFontCss() {
 
   return chunks.join("\n");
 }
-
 function buildUrgentCasePosterSvg(item = {}) {
   const caseCode = escapeXml(item.case_code || "-");
   const fullName = escapeXml(item.full_name || "-");

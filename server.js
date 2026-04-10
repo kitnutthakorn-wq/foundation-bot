@@ -941,8 +941,8 @@ function loadFontBase64Safe(relativePath) {
   }
 }
 
-const PROMPT_REGULAR_BASE64 = loadFontBase64Safe("fonts/Prompt-Regular.ttf");
-const PROMPT_BOLD_BASE64 = loadFontBase64Safe("fonts/Prompt-Bold.ttf");
+const KANIT_REGULAR_BASE64 = loadFontBase64Safe("fonts/Kanit-Regular.ttf");
+const KANIT_BOLD_BASE64 = loadFontBase64Safe("fonts/Kanit-Bold.ttf");
 
 function buildEmbeddedFontCss() {
   const chunks = [];

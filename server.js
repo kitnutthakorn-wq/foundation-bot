@@ -6890,6 +6890,94 @@ app.post("/webhook", async (req, res) => {
 
   const role = await getUserRole(userId);
 
+  if (text === "เคสวันนี้") {
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .gte("created_at", todayStart.toISOString())
+    .lte("created_at", todayEnd.toISOString())
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error("TODAY CASES ERROR:", error);
+    await safeReply(replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสวันนี้" }
+    ]);
+    continue;
+  }
+
+  if (!data || data.length === 0) {
+    await safeReply(replyToken, [
+      { type: "text", text: "วันนี้ยังไม่มีเคสใหม่ในระบบ" }
+    ]);
+    continue;
+  }
+
+  const textLines = data.map((item, index) =>
+    `${index + 1}. ${item.case_code || "-"} | ${item.full_name || "-"} | ${item.location || "-"}`
+  );
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: ("เคสวันนี้\n\n" + textLines.join("\n")).slice(0, 4900)
+    }
+  ]);
+  continue;
+}
+
+if (text === "ดูเคสด่วน") {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("priority", "urgent")
+    .neq("status", "done")
+    .neq("status", "cancelled")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error("URGENT CASES ERROR:", error);
+    await safeReply(replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสด่วน" }
+    ]);
+    continue;
+  }
+
+  if (!data || data.length === 0) {
+    await safeReply(replyToken, [
+      { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนที่เปิดอยู่" }
+    ]);
+    continue;
+  }
+
+  const textLines = data.map((item, index) =>
+    `${index + 1}. ${item.case_code || "-"} | ${item.full_name || "-"} | ${item.location || "-"}`
+  );
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: ("เคสด่วน\n\n" + textLines.join("\n")).slice(0, 4900)
+    }
+  ]);
+  continue;
+}
+
+if (text === "ค้นหาเคส") {
+  await safeReply(replyToken, [
+    { type: "text", text: "พิมพ์เลขเคส หรือเบอร์โทร เพื่อค้นหาเคสได้เลย" }
+  ]);
+  continue;
+}    
+
   // 👉 STEP FLOW ของคุณต่อจากนี้
 
     

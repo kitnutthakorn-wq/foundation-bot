@@ -148,6 +148,8 @@ console.log("🧪 [STEP2] latest data =", latest.data);
       }
     }
 
+console.log("🚨 FINAL DATA =", data);
+    
     if (!data) {
       return res.sendFile(imagePath);
     }

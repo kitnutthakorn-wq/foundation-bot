@@ -8156,18 +8156,16 @@ if (text === "ดูเคสด่วน" || text === "เคสด่วน") 
   }
 
   try {
-    const cases = await getUrgentCases(10);
+    const cases = await getUrgentCases(1);
 
     if (!cases.length) {
       await safeReply(replyToken, [{ type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" }]);
       continue;
     }
 
-    await safeReply(
-      replyToken,
-      [buildCaseListFlex("เคสด่วน", cases)],
-      [buildCaseListFallback("เคสด่วน", cases)]
-    );
+    await safeReply(replyToken, [
+      buildCaseTrackingFlex(cases[0])
+    ]);
   } catch (err) {
     console.error("GET URGENT CASES ERROR:", err);
     await safeReply(replyToken, [{ type: "text", text: "ดึงเคสด่วนไม่สำเร็จครับ" }]);

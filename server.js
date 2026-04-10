@@ -8,7 +8,6 @@ const fs = require("fs");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
-const upload = multer({ storage: multer.memoryStorage() });
 const { createCanvas, loadImage, registerFont } = require("canvas");
 const sharp = require("sharp");
 
@@ -32,8 +31,6 @@ const caseInfoUpload = multer({
     files: 10
   }
 });
-upload.array("files")
-
 
 const supabase = createClient(
   process.env.SUPABASE_URL,

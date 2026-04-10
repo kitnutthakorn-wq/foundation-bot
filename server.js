@@ -213,31 +213,31 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
     // ========= วาดข้อความ =========
     drawText(`เคสด่วน ${case_code}`, 80, 90, {
       font: 'bold 54px "ThaiBold", sans-serif',
-      color: "#ffffff",
+      color: "#000000",
       maxWidth: 850
     });
 
     drawText(`ชื่อ: ${full_name}`, 80, 210, {
       font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#ffffff",
+      color: "#000000",
       maxWidth: 820
     });
 
     drawText(`โทร: ${phone}`, 80, 280, {
       font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
+      color: "#000000",
       maxWidth: 820
     });
 
     drawText(`พื้นที่: ${location}`, 80, 340, {
       font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
+      color: "#000000",
       maxWidth: 820
     });
 
     drawText(`รายละเอียด: ${problem}`, 80, 420, {
       font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
+     color: "#000000",
       maxWidth: 820
     });
 

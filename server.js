@@ -13,12 +13,12 @@ const { createCanvas, loadImage, registerFont } = require("canvas");
 const sharp = require("sharp");
 
 try {
-  registerFont(path.join(__dirname, "fonts", "NotoSansThai-Bold.ttf"), {
-    family: "ThaiBold"
-  });
-  registerFont(path.join(__dirname, "fonts", "NotoSansThai-Regular.ttf"), {
-    family: "ThaiRegular"
-  });
+ registerFont(path.join(__dirname, "fonts", "Kanit-Bold.ttf"), {
+  family: "ThaiBold"
+});
+registerFont(path.join(__dirname, "fonts", "Kanit-Regular.ttf"), {
+  family: "ThaiRegular"
+});
   console.log("✅ Thai fonts registered");
 } catch (e) {
   console.warn("⚠️ Font register failed:", e.message);

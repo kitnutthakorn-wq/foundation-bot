@@ -15,6 +15,7 @@
   "author": "Creative",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
   "@line/bot-sdk": "^9.7.0",
   "@supabase/supabase-js": "^2.99.1",
   "axios": "^1.13.6",
@@ -27,4 +28,19 @@
   "pg": "^8.20.0",
   "sharp": "^0.33.5",
   "uuid": "^11.1.0"
+=======
+    "@line/bot-sdk": "^9.7.0",
+    "@supabase/supabase-js": "^2.99.1",
+    "axios": "^1.13.6",
+    "canvas": "^3.2.3",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.20.0",
+    "sharp": "^0.33.5",
+    "uuid": "^11.1.0"
+  }
+>>>>>>> 528dac5 (Add canvas dependency for imagemap rendering)
 }

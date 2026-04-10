@@ -200,10 +200,10 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
     }
 
     const case_code = data?.case_code || caseCode || "-";
-    const full_name = trimText(data?.full_name || "ไม่ระบุชื่อ", 40);
-    const phone = trimText(data?.phone || "-", 25);
-    const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
-    const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
+const full_name = trimText(data?.full_name || "ไม่ระบุชื่อ", 40);
+const phone = trimText(data?.phone || "-", 25);
+const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
+const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
 
     // debug box ได้ถ้าต้องการ
     // ctx.strokeStyle = "red";

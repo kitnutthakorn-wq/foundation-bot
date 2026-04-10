@@ -211,36 +211,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
     // ctx.strokeRect(70, 180, 900, 500);
 
     // ========= วาดข้อความ =========
-    drawText(`เคสด่วน ${case_code}`, 80, 90, {
-      font: 'bold 54px "ThaiBold", sans-serif',
-      color: "#000000",
-      maxWidth: 850
-    });
-
-    drawText(`ชื่อ: ${full_name}`, 80, 210, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#000000",
-      maxWidth: 820
-    });
-
-    drawText(`โทร: ${phone}`, 80, 280, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#000000",
-      maxWidth: 820
-    });
-
-    drawText(`พื้นที่: ${location}`, 80, 340, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#000000",
-      maxWidth: 820
-    });
-
-    drawText(`รายละเอียด: ${problem}`, 80, 420, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-     color: "#000000",
-      maxWidth: 820
-    });
-
+   drawText(`เคสด่วน ${case_code}`, 80, 90, ...)
     // ========= ส่งเป็นภาพใหม่จาก canvas =========
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");

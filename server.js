@@ -8181,18 +8181,16 @@ if (text === "เคสวันนี้") {
   }
 
   try {
-    const cases = await getTodayCases(10);
+    const cases = await getTodayCases(1);
 
     if (!cases.length) {
       await safeReply(replyToken, [{ type: "text", text: "วันนี้ยังไม่มีเคสเข้าระบบครับ" }]);
       continue;
     }
 
-    await safeReply(
-      replyToken,
-      [buildCaseListFlex("เคสวันนี้", cases)],
-      [buildCaseListFallback("เคสวันนี้", cases)]
-    );
+    await safeReply(replyToken, [
+      buildCaseTrackingFlex(cases[0])
+    ]);
   } catch (err) {
     console.error("GET TODAY CASES ERROR:", err);
     await safeReply(replyToken, [{ type: "text", text: "ดึงเคสวันนี้ไม่สำเร็จครับ" }]);

@@ -8,6 +8,7 @@ const fs = require("fs");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
+const { createCanvas, loadImage, registerFont } = require("canvas");
 const sharp = require("sharp");
 const upload = multer({ storage: multer.memoryStorage() });
 const caseInfoUpload = multer({

@@ -120,6 +120,10 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
         .eq("case_code", caseCode)
         .maybeSingle();
 
+console.log("🧪 [STEP1] caseCode =", caseCode);
+console.log("🧪 [STEP1] error =", result.error);
+console.log("🧪 [STEP1] data =", result.data);
+      
       if (!result.error && result.data) {
         data = result.data;
       }

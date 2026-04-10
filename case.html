@@ -1680,6 +1680,21 @@
       document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
       document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
 
+// ===== HERO CARD BIND (วางตรงนี้เลย) =====
+
+// location smart
+const loc =
+  data.location ||
+  data.location_text ||
+  (data.latitude && data.longitude
+    ? `${data.latitude}, ${data.longitude}`
+    : "-");
+
+// bind ค่าไปที่ Hero Card
+document.getElementById("hero_location").textContent = loc;
+document.getElementById("hero_status").textContent = statusThai(data.status);
+document.getElementById("hero_priority").textContent = priorityThai(data.priority);
+      
       const summaryCaseCodeEl = document.getElementById("summary_case_code");
       if (summaryCaseCodeEl) summaryCaseCodeEl.innerText = data.case_code || "-";
 

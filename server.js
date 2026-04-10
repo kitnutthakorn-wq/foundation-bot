@@ -1971,15 +1971,17 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
     "https://satisfied-stillness-production-7942.up.railway.app";
 
+  const caseCode = String(caseData?.case_code || "").trim();
+
   return {
     type: "imagemap",
-   baseUrl: `${baseUrl}/imagemap/urgent-case-poster`,
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster?case_code=${encodeURIComponent(caseCode)}`,
     altText: "ศูนย์ปฏิบัติการเคสด่วน",
     baseSize: {
       width: 1040,
       height: 1559
     },
-   actions: [
+    actions: [
   {
     type: "message",
     text: "เปิดการ์ดเคสด่วน",

@@ -7777,13 +7777,18 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
     return;
   }
 
+  const cases = await getUrgentCases(1);
+
+  if (!cases.length) {
+    await safeReply(replyToken, [{ type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" }]);
+    return;
+  }
+
   await safeReply(replyToken, [
- buildUrgentCasePosterImagemap(caseData)
+    buildUrgentCasePosterImagemap(cases[0])
   ]);
   return;
 }
-
-
       
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();

@@ -205,13 +205,13 @@ const phone = trimText(data?.phone || "-", 25);
 const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
 const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
 
-    // debug box ได้ถ้าต้องการ
-    // ctx.strokeStyle = "red";
-    // ctx.lineWidth = 2;
-    // ctx.strokeRect(70, 180, 900, 500);
+     debug box ได้ถ้าต้องการ
+     ctx.strokeStyle = "red";
+     ctx.lineWidth = 2;
+     ctx.strokeRect(70, 180, 900, 500);
 
     // ========= วาดข้อความ =========
- drawText(`เคสด่วน ${case_code}`, 120, 220, {
+drawText(`เคสด่วน ${case_code}`, 120, 220, {
   font: 'bold 44px "ThaiBold", sans-serif',
   color: "#000000",
   maxWidth: 800

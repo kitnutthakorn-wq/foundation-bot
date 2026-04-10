@@ -205,7 +205,7 @@ const phone = trimText(data?.phone || "-", 25);
 const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
 const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
 
-     debug box ได้ถ้าต้องการ
+     //debug box ได้ถ้าต้องการ
      ctx.strokeStyle = "red";
      ctx.lineWidth = 2;
      ctx.strokeRect(70, 180, 900, 500);

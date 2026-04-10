@@ -7778,7 +7778,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   }
 
   await safeReply(replyToken, [
-    buildUrgentCasePosterImagemap()
+ buildUrgentCasePosterImagemap(caseData)
   ]);
   return;
 }

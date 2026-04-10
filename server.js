@@ -6049,9 +6049,6 @@ async function getUrgentCases(limit = 10) {
     .select("*")
     .eq("priority", "urgent")
     .in("status", ["new", "in_progress"])
-    .not("full_name", "is", null)
-    .not("location", "is", null)
-    .not("problem", "is", null)
     .order("created_at", { ascending: false })
     .limit(limit);
 

@@ -104,12 +104,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 app.get("/imagemap/urgent-case-poster", async (req, res) => {
-  const caseCode = String(req.query.case_code || "").trim();
-
-app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();
-    console.log("🔥 render poster /1040:", caseCode);
+    console.log("🔥 render poster main:", caseCode);
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
@@ -138,33 +135,16 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     res.setHeader("Content-Type", "image/png");
     return res.send(output);
   } catch (err) {
-    console.error("URGENT POSTER 1040 RENDER ERROR:", err);
+    console.error("URGENT POSTER MAIN RENDER ERROR:", err);
     return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
   }
-});
-  
-  if (!caseCode) {
-    return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
-  }
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("case_code", caseCode)
-    .maybeSingle();
-
-  if (error || !data) {
-    return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
-  }
-
-  // ชั่วคราว: ยังส่งภาพเดิมไปก่อน
-  // STEP ถัดไปค่อยใช้ canvas/sharp วาดข้อความลงภาพ
-  return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
 });
 
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();
+    console.log("🔥 render poster /1040:", caseCode);
+
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
     if (!caseCode) {

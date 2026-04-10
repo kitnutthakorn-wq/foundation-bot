@@ -125,7 +125,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
   return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
 });
 
-app.get("/imagemap/urgent-case-poster", async (req, res) => {
+app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
@@ -155,7 +155,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
     res.setHeader("Content-Type", "image/png");
     return res.send(output);
   } catch (err) {
-    console.error("URGENT POSTER RENDER ERROR:", err);
+    console.error("URGENT POSTER 1040 RENDER ERROR:", err);
     return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
   }
 });

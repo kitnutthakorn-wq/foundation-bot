@@ -1585,23 +1585,23 @@ function buildUrgentCasePosterImagemap(baseUrlOverride = "") {
       width: 1040,
       height: 1559
     },
-    actions: [
-      {
-        type: "message",
-        text: "เปิดการ์ดเคสด่วน",
-        area: { x: 100, y: 1300, width: 840, height: 200 }
-      },
-      {
-        type: "uri",
-        linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-        area: { x: 140, y: 1510, width: 760, height: 120 }
-      },
-      {
-        type: "message",
-        text: "ติดต่อเจ้าหน้าที่",
-        area: { x: 140, y: 1670, width: 760, height: 70 }
-      }
-    ]
+   actions: [
+  {
+    type: "message",
+    text: "เปิดการ์ดเคสด่วน",
+    area: { x: 140, y: 1210, width: 760, height: 108 }
+  },
+  {
+    type: "uri",
+    linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
+    area: { x: 140, y: 1353, width: 760, height: 108 }
+  },
+  {
+    type: "message",
+    text: "ติดต่อเจ้าหน้าที่",
+    area: { x: 140, y: 1497, width: 760, height: 63 }
+  }
+]
   };
 }
 

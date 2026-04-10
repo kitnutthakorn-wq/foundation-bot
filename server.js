@@ -8157,16 +8157,20 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
 
   const cases = await getUrgentCases(1);
 
-  if (!cases.length) {
-    await safeReply(replyToken, [{ type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" }]);
-    return;
-  }
-
+if (!cases || cases.length === 0) {
   await safeReply(replyToken, [
-    buildUrgentCasePosterImagemap(cases[0])
+    { type: "text", text: "❌ ยังไม่มีเคสด่วนในระบบ" }
   ]);
   return;
 }
+
+const caseItem = cases[0];
+
+await safeReply(replyToken, [
+  buildUrgentCasePosterImagemap(caseItem)
+]);
+
+return;}
       
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();

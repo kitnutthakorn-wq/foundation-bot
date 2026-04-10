@@ -1605,7 +1605,7 @@ actions: [
 };
 }
 
-function buildUrgentCasePosterImagemap(caseData, baseUrlOverride = "") {
+function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   const baseUrl =
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
     "https://satisfied-stillness-production-7942.up.railway.app";

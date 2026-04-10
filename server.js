@@ -1579,7 +1579,7 @@ function buildUrgentCasePosterImagemap(caseData, baseUrlOverride = "") {
 
   return {
     type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/urgent-case-poster`,
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster?case_code=${caseData.case_code}`,
     altText: "ศูนย์ปฏิบัติการเคสด่วน",
     baseSize: {
       width: 1040,

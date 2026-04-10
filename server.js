@@ -1965,32 +1965,25 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   return {
     type: "imagemap",
     baseUrl: `${baseUrl}/imagemap/urgent-case-poster?case_code=${encodeURIComponent(caseCode)}`,
-    altText: "ศูนย์ปฏิบัติการเคสด่วน",
+    altText: `ศูนย์ปฏิบัติการเคสด่วน ${caseCode || ""}`,
     baseSize: {
       width: 1040,
       height: 1559
     },
     actions: [
-  {
-    type: "message",
-    text: "เปิดการ์ดเคสด่วน",
-    area: { x: 140, y: 1210, width: 760, height: 108 }
-  },
-     
-  {
-    type: "uri",
-    linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",
-    area: { x: 140, y: 1353, width: 760, height: 108 }
-  },
-  {
-    type: "message",
-    text: "ติดต่อเจ้าหน้าที่",
-    area: { x: 140, y: 1497, width: 760, height: 63 }
-  }
-]
+      {
+        type: "message",
+        text: `ติดตามอีกครั้ง ${caseCode}`,
+        area: { x: 90, y: 1320, width: 400, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
+        area: { x: 550, y: 1320, width: 400, height: 120 }
+      }
+    ]
   };
 }
-
 // =========================
 // OVERLAY MENU (PRO MAX++)
 // วางหลัง orangeButton()

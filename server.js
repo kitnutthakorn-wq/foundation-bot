@@ -1,6 +1,7 @@
 // PRODUCTION LOCKED BASELINE
 require("dotenv").config();
 console.log("SUPABASE_URL:", process.env.SUPABASE_URL);
+
 const express = require("express");
 const crypto = require("crypto");
 const path = require("path");
@@ -31,7 +32,6 @@ const caseInfoUpload = multer({
     files: 10
   }
 });
-
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY

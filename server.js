@@ -1004,15 +1004,15 @@ function buildUrgentCasePosterSvg(item = {}) {
     <style>
       ${embeddedFontCss}
 
-      .t1 { font-family: 'PromptEmbedded', sans-serif; font-size: 52px; font-weight: 700; fill: #ffffff; }
-      .t2 { font-family: 'PromptEmbedded', sans-serif; font-size: 40px; font-weight: 700; fill: #ffffff; }
-      .t3 { font-family: 'PromptEmbedded', sans-serif; font-size: 28px; font-weight: 700; fill: #444444; }
-      .t4 { font-family: 'PromptEmbedded', sans-serif; font-size: 28px; font-weight: 400; fill: #444444; }
-      .t5 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #d97706; }
-      .t6 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #dc2626; }
-      .t7 { font-family: 'PromptEmbedded', sans-serif; font-size: 24px; font-weight: 400; fill: #666666; }
-      .t8 { font-family: 'PromptEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #f59e0b; }
-      .t9 { font-family: 'PromptEmbedded', sans-serif; font-size: 42px; font-weight: 700; fill: #444444; }
+      .t1 { font-family: 'KanitEmbedded', sans-serif; font-size: 52px; font-weight: 700; fill: #ffffff; }
+.t2 { font-family: 'KanitEmbedded', sans-serif; font-size: 40px; font-weight: 700; fill: #ffffff; }
+.t3 { font-family: 'KanitEmbedded', sans-serif; font-size: 28px; font-weight: 700; fill: #444444; }
+.t4 { font-family: 'KanitEmbedded', sans-serif; font-size: 28px; font-weight: 400; fill: #444444; }
+.t5 { font-family: 'KanitEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #d97706; }
+.t6 { font-family: 'KanitEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #dc2626; }
+.t7 { font-family: 'KanitEmbedded', sans-serif; font-size: 24px; font-weight: 400; fill: #666666; }
+.t8 { font-family: 'KanitEmbedded', sans-serif; font-size: 30px; font-weight: 700; fill: #f59e0b; }
+.t9 { font-family: 'KanitEmbedded', sans-serif; font-size: 42px; font-weight: 700; fill: #444444; }
     </style>
 
     <!-- code -->

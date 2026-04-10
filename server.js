@@ -140,6 +140,9 @@ console.log("🧪 [STEP1] data =", result.data);
         .limit(1)
         .maybeSingle();
 
+console.log("🧪 [STEP2] latest error =", latest.error);
+console.log("🧪 [STEP2] latest data =", latest.data);
+      
       if (!latest.error && latest.data) {
         data = latest.data;
       }

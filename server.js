@@ -1697,9 +1697,12 @@ async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${CHANNEL_ACCESS_TOKEN}`,
       },
-     body: JSON.stringify({
+    body: JSON.stringify({
   replyToken,
   messages: [
+    buildTeamMenuImagemap()
+  ]
+})
     {
       type: "imagemap",
       baseUrl: "https://your-domain.com/images/menu",

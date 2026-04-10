@@ -1583,7 +1583,7 @@ function buildUrgentCasePosterImagemap(baseUrlOverride = "") {
     altText: "ศูนย์ปฏิบัติการเคสด่วน",
     baseSize: {
       width: 1040,
-      height: 1740
+      height: 1559
     },
     actions: [
       {

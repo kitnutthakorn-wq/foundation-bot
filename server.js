@@ -6942,7 +6942,7 @@ if (text === "ดูเคสด่วน") {
     .neq("status", "done")
     .neq("status", "cancelled")
     .order("created_at", { ascending: false })
-    .limit(10);
+    .limit(1); // ✅ เปลี่ยนเป็น 1
 
   if (error) {
     console.error("URGENT CASES ERROR:", error);
@@ -6959,6 +6959,13 @@ if (text === "ดูเคสด่วน") {
     continue;
   }
 
+  // 🔥 จุดสำคัญ: ส่ง Flex card
+  await safeReply(replyToken, [
+    buildCaseTrackingFlex(data[0])
+  ]);
+
+  continue;
+}
   const textLines = data.map((item, index) =>
     `${index + 1}. ${item.case_code || "-"} | ${item.full_name || "-"} | ${item.location || "-"}`
   );

@@ -931,6 +931,47 @@ function escapeXml(value = "") {
     .replace(/'/g, "&apos;");
 }
 
+function loadFontBase64Safe(relativePath) {
+  try {
+    const abs = path.join(__dirname, relativePath);
+    return fs.readFileSync(abs).toString("base64");
+  } catch (err) {
+    console.warn("FONT LOAD ERROR:", relativePath, err?.message || err);
+    return "";
+  }
+}
+
+const PROMPT_REGULAR_BASE64 = loadFontBase64Safe("fonts/Prompt-Regular.ttf");
+const PROMPT_BOLD_BASE64 = loadFontBase64Safe("fonts/Prompt-Bold.ttf");
+
+function buildEmbeddedFontCss() {
+  const chunks = [];
+
+  if (PROMPT_REGULAR_BASE64) {
+    chunks.push(`
+      @font-face {
+        font-family: 'PromptEmbedded';
+        src: url(data:font/ttf;base64,${PROMPT_REGULAR_BASE64}) format('truetype');
+        font-weight: 400;
+        font-style: normal;
+      }
+    `);
+  }
+
+  if (PROMPT_BOLD_BASE64) {
+    chunks.push(`
+      @font-face {
+        font-family: 'PromptEmbedded';
+        src: url(data:font/ttf;base64,${PROMPT_BOLD_BASE64}) format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+    `);
+  }
+
+  return chunks.join("\n");
+}
+
 function buildUrgentCasePosterSvg(item = {}) {
   const caseCode = escapeXml(item.case_code || "-");
   const fullName = escapeXml(item.full_name || "-");

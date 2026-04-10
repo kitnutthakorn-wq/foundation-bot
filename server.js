@@ -8170,7 +8170,8 @@ await safeReply(replyToken, [
   buildUrgentCasePosterImagemap(caseItem)
 ]);
 
-return;}
+return;
+}
       
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();

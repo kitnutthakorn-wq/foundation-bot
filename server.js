@@ -7815,29 +7815,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   return;
 }
 
-if (text === "เปิดการ์ดเคสด่วน") {
-  if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูเคสด่วน" }]);
-    return;
-  }
 
-  try {
-    const cases = await getUrgentCases(1);
-
-    if (!cases.length) {
-      await safeReply(replyToken, [{ type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนครับ" }]);
-      return;
-    }
-
-    await safeReply(replyToken, [
-      buildCaseTrackingFlex(cases[0])
-    ]);
-  } catch (err) {
-    console.error("GET URGENT CASES ERROR:", err);
-    await safeReply(replyToken, [{ type: "text", text: "ดึงเคสด่วนไม่สำเร็จครับ" }]);
-  }
-  return;
-}
       
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();

@@ -947,22 +947,22 @@ const KANIT_BOLD_BASE64 = loadFontBase64Safe("fonts/Kanit-Bold.ttf");
 function buildEmbeddedFontCss() {
   const chunks = [];
 
-  if (PROMPT_REGULAR_BASE64) {
+  if (KANIT_REGULAR_BASE64) {
     chunks.push(`
       @font-face {
-        font-family: 'PromptEmbedded';
-        src: url(data:font/ttf;base64,${PROMPT_REGULAR_BASE64}) format('truetype');
+        font-family: 'KanitEmbedded';
+        src: url(data:font/ttf;base64,${KANIT_REGULAR_BASE64}) format('truetype');
         font-weight: 400;
         font-style: normal;
       }
     `);
   }
 
-  if (PROMPT_BOLD_BASE64) {
+  if (KANIT_BOLD_BASE64) {
     chunks.push(`
       @font-face {
-        font-family: 'PromptEmbedded';
-        src: url(data:font/ttf;base64,${PROMPT_BOLD_BASE64}) format('truetype');
+        font-family: 'KanitEmbedded';
+        src: url(data:font/ttf;base64,${KANIT_BOLD_BASE64}) format('truetype');
         font-weight: 700;
         font-style: normal;
       }

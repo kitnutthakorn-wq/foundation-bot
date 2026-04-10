@@ -1,6 +1,6 @@
 // PRODUCTION LOCKED BASELINE
 require("dotenv").config();
-
+console.log("SUPABASE_URL:", process.env.SUPABASE_URL);
 const express = require("express");
 const crypto = require("crypto");
 const path = require("path");

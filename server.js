@@ -145,7 +145,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
     function drawText(text, x, y, options = {}) {
       const {
         font = 'bold 42px "ThaiBold", sans-serif',
-        color = "#ffffff",
+        color = "#000000",
         align = "left",
         maxWidth = 700
       } = options;

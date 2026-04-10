@@ -1777,6 +1777,9 @@ const loc =
     ? `${data.latitude}, ${data.longitude}`
     : "-");
 
+document.getElementById("hero_location").textContent = loc;
+document.getElementById("hero_status").textContent = statusThai(data.status);
+document.getElementById("hero_priority").textContent = priorityThai(data.priority);   
 document.getElementById("location").textContent = loc;
 
 // status

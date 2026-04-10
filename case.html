@@ -2508,7 +2508,13 @@ async function loadCase() {
     document.getElementById("slaText").textContent = "SLA: เกินกำหนดแล้ว";
   }
 }
+document.querySelector(".btn-track").onclick = () => {
+  window.location.href = `/case.html?case_code=${caseCode}`;
+};
 
+document.querySelector(".btn-open").onclick = () => {
+  window.location.href = `/team.html?case_code=${caseCode}`;
+};
 loadCase();
 </script>
     

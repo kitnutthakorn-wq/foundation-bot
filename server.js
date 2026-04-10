@@ -111,7 +111,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
     let data = null;
-
+    console.log("🚨 BEFORE QUERY caseCode =", JSON.stringify(caseCode));
     if (caseCode) {
       const result = await supabase
         .from("help_requests")

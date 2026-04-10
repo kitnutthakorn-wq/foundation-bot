@@ -6908,9 +6908,10 @@ app.post("/webhook", async (req, res) => {
   if (event.type !== "message") continue;
   if (!event.message || event.message.type !== "text") continue;
 
-  const replyToken = event.replyToken;
-  const text = event.message.text.trim();
-  const userId = event?.source?.userId || "";
+ const replyToken = event.replyToken;
+const text = event.message.text.trim();
+console.log("👉 USER CLICK:", text);
+const userId = event?.source?.userId || "";
 
   let lineDisplayName = "";
 

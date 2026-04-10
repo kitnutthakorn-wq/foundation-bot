@@ -108,7 +108,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
   try {
     let caseCode = String(req.query.case_code || "").trim();
     console.log("🔥 render poster main:", caseCode);
-
+    console.log("🧪 STEP1: caseCode =", caseCode);
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
     let data = null;

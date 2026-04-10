@@ -851,37 +851,33 @@
   <div class="hero-card">
     <div class="hero-case-code" id="hero_case_code">-</div>
 
-    <div class="hero-body">
-      <div class="hero-row">
-        <span>ชื่อ:</span>
-        <strong id="hero_full_name">-</strong>
-      </div>
+<div class="case-card">
+  <div class="case-header">
+    <span id="caseCode">กำลังโหลด...</span>
+  </div>
 
-      <div class="hero-row">
-        <span>พื้นที่:</span>
-        <strong id="hero_location">-</strong>
-      </div>
+  <div class="case-body">
+    <div class="row"><b>ชื่อ:</b> <span id="fullName">-</span></div>
+    <div class="row"><b>พื้นที่:</b> <span id="location">-</span></div>
+    <div class="row"><b>สถานะ:</b> <span id="status">-</span></div>
+    <div class="row"><b>ระดับ:</b> <span id="priority">-</span></div>
 
-      <div class="hero-row">
-        <span>สถานะ:</span>
-        <strong id="hero_status" style="color:#f97316">-</strong>
-      </div>
+    <div class="row small">
+      ⏱ อัปเดตล่าสุด: <span id="updatedAt">-</span>
+    </div>
 
-      <div class="hero-row">
-        <span>ระดับ:</span>
-        <strong id="hero_priority" style="color:#dc2626">-</strong>
-      </div>
-
-      <div class="hero-update" id="hero_updated">
-        ⏱ อัปเดตล่าสุด: -
+    <div class="sla-box">
+      <span id="slaText">SLA: -</span>
+      <span id="slaPercent">0%</span>
+      <div class="progress">
+        <div id="progressBar"></div>
       </div>
     </div>
   </div>
 
-  <div class="hero-actions">
-    <button class="hero-btn primary" onclick="scrollToTimelinePanel()">ติดตามเคสนี้</button>
-    <button class="hero-btn danger" onclick="focusWarRoomMap()">เปิดศูนย์ปฏิบัติการ</button>
-  </div>
+  <button class="btn btn-track">ติดตามเคสนี้</button>
+  <button class="btn btn-open">เปิดศูนย์ปฏิบัติการ</button>
+</div>
 </div>
       
       <div class="warroom-command">

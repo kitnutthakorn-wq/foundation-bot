@@ -7,7 +7,7 @@ const path = require("path");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { createClient } = require("@supabase/supabase-js");
-
+const sharp = require("sharp");
 const upload = multer({ storage: multer.memoryStorage() });
 const caseInfoUpload = multer({
   storage: multer.memoryStorage(),

@@ -6969,39 +6969,6 @@ const userId = event?.source?.userId || "";
   continue;
 }
 
-if (text === "ดูเคสด่วน") {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("priority", "urgent")
-    .neq("status", "done")
-    .neq("status", "cancelled")
-    .order("created_at", { ascending: false })
-    .limit(1); // ✅ เปลี่ยนเป็น 1
-
-  if (error) {
-    console.error("URGENT CASES ERROR:", error);
-    await safeReply(replyToken, [
-      { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสด่วน" }
-    ]);
-    continue;
-  }
-
-  if (!data || data.length === 0) {
-  await safeReply(replyToken, [
-    { type: "text", text: "ตอนนี้ยังไม่มีเคสด่วนที่เปิดอยู่" }
-  ]);
-  continue;
-}
-
-// 🔥 จุดสำคัญ: ส่ง Flex card
-await safeReply(replyToken, [
-  buildCaseTrackingFlex(data[0])
-]);
-
-continue;
-}
-
 if (text === "ค้นหาเคส") {
   await safeReply(replyToken, [
     { type: "text", text: "พิมพ์เลขเคส หรือเบอร์โทร เพื่อค้นหาเคสได้เลย" }

@@ -869,6 +869,78 @@ function formatThaiDateTime(value) {
   });
 }
 
+function escapeXml(value = "") {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function buildUrgentCasePosterSvg(item = {}) {
+  const caseCode = escapeXml(item.case_code || "-");
+  const fullName = escapeXml(item.full_name || "-");
+  const location = escapeXml(item.location || "ยังไม่ระบุพื้นที่");
+  const statusText = escapeXml(formatCaseStatusThai(item.status));
+  const priorityText = escapeXml(formatPriorityThai(item.priority));
+  const updatedAtText = escapeXml(
+    formatThaiDateTime(
+      item.last_action_at ||
+      item.closed_at ||
+      item.assigned_at ||
+      item.created_at
+    )
+  );
+
+  const progress = Math.max(0, Math.min(100, Number(item.progress_percent ?? 60)));
+  const progressWidth = Math.round((progress / 100) * 300);
+
+  const slaText =
+    item.sla_level === "breached"
+      ? "ใกล้เกินกำหนด"
+      : item.sla_level === "warning"
+      ? "ต้องเฝ้าระวัง"
+      : "ปกติ";
+
+  return `
+  <svg width="1040" height="1559" viewBox="0 0 1040 1559" xmlns="http://www.w3.org/2000/svg">
+    <style>
+      .t1 { font: 700 52px sans-serif; fill: #ffffff; }
+      .t2 { font: 700 40px sans-serif; fill: #ffffff; }
+      .t3 { font: 700 28px sans-serif; fill: #444444; }
+      .t4 { font: 400 28px sans-serif; fill: #444444; }
+      .t5 { font: 700 30px sans-serif; fill: #d97706; }
+      .t6 { font: 700 30px sans-serif; fill: #dc2626; }
+      .t7 { font: 400 24px sans-serif; fill: #666666; }
+      .t8 { font: 700 30px sans-serif; fill: #f59e0b; }
+      .t9 { font: 700 42px sans-serif; fill: #444444; }
+    </style>
+
+    <!-- code -->
+    <text x="520" y="405" text-anchor="middle" class="t2">${caseCode}</text>
+
+    <!-- content -->
+    <text x="120" y="590" class="t3">ชื่อ: <tspan class="t4">${fullName}</tspan></text>
+    <text x="120" y="665" class="t4">📍 ${location}</text>
+
+    <text x="120" y="760" class="t3">สถานะ: <tspan class="t5">${statusText}</tspan></text>
+    <text x="120" y="835" class="t3">ระดับ: <tspan class="t6">${priorityText}</tspan></text>
+
+    <line x1="100" y1="885" x2="940" y2="885" stroke="#DDDDDD" stroke-width="2"/>
+
+    <text x="120" y="965" class="t7">อัปเดตล่าสุด: ${updatedAtText}</text>
+
+    <text x="120" y="1060" class="t8">⚠ SLA: ${escapeXml(slaText)}</text>
+    <text x="900" y="1060" text-anchor="end" class="t9">${progress}%</text>
+
+    <!-- progress track -->
+    <rect x="120" y="1115" rx="16" ry="16" width="760" height="34" fill="#D1D5DB"/>
+    <rect x="120" y="1115" rx="16" ry="16" width="${progressWidth}" height="34" fill="#C7F000"/>
+  </svg>
+  `;
+}
+
 function buildCaseTrackingFlex(item = {}) {
   const statusText = formatCaseStatusThai(item.status);
   const priorityText = formatPriorityThai(item.priority);

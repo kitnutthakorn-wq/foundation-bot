@@ -108,9 +108,8 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
   try {
     let caseCode = String(req.query.case_code || "").trim();
     console.log("🔥 render poster main:", caseCode);
-    console.log("🧪 STEP1: caseCode =", caseCode);
-    const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
+    const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
     let data = null;
 
     if (caseCode) {
@@ -120,10 +119,10 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
         .eq("case_code", caseCode)
         .maybeSingle();
 
-console.log("🧪 [STEP1] caseCode =", caseCode);
-console.log("🧪 [STEP1] error =", result.error);
-console.log("🧪 [STEP1] data =", result.data);
-      
+      console.log("🧪 [STEP1] caseCode =", caseCode);
+      console.log("🧪 [STEP1] error =", result.error);
+      console.log("🧪 [STEP1] data =", result.data);
+
       if (!result.error && result.data) {
         data = result.data;
       }
@@ -140,16 +139,16 @@ console.log("🧪 [STEP1] data =", result.data);
         .limit(1)
         .maybeSingle();
 
-console.log("🧪 [STEP2] latest error =", latest.error);
-console.log("🧪 [STEP2] latest data =", latest.data);
-      
+      console.log("🧪 [STEP2] latest error =", latest.error);
+      console.log("🧪 [STEP2] latest data =", latest.data);
+
       if (!latest.error && latest.data) {
         data = latest.data;
       }
     }
 
-console.log("🚨 FINAL DATA =", data);
-    
+    console.log("🚨 FINAL DATA =", data);
+
     if (!data) {
       return res.sendFile(imagePath);
     }
@@ -169,7 +168,6 @@ console.log("🚨 FINAL DATA =", data);
     return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
   }
 });
-
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();

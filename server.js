@@ -1700,11 +1700,38 @@ async function sendPresentationNotify({ replyToken = "", fallbackText = "" }) {
       body: JSON.stringify({
         replyToken,
         messages: [
-          {
-            type: "text",
-            text: fallbackText || "มีการอัปเดต"
-          }
-        ]
+  {
+    type: "imagemap",
+    baseUrl: "https://your-domain.com/images/menu",
+    altText: "เมนูศูนย์ปฏิบัติการ",
+    baseSize: {
+      width: 1040,
+      height: 1040
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เคสวันนี้",
+        area: { x: 0, y: 0, width: 520, height: 260 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสด่วน",
+        area: { x: 520, y: 0, width: 520, height: 260 }
+      },
+      {
+        type: "message",
+        text: "ค้นหาเคส",
+        area: { x: 0, y: 260, width: 520, height: 260 }
+      },
+      {
+        type: "uri",
+        linkUri: "https://your-domain.com/team.html",
+        area: { x: 520, y: 260, width: 520, height: 260 }
+      }
+    ]
+  }
+]
       })
     });
 

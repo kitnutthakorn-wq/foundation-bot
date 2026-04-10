@@ -125,24 +125,39 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
   return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
 });
 
-app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
-  const caseCode = String(req.query.case_code || "").trim();
+app.get("/imagemap/urgent-case-poster", async (req, res) => {
+  try {
+    const caseCode = String(req.query.case_code || "").trim();
+    const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
-  if (!caseCode) {
+    if (!caseCode) {
+      return res.sendFile(imagePath);
+    }
+
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("case_code", caseCode)
+      .maybeSingle();
+
+    if (error || !data) {
+      return res.sendFile(imagePath);
+    }
+
+    const base = sharp(imagePath);
+    const svg = Buffer.from(buildUrgentCasePosterSvg(data), "utf8");
+
+    const output = await base
+      .composite([{ input: svg, top: 0, left: 0 }])
+      .png()
+      .toBuffer();
+
+    res.setHeader("Content-Type", "image/png");
+    return res.send(output);
+  } catch (err) {
+    console.error("URGENT POSTER RENDER ERROR:", err);
     return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
   }
-
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("*")
-    .eq("case_code", caseCode)
-    .maybeSingle();
-
-  if (error || !data) {
-    return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
-  }
-
-  return res.sendFile(path.join(__dirname, "imagemap", "urgent-case-poster.png"));
 });
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,

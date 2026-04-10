@@ -2465,6 +2465,53 @@ loadProjects().then(async () => {
   setWarRoomLiveChip("● War Room พร้อมใช้งาน", "live");
 });
 
+<script>
+const caseCode = new URLSearchParams(window.location.search).get("case_code");
+
+async function loadCase() {
+  const res = await fetch(`/api/help-requests/by-case-code/${caseCode}`);
+  const json = await res.json();
+
+  if (!json.ok) return;
+
+  const data = json.data;
+
+  document.getElementById("caseCode").textContent = data.case_code;
+  document.getElementById("fullName").textContent = data.full_name || "-";
+
+  let location =
+    data.location ||
+    data.location_text ||
+    `${data.latitude || ""}, ${data.longitude || ""}`;
+
+  document.getElementById("location").textContent = location;
+
+  document.getElementById("status").textContent =
+    data.status === "in_progress" ? "กำลังดำเนินการ" : data.status;
+
+  document.getElementById("priority").textContent =
+    data.priority === "urgent" ? "ด่วน" : "ปกติ";
+
+  document.getElementById("updatedAt").textContent =
+    new Date(data.last_action_at).toLocaleString("th-TH");
+
+  // SLA ตัวอย่าง
+  const percent = data.progress_percent || 0;
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("slaPercent").textContent = percent + "%";
+
+  if (percent < 50) {
+    document.getElementById("slaText").textContent = "SLA: ปกติ";
+  } else if (percent < 80) {
+    document.getElementById("slaText").textContent = "SLA: ใกล้เกินกำหนด";
+  } else {
+    document.getElementById("slaText").textContent = "SLA: เกินกำหนดแล้ว";
+  }
+}
+
+loadCase();
+</script>
+    
 connectRealtime();
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>

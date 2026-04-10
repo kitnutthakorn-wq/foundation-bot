@@ -844,7 +844,7 @@ function buildCaseTrackingFlex(item = {}) {
   const progressText = `${progress}%`;
 
   const bgImage =
-    "https://img2.pic.in.th/pic/warroom-case-bg.png"; // เปลี่ยนเป็นภาพจริงของคุณได้
+    "https://img2.pic.in.th/case-card-demo.png"; // เปลี่ยนเป็นภาพจริงของคุณได้
 
   const slaText =
     item.sla_level === "breached"

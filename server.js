@@ -8201,9 +8201,6 @@ if (text === "ดูเคสด่วน" || text === "เคสด่วน") 
       return;
     }
 
-    await safeReply(replyToken, [
-      buildCaseTrackingFlex(cases[0])
-    ]);
   } catch (err) {
     console.error("GET URGENT CASES ERROR:", err);
     await safeReply(replyToken, [{ type: "text", text: "ดึงเคสด่วนไม่สำเร็จครับ" }]);

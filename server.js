@@ -7769,13 +7769,15 @@ if (text === "ดูเคสเปิดทั้งหมด") {
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);
-    continue;
+    //continue;
+     return;
   }
 
   await safeReply(replyToken, [
     buildTeamMenuImagemap()
   ]);
-  continue;
+  return;
+  //continue;
 }
 
 

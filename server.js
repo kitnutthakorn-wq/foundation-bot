@@ -1591,6 +1591,7 @@ function buildUrgentCasePosterImagemap(baseUrlOverride = "") {
     text: "เปิดการ์ดเคสด่วน",
     area: { x: 140, y: 1210, width: 760, height: 108 }
   },
+     
   {
     type: "uri",
     linkUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html",

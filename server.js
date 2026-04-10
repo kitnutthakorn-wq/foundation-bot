@@ -105,22 +105,42 @@ const PORT = process.env.PORT || 3000;
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 app.get("/imagemap/urgent-case-poster", async (req, res) => {
   try {
-    const caseCode = String(req.query.case_code || "").trim();
+    let caseCode = String(req.query.case_code || "").trim();
     console.log("🔥 render poster main:", caseCode);
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
-    if (!caseCode) {
-      return res.sendFile(imagePath);
+    let data = null;
+
+    if (caseCode) {
+      const result = await supabase
+        .from("help_requests")
+        .select("*")
+        .eq("case_code", caseCode)
+        .maybeSingle();
+
+      if (!result.error && result.data) {
+        data = result.data;
+      }
     }
 
-    const { data, error } = await supabase
-      .from("help_requests")
-      .select("*")
-      .eq("case_code", caseCode)
-      .maybeSingle();
+    if (!data) {
+      const latest = await supabase
+        .from("help_requests")
+        .select("*")
+        .eq("priority", "urgent")
+        .neq("status", "done")
+        .neq("status", "cancelled")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-    if (error || !data) {
+      if (!latest.error && latest.data) {
+        data = latest.data;
+      }
+    }
+
+    if (!data) {
       return res.sendFile(imagePath);
     }
 

@@ -274,7 +274,7 @@ drawText(ctx, priorityThai, INNER_X + 100, 640, {
     ctx.strokeStyle = "#D9D9D9";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(CARD.left + 34, 700);
+    ctx.moveTo(CARD.left + 34, 835);
     ctx.lineTo(CARD.left + CARD.width - 34, 835);
     ctx.stroke();
 

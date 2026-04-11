@@ -289,13 +289,14 @@ drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 7
     // =========================
 
     // SLA TEXT
-drawText(ctx, "SLA: " + slaText, INNER_X, 885, {
+drawText(ctx, "SLA: " + slaText, INNER_X, 975, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22"
 });
 
+
 // %
-drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
+drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 969, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right"
@@ -303,7 +304,7 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
 
     // BAR
     const barX = INNER_X;
-    const barY = 920;
+    const barY = 1020;
     const barW = 720;
     const barH = 18;
 

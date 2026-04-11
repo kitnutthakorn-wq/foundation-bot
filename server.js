@@ -243,7 +243,7 @@ drawText(ctx, "ชื่อ: " + full_name, INNER_X, 480, {
 });
 
 // LOCATION
-drawText(ctx, location, INNER_X, 540, {
+drawText(ctx, location, INNER_X, 550, {
   font: 'bold 32px "ThaiRegular", sans-serif',
   color: "#666666"
 });

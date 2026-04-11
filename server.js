@@ -425,7 +425,7 @@ drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 770, {
   maxWidth: 760
 });
 
-drawText("SLA: " + slaText, INNER_X, 972, {
+drawText("SLA: " + slaText, INNER_X, 962, {
   font: 'bold 22px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

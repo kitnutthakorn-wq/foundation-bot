@@ -371,7 +371,7 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
 // =========================
 
 // 2) ชื่อ
-drawText("ชื่อ: " + full_name, INNER_X, 470, {
+drawText("ชื่อ: " + full_name, INNER_X, 440, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
@@ -385,7 +385,7 @@ drawText(location, INNER_X, 535, {
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 610, {
+drawText("สถานะ:", INNER_X, 600, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150

@@ -2063,12 +2063,12 @@ function buildSearchMenuImagemap(baseUrlOverride = "") {
   {
     type: "message",
     text: "ค้นหาด้วยเบอร์โทร",
-    area: { x: 120, y: 1040, width: 800, height: 150 }
+    area: { x: 120, y: 1055, width: 800, height: 150 }
   },
   {
     type: "message",
     text: "ค้นหาด้วยเลขเคส",
-    area: { x: 120, y: 1220, width: 800, height: 150 }
+    area: { x: 120, y: 1235, width: 800, height: 150 }
   }
 ]
   };

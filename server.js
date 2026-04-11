@@ -392,35 +392,19 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
   }
 });
 
-pp.get("/imagemap/search-menu-v2/:size", async (req, res) => {
+app.get("/imagemap/search-menu-v2/:size", async (req, res) => {
   try {
-    const size = req.params.size; // 1040 หรือ 1040@2x
-
     const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png");
     const baseImage = await loadImage(imagePath);
 
     const canvas = createCanvas(1040, 1559);
     const ctx = canvas.getContext("2d");
 
-    // วาดภาพหัว
-   ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
-// gradient (เอาไว้ได้)
-//const grad = ctx.createLinearGradient(0, 1000, 0, 1559);
-//grad.addColorStop(0, "rgba(0,0,0,0.15)");
-//grad.addColorStop(0.5, "rgba(0,0,0,0.45)");
-//grad.addColorStop(1, "rgba(0,0,0,0.85)");
-
-//ctx.fillStyle = grad;
-//ctx.fillRect(0, 1000, 1040, 559);
-
-    // =========================
-    // OUTPUT
-    // =========================
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");
     return res.send(buffer);
-
   } catch (err) {
     console.error(err);
     return res.status(500).send("render failed");

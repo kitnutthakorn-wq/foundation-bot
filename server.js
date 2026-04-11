@@ -366,45 +366,45 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
       maxWidth: 620
     });
 
-    // 2) ชื่อ
-    drawText("ชื่อ: " + full_name, INNER_X, 430, {
-      font: 'bold 30px "ThaiBold", sans-serif',
-      color: "#222222",
-      maxWidth: 760
-    });
+// 2) ชื่อ
+drawText("ชื่อ: " + full_name, INNER_X, 460, {
+  font: 'bold 30px "ThaiBold", sans-serif',
+  color: "#222222",
+  maxWidth: 760
+});
 
-    // 3) พื้นที่
-    drawText(location, INNER_X, 500, {
-      font: 'bold 24px "ThaiRegular", sans-serif',
-      color: "#555555",
-      maxWidth: 760
-    });
+// 3) พื้นที่
+drawText(location, INNER_X, 530, {
+  font: 'bold 24px "ThaiRegular", sans-serif',
+  color: "#555555",
+  maxWidth: 760
+});
 
-    // 4) สถานะ
-    drawText("สถานะ:", INNER_X, 590, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: "#333333",
-      maxWidth: 150
-    });
+// 4) สถานะ
+drawText("สถานะ:", INNER_X, 620, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: "#333333",
+  maxWidth: 150
+});
 
-    drawText("● " + statusThai, INNER_X + 108, 590, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: statusColor,
-      maxWidth: 500
-    });
+drawText("● " + statusThai, INNER_X + 108, 620, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: statusColor,
+  maxWidth: 500
+});
 
-    // 5) ระดับ
-    drawText("ระดับ:", INNER_X, 650, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: "#333333",
-      maxWidth: 150
-    });
+// 5) ระดับ
+drawText("ระดับ:", INNER_X, 680, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: "#333333",
+  maxWidth: 150
+});
 
-    drawText(priorityThai, INNER_X + 92, 650, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: priorityColor,
-      maxWidth: 250
-    });
+drawText(priorityThai, INNER_X + 92, 680, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: priorityColor,
+  maxWidth: 250
+});
 
     // 6) เส้นคั่น
     ctx.strokeStyle = "#D9D9D9";

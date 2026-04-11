@@ -311,48 +311,48 @@ const statusColor = getStatusColor(data?.status);
 const priorityColor = getPriorityColor(data?.priority);
 
 // 1) เลขเคสกลางหัวแดง
-drawText(case_code, HEADER_CENTER_X, 266, {
-  font: 'bold 90px "ThaiBold", sans-serif',
+drawText(case_code, HEADER_CENTER_X, 292, {
+  font: 'bold 72px "ThaiBold", sans-serif',
   color: "#ffffff",
   align: "center",
   maxWidth: 620
 });
 
 // 2) ชื่อ
-drawText(`ชื่อ: ${full_name}`, INNER_X, 520, {
-  font: 'bold 28px "ThaiBold", sans-serif',
+drawText(`ชื่อ: ${full_name}`, INNER_X, 402, {
+  font: 'bold 30px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
-drawText(`📍 ${location}`, INNER_X, 590, {
+drawText(`📍 ${location}`, INNER_X, 468, {
   font: 'bold 24px "ThaiRegular", sans-serif',
   color: "#555555",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 680, {
+drawText("สถานะ:", INNER_X, 548, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText(`🟠 ${statusThai}`, INNER_X + 108, 532, {
+drawText(`● ${statusThai}`, INNER_X + 108, 548, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: statusColor,
   maxWidth: 500
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 342, {
+drawText("ระดับ:", INNER_X, 608, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText(priorityThai, INNER_X + 92, 592, {
+drawText(priorityThai, INNER_X + 92, 608, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: priorityColor,
   maxWidth: 250
@@ -362,25 +362,25 @@ drawText(priorityThai, INNER_X + 92, 592, {
 ctx.strokeStyle = "#D9D9D9";
 ctx.lineWidth = 2;
 ctx.beginPath();
-ctx.moveTo(CARD.left + 34, 662);
-ctx.lineTo(CARD.left + CARD.width - 34, 662);
+ctx.moveTo(CARD.left + 34, 676);
+ctx.lineTo(CARD.left + CARD.width - 34, 676);
 ctx.stroke();
 
 // 7) อัปเดตล่าสุด
-drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 887, {
+drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 708, {
   font: 'bold 21px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 920, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 770, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520
 });
 
-drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 748, {
+drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 762, {
   font: 'bold 26px "ThaiBold", sans-serif',
   color: "#333333",
   align: "right",

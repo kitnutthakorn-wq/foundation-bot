@@ -222,7 +222,7 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
       height: 610
     };
 
-    const INNER_X = CARD.left + 28;
+    const INNER_X = CARD.left + 58;
     const HEADER_CENTER_X = 520;
 
     // =========================

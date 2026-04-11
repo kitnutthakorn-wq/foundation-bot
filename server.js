@@ -1932,7 +1932,7 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
 
   return {
     type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}`,
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster?case_code=${encodeURIComponent(caseCode)}`,
     altText: `ศูนย์ปฏิบัติการเคสด่วน ${caseCode || ""}`,
     baseSize: {
       width: 1040,

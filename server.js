@@ -2060,17 +2060,17 @@ function buildSearchMenuImagemap(baseUrlOverride = "") {
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-        text: "ค้นหาด้วยเบอร์โทร",
-        area: { x: 180, y: 1020, width: 680, height: 110 }
-      },
-      {
-        type: "message",
-        text: "ค้นหาด้วยเลขเคส",
-        area: { x: 180, y: 1160, width: 680, height: 110 }
-      }
-    ]
+  {
+    type: "message",
+    text: "ค้นหาด้วยเบอร์โทร",
+    area: { x: 120, y: 1040, width: 800, height: 150 }
+  },
+  {
+    type: "message",
+    text: "ค้นหาด้วยเลขเคส",
+    area: { x: 120, y: 1220, width: 800, height: 150 }
+  }
+]
   };
 }
 

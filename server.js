@@ -227,13 +227,37 @@ console.log("URGENT POSTER finalCaseCode =", caseCode);
     // DATA
     // =========================
     const case_code = data?.case_code || caseCode || "-";
-    const full_name = data?.full_name || "ไม่ระบุชื่อ";
-    const location = data?.location || "ไม่ระบุพื้นที่";
-    const statusThai = "กำลังดำเนินการ";
-    const priorityThai = "ด่วน";
-    const updatedText = "12 นาทีที่แล้ว";
-    const slaText = "ใกล้เกินกำหนด";
-    const progressPercent = 60;
+const full_name = data?.full_name || "ไม่ระบุชื่อ";
+const location = data?.location || "ไม่ระบุพื้นที่";
+
+const rawStatus = String(data?.status || "").toLowerCase();
+const rawPriority = String(data?.priority || "").toLowerCase();
+
+const statusThai =
+  rawStatus === "done" ? "ปิดแล้ว" :
+  rawStatus === "closed" ? "ปิดแล้ว" :
+  formatCaseStatusThai(data?.status || "");
+
+const priorityThai = formatPriorityThai(data?.priority || "");
+
+const updatedText = formatThaiDateTime(
+  data?.last_action_at ||
+  data?.closed_at ||
+  data?.assigned_at ||
+  data?.created_at
+);
+
+let slaText = "ปกติ";
+if (String(data?.sla_level || "").toLowerCase() === "breached") {
+  slaText = "ใกล้เกินกำหนด";
+} else if (String(data?.sla_level || "").toLowerCase() === "warning") {
+  slaText = "ต้องเฝ้าระวัง";
+}
+
+const progressPercent =
+  rawStatus === "done" || rawStatus === "closed"
+    ? 100
+    : Math.max(0, Math.min(100, Number(data?.progress_percent ?? 60)));
 
     // =========================
     // LAYOUT

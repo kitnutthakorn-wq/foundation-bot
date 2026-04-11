@@ -274,6 +274,7 @@ drawText(`รายละเอียด: ${problem}`, startX, startY + GAP_4, {
     return res.status(500).send("render poster failed");
   }
 });
+
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();

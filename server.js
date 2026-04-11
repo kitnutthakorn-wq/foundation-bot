@@ -162,7 +162,7 @@ const PAD_Y = 40;
 const startX = BOX.left + PAD_X;   // = 120
 const startY = BOX.top + PAD_Y + 10;
 
-const GAP_TITLE = 32;   // ดันเคสด่วนลง
+const GAP_TITLE = 100;   // ดันเคสด่วนลง
 const GAP_1 = 110;      // เว้นชื่อให้ห่างขึ้น
 
 const GAP_2 = 390;      // ดัน block ขาวลง

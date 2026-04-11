@@ -1976,27 +1976,36 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
     "https://satisfied-stillness-production-7942.up.railway.app";
 
   const caseCode = String(caseData?.case_code || "").trim();
+  const rawStatus = String(caseData?.status || "").toLowerCase();
+  const isClosed = rawStatus === "done" || rawStatus === "closed" || rawStatus === "cancelled";
+
+  const actions = [];
+
+  if (!isClosed) {
+    actions.push({
+      type: "message",
+      text: `ติดตามอีกครั้ง ${caseCode}`,
+      area: { x: 180, y: 1190, width: 680, height: 120 }
+    });
+  }
+
+  actions.push({
+    type: "uri",
+    linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
+    area: isClosed
+      ? { x: 180, y: 1190, width: 680, height: 145 }
+      : { x: 180, y: 1380, width: 680, height: 145 }
+  });
 
   return {
     type: "imagemap",
-  baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}&v=2`,
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}&v=3`,
     altText: `ศูนย์ปฏิบัติการเคสด่วน ${caseCode || ""}`,
     baseSize: {
       width: 1040,
       height: 1559
     },
-   actions: [
-  {
-    type: "message",
-    text: `ติดตามอีกครั้ง ${caseCode}`,
-    area: { x: 180, y: 1190, width: 680, height: 120 }
-  },
-  {
-    type: "uri",
-    linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
-    area: { x: 180, y: 1380, width: 680, height: 145 }
-  }
-]
+    actions
   };
 }
 // =========================

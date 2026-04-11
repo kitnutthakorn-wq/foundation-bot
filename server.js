@@ -279,7 +279,7 @@ drawText(ctx, priorityThai, INNER_X + 100, 640, {
     ctx.stroke();
 
     // UPDATED
-drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 735, {
+drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 1020, {
   font: 'bold 20px "ThaiRegular", sans-serif',
   color: "#777777"
 });

@@ -346,7 +346,7 @@ drawText(`🟠 ${statusThai}`, INNER_X + 108, 532, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 950, {
+drawText("ระดับ:", INNER_X, 742, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -367,14 +367,14 @@ ctx.lineTo(CARD.left + CARD.width - 34, 662);
 ctx.stroke();
 
 // 7) อัปเดตล่าสุด
-drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 694, {
+drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 867, {
   font: 'bold 21px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 858, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 952, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

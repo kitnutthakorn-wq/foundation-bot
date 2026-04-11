@@ -392,11 +392,13 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
   }
 });
 
-app.get("/imagemap/search-menu-v2/1040", async (req, res) => {
+pp.get("/imagemap/search-menu-v2/:size", async (req, res) => {
   try {
-    const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png");
+    const size = req.params.size; // 1040 หรือ 1040@2x
 
+    const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png");
     const baseImage = await loadImage(imagePath);
+
     const canvas = createCanvas(1040, 1559);
     const ctx = canvas.getContext("2d");
 

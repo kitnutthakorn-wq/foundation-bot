@@ -312,7 +312,7 @@ const priorityColor = getPriorityColor(data?.priority);
 
 // 1) เลขเคสกลางหัวแดง
 drawText(case_code, HEADER_CENTER_X, 266, {
-  font: 'bold 100px "ThaiBold", sans-serif',
+  font: 'bold 90px "ThaiBold", sans-serif',
   color: "#ffffff",
   align: "center",
   maxWidth: 620
@@ -346,7 +346,7 @@ drawText(`🟠 ${statusThai}`, INNER_X + 108, 532, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 742, {
+drawText("ระดับ:", INNER_X, 642, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150

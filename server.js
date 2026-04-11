@@ -314,13 +314,11 @@ const PAD_Y = 40;
 const startX = BOX.left + PAD_X;   // = 120
 const startY = BOX.top + PAD_Y;    // = 220
 
-// ระยะบรรทัด (ปรับแล้วให้ลงพื้นขาวแน่นอน)
-const GAP_TITLE = 0;    
-const GAP_1 = 60;       
-const GAP_2 = 220;      // 👈 เริ่มเข้า "พื้นขาว"
-const GAP_3 = 280;      
-const GAP_4 = 360;      
-   
+const GAP_TITLE = 0;
+const GAP_1 = 60;
+const GAP_2 = 320;
+const GAP_3 = 380;
+const GAP_4 = 460;
     function drawText(text, x, y, options = {}) {
       const {
         font = 'bold 42px "ThaiBold", sans-serif',
@@ -380,35 +378,35 @@ const GAP_4 = 360;
     const location = trimText(data?.location || "ไม่ระบุพื้นที่", 80);
     const problem = trimText(data?.problem || "ไม่มีรายละเอียด", 160);
 
-    drawText(`เคสด่วน ${case_code}`, 80, 90, {
-      font: 'bold 54px "ThaiBold", sans-serif',
-      color: "#ffffff",
-      maxWidth: 850
-    });
+    drawText(`เคสด่วน ${case_code}`, startX, startY + GAP_TITLE, {
+  font: 'bold 36px "ThaiBold", sans-serif',
+  color: "#ffffff",
+  maxWidth: BOX.width - PAD_X * 2
+});
 
-    drawText(`ชื่อ: ${full_name}`, 80, 210, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#ffffff",
-      maxWidth: 820
-    });
+drawText(`ชื่อ: ${full_name}`, startX, startY + GAP_1, {
+  font: 'bold 30px "ThaiBold", sans-serif',
+  color: "#ffffff",
+  maxWidth: BOX.width - PAD_X * 2
+});
 
-    drawText(`โทร: ${phone}`, 80, 280, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
-      maxWidth: 820
-    });
+drawText(`โทร: ${phone}`, startX, startY + GAP_2, {
+  font: 'bold 26px "ThaiRegular", sans-serif',
+  color: "#000000",
+  maxWidth: BOX.width - PAD_X * 2
+});
 
-    drawText(`พื้นที่: ${location}`, 80, 340, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
-      maxWidth: 820
-    });
+drawText(`พื้นที่: ${location}`, startX, startY + GAP_3, {
+  font: 'bold 26px "ThaiRegular", sans-serif',
+  color: "#000000",
+  maxWidth: BOX.width - PAD_X * 2
+});
 
-    drawText(`รายละเอียด: ${problem}`, 80, 420, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#ffffff",
-      maxWidth: 820
-    });
+drawText(`รายละเอียด: ${problem}`, startX, startY + GAP_4, {
+  font: 'bold 26px "ThaiRegular", sans-serif',
+  color: "#000000",
+  maxWidth: BOX.width - PAD_X * 2
+});
 
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");

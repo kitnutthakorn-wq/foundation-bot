@@ -312,7 +312,7 @@ const priorityColor = getPriorityColor(data?.priority);
 
 // 1) เลขเคสกลางหัวแดง
 drawText(case_code, HEADER_CENTER_X, 296, {
-  font: 'bold 50px "ThaiBold", sans-serif',
+  font: 'bold 100px "ThaiBold", sans-serif',
   color: "#ffffff",
   align: "center",
   maxWidth: 620
@@ -374,7 +374,7 @@ drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 6
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 1058, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 858, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

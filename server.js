@@ -1947,17 +1947,17 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-        text: `ติดตามอีกครั้ง ${caseCode}`,
-        area: { x: 90, y: 1320, width: 400, height: 120 }
-      },
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
-        area: { x: 550, y: 1320, width: 400, height: 120 }
-      }
-    ]
+  {
+    type: "message",
+    text: `ติดตามอีกครั้ง ${caseCode}`,
+    area: { x: 180, y: 1215, width: 680, height: 145 }
+  },
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
+    area: { x: 180, y: 1385, width: 680, height: 145 }
+  }
+]
   };
 }
 // =========================

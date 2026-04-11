@@ -139,6 +139,14 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     const ctx = canvas.getContext("2d");
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+   // 🔥 GUARD: ไม่มี case_code หรือไม่เจอข้อมูล = ส่งภาพเดิม
+  if (!caseCode || !data) {
+  console.warn("⚠️ no case data:", caseCode);
+
+  const buffer = canvas.toBuffer("image/png");
+  res.set("Content-Type", "image/png");
+  return res.send(buffer);
+}
    
 // ====== TEXT LAYOUT LOCK ======
 const BOX = {

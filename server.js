@@ -311,7 +311,7 @@ const statusColor = getStatusColor(data?.status);
 const priorityColor = getPriorityColor(data?.priority);
 
 // 1) เลขเคสกลางหัวแดง
-drawText(case_code, HEADER_CENTER_X, 296, {
+drawText(case_code, HEADER_CENTER_X, 266, {
   font: 'bold 100px "ThaiBold", sans-serif',
   color: "#ffffff",
   align: "center",

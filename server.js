@@ -340,7 +340,7 @@ drawText("สถานะ:", INNER_X, 680, {
 });
 
 drawText(`🟠 ${statusThai}`, INNER_X + 108, 532, {
-  font: 'bold 60px "ThaiBold", sans-serif',
+  font: 'bold 24px "ThaiBold", sans-serif',
   color: statusColor,
   maxWidth: 500
 });
@@ -374,7 +374,7 @@ drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 6
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 758, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 1058, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

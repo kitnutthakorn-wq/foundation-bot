@@ -404,13 +404,13 @@ app.get("/imagemap/search-menu/1040", async (req, res) => {
    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
 // gradient (เอาไว้ได้)
-const grad = ctx.createLinearGradient(0, 1000, 0, 1559);
-grad.addColorStop(0, "rgba(0,0,0,0.15)");
-grad.addColorStop(0.5, "rgba(0,0,0,0.45)");
-grad.addColorStop(1, "rgba(0,0,0,0.85)");
+//const grad = ctx.createLinearGradient(0, 1000, 0, 1559);
+//grad.addColorStop(0, "rgba(0,0,0,0.15)");
+//grad.addColorStop(0.5, "rgba(0,0,0,0.45)");
+//grad.addColorStop(1, "rgba(0,0,0,0.85)");
 
-ctx.fillStyle = grad;
-ctx.fillRect(0, 1000, 1040, 559);
+//ctx.fillStyle = grad;
+//ctx.fillRect(0, 1000, 1040, 559);
 
     // =========================
     // OUTPUT

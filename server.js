@@ -160,13 +160,13 @@ const PAD_X = 50;
 const PAD_Y = 40;
 
 const startX = BOX.left + PAD_X;   // = 120
-const startY = BOX.top + PAD_Y;    // = 220
+const startY = BOX.top + PAD_Y + 12;
 
-const GAP_TITLE = 0;
-const GAP_1 = 60;
-const GAP_2 = 320;
-const GAP_3 = 380;
-const GAP_4 = 460;
+const GAP_TITLE = 18;
+const GAP_1 = 78;
+const GAP_2 = 350;
+const GAP_3 = 418;
+const GAP_4 = 500;
     function drawText(text, x, y, options = {}) {
       const {
         font = 'bold 42px "ThaiBold", sans-serif',

@@ -238,7 +238,7 @@ drawText(ctx, case_code, HEADER_CENTER_X, 292, {
 
 // NAME
 drawText(ctx, "ชื่อ: " + full_name, INNER_X, 480, {
-  font: 'bold 44px "ThaiBold", sans-serif',
+  font: 'bold 48px "ThaiBold", sans-serif',
   color: "#222222"
 });
 
@@ -260,12 +260,12 @@ drawText(ctx, "● " + statusThai, INNER_X + 120, 640, {
 });
 
 // PRIORITY
-drawText(ctx, "ระดับ:", INNER_X, 680, {
+drawText(ctx, "ระดับ:", INNER_X, 710, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
-drawText(ctx, priorityThai, INNER_X + 100, 680, {
+drawText(ctx, priorityThai, INNER_X + 100, 710, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#D63031"
 });

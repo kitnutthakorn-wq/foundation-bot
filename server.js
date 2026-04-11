@@ -367,113 +367,113 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     });
 
 // 2) ชื่อ
-drawText("ชื่อ: " + full_name, INNER_X, 460, {
-  font: 'bold 30px "ThaiBold", sans-serif',
+drawText("ชื่อ: " + full_name, INNER_X, 455, {
+  font: 'bold 26px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
-drawText(location, INNER_X, 530, {
-  font: 'bold 24px "ThaiRegular", sans-serif',
+drawText(location, INNER_X, 515, {
+  font: 'bold 20px "ThaiRegular", sans-serif',
   color: "#555555",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 620, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText("สถานะ:", INNER_X, 600, {
+  font: 'bold 21px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText("● " + statusThai, INNER_X + 108, 620, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText("● " + statusThai, INNER_X + 95, 600, {
+  font: 'bold 21px "ThaiBold", sans-serif',
   color: statusColor,
   maxWidth: 500
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 680, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText("ระดับ:", INNER_X, 655, {
+  font: 'bold 21px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText(priorityThai, INNER_X + 92, 680, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText(priorityThai, INNER_X + 80, 655, {
+  font: 'bold 21px "ThaiBold", sans-serif',
   color: priorityColor,
   maxWidth: 250
 });
 
-    // 6) เส้นคั่น
-    ctx.strokeStyle = "#D9D9D9";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(CARD.left + 34, 710);
-    ctx.lineTo(CARD.left + CARD.width - 34, 710);
-    ctx.stroke();
+// 6) เส้นคั่น
+ctx.strokeStyle = "#D9D9D9";
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(CARD.left + 34, 715);
+ctx.lineTo(CARD.left + CARD.width - 34, 715);
+ctx.stroke();
 
-    // 7) อัปเดตล่าสุด
-    drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 740, {
-      font: 'bold 21px "ThaiRegular", sans-serif',
-      color: "#666666",
-      maxWidth: 760
-    });
+// 7) อัปเดตล่าสุด
+drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 742, {
+  font: 'bold 18px "ThaiRegular", sans-serif',
+  color: "#666666",
+  maxWidth: 760
+});
 
-    // 8) SLA + %
-    drawText("SLA: " + slaText, INNER_X, 800, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: "#E67E22",
-      maxWidth: 520
-    });
+// 8) SLA + %
+drawText("SLA: " + slaText, INNER_X, 805, {
+  font: 'bold 20px "ThaiBold", sans-serif',
+  color: "#E67E22",
+  maxWidth: 520
+});
 
-    drawText(progressPercent + "%", CARD.left + CARD.width - 52, 790, {
-      font: 'bold 26px "ThaiBold", sans-serif',
-      color: "#333333",
-      align: "right",
-      maxWidth: 120
-    });
+drawText(progressPercent + "%", CARD.left + CARD.width - 52, 798, {
+  font: 'bold 22px "ThaiBold", sans-serif',
+  color: "#333333",
+  align: "right",
+  maxWidth: 120
+});
 
-    // 9) progress track
-    const barX = INNER_X;
-    const barY = 850;
-    const barW = 720;
-    const barH = 22;
-    const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));
+// 9) progress track
+const barX = INNER_X;
+const barY = 845;
+const barW = 720;
+const barH = 18;
+const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));
 
-    ctx.fillStyle = "#B7B09B";
-    roundRectPath(barX, barY, barW, barH, 11);
-    ctx.fill();
+ctx.fillStyle = "#B7B09B";
+roundRectPath(barX, barY, barW, barH, 9);
+ctx.fill();
 
-    // 10) progress fill
-    const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
-    grad.addColorStop(0, "#FFD400");
-    grad.addColorStop(0.45, "#C9F000");
-    grad.addColorStop(1, "#6D6A3A");
+// 10) progress fill
+const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
+grad.addColorStop(0, "#FFD400");
+grad.addColorStop(0.45, "#C9F000");
+grad.addColorStop(1, "#6D6A3A");
 
-    ctx.fillStyle = grad;
-    roundRectPath(barX, barY, fillW, barH, 11);
-    ctx.fill();
+ctx.fillStyle = grad;
+roundRectPath(barX, barY, fillW, barH, 9);
+ctx.fill();
 
-    // 11) glow dot
-    const dotX = barX + fillW - 3;
-    const dotY = barY + (barH / 2);
+// 11) glow dot
+const dotX = barX + fillW - 3;
+const dotY = barY + (barH / 2);
 
-    const glow = ctx.createRadialGradient(dotX, dotY, 2, dotX, dotY, 18);
-    glow.addColorStop(0, "rgba(255,255,180,1)");
-    glow.addColorStop(0.4, "rgba(255,240,120,0.9)");
-    glow.addColorStop(1, "rgba(255,240,120,0)");
+const glow = ctx.createRadialGradient(dotX, dotY, 2, dotX, dotY, 16);
+glow.addColorStop(0, "rgba(255,255,180,1)");
+glow.addColorStop(0.4, "rgba(255,240,120,0.9)");
+glow.addColorStop(1, "rgba(255,240,120,0)");
 
-    ctx.fillStyle = glow;
-    ctx.beginPath();
-    ctx.arc(dotX, dotY, 18, 0, Math.PI * 2);
-    ctx.fill();
+ctx.fillStyle = glow;
+ctx.beginPath();
+ctx.arc(dotX, dotY, 16, 0, Math.PI * 2);
+ctx.fill();
 
-    ctx.fillStyle = "#FFF36B";
-    ctx.beginPath();
-    ctx.arc(dotX, dotY, 8, 0, Math.PI * 2);
-    ctx.fill();
+ctx.fillStyle = "#FFF36B";
+ctx.beginPath();
+ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+ctx.fill();
 
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");

@@ -297,7 +297,28 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     const ctx = canvas.getContext("2d");
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+   
+// ====== TEXT LAYOUT LOCK ======
+const BOX = {
+  left: 70,
+  top: 180,
+  width: 900,
+  height: 500
+};
 
+const PAD_X = 50;
+const PAD_Y = 40;
+
+const startX = BOX.left + PAD_X;   // = 120
+const startY = BOX.top + PAD_Y;    // = 220
+
+// ระยะบรรทัด (ปรับแล้วให้ลงพื้นขาวแน่นอน)
+const GAP_TITLE = 0;    
+const GAP_1 = 60;       
+const GAP_2 = 220;      // 👈 เริ่มเข้า "พื้นขาว"
+const GAP_3 = 280;      
+const GAP_4 = 360;      
+   
     function drawText(text, x, y, options = {}) {
       const {
         font = 'bold 42px "ThaiBold", sans-serif',

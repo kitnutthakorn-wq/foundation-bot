@@ -289,15 +289,15 @@ drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 8
     // =========================
 
     // SLA TEXT
-drawText(ctx, "SLA: " + slaText, INNER_X, 965, {
+drawText(ctx, "SLA: " + slaText, INNER_X, 960, {
   font: 'bold 36px "ThaiBold", sans-serif',
   color: "#E67E22"
 });
 
 
 // %
-drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 969, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 32, 969, {
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right"
 });

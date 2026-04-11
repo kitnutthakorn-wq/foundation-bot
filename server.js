@@ -392,6 +392,74 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
   }
 });
 
+app.get("/imagemap/search-menu/1040", async (req, res) => {
+  try {
+    const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png"); // 👈 ใส่ภาพหัวที่คุณจะส่งมา
+
+    const baseImage = await loadImage(imagePath);
+    const canvas = createCanvas(1040, 1559);
+    const ctx = canvas.getContext("2d");
+
+    // วาดภาพหัว
+    ctx.drawImage(baseImage, 0, 0, 1040, 900);
+
+    // พื้นหลังด้านล่าง (ดำไล่เฉด)
+    const grad = ctx.createLinearGradient(0, 800, 0, 1559);
+    grad.addColorStop(0, "rgba(0,0,0,0.7)");
+    grad.addColorStop(1, "#000000");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 800, 1040, 759);
+
+    // =========================
+    // TITLE
+    // =========================
+    drawText(ctx, "เมนูจัดการเคส", 520, 880, {
+      font: 'bold 72px "ThaiBold"',
+      color: "#FFFFFF",
+      align: "center"
+    });
+
+    // =========================
+    // BUTTON FUNCTION
+    // =========================
+    function drawButton(text, x, y) {
+      // เงา
+      ctx.fillStyle = "#D1D5DB";
+      roundRectPath(ctx, x, y + 6, 680, 110, 28);
+      ctx.fill();
+
+      // ปุ่ม
+      ctx.fillStyle = "#F9FAFB";
+      roundRectPath(ctx, x, y, 680, 110, 28);
+      ctx.fill();
+
+      // text
+      drawText(ctx, text, x + 340, y + 28, {
+        font: 'bold 42px "ThaiBold"',
+        color: "#111827",
+        align: "center"
+      });
+    }
+
+    // =========================
+    // BUTTONS
+    // =========================
+    drawButton("ค้นหาด้วยเบอร์โทร", 180, 1020);
+    drawButton("ค้นหาด้วยเลขเคส", 180, 1160);
+
+    // =========================
+    // OUTPUT
+    // =========================
+    const buffer = canvas.toBuffer("image/png");
+    res.set("Content-Type", "image/png");
+    return res.send(buffer);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("render failed");
+  }
+});
+
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,

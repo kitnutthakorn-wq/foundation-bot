@@ -1940,7 +1940,7 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
 
   return {
     type: "imagemap",
-   baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}`,
+  baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}&v=2`,
     altText: `ศูนย์ปฏิบัติการเคสด่วน ${caseCode || ""}`,
     baseSize: {
       width: 1040,

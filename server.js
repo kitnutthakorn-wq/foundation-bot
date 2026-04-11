@@ -184,7 +184,12 @@ function roundRectPath(ctx, x, y, width, height, radius) {
 
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
-    const caseCode = String(req.query.case_code || "").trim();
+   const rawCaseCode = String(req.query.case_code || "").trim();
+const caseCode = rawCaseCode
+  .split("?")[0]
+  .replace(/\/(1040|700|460|240)$/i, "")
+  .replace(/\/+$/g, "")
+  .trim();
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 

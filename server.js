@@ -319,21 +319,22 @@ drawText(case_code, HEADER_CENTER_X, 292, {
 });
 
 // 2) ชื่อ
-drawText(`ชื่อ: ${full_name}`, INNER_X, 402, {
+drawText(`ชื่อ: ${full_name}`, INNER_X, 430, {
   font: 'bold 30px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
-drawText(`📍 ${location}`, INNER_X, 468, {
+drawText(`📍 ${location}`, INNER_X, 500, {
   font: 'bold 24px "ThaiRegular", sans-serif',
   color: "#555555",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 548, {
+drawText("สถานะ:", INNER_X, 590, {
+drawText(`● ${statusThai}`, INNER_X + 108, 590, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -346,7 +347,8 @@ drawText(`● ${statusThai}`, INNER_X + 108, 548, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 608, {
+drawText("ระดับ:", INNER_X, 650, {
+drawText(priorityThai, INNER_X + 92, 650, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -362,25 +364,25 @@ drawText(priorityThai, INNER_X + 92, 608, {
 ctx.strokeStyle = "#D9D9D9";
 ctx.lineWidth = 2;
 ctx.beginPath();
-ctx.moveTo(CARD.left + 34, 676);
-ctx.lineTo(CARD.left + CARD.width - 34, 676);
+ctx.moveTo(CARD.left + 34, 710);
+ctx.lineTo(CARD.left + CARD.width - 34, 710);
 ctx.stroke();
 
 // 7) อัปเดตล่าสุด
-drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 708, {
+drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 748, {
   font: 'bold 21px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 770, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 800, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520
 });
 
-drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 762, {
+drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 790, {
   font: 'bold 26px "ThaiBold", sans-serif',
   color: "#333333",
   align: "right",
@@ -389,7 +391,7 @@ drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 762, {
 
 // 9) progress track
 const barX = INNER_X;
-const barY = 820;
+const barY = 850;
 const barW = 720;
 const barH = 22;
 const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));

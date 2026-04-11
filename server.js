@@ -7480,6 +7480,30 @@ if (text === "ค้นหาเคส") {
 
 const caseSearchState = getCaseSearchState(userId);
 
+if (text === "ค้นหาด้วยเลขเคส") {
+  setCaseSearchState(userId, { step: "waiting_case_code" });
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "กรุณาพิมพ์เลขเคส\n\nตัวอย่าง:\n04042026-999"
+    }
+  ]);
+  continue;
+}
+
+if (text === "ค้นหาด้วยเบอร์โทร") {
+  setCaseSearchState(userId, { step: "waiting_phone" });
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "กรุณาพิมพ์เบอร์โทร\n\nตัวอย่าง:\n0812345678"
+    }
+  ]);
+  continue;
+}     
+
 if (caseSearchState?.step === "waiting_query") {
   const query = String(text || "").trim();
 

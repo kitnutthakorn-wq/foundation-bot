@@ -243,18 +243,18 @@ drawText(ctx, "ชื่อ: " + full_name, INNER_X, 480, {
 });
 
 // LOCATION
-drawText(ctx, location, INNER_X, 550, {
+drawText(ctx, location, INNER_X, 560, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#666666"
 });
 
 // STATUS
-drawText(ctx, "สถานะ:", INNER_X, 650, {
+drawText(ctx, "สถานะ:", INNER_X, 660, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
-drawText(ctx, statusThai, INNER_X + 120, 650, {
+drawText(ctx, statusThai, INNER_X + 120, 660, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#E67E22"
 });
@@ -289,7 +289,7 @@ drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 8
     // =========================
 
     // SLA TEXT
-drawText(ctx, "SLA: " + slaText, INNER_X, 975, {
+drawText(ctx, "SLA: " + slaText, INNER_X, 965, {
   font: 'bold 36px "ThaiBold", sans-serif',
   color: "#E67E22"
 });

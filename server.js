@@ -401,51 +401,15 @@ app.get("/imagemap/search-menu/1040", async (req, res) => {
     const ctx = canvas.getContext("2d");
 
     // วาดภาพหัว
-    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+   ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
-    // พื้นหลังด้านล่าง (ดำไล่เฉด)
-    const grad = ctx.createLinearGradient(0, 800, 0, 1559);
-    grad.addColorStop(0, "rgba(0,0,0,0.7)");
-    grad.addColorStop(1, "#000000");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 800, 1040, 759);
-
-    // =========================
-    // TITLE
-    // =========================
-   drawText(ctx, "เมนูจัดการเคส", 520, 815, {
-      font: 'bold 72px "ThaiBold"',
-      color: "#FFFFFF",
-      align: "center"
-    });
-
-    // =========================
-    // BUTTON FUNCTION
-    // =========================
-    function drawButton(text, x, y) {
-      // เงา
-      ctx.fillStyle = "#D1D5DB";
-      roundRectPath(ctx, x, y + 6, 680, 110, 28);
-      ctx.fill();
-
-      // ปุ่ม
-      ctx.fillStyle = "#F9FAFB";
-      roundRectPath(ctx, x, y, 680, 110, 28);
-      ctx.fill();
-
-      // text
-      drawText(ctx, text, x + 340, y + 28, {
-        font: 'bold 42px "ThaiBold"',
-        color: "#111827",
-        align: "center"
-      });
-    }
-
-    // =========================
-    // BUTTONS
-    // =========================
-    drawButton("ค้นหาด้วยเบอร์โทร", 180, 940);
-    drawButton("ค้นหาด้วยเลขเคส", 180, 1080);
+// gradient (เอาไว้ได้)
+const grad = ctx.createLinearGradient(0, 800, 0, 1559);
+grad.addColorStop(0, "rgba(0,0,0,0.55)");
+grad.addColorStop(0.4, "rgba(0,0,0,0.78)");
+grad.addColorStop(1, "#000000");
+ctx.fillStyle = grad;
+ctx.fillRect(0, 800, 1040, 759);
 
     // =========================
     // OUTPUT

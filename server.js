@@ -7505,7 +7505,7 @@ if (text === "ค้นหาด้วยเบอร์โทร") {
 }     
 
 if (caseSearchState?.step === "waiting_case_code") {
-  const query = String(text || "").trim();
+ const query = String(text || "").replace(/\D/g, "");
 
   if (!query) {
     await safeReply(replyToken, [

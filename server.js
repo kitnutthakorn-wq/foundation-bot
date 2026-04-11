@@ -7519,7 +7519,6 @@ if (caseSearchState?.step === "waiting_case_code") {
     .select("*")
     .eq("case_code", query)
     .maybeSingle();
-}
 
   if (error) {
     console.error("CASE SEARCH BY CODE ERROR:", error);
@@ -7543,19 +7542,17 @@ if (caseSearchState?.step === "waiting_case_code") {
   await safeReply(replyToken, [
     buildUrgentCasePosterImagemap(caseByCode)
   ]);
-
   continue;
 }
-
 if (caseSearchState?.step === "waiting_phone") {
   const query = String(text || "").replace(/\D/g, "");
 
- if (query.length < 9) {
-  await safeReply(replyToken, [
-    { type: "text", text: "กรุณากรอกเบอร์โทรให้ครบถ้วน" }
-  ]);
-  continue;
-}
+  if (query.length < 9) {
+    await safeReply(replyToken, [
+      { type: "text", text: "กรุณากรอกเบอร์โทรให้ครบถ้วน" }
+    ]);
+    continue;
+  }
 
   const { data: casesByPhone, error } = await supabase
     .from("help_requests")

@@ -2081,6 +2081,35 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
 // วางหลัง orangeButton()
 // และก่อน buildTeamNewCaseText()
 // =========================
+
+function buildSearchMenuImagemap(baseUrlOverride = "") {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/search-menu/1040?v=1`,
+    altText: "เมนูค้นหาเคส",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "ค้นหาด้วยเบอร์โทร",
+        area: { x: 180, y: 1020, width: 680, height: 110 }
+      },
+      {
+        type: "message",
+        text: "ค้นหาด้วยเลขเคส",
+        area: { x: 180, y: 1160, width: 680, height: 110 }
+      }
+    ]
+  };
+}
+
 function buildTeamMenuOverlayFlex() {
   return {
     type: "flex",

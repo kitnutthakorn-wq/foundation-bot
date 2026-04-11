@@ -238,7 +238,7 @@ drawText(ctx, case_code, HEADER_CENTER_X, 292, {
 
 // NAME
 drawText(ctx, "ชื่อ: " + full_name, INNER_X, 480, {
-  font: 'bold 36px "ThaiBold", sans-serif',
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#222222"
 });
 

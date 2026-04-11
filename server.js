@@ -386,7 +386,7 @@ drawText(location, INNER_X, 535, {
 
 // 4) สถานะ
 drawText("สถานะ:", INNER_X, 620, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+  font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
@@ -399,7 +399,7 @@ drawText("● " + statusThai, INNER_X + 110, 600, {
 
 // 5) ระดับ
 drawText("ระดับ:", INNER_X, 675, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+  font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });

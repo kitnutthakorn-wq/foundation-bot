@@ -7338,11 +7338,16 @@ const userId = event?.source?.userId || "";
 }
 
 if (text === "ค้นหาเคส") {
+  setCaseSearchState(userId, { step: "waiting_query" });
+
   await safeReply(replyToken, [
-    { type: "text", text: "พิมพ์เลขเคส หรือเบอร์โทร เพื่อค้นหาเคสได้เลย" }
+    {
+      type: "text",
+      text: "กรุณาพิมพ์เลขเคส หรือเบอร์โทร\n\nตัวอย่าง:\n04042026-999\nหรือ 0812345678"
+    }
   ]);
   continue;
-}    
+}
 
   // 👉 STEP FLOW ของคุณต่อจากนี้
 

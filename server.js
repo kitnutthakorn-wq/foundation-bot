@@ -7505,7 +7505,7 @@ if (text === "ค้นหาด้วยเบอร์โทร") {
 }     
 
 if (caseSearchState?.step === "waiting_case_code") {
- const query = String(text || "").replace(/\D/g, "");
+  const query = String(text || "").trim();
 
   if (!query) {
     await safeReply(replyToken, [
@@ -7519,6 +7519,7 @@ if (caseSearchState?.step === "waiting_case_code") {
     .select("*")
     .eq("case_code", query)
     .maybeSingle();
+}
 
   if (error) {
     console.error("CASE SEARCH BY CODE ERROR:", error);
@@ -7547,19 +7548,19 @@ if (caseSearchState?.step === "waiting_case_code") {
 }
 
 if (caseSearchState?.step === "waiting_phone") {
-  const query = String(text || "").trim();
+  const query = String(text || "").replace(/\D/g, "");
 
-  if (!query) {
-    await safeReply(replyToken, [
-      { type: "text", text: "กรุณาพิมพ์เบอร์โทร" }
-    ]);
-    continue;
-  }
+ if (query.length < 9) {
+  await safeReply(replyToken, [
+    { type: "text", text: "กรุณากรอกเบอร์โทรให้ครบถ้วน" }
+  ]);
+  continue;
+}
 
   const { data: casesByPhone, error } = await supabase
     .from("help_requests")
     .select("*")
-    .eq("phone", query)
+    .ilike("phone", `%${query}%`)
     .order("created_at", { ascending: false })
     .limit(5);
 

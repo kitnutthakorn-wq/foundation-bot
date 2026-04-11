@@ -7504,17 +7504,16 @@ if (text === "ค้นหาด้วยเบอร์โทร") {
   continue;
 }     
 
-if (caseSearchState?.step === "waiting_query") {
+if (caseSearchState?.step === "waiting_case_code") {
   const query = String(text || "").trim();
 
   if (!query) {
     await safeReply(replyToken, [
-      { type: "text", text: "กรุณาพิมพ์เลขเคส หรือเบอร์โทร" }
+      { type: "text", text: "กรุณาพิมพ์เลขเคส" }
     ]);
     continue;
   }
 
-  // 🔍 ค้นหาแบบเลขเคส
   const { data: caseByCode, error } = await supabase
     .from("help_requests")
     .select("*")
@@ -7522,7 +7521,7 @@ if (caseSearchState?.step === "waiting_query") {
     .maybeSingle();
 
   if (error) {
-    console.error("CASE SEARCH ERROR:", error);
+    console.error("CASE SEARCH BY CODE ERROR:", error);
     clearCaseSearchState(userId);
 
     await safeReply(replyToken, [
@@ -7538,7 +7537,6 @@ if (caseSearchState?.step === "waiting_query") {
     continue;
   }
 
-  // ✅ เจอเคส → ยิง Imagemap
   clearCaseSearchState(userId);
 
   await safeReply(replyToken, [
@@ -7547,7 +7545,64 @@ if (caseSearchState?.step === "waiting_query") {
 
   continue;
 }
-     
+
+if (caseSearchState?.step === "waiting_phone") {
+  const query = String(text || "").trim();
+
+  if (!query) {
+    await safeReply(replyToken, [
+      { type: "text", text: "กรุณาพิมพ์เบอร์โทร" }
+    ]);
+    continue;
+  }
+
+  const { data: casesByPhone, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("phone", query)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("CASE SEARCH BY PHONE ERROR:", error);
+    clearCaseSearchState(userId);
+
+    await safeReply(replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการค้นหาเคส" }
+    ]);
+    continue;
+  }
+
+  if (!casesByPhone || casesByPhone.length === 0) {
+    await safeReply(replyToken, [
+      { type: "text", text: "ไม่พบเคสจากเบอร์โทรนี้" }
+    ]);
+    continue;
+  }
+
+  if (casesByPhone.length === 1) {
+    clearCaseSearchState(userId);
+
+    await safeReply(replyToken, [
+      buildUrgentCasePosterImagemap(casesByPhone[0])
+    ]);
+    continue;
+  }
+
+  clearCaseSearchState(userId);
+
+  const textLines = casesByPhone.map((item, index) =>
+    `${index + 1}. ${item.case_code || "-"} | ${item.full_name || "-"} | ${item.location || "-"}`
+  );
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: ("พบหลายเคสจากเบอร์โทรนี้\n\n" + textLines.join("\n")).slice(0, 4900)
+    }
+  ]);
+  continue;
+} 
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================

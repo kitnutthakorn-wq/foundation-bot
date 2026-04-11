@@ -440,7 +440,7 @@ drawText(progressPercent + "%", CARD.left + CARD.width - 52, 966, {
 
 // 9) progress bar
 const barX = INNER_X;
-const barY = 910;
+const barY = 1010;
 const barW = 720;
 const barH = 18;
 const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));

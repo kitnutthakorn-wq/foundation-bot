@@ -1946,11 +1946,11 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
       width: 1040,
       height: 1559
     },
-    actions: [
+   actions: [
   {
     type: "message",
     text: `ติดตามอีกครั้ง ${caseCode}`,
-    area: { x: 180, y: 1215, width: 680, height: 145 }
+    area: { x: 180, y: 1195, width: 680, height: 120 }
   },
   {
     type: "uri",

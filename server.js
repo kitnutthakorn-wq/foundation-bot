@@ -144,7 +144,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
 // ====== TEXT LAYOUT (LOCK POSITION) ======
 const BOX = {
   left: 70,
-  top: 180,
+  top: 100,
   width: 900,
   height: 500
 };

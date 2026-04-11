@@ -117,6 +117,71 @@ const fetch = globalThis.fetch;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+function drawText(ctx, text, x, y, options = {}) {
+  const {
+    font = 'bold 42px "ThaiBold", sans-serif',
+    color = "#000000",
+    align = "left",
+    maxWidth = 700
+  } = options;
+
+  ctx.font = font;
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = "top";
+
+  const lines = wrapText(ctx, String(text || "-"), maxWidth);
+  const lineHeight = getLineHeight(font);
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, x, y + i * lineHeight);
+  });
+}
+
+function wrapText(ctx, text, maxWidth) {
+  const paragraphs = String(text || "").split("\n");
+  const lines = [];
+
+  for (const para of paragraphs) {
+    let line = "";
+    for (const ch of para) {
+      const testLine = line + ch;
+      const width = ctx.measureText(testLine).width;
+      if (width > maxWidth && line) {
+        lines.push(line);
+        line = ch;
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) lines.push(line);
+  }
+
+  return lines.length ? lines : ["-"];
+}
+
+function getLineHeight(font) {
+  const m = /(\d+)px/.exec(font);
+  const size = m ? parseInt(m[1], 10) : 40;
+  return Math.round(size * 1.35);
+}
+
+function roundRectPath(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();

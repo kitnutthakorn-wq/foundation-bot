@@ -160,13 +160,15 @@ const PAD_X = 50;
 const PAD_Y = 40;
 
 const startX = BOX.left + PAD_X;   // = 120
-const startY = BOX.top + PAD_Y + 12;
+const startY = BOX.top + PAD_Y + 10;
 
-const GAP_TITLE = 18;
-const GAP_1 = 78;
-const GAP_2 = 350;
-const GAP_3 = 418;
-const GAP_4 = 500;
+const GAP_TITLE = 32;   // ดันเคสด่วนลง
+const GAP_1 = 110;      // เว้นชื่อให้ห่างขึ้น
+
+const GAP_2 = 390;      // ดัน block ขาวลง
+const GAP_3 = 460;
+const GAP_4 = 540;
+   
     function drawText(text, x, y, options = {}) {
       const {
         font = 'bold 42px "ThaiBold", sans-serif',

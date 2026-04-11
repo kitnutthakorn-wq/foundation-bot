@@ -392,9 +392,9 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
   }
 });
 
-app.get("/imagemap/search-menu/1040", async (req, res) => {
+app.get("/imagemap/search-menu-v2/1040", async (req, res) => {
   try {
-    const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png"); // 👈 ใส่ภาพหัวที่คุณจะส่งมา
+    const imagePath = path.join(__dirname, "imagemap", "search-menu-bg.png");
 
     const baseImage = await loadImage(imagePath);
     const canvas = createCanvas(1040, 1559);

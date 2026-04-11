@@ -344,18 +344,6 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
   }
 });
 
-    const buffer = canvas.toBuffer("image/png");
-    res.set("Content-Type", "image/png");
-    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-    res.set("Pragma", "no-cache");
-    res.set("Expires", "0");
-    return res.send(buffer);
- 
-} catch (err) {
-  console.error(err);
-  return res.status(500).send("render failed");
-}
-});
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,

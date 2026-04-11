@@ -2053,7 +2053,7 @@ function buildSearchMenuImagemap(baseUrlOverride = "") {
 
   return {
     type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/search-menu-v2/1040`,
+    baseUrl: `${baseUrl}/imagemap/search-menu-v2`,
     altText: "เมนูค้นหาเคส",
     baseSize: {
       width: 1040,

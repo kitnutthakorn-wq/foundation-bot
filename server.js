@@ -249,23 +249,23 @@ drawText(ctx, location, INNER_X, 550, {
 });
 
 // STATUS
-drawText(ctx, "สถานะ:", INNER_X, 590, {
+drawText(ctx, "สถานะ:", INNER_X, 640, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
-drawText(ctx, "● " + statusThai, INNER_X + 120, 590, {
+drawText(ctx, "● " + statusThai, INNER_X + 120, 640, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#E67E22"
 });
 
 // PRIORITY
-drawText(ctx, "ระดับ:", INNER_X, 640, {
+drawText(ctx, "ระดับ:", INNER_X, 680, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
-drawText(ctx, priorityThai, INNER_X + 100, 640, {
+drawText(ctx, priorityThai, INNER_X + 100, 680, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#D63031"
 });

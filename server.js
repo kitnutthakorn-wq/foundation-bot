@@ -371,21 +371,21 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
 // =========================
 
 // 2) ชื่อ
-drawText("ชื่อ: " + full_name, INNER_X, 450, {
-  font: 'bold 36px "ThaiBold", sans-serif',
+drawText("ชื่อ: " + full_name, INNER_X, 480, {
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
-drawText(location, INNER_X, 515, {
-  font: 'bold 36px "ThaiRegular", sans-serif',
+drawText(location, INNER_X, 545, {
+  font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 600, {
+drawText("สถานะ:", INNER_X, 630, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -398,7 +398,7 @@ drawText("● " + statusThai, INNER_X + 110, 600, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 655, {
+drawText("ระดับ:", INNER_X, 685, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -419,14 +419,14 @@ ctx.lineTo(CARD.left + CARD.width - 34, 720);
 ctx.stroke();
 
 // 7) อัปเดตล่าสุด
-drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 750, {
+drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 780, {
   font: 'bold 20px "ThaiRegular", sans-serif',
   color: "#777777",
   maxWidth: 760
 });
 
 // 8) SLA + %
-drawText("SLA: " + slaText, INNER_X, 810, {
+drawText("SLA: " + slaText, INNER_X, 840, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

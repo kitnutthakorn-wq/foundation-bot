@@ -7351,7 +7351,52 @@ if (text === "ค้นหาเคส") {
 
   // 👉 STEP FLOW ของคุณต่อจากนี้
 
-    
+const caseSearchState = getCaseSearchState(userId);
+
+if (caseSearchState?.step === "waiting_query") {
+  const query = String(text || "").trim();
+
+  if (!query) {
+    await safeReply(replyToken, [
+      { type: "text", text: "กรุณาพิมพ์เลขเคส หรือเบอร์โทร" }
+    ]);
+    continue;
+  }
+
+  // 🔍 ค้นหาแบบเลขเคส
+  const { data: caseByCode, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .eq("case_code", query)
+    .maybeSingle();
+
+  if (error) {
+    console.error("CASE SEARCH ERROR:", error);
+    clearCaseSearchState(userId);
+
+    await safeReply(replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการค้นหาเคส" }
+    ]);
+    continue;
+  }
+
+  if (!caseByCode) {
+    await safeReply(replyToken, [
+      { type: "text", text: "ไม่พบเคสนี้ กรุณาตรวจสอบเลขเคสอีกครั้ง" }
+    ]);
+    continue;
+  }
+
+  // ✅ เจอเคส → ยิง Imagemap
+  clearCaseSearchState(userId);
+
+  await safeReply(replyToken, [
+    buildUrgentCasePosterImagemap(caseByCode)
+  ]);
+
+  continue;
+}
+     
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================

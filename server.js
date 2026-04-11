@@ -222,7 +222,7 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
       height: 610
     };
 
-    const INNER_X = CARD.left + 46;
+    const INNER_X = CARD.left + 18;
     const HEADER_CENTER_X = 520;
 
     // =========================
@@ -305,7 +305,7 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 969, {
     // BAR
     const barX = INNER_X;
     const barY = 1020;
-    const barW = 720;
+    const barW = 690;
     const barH = 18;
 
     const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));

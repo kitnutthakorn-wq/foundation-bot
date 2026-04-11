@@ -310,7 +310,7 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
     const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));
 
     ctx.fillStyle = "#B7B09B";
-    roundRectPath(barX, barY, barW, barH, 9);
+   roundRectPath(ctx, barX, barY, barW, barH, 9);
     ctx.fill();
 
     const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
@@ -319,7 +319,7 @@ drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
     grad.addColorStop(1, "#6D6A3A");
 
     ctx.fillStyle = grad;
-    roundRectPath(barX, barY, fillW, barH, 9);
+   roundRectPath(ctx, barX, barY, fillW, barH, 9);
     ctx.fill();
 
     // DOT

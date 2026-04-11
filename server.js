@@ -1950,12 +1950,12 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   {
     type: "message",
     text: `ติดตามอีกครั้ง ${caseCode}`,
-    area: { x: 180, y: 1195, width: 680, height: 120 }
+    area: { x: 180, y: 1190, width: 680, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/team.html?case_code=${encodeURIComponent(caseCode)}`,
-    area: { x: 180, y: 1385, width: 680, height: 145 }
+    area: { x: 180, y: 1380, width: 680, height: 145 }
   }
 ]
   };

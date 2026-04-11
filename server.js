@@ -163,7 +163,7 @@ const startX = BOX.left + PAD_X;   // = 120
 const startY = BOX.top + PAD_Y + 10;
 
 const GAP_TITLE = 100;   // ดันเคสด่วนลง
-const GAP_1 = 110;      // เว้นชื่อให้ห่างขึ้น
+const GAP_1 = 210;      // เว้นชื่อให้ห่างขึ้น
 
 const GAP_2 = 390;      // ดัน block ขาวลง
 const GAP_3 = 460;
@@ -236,7 +236,7 @@ const GAP_4 = 540;
 
 drawText(`ชื่อ: ${full_name}`, startX, startY + GAP_1, {
   font: 'bold 30px "ThaiBold", sans-serif',
-  color: "#ffffff",
+  color: "#000000",
   maxWidth: BOX.width - PAD_X * 2
 });
 

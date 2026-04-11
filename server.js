@@ -285,10 +285,11 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     res.set("Pragma", "no-cache");
     res.set("Expires", "0");
     return res.send(buffer);
-  } catch (err) {
-    console.error("❌ render poster /1040 error:", err);
-    return res.status(500).send("render poster /1040 failed");
-  }
+ 
+} catch (err) {
+  console.error(err);
+  return res.status(500).send("render failed");
+}
 });
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 const PUBLIC_WEB_ORIGINS = [

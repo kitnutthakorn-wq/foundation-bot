@@ -378,7 +378,7 @@ drawText("ชื่อ: " + full_name, INNER_X, 440, {
 });
 
 // 3) พื้นที่
-drawText(location, INNER_X, 545, {
+drawText(location, INNER_X, 525, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
@@ -404,7 +404,7 @@ drawText("ระดับ:", INNER_X, 655, {
   maxWidth: 150
 });
 
-drawText(priorityThai, INNER_X + 95, 655, {
+drawText(priorityThai, INNER_X + 95, 645, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: priorityColor,
   maxWidth: 250

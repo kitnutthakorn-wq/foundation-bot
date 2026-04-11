@@ -250,23 +250,23 @@ drawText(ctx, location, INNER_X, 550, {
 
 // STATUS
 drawText(ctx, "สถานะ:", INNER_X, 640, {
-  font: 'bold 34px "ThaiBold", sans-serif',
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
 drawText(ctx, "● " + statusThai, INNER_X + 120, 640, {
-  font: 'bold 34px "ThaiBold", sans-serif',
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#E67E22"
 });
 
 // PRIORITY
 drawText(ctx, "ระดับ:", INNER_X, 710, {
-  font: 'bold 34px "ThaiBold", sans-serif',
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
 drawText(ctx, priorityThai, INNER_X + 100, 710, {
-  font: 'bold 34px "ThaiBold", sans-serif',
+  font: 'bold 38px "ThaiBold", sans-serif',
   color: "#D63031"
 });
 
@@ -274,12 +274,12 @@ drawText(ctx, priorityThai, INNER_X + 100, 710, {
     ctx.strokeStyle = "#D9D9D9";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(CARD.left + 34, 800);
-    ctx.lineTo(CARD.left + CARD.width - 34, 800);
+    ctx.moveTo(CARD.left + 34, 810);
+    ctx.lineTo(CARD.left + CARD.width - 34, 810);
     ctx.stroke();
 
     // UPDATED
-drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 820, {
+drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 835, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#777777"
 });

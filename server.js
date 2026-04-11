@@ -278,7 +278,7 @@ drawText(ctx, priorityThai, INNER_X + 100, 640, {
     ctx.lineTo(CARD.left + CARD.width - 34, 700);
     ctx.stroke();
 
-    / UPDATED
+    // UPDATED
 drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 735, {
   font: 'bold 20px "ThaiRegular", sans-serif',
   color: "#777777"

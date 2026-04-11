@@ -7468,13 +7468,10 @@ const userId = event?.source?.userId || "";
 }
 
 if (text === "ค้นหาเคส") {
-  setCaseSearchState(userId, { step: "waiting_query" });
+  clearCaseSearchState(userId);
 
   await safeReply(replyToken, [
-    {
-      type: "text",
-      text: "กรุณาพิมพ์เลขเคส หรือเบอร์โทร\n\nตัวอย่าง:\n04042026-999\nหรือ 0812345678"
-    }
+    buildSearchMenuImagemap()
   ]);
   continue;
 }

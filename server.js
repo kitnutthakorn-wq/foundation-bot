@@ -425,15 +425,14 @@ drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 770, {
   maxWidth: 760
 });
 
-// 8) SLA + %
-drawText("SLA: " + slaText, INNER_X, 830, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText("SLA: " + slaText, INNER_X, 872, {
+  font: 'bold 22px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520
 });
 
-drawText(progressPercent + "%", CARD.left + CARD.width - 52, 804, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+drawText(progressPercent + "%", CARD.left + CARD.width - 52, 866, {
+  font: 'bold 22px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right",
   maxWidth: 120
@@ -441,7 +440,7 @@ drawText(progressPercent + "%", CARD.left + CARD.width - 52, 804, {
 
 // 9) progress bar
 const barX = INNER_X;
-const barY = 845;
+const barY = 910;
 const barW = 720;
 const barH = 18;
 const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));

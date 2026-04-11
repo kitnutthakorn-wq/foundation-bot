@@ -144,7 +144,7 @@ app.get("/imagemap/urgent-case-poster", async (req, res) => {
 // ====== TEXT LAYOUT (LOCK POSITION) ======
 const BOX = {
   left: 70,
-  top: 10,
+  top: 180,
   width: 900,
   height: 500
 };
@@ -156,11 +156,11 @@ const startX = BOX.left + PAD_X;   // = 120
 const startY = BOX.top + PAD_Y;    // = 220
 
 // ระยะบรรทัด (fix ไม่ต้องเดา)
-const GAP_TITLE = 0;
-const GAP_1 = 70;
-const GAP_2 = 130;
-const GAP_3 = 190;
-const GAP_4 = 260;
+const GAP_TITLE = 0;    
+const GAP_1 = 60;       
+const GAP_2 = 320;   // 🔥 ดันลงขาว
+const GAP_3 = 380;      
+const GAP_4 = 460;
    
     // helper
     function drawText(text, x, y, options = {}) {

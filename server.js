@@ -319,14 +319,14 @@ drawText(case_code, HEADER_CENTER_X, 292, {
 });
 
 // 2) ชื่อ
-drawText(`ชื่อ: ${full_name}`, INNER_X, 430, {
+drawText("ชื่อ: " + full_name, INNER_X, 430, {
   font: 'bold 30px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
-// 3) พื้นที่
-drawText(`📍 ${location}`, INNER_X, 500, {
+// 3) พื้นที่ (ไม่ใช้ emoji กันพัง)
+drawText(location, INNER_X, 500, {
   font: 'bold 24px "ThaiRegular", sans-serif',
   color: "#555555",
   maxWidth: 760
@@ -334,13 +334,12 @@ drawText(`📍 ${location}`, INNER_X, 500, {
 
 // 4) สถานะ
 drawText("สถานะ:", INNER_X, 590, {
-drawText(`● ${statusThai}`, INNER_X + 108, 590, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText(`● ${statusThai}`, INNER_X + 108, 548, {
+drawText("● " + statusThai, INNER_X + 108, 590, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: statusColor,
   maxWidth: 500
@@ -348,13 +347,12 @@ drawText(`● ${statusThai}`, INNER_X + 108, 548, {
 
 // 5) ระดับ
 drawText("ระดับ:", INNER_X, 650, {
-drawText(priorityThai, INNER_X + 92, 650, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
-drawText(priorityThai, INNER_X + 92, 608, {
+drawText(priorityThai, INNER_X + 92, 650, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: priorityColor,
   maxWidth: 250
@@ -369,20 +367,20 @@ ctx.lineTo(CARD.left + CARD.width - 34, 710);
 ctx.stroke();
 
 // 7) อัปเดตล่าสุด
-drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 748, {
+drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 740, {
   font: 'bold 21px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 800, {
+drawText("SLA: " + slaText, INNER_X, 800, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520
 });
 
-drawText(`${progressPercent}%`, CARD.left + CARD.width - 52, 790, {
+drawText(progressPercent + "%", CARD.left + CARD.width - 52, 790, {
   font: 'bold 26px "ThaiBold", sans-serif',
   color: "#333333",
   align: "right",

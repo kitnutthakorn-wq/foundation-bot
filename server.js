@@ -120,13 +120,14 @@ const PORT = process.env.PORT || 3000;
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();
-    console.log("🔥 render poster /1040:", caseCode);
 
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
-    if (!fs.existsSync(imagePath)) {
-      return res.status(404).send("urgent-case-poster.png not found");
-    }
+    const { data } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("case_code", caseCode)
+      .maybeSingle();
 
     const baseImage = await loadImage(imagePath);
     const canvas = createCanvas(1040, 1559);
@@ -134,216 +135,17 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
-    // ไม่มี case_code = ส่ง template เดิม
-    if (!caseCode) {
-      const buffer = canvas.toBuffer("image/png");
-      res.set("Content-Type", "image/png");
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      res.set("Pragma", "no-cache");
-      res.set("Expires", "0");
-      return res.send(buffer);
-    }
-
-    const { data, error } = await supabase
-      .from("help_requests")
-      .select("*")
-      .eq("case_code", caseCode)
-      .maybeSingle();
-
-    if (error) {
-      console.error("❌ supabase error /1040:", error);
-      const buffer = canvas.toBuffer("image/png");
-      res.set("Content-Type", "image/png");
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      res.set("Pragma", "no-cache");
-      res.set("Expires", "0");
-      return res.send(buffer);
-    }
-
-    if (!data) {
-      console.warn("⚠️ no case data:", caseCode);
-      const buffer = canvas.toBuffer("image/png");
-      res.set("Content-Type", "image/png");
-      res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-      res.set("Pragma", "no-cache");
-      res.set("Expires", "0");
-      return res.send(buffer);
-    }
-
     // =========================
-    // SAFE HELPERS
+    // DATA
     // =========================
-    function drawText(text, x, y, options = {}) {
-      const {
-        font = 'bold 42px "ThaiBold", sans-serif',
-        color = "#000000",
-        align = "left",
-        maxWidth = 700
-      } = options;
-
-      ctx.font = font;
-      ctx.fillStyle = color;
-      ctx.textAlign = align;
-      ctx.textBaseline = "top";
-
-      const lines = wrapText(String(text || "-"), maxWidth);
-      const lineHeight = getLineHeight(font);
-
-      lines.forEach((line, i) => {
-        ctx.fillText(line, x, y + i * lineHeight);
-      });
-
-      return lines.length * lineHeight;
-    }
-
-    function wrapText(text, maxWidth) {
-      const paragraphs = String(text || "").split("\n");
-      const lines = [];
-
-      for (const para of paragraphs) {
-        let line = "";
-        for (const ch of para) {
-          const testLine = line + ch;
-          const width = ctx.measureText(testLine).width;
-          if (width > maxWidth && line) {
-            lines.push(line);
-            line = ch;
-          } else {
-            line = testLine;
-          }
-        }
-        if (line) lines.push(line);
-      }
-
-      return lines.length ? lines : ["-"];
-    }
-
-    function getLineHeight(font) {
-      const m = /(\d+)px/.exec(font);
-      const size = m ? parseInt(m[1], 10) : 40;
-      return Math.round(size * 1.35);
-    }
-
-    function trimText(text, max) {
-      const s = String(text || "").trim();
-      if (!s) return "-";
-      return s.length > max ? s.slice(0, max) + "..." : s;
-    }
-
-    function formatStatusThai(status) {
-      switch (String(status || "").toLowerCase()) {
-        case "new":
-          return "รับเรื่องแล้ว";
-        case "in_progress":
-          return "กำลังดำเนินการ";
-        case "done":
-          return "เสร็จสิ้นแล้ว";
-        case "cancelled":
-          return "ยกเลิก";
-        default:
-          return status || "-";
-      }
-    }
-
-    function formatPriorityThai(priority) {
-      switch (String(priority || "").toLowerCase()) {
-        case "urgent":
-          return "ด่วน";
-        case "high":
-          return "สูง";
-        case "normal":
-          return "ปกติ";
-        case "low":
-          return "ต่ำ";
-        default:
-          return priority || "-";
-      }
-    }
-
-    function getStatusColor(status) {
-      switch (String(status || "").toLowerCase()) {
-        case "new":
-          return "#2563EB";
-        case "in_progress":
-          return "#F57C00";
-        case "done":
-          return "#16A34A";
-        case "cancelled":
-          return "#6B7280";
-        default:
-          return "#F57C00";
-      }
-    }
-
-    function getPriorityColor(priority) {
-      switch (String(priority || "").toLowerCase()) {
-        case "urgent":
-          return "#D40000";
-        case "high":
-          return "#EA580C";
-        case "normal":
-          return "#2563EB";
-        case "low":
-          return "#6B7280";
-        default:
-          return "#D40000";
-      }
-    }
-
-    function minutesAgoText(value) {
-      if (!value) return "12 นาทีที่แล้ว";
-      const dt = new Date(value);
-      if (Number.isNaN(dt.getTime())) return "12 นาทีที่แล้ว";
-
-      const diffMs = Date.now() - dt.getTime();
-      const mins = Math.max(1, Math.round(diffMs / 60000));
-
-      if (mins < 60) return mins + " นาทีที่แล้ว";
-      const hrs = Math.round(mins / 60);
-      if (hrs < 24) return hrs + " ชั่วโมงที่แล้ว";
-      const days = Math.round(hrs / 24);
-      return days + " วันที่แล้ว";
-    }
-
-    function roundRectPath(x, y, width, height, radius) {
-      const r = Math.min(radius, width / 2, height / 2);
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + width - r, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + r);
-      ctx.lineTo(x + width, y + height - r);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
-      ctx.lineTo(x + r, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
-    }
-
-    // =========================
-    // DATA MAPPING
-    // =========================
-    const case_code = trimText(data.case_code || caseCode || "-", 24);
-    const full_name = trimText(data.full_name || "ไม่ระบุชื่อ", 36);
-    const location = trimText(data.location || "ไม่ระบุพื้นที่", 40);
-    const statusThai = formatStatusThai(data.status || "in_progress");
-    const priorityThai = formatPriorityThai(data.priority || "urgent");
-    const statusColor = getStatusColor(data.status || "in_progress");
-    const priorityColor = getPriorityColor(data.priority || "urgent");
-    const updatedText = minutesAgoText(data.last_action_at || data.created_at);
-
-    const progressPercentRaw = Number(data.progress_percent);
-    const progressPercent = Number.isFinite(progressPercentRaw)
-      ? Math.max(0, Math.min(100, progressPercentRaw))
-      : 60;
-
-    const slaLevel = String(data.sla_level || "breached").toLowerCase();
-    const slaText =
-      slaLevel === "breached"
-        ? "ใกล้เกินกำหนด"
-        : slaLevel === "warning"
-          ? "ต้องเฝ้าระวัง"
-          : "ปกติ";
+    const case_code = data?.case_code || caseCode || "-";
+    const full_name = data?.full_name || "ไม่ระบุชื่อ";
+    const location = data?.location || "ไม่ระบุพื้นที่";
+    const statusThai = "กำลังดำเนินการ";
+    const priorityThai = "ด่วน";
+    const updatedText = "12 นาทีที่แล้ว";
+    const slaText = "ใกล้เกินกำหนด";
+    const progressPercent = 60;
 
     // =========================
     // LAYOUT
@@ -358,126 +160,124 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     const INNER_X = CARD.left + 46;
     const HEADER_CENTER_X = 520;
 
-    // 1) เลขเคสกลางหัวแดง
+    // =========================
+    // TEXT
+    // =========================
+
+    // CASE CODE
     drawText(case_code, HEADER_CENTER_X, 292, {
       font: 'bold 72px "ThaiBold", sans-serif',
       color: "#ffffff",
-      align: "center",
-      maxWidth: 620
+      align: "center"
     });
 
-// =========================
-// FINAL TYPO + POSITION
-// =========================
+    // NAME
+    drawText("ชื่อ: " + full_name, INNER_X, 440, {
+      font: 'bold 30px "ThaiBold", sans-serif',
+      color: "#222222"
+    });
 
-// 2) ชื่อ
-drawText("ชื่อ: " + full_name, INNER_X, 445, {
-  font: 'bold 24px "ThaiBold", sans-serif',
-  color: "#222222",
-  maxWidth: 760
+    // LOCATION
+    drawText(location, INNER_X, 500, {
+      font: 'bold 24px "ThaiRegular", sans-serif',
+      color: "#666666"
+    });
+
+    // STATUS
+    drawText("สถานะ:", INNER_X, 590, {
+      font: 'bold 26px "ThaiBold", sans-serif',
+      color: "#333333"
+    });
+
+    drawText("● " + statusThai, INNER_X + 120, 590, {
+      font: 'bold 26px "ThaiBold", sans-serif',
+      color: "#E67E22"
+    });
+
+    // PRIORITY
+    drawText("ระดับ:", INNER_X, 640, {
+      font: 'bold 26px "ThaiBold", sans-serif',
+      color: "#333333"
+    });
+
+    drawText(priorityThai, INNER_X + 100, 640, {
+      font: 'bold 26px "ThaiBold", sans-serif',
+      color: "#D63031"
+    });
+
+    // LINE
+    ctx.strokeStyle = "#D9D9D9";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(CARD.left + 34, 700);
+    ctx.lineTo(CARD.left + CARD.width - 34, 700);
+    ctx.stroke();
+
+    // UPDATED
+    drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 735, {
+      font: 'bold 20px "ThaiRegular", sans-serif',
+      color: "#777777"
+    });
+
+    // =========================
+    // SLA BOX (สำคัญ)
+    // =========================
+
+    // SLA TEXT
+    drawText("SLA: " + slaText, INNER_X, 885, {
+      font: 'bold 24px "ThaiBold", sans-serif',
+      color: "#E67E22"
+    });
+
+    // %
+    drawText(progressPercent + "%", CARD.left + CARD.width - 52, 880, {
+      font: 'bold 24px "ThaiBold", sans-serif',
+      color: "#444444",
+      align: "right"
+    });
+
+    // BAR
+    const barX = INNER_X;
+    const barY = 920;
+    const barW = 720;
+    const barH = 18;
+
+    const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));
+
+    ctx.fillStyle = "#B7B09B";
+    roundRectPath(barX, barY, barW, barH, 9);
+    ctx.fill();
+
+    const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
+    grad.addColorStop(0, "#FFD400");
+    grad.addColorStop(0.45, "#C9F000");
+    grad.addColorStop(1, "#6D6A3A");
+
+    ctx.fillStyle = grad;
+    roundRectPath(barX, barY, fillW, barH, 9);
+    ctx.fill();
+
+    // DOT
+    const dotX = barX + fillW - 3;
+    const dotY = barY + (barH / 2);
+
+    ctx.fillStyle = "#FFF36B";
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // =========================
+    // OUTPUT
+    // =========================
+    const buffer = canvas.toBuffer("image/png");
+    res.set("Content-Type", "image/png");
+    return res.send(buffer);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("render failed");
+  }
 });
-
-// 3) พื้นที่
-drawText(location, INNER_X, 500, {
-  font: 'bold 20px "ThaiRegular", sans-serif',
-  color: "#666666",
-  maxWidth: 760
-});
-
-// 4) สถานะ
-drawText("สถานะ:", INNER_X, 585, {
-  font: 'bold 22px "ThaiBold", sans-serif',
-  color: "#333333",
-  maxWidth: 150
-});
-
-drawText("● " + statusThai, INNER_X + 100, 585, {
-  font: 'bold 22px "ThaiBold", sans-serif',
-  color: statusColor,
-  maxWidth: 500
-});
-
-// 5) ระดับ
-drawText("ระดับ:", INNER_X, 635, {
-  font: 'bold 22px "ThaiBold", sans-serif',
-  color: "#333333",
-  maxWidth: 150
-});
-
-drawText(priorityThai, INNER_X + 85, 635, {
-  font: 'bold 22px "ThaiBold", sans-serif',
-  color: priorityColor,
-  maxWidth: 250
-});
-
-// 6) เส้นคั่น
-ctx.strokeStyle = "#D9D9D9";
-ctx.lineWidth = 2;
-ctx.beginPath();
-ctx.moveTo(CARD.left + 34, 705);
-ctx.lineTo(CARD.left + CARD.width - 34, 705);
-ctx.stroke();
-
-// 7) อัปเดตล่าสุด
-drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 740, {
-  font: 'bold 18px "ThaiRegular", sans-serif',
-  color: "#777777",
-  maxWidth: 760
-});
-
-// 8) SLA
-drawText("SLA: " + slaText, INNER_X, 900, {
-  font: 'bold 20px "ThaiBold", sans-serif',
-  color: "#E67E22",
-  maxWidth: 520
-});
-
-drawText(progressPercent + "%", CARD.left + CARD.width - 52, 920, {
-  font: 'bold 20px "ThaiBold", sans-serif',
-  color: "#444444",
-  align: "right",
-  maxWidth: 120
-});
-
-// 9) progress bar
-const barX = INNER_X;
-const barY = 965;
-const barW = 720;
-const barH = 16;
-const fillW = Math.max(16, Math.round((progressPercent / 100) * barW));
-
-ctx.fillStyle = "#B7B09B";
-roundRectPath(barX, barY, barW, barH, 8);
-ctx.fill();
-
-// 10) progress fill
-const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
-grad.addColorStop(0, "#FFD400");
-grad.addColorStop(0.45, "#C9F000");
-grad.addColorStop(1, "#6D6A3A");
-
-ctx.fillStyle = grad;
-roundRectPath(barX, barY, fillW, barH, 8);
-ctx.fill();
-
-// 11) glow dot
-const dotX = barX + fillW - 3;
-const dotY = barY + (barH / 2);
-
-const glow = ctx.createRadialGradient(dotX, dotY, 2, dotX, dotY, 14);
-glow.addColorStop(0, "rgba(255,255,180,1)");
-glow.addColorStop(0.4, "rgba(255,240,120,0.9)");
-glow.addColorStop(1, "rgba(255,240,120,0)");
-
-ctx.fillStyle = glow;
-ctx.beginPath();
-ctx.arc(dotX, dotY, 14, 0, Math.PI * 2);
-ctx.fill();
-
-ctx.fillStyle = "#FFF36B";
-ctx.beginPath();
-ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
-ctx.fill();
 
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");

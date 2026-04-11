@@ -229,46 +229,46 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     // TEXT
     // =========================
 
-    // CASE CODE
-    drawText(case_code, HEADER_CENTER_X, 292, {
-      font: 'bold 72px "ThaiBold", sans-serif',
-      color: "#ffffff",
-      align: "center"
-    });
+// CASE CODE
+drawText(ctx, case_code, HEADER_CENTER_X, 292, {
+  font: 'bold 72px "ThaiBold", sans-serif',
+  color: "#ffffff",
+  align: "center"
+});
 
-    // NAME
-    drawText("ชื่อ: " + full_name, INNER_X, 440, {
-      font: 'bold 30px "ThaiBold", sans-serif',
-      color: "#222222"
-    });
+// NAME
+drawText(ctx, "ชื่อ: " + full_name, INNER_X, 440, {
+  font: 'bold 30px "ThaiBold", sans-serif',
+  color: "#222222"
+});
 
-    // LOCATION
-    drawText(location, INNER_X, 500, {
-      font: 'bold 24px "ThaiRegular", sans-serif',
-      color: "#666666"
-    });
+// LOCATION
+drawText(ctx, location, INNER_X, 500, {
+  font: 'bold 24px "ThaiRegular", sans-serif',
+  color: "#666666"
+});
 
-    // STATUS
-    drawText("สถานะ:", INNER_X, 590, {
-      font: 'bold 26px "ThaiBold", sans-serif',
-      color: "#333333"
-    });
+// STATUS
+drawText(ctx, "สถานะ:", INNER_X, 590, {
+  font: 'bold 26px "ThaiBold", sans-serif',
+  color: "#333333"
+});
 
-    drawText("● " + statusThai, INNER_X + 120, 590, {
-      font: 'bold 26px "ThaiBold", sans-serif',
-      color: "#E67E22"
-    });
+drawText(ctx, "● " + statusThai, INNER_X + 120, 590, {
+  font: 'bold 26px "ThaiBold", sans-serif',
+  color: "#E67E22"
+});
 
-    // PRIORITY
-    drawText("ระดับ:", INNER_X, 640, {
-      font: 'bold 26px "ThaiBold", sans-serif',
-      color: "#333333"
-    });
+// PRIORITY
+drawText(ctx, "ระดับ:", INNER_X, 640, {
+  font: 'bold 26px "ThaiBold", sans-serif',
+  color: "#333333"
+});
 
-    drawText(priorityThai, INNER_X + 100, 640, {
-      font: 'bold 26px "ThaiBold", sans-serif',
-      color: "#D63031"
-    });
+drawText(ctx, priorityThai, INNER_X + 100, 640, {
+  font: 'bold 26px "ThaiBold", sans-serif',
+  color: "#D63031"
+});
 
     // LINE
     ctx.strokeStyle = "#D9D9D9";
@@ -278,28 +278,28 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
     ctx.lineTo(CARD.left + CARD.width - 34, 700);
     ctx.stroke();
 
-    // UPDATED
-    drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 735, {
-      font: 'bold 20px "ThaiRegular", sans-serif',
-      color: "#777777"
-    });
+    / UPDATED
+drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 735, {
+  font: 'bold 20px "ThaiRegular", sans-serif',
+  color: "#777777"
+});
 
     // =========================
     // SLA BOX (สำคัญ)
     // =========================
 
     // SLA TEXT
-    drawText("SLA: " + slaText, INNER_X, 885, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: "#E67E22"
-    });
+drawText(ctx, "SLA: " + slaText, INNER_X, 885, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: "#E67E22"
+});
 
-    // %
-    drawText(progressPercent + "%", CARD.left + CARD.width - 52, 880, {
-      font: 'bold 24px "ThaiBold", sans-serif',
-      color: "#444444",
-      align: "right"
-    });
+// %
+drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 52, 880, {
+  font: 'bold 24px "ThaiBold", sans-serif',
+  color: "#444444",
+  align: "right"
+});
 
     // BAR
     const barX = INNER_X;

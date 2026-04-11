@@ -191,6 +191,9 @@ const caseCode = rawCaseCode
   .replace(/\/+$/g, "")
   .trim();
 
+console.log("URGENT POSTER rawCaseCode =", rawCaseCode);
+console.log("URGENT POSTER finalCaseCode =", caseCode);
+   
     const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
 
     const { data } = await supabase

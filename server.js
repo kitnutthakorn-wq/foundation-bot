@@ -401,7 +401,7 @@ app.get("/imagemap/search-menu/1040", async (req, res) => {
     const ctx = canvas.getContext("2d");
 
     // วาดภาพหัว
-    ctx.drawImage(baseImage, 0, 0, 1040, 900);
+    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
     // พื้นหลังด้านล่าง (ดำไล่เฉด)
     const grad = ctx.createLinearGradient(0, 800, 0, 1559);

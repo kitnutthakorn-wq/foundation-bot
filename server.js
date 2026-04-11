@@ -319,34 +319,34 @@ drawText(case_code, HEADER_CENTER_X, 296, {
 });
 
 // 2) ชื่อ
-drawText(`ชื่อ: ${full_name}`, INNER_X, 392, {
+drawText(`ชื่อ: ${full_name}`, INNER_X, 420, {
   font: 'bold 28px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
-drawText(`📍 ${location}`, INNER_X, 456, {
+drawText(`📍 ${location}`, INNER_X, 490, {
   font: 'bold 24px "ThaiRegular", sans-serif',
   color: "#555555",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 532, {
+drawText("สถานะ:", INNER_X, 580, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
 });
 
 drawText(`🟠 ${statusThai}`, INNER_X + 108, 532, {
-  font: 'bold 24px "ThaiBold", sans-serif',
+  font: 'bold 32px "ThaiBold", sans-serif',
   color: statusColor,
   maxWidth: 500
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 592, {
+drawText("ระดับ:", INNER_X, 650, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150

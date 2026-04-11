@@ -378,14 +378,14 @@ drawText("ชื่อ: " + full_name, INNER_X, 440, {
 });
 
 // 3) พื้นที่
-drawText(location, INNER_X, 535, {
+drawText(location, INNER_X, 545, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });
 
 // 4) สถานะ
-drawText("สถานะ:", INNER_X, 600, {
+drawText("สถานะ:", INNER_X, 590, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150
@@ -398,7 +398,7 @@ drawText("● " + statusThai, INNER_X + 110, 600, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 665, {
+drawText("ระดับ:", INNER_X, 655, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150

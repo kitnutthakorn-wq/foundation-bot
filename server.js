@@ -413,7 +413,7 @@ app.get("/imagemap/search-menu/1040", async (req, res) => {
     // =========================
     // TITLE
     // =========================
-    drawText(ctx, "เมนูจัดการเคส", 520, 880, {
+   drawText(ctx, "เมนูจัดการเคส", 520, 815, {
       font: 'bold 72px "ThaiBold"',
       color: "#FFFFFF",
       align: "center"
@@ -444,8 +444,8 @@ app.get("/imagemap/search-menu/1040", async (req, res) => {
     // =========================
     // BUTTONS
     // =========================
-    drawButton("ค้นหาด้วยเบอร์โทร", 180, 1020);
-    drawButton("ค้นหาด้วยเลขเคส", 180, 1160);
+    drawButton("ค้นหาด้วยเบอร์โทร", 180, 940);
+    drawButton("ค้นหาด้วยเลขเคส", 180, 1080);
 
     // =========================
     // OUTPUT

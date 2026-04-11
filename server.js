@@ -249,12 +249,12 @@ drawText(ctx, location, INNER_X, 550, {
 });
 
 // STATUS
-drawText(ctx, "สถานะ:", INNER_X, 640, {
+drawText(ctx, "สถานะ:", INNER_X, 650, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#333333"
 });
 
-drawText(ctx, "● " + statusThai, INNER_X + 120, 640, {
+drawText(ctx, statusThai, INNER_X + 120, 650, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#E67E22"
 });

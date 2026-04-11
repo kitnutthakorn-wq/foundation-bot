@@ -111,6 +111,21 @@ function clearAddTeamState(userId) {
   }
 }
 
+function setCaseSearchState(userId, payload = {}) {
+  userStates[userId] = userStates[userId] || {};
+  userStates[userId].caseSearch = payload;
+}
+
+function getCaseSearchState(userId) {
+  return userStates[userId]?.caseSearch || null;
+}
+
+function clearCaseSearchState(userId) {
+  if (userStates[userId]?.caseSearch) {
+    delete userStates[userId].caseSearch;
+  }
+}
+
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 

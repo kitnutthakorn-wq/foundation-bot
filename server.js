@@ -372,14 +372,14 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
 
 // 2) ชื่อ
 drawText("ชื่อ: " + full_name, INNER_X, 450, {
-  font: 'bold 30px "ThaiBold", sans-serif',
+  font: 'bold 36px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760
 });
 
 // 3) พื้นที่
 drawText(location, INNER_X, 515, {
-  font: 'bold 24px "ThaiRegular", sans-serif',
+  font: 'bold 36px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760
 });

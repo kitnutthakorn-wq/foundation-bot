@@ -378,7 +378,7 @@ drawText("ชื่อ: " + full_name, INNER_X, 440, {
 });
 
 // 3) พื้นที่
-drawText(location, INNER_X, 525, {
+drawText(location, INNER_X, 500, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#666666",
   maxWidth: 760

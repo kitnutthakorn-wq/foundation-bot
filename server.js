@@ -319,7 +319,7 @@ drawText(case_code, HEADER_CENTER_X, 296, {
 });
 
 // 2) ชื่อ
-drawText(`ชื่อ: ${full_name}`, INNER_X, 420, {
+drawText(`ชื่อ: ${full_name}`, INNER_X, 520, {
   font: 'bold 28px "ThaiBold", sans-serif',
   color: "#222222",
   maxWidth: 760

@@ -2026,7 +2026,6 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
     ]
   };
 }
-
 // =========================
 // OVERLAY MENU (PRO MAX++)
 // วางหลัง orangeButton()

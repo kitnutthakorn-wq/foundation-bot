@@ -296,7 +296,7 @@ drawText(ctx, "SLA: " + slaText, INNER_X, 960, {
 
 
 // %
-drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 12, 969, {
+drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 72, 969, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right"

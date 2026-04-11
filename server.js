@@ -398,7 +398,7 @@ drawText("● " + statusThai, INNER_X + 110, 600, {
 });
 
 // 5) ระดับ
-drawText("ระดับ:", INNER_X, 655, {
+drawText("ระดับ:", INNER_X, 635, {
   font: 'bold 34px "ThaiBold", sans-serif',
   color: "#333333",
   maxWidth: 150

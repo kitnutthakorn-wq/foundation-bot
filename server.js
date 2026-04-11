@@ -222,7 +222,7 @@ app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
       height: 610
     };
 
-    const INNER_X = CARD.left + 78;
+    const INNER_X = CARD.left + 88;
     const HEADER_CENTER_X = 520;
 
     // =========================
@@ -296,7 +296,7 @@ drawText(ctx, "SLA: " + slaText, INNER_X, 960, {
 
 
 // %
-drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 72, 969, {
+drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
   font: 'bold 38px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right"

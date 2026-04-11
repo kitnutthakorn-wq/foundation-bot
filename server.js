@@ -374,7 +374,7 @@ drawText(`🕒 อัปเดตล่าสุด: ${updatedText}`, INNER_X, 8
 });
 
 // 8) SLA + %
-drawText(`⚠ SLA: ${slaText}`, INNER_X, 852, {
+drawText(`⚠ SLA: ${slaText}`, INNER_X, 752, {
   font: 'bold 24px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520

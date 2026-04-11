@@ -181,138 +181,7 @@ function roundRectPath(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
-app.get("/imagemap/urgent-case-poster", async (req, res) => {
-  try {
-    const rawCaseCode = String(req.query.case_code || "").trim();
-    const caseCode = rawCaseCode.replace(/\/1040$/i, "").replace(/\/700$/i, "").trim();
 
-    const imagePath = path.join(__dirname, "imagemap", "urgent-case-poster.png");
-
-    const { data } = await supabase
-      .from("help_requests")
-      .select("*")
-      .eq("case_code", caseCode)
-      .maybeSingle();
-
-    const baseImage = await loadImage(imagePath);
-    const canvas = createCanvas(1040, 1559);
-    const ctx = canvas.getContext("2d");
-
-    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
-
-    const case_code = data?.case_code || caseCode || "-";
-    const full_name = data?.full_name || "ไม่ระบุชื่อ";
-    const location = data?.location || "ไม่ระบุพื้นที่";
-    const statusThai = "กำลังดำเนินการ";
-    const priorityThai = "ด่วน";
-    const updatedText = "12 นาทีที่แล้ว";
-    const slaText = "ใกล้เกินกำหนด";
-    const progressPercent = 60;
-
-    const CARD = {
-      left: 78,
-      top: 262,
-      width: 884,
-      height: 610
-    };
-
-    const INNER_X = CARD.left + 93;
-    const HEADER_CENTER_X = 520;
-
-    drawText(ctx, case_code, HEADER_CENTER_X, 292, {
-      font: 'bold 72px "ThaiBold", sans-serif',
-      color: "#ffffff",
-      align: "center"
-    });
-
-    drawText(ctx, "ชื่อ: " + full_name, INNER_X, 480, {
-      font: 'bold 48px "ThaiBold", sans-serif',
-      color: "#222222"
-    });
-
-    drawText(ctx, location, INNER_X, 560, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#666666"
-    });
-
-    drawText(ctx, "สถานะ:", INNER_X, 660, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#333333"
-    });
-
-    drawText(ctx, statusThai, INNER_X + 120, 660, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#E67E22"
-    });
-
-    drawText(ctx, "ระดับ:", INNER_X, 720, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#333333"
-    });
-
-    drawText(ctx, priorityThai, INNER_X + 100, 720, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#D63031"
-    });
-
-    ctx.strokeStyle = "#D9D9D9";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(CARD.left + 34, 815);
-    ctx.lineTo(CARD.left + CARD.width - 34, 815);
-    ctx.stroke();
-
-    drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 835, {
-      font: 'bold 34px "ThaiRegular", sans-serif',
-      color: "#777777"
-    });
-
-    drawText(ctx, "SLA: " + slaText, INNER_X, 960, {
-      font: 'bold 36px "ThaiBold", sans-serif',
-      color: "#E67E22"
-    });
-
-    drawText(ctx, progressPercent + "%", CARD.left + CARD.width - 82, 969, {
-      font: 'bold 38px "ThaiBold", sans-serif',
-      color: "#444444",
-      align: "right"
-    });
-
-    const barX = INNER_X;
-    const barY = 1020;
-    const barW = 690;
-    const barH = 18;
-    const fillW = Math.max(18, Math.round((progressPercent / 100) * barW));
-
-    ctx.fillStyle = "#B7B09B";
-    roundRectPath(ctx, barX, barY, barW, barH, 9);
-    ctx.fill();
-
-    const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
-    grad.addColorStop(0, "#FFD400");
-    grad.addColorStop(0.45, "#C9F000");
-    grad.addColorStop(1, "#6D6A3A");
-
-    ctx.fillStyle = grad;
-    roundRectPath(ctx, barX, barY, fillW, barH, 9);
-    ctx.fill();
-
-    const dotX = barX + fillW - 3;
-    const dotY = barY + (barH / 2);
-
-    ctx.fillStyle = "#FFF36B";
-    ctx.beginPath();
-    ctx.arc(dotX, dotY, 7, 0, Math.PI * 2);
-    ctx.fill();
-
-    const buffer = canvas.toBuffer("image/png");
-    res.set("Content-Type", "image/png");
-    return res.send(buffer);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send("render failed");
-  }
-});
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
     const caseCode = String(req.query.case_code || "").trim();
@@ -2063,7 +1932,7 @@ function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
 
   return {
     type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/urgent-case-poster?case_code=${encodeURIComponent(caseCode)}`,
+    baseUrl: `${baseUrl}/imagemap/urgent-case-poster/1040?case_code=${encodeURIComponent(caseCode)}`,
     altText: `ศูนย์ปฏิบัติการเคสด่วน ${caseCode || ""}`,
     baseSize: {
       width: 1040,

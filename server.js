@@ -274,12 +274,12 @@ drawText(ctx, priorityThai, INNER_X + 100, 710, {
     ctx.strokeStyle = "#D9D9D9";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(CARD.left + 34, 830);
-    ctx.lineTo(CARD.left + CARD.width - 34, 830);
+    ctx.moveTo(CARD.left + 34, 800);
+    ctx.lineTo(CARD.left + CARD.width - 34, 800);
     ctx.stroke();
 
     // UPDATED
-drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 850, {
+drawText(ctx, "อัปเดตล่าสุด: " + updatedText, INNER_X, 820, {
   font: 'bold 34px "ThaiRegular", sans-serif',
   color: "#777777"
 });

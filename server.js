@@ -425,13 +425,13 @@ drawText("อัปเดตล่าสุด: " + updatedText, INNER_X, 770, {
   maxWidth: 760
 });
 
-drawText("SLA: " + slaText, INNER_X, 872, {
+drawText("SLA: " + slaText, INNER_X, 972, {
   font: 'bold 22px "ThaiBold", sans-serif',
   color: "#E67E22",
   maxWidth: 520
 });
 
-drawText(progressPercent + "%", CARD.left + CARD.width - 52, 866, {
+drawText(progressPercent + "%", CARD.left + CARD.width - 52, 966, {
   font: 'bold 22px "ThaiBold", sans-serif',
   color: "#444444",
   align: "right",

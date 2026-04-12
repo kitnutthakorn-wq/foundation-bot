@@ -464,6 +464,8 @@ app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
     const imagePath = path.join(__dirname, "imagemap", "new-case-menu-bg.png");
     const baseImage = await loadImage(imagePath);
 
+    const counts = await getNewCaseMenuCounts();
+
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
@@ -473,15 +475,40 @@ app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
+    // =========================
+    // วาดตัวเลขจำนวนเคสบนปุ่ม
+    // =========================
+    const centerX = 520;
+
+    drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 590, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 765, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 940, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");
     return res.send(buffer);
   } catch (err) {
-    console.error("new-case-menu-v1 render failed:", err);
+    console.error("new-case-menu-v2 render failed:", err);
     return res.status(500).send("render failed");
   }
 });
-
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,

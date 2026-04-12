@@ -8762,35 +8762,49 @@ if (String(text || "").trim() === "ดูเคสใหม่" || String(text |
 
 if (String(text || "").trim() === "ดูเคสใหม่ทั้งหมด") {
   if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }]);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }
+    ]);
     return;
   }
 
-  await handleViewNewSplit({ replyToken });
+  await replyCaseMenuCarousel({
+    replyToken,
+    title: "รายการเคสเปิดทั้งหมด",
+    filterType: "all"
+  });
   return;
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ด่วน") {
   if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ด่วน" }]);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ด่วน" }
+    ]);
     return;
   }
 
-  await safeReply(replyToken, [
-    { type: "text", text: "กำลังพัฒนาเมนูดูเคสใหม่ด่วน" }
-  ]);
+  await replyCaseMenuCarousel({
+    replyToken,
+    title: "รายการเคสด่วน",
+    filterType: "urgent"
+  });
   return;
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ปกติ") {
   if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ปกติ" }]);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ปกติ" }
+    ]);
     return;
   }
 
-  await safeReply(replyToken, [
-    { type: "text", text: "กำลังพัฒนาเมนูดูเคสใหม่ปกติ" }
-  ]);
+  await replyCaseMenuCarousel({
+    replyToken,
+    title: "รายการเคสปกติ",
+    filterType: "normal"
+  });
   return;
 }
 

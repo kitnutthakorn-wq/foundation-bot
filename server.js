@@ -575,87 +575,139 @@ function buildCaseMenuCarouselBubble(item = {}) {
   const updateUrl =
     `https://satisfied-stillness-production-7942.up.railway.app/update-case.html?case_code=${encodeURIComponent(item.case_code || "")}`;
 
-  const heroImage = "https://img1.pic.in.th/images/kck-poster.jpg";
+  const heroImage =
+    Array.isArray(item.images) && item.images.length > 0
+      ? item.images[0]
+      : "https://img2.pic.in.th/pic/kck-poster.jpg";
+
+  const isUrgent = String(item.priority || "").toLowerCase() === "urgent";
 
   return {
     type: "bubble",
-    size: "mega",
+    size: "kilo",
+
+    // 🔥 HERO (คม + กดได้)
     hero: {
       type: "image",
       url: heroImage,
       size: "full",
-      aspectRatio: "20:13",
-      aspectMode: "cover"
+      aspectRatio: "16:9",
+      aspectMode: "cover",
+      action: { type: "uri", uri: detailUrl }
     },
+
+    // 🔥 BODY (Kanit vibe)
     body: {
       type: "box",
       layout: "vertical",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#FFFFFF",
       cornerRadius: "20px",
-      paddingAll: "16px",
+      paddingAll: "14px",
       spacing: "md",
       contents: [
+        // แถบเลขเคส (คมๆ)
         {
-          type: "text",
-          text: item.case_code || "-",
-          weight: "bold",
-          size: "md",
-          color: "#0B7C86"
+          type: "box",
+          layout: "horizontal",
+          contents: [
+            {
+              type: "text",
+              text: item.case_code || "-",
+              weight: "bold",
+              size: "md",
+              color: "#0B7C86",
+              flex: 1
+            },
+            // badge ระดับ
+            {
+              type: "box",
+              layout: "vertical",
+              paddingHorizontal: "10px",
+              paddingVertical: "4px",
+              cornerRadius: "999px",
+              backgroundColor: isUrgent ? "#FDECEC" : "#EAF7EF",
+              contents: [
+                {
+                  type: "text",
+                  text: priorityText,
+                  size: "xs",
+                  weight: "bold",
+                  color: isUrgent ? "#D32F2F" : "#1F8F4D",
+                  align: "center"
+                }
+              ]
+            }
+          ]
         },
+
+        // ชื่อ (หัวใหญ่แบบ Kanit)
         {
           type: "text",
           text: item.full_name || "ไม่ระบุชื่อ",
           weight: "bold",
           size: "lg",
-          wrap: true
+          wrap: true,
+          color: "#102A43"
         },
+
+        // พื้นที่
         {
           type: "text",
           text: `📍 ${item.location || "-"}`,
           size: "sm",
-          color: "#666666",
+          color: "#6B7280",
           wrap: true
         },
+
+        // รายละเอียด (สั้น กระชับ)
         {
           type: "text",
-          text: `รายละเอียด: ${item.problem || "-"}`,
+          text: item.problem || "-",
           size: "sm",
+          color: "#334155",
           wrap: true,
           maxLines: 2
         },
+
+        // สถานะ
         {
           type: "box",
           layout: "horizontal",
-          spacing: "sm",
+          margin: "sm",
           contents: [
             {
               type: "text",
-              text: `สถานะ: ${statusText}`,
+              text: "สถานะ:",
               size: "xs",
-              color: "#0B7C86",
-              flex: 1
+              color: "#9CA3AF",
+              flex: 2
             },
             {
               type: "text",
-              text: `ระดับ: ${priorityText}`,
+              text: statusText,
               size: "xs",
-              color: "#D32F2F",
+              weight: "bold",
+              color: "#0B7C86",
               align: "end",
-              flex: 1
+              flex: 3
             }
           ]
         }
       ]
     },
+
+    // 🔥 FOOTER (ปุ่มคม ๆ)
     footer: {
       type: "box",
       layout: "vertical",
       spacing: "sm",
+      paddingAll: "14px",
       contents: [
         {
           type: "button",
           style: "primary",
           color: "#0B7C86",
+          height: "sm",
           action: {
             type: "uri",
             label: "เปิดเคส",
@@ -665,6 +717,7 @@ function buildCaseMenuCarouselBubble(item = {}) {
         {
           type: "button",
           style: "secondary",
+          height: "sm",
           action: {
             type: "uri",
             label: "อัปเดตเคส",
@@ -675,7 +728,6 @@ function buildCaseMenuCarouselBubble(item = {}) {
     }
   };
 }
-
 function buildCaseMenuCarouselFlex(title, cases = []) {
   return {
     type: "flex",

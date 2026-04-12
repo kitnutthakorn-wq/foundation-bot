@@ -730,7 +730,7 @@ async function getOpenCasesForMenu(filterType = "all", limit = 10) {
 const URGENT_CASE_CAROUSEL_HERO =
   "https://img1.pic.in.th/images/SLA.png";
 
-function buildCaseMenuCarouselBubble(item = {}) {
+function buildCaseMenuCarouselBubble(item = {}, options = {}) {
   const statusText = formatCaseStatusThai(item.status || "");
   const priorityText = formatPriorityThai(item.priority || "");
 
@@ -741,9 +741,12 @@ function buildCaseMenuCarouselBubble(item = {}) {
     `https://satisfied-stillness-production-7942.up.railway.app/update-case.html?case_code=${encodeURIComponent(item.case_code || "")}`;
 
   const heroImage =
-    Array.isArray(item.images) && item.images.length > 0
-      ? item.images[0]
-      : "https://img1.pic.in.th/images/kck-poster.jpg";
+    String(options.heroImage || "").trim() ||
+    (
+      Array.isArray(item.images) && item.images.length > 0
+        ? item.images[0]
+        : "https://img1.pic.in.th/images/kck-poster.jpg"
+    );
 
   const isUrgent = String(item.priority || "").toLowerCase() === "urgent";
 

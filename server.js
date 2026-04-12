@@ -9129,7 +9129,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   }
 
 const counts = await getUrgentCaseMenuCounts();
-const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v2`;
+const revision = `${counts.critical}-${counts.warning}-${counts.normal}-${Date.now()}`;
 
   await safeReply(replyToken, [
     {

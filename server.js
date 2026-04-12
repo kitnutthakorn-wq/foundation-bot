@@ -9025,6 +9025,67 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
 
   return;
 } 
+
+// ================================
+// SLA: เคสด่วน วิกฤต
+// ================================
+if (String(text || "").trim() === "เคสด่วน SLA วิกฤต") {
+  const slaCounts = await getSlaMenuCounts();
+
+  await safeReply(replyToken, [{
+    type: "text",
+    text: buildSlaPreviewText("🚨 เคสด่วน SLA วิกฤต", slaCounts.overdue_rows)
+  }]);
+
+  return;
+}
+
+// ================================
+// SLA: เคสด่วน ใกล้วิกฤต
+// ================================
+if (String(text || "").trim() === "เคสด่วน SLA ใกล้วิกฤต") {
+  const slaCounts = await getSlaMenuCounts();
+
+  await safeReply(replyToken, [{
+    type: "text",
+    text: buildSlaPreviewText("⚠️ เคสด่วน SLA ใกล้วิกฤต", slaCounts.near_due_rows)
+  }]);
+
+  return;
+}
+
+// ================================
+// SLA: เคสด่วน กำลังดำเนินการ
+// ================================
+if (String(text || "").trim() === "เคสด่วน กำลังดำเนินการ") {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("case_code, full_name, status, priority, created_at")
+    .eq("priority", "urgent")
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    console.error("URGENT IN_PROGRESS QUERY ERROR:", error);
+    await safeReply(replyToken, [{
+      type: "text",
+      text: "❌ โหลดรายการเคสด่วนกำลังดำเนินการไม่สำเร็จ"
+    }]);
+    return;
+  }
+
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    return normalizeCaseStatus(row.status) === "in_progress";
+  });
+
+  await safeReply(replyToken, [{
+    type: "text",
+    text: buildSlaPreviewText("📋 เคสด่วน กำลังดำเนินการ", rows)
+  }]);
+
+  return;
+}
+     
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();
 

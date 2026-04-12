@@ -4026,17 +4026,17 @@ function formatMenuBadgeLabel(label, count) {
 
 function buildSlaPreviewText(title, rows = []) {
   if (!Array.isArray(rows) || rows.length === 0) {
-    return `${title}\n\nไม่พบรายการ`;
+    return `${title}\n\nไม่มีรายการ`;
   }
+
   return [
     title,
     "",
     ...rows.slice(0, 10).map((row, index) => {
-      return `${index + 1}. ${row.case_code || "-"} | ${row.full_name || "-"} | ${formatPriorityThai(row.priority)} | ${row.sla_label_th || "-"}`;
+      return `${index + 1}. ${row.case_code || "-"} | ${row.full_name || "-"} | ${formatPriorityThai(row.priority || "")}`;
     })
   ].join("\n");
 }
-
 /* =========================
    SLA ALERT (GOLDEN SAFE PATCH)
 ========================= */

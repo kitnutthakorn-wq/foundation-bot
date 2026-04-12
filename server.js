@@ -620,7 +620,7 @@ function buildCaseMenuCarouselBubble(item = {}) {
             },
             // badge ระดับ
             {
-              {
+              
   type: "box",
   layout: "vertical",
   paddingStart: "10px",

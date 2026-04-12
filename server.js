@@ -2307,10 +2307,9 @@ async function getUrgentCaseMenuCounts() {
 function buildUrgentCaseMenuRevision(counts = {}) {
   const critical = Number(counts.critical || 0);
   const warning = Number(counts.warning || 0);
-  const inProgress = Number(counts.inProgress || 0);
-  return `${critical}-${warning}-${inProgress}`;
+  const normal = Number(counts.normal || 0);
+  return `${critical}-${warning}-${normal}`;
 }
-
 async function buildNewCaseMenuImagemap() {
   const rootUrl =
     "https://satisfied-stillness-production-7942.up.railway.app";

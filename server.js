@@ -5164,7 +5164,39 @@ app.get("/api/recent-activity", async (req, res) => {
     });
   }
 });
- 
+
+// =====================================================
+// API: CENTRAL SLA SUMMARY
+// =====================================================
+app.get("/api/sla/summary", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("id, case_code, status, priority, created_at");
+
+    if (error) {
+      console.error("❌ /api/sla/summary supabase error:", error);
+      return res.status(500).json({
+        ok: false,
+        error: error.message || "Failed to load SLA summary"
+      });
+    }
+
+    const summary = buildSlaSummary(data || []);
+
+    return res.json({
+      ok: true,
+      ...summary
+    });
+  } catch (err) {
+    console.error("❌ /api/sla/summary error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "Internal server error"
+    });
+  }
+});
+
 // =========================
 // GOLDEN SAFE PATCH: SLA SUMMARY API (READ ONLY)
 // =========================

@@ -727,6 +727,8 @@ async function getOpenCasesForMenu(filterType = "all", limit = 10) {
   return filtered.slice(0, limit);
 }
 
+const URGENT_CASE_CAROUSEL_HERO =
+  "https://img1.pic.in.th/images/SLA.png";
 
 function buildCaseMenuCarouselBubble(item = {}) {
   const statusText = formatCaseStatusThai(item.status || "");

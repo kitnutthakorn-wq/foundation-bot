@@ -9011,29 +9011,20 @@ if (String(text || "").trim() === "กลับสู่เมนูทีมง
      
 if (String(text || "").trim() === "ดูเคสด่วน" || String(text || "").trim() === "เคสด่วน") {
   console.log("TEXT:", text);
+
   if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูเคสด่วน" }]);
-    return;
-  }
-
-  const cases = await getUrgentCases(1);
-
-  if (!cases || cases.length === 0) {
     await safeReply(replyToken, [
-      { type: "text", text: "❌ ยังไม่มีเคสด่วนในระบบ" }
+      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูเคสด่วน" }
     ]);
     return;
   }
 
-  const caseItem = cases[0];
-
   await safeReply(replyToken, [
-    buildUrgentCasePosterImagemap(caseItem)
+    await buildUrgentCaseMenuImagemap()
   ]);
 
   return;
-}
-      
+}    
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();
 

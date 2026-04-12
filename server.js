@@ -1805,6 +1805,73 @@ function buildPosterModeFlex() {
 }
 
   
+// =========================
+// NEW + OLD CASE FLEX (PRO MAX)
+// =========================
+function buildNewCaseSplitFlex(newCases, oldCases) {
+  return {
+    type: "flex",
+    altText: "เคสใหม่ / เคสค้าง",
+    contents: {
+      type: "bubble",
+      size: "giga",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+
+          {
+            type: "text",
+            text: "📋 เคสใหม่ (วันนี้)",
+            weight: "bold",
+            size: "xl"
+          },
+
+          ...(newCases.length > 0
+            ? newCases.slice(0, 3).map(c => ({
+                type: "box",
+                layout: "vertical",
+                paddingAll: "12px",
+                backgroundColor: "#E8F8F0",
+                cornerRadius: "12px",
+                contents: [
+                  { type: "text", text: `📌 ${c.case_code}`, weight: "bold" },
+                  { type: "text", text: c.problem || "-", size: "sm", wrap: true },
+                  { type: "text", text: `📍 ${c.location || "-"}`, size: "xs", color: "#666666" }
+                ]
+              }))
+            : [{ type: "text", text: "ไม่มีเคสใหม่", size: "sm", color: "#999999" }]),
+
+          { type: "separator", margin: "lg" },
+
+          {
+            type: "text",
+            text: "⚠️ เคสค้าง",
+            weight: "bold",
+            size: "xl"
+          },
+
+          ...(oldCases.length > 0
+            ? oldCases.slice(0, 3).map(c => ({
+                type: "box",
+                layout: "vertical",
+                paddingAll: "12px",
+                backgroundColor: "#FFF4E5",
+                cornerRadius: "12px",
+                contents: [
+                  { type: "text", text: `📌 ${c.case_code}`, weight: "bold" },
+                  { type: "text", text: c.problem || "-", size: "sm", wrap: true },
+                  { type: "text", text: `📍 ${c.location || "-"}`, size: "xs", color: "#666666" }
+                ]
+              }))
+            : [{ type: "text", text: "ไม่มีเคสค้าง", size: "sm", color: "#999999" }])
+
+        ]
+      }
+    }
+  };
+}
 
 
 function buildTeamMenuFlex() {

@@ -2361,7 +2361,7 @@ async function buildUrgentCaseMenuImagemap() {
   return {
     type: "imagemap",
     baseUrl: `${rootUrl}/imagemap/urgent-case-menu-v2`,
-    altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.inProgress}`,
+   altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.normal}`,
     baseSize: {
       width: 1040,
       height: 1559

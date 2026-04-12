@@ -9168,13 +9168,12 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
 // SLA: เคสด่วน วิกฤต
 // ================================
 if (String(text || "").trim() === "เคสด่วน SLA วิกฤต") {
-  const slaCounts = await getSlaMenuCounts();
-
-  await safeReply(replyToken, [{
-    type: "text",
-    text: buildSlaPreviewText("🚨 เคสด่วน SLA วิกฤต", slaCounts.overdue_rows)
-  }]);
-
+  await replyCaseMenuCarousel({
+    replyToken,
+    title: "เคสด่วน SLA วิกฤต",
+    filterType: "urgent",
+    heroImage: URGENT_CASE_CAROUSEL_HERO
+  });
   return;
 }
 

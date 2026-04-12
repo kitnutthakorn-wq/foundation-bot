@@ -481,7 +481,7 @@ app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
 const centerX = 520;
 
 // ปุ่ม 1
-drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 930, {
+drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 934, {
   font: 'bold 46px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
@@ -497,8 +497,8 @@ drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, cent
 });
 
 // ปุ่ม 3
-drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1260, {
-  font: 'bold 44px "ThaiBold", sans-serif',
+drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1256, {
+  font: 'bold 46px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760

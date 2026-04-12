@@ -4037,6 +4037,7 @@ function buildSlaPreviewText(title, rows = []) {
     })
   ].join("\n");
 }
+
 /* =========================
    SLA ALERT (GOLDEN SAFE PATCH)
 ========================= */

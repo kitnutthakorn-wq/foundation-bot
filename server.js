@@ -1858,7 +1858,7 @@ async function handleViewNewSplit({ replyToken }) {
 // =========================
 // NEW CASE MENU IMAGEMAP
 // =========================
-function buildNewCaseMenuImagemap() {
+async function buildNewCaseMenuImagemap() {
   const baseUrl =
     process.env.APP_BASE_URL ||
     process.env.PUBLIC_BASE_URL ||
@@ -1867,31 +1867,39 @@ function buildNewCaseMenuImagemap() {
     process.env.URL ||
     "https://satisfied-stillness-production-7942.up.railway.app";
 
+  const counts = await getNewCaseMenuCounts();
+  const version = Date.now();
+
   return {
     type: "imagemap",
-    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v2`,
-    altText: "เมนูดูเคสใหม่",
+    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v2?v=${version}`,
+    altText: `เมนูดูเคสใหม่ | ทั้งหมด ${counts.total} | ด่วน ${counts.urgent} | ปกติ ${counts.normal}`,
     baseSize: {
       width: 1040,
       height: 1559
     },
     actions: [
-  {
-    type: "message",
-    text: "ดูเคสใหม่ทั้งหมด",
-    area: { x: 120, y: 840, width: 800, height: 135 }
-  },
-  {
-    type: "message",
-    text: "ดูเคสด่วน",
-    area: { x: 120, y: 1010, width: 800, height: 135 }
-  },
-  {
-    type: "message",
-    text: "กลับสู่เมนูทีมงาน",
-    area: { x: 120, y: 1360, width: 800, height: 140 }
-  }
-]
+      {
+        type: "message",
+        text: "ดูเคสใหม่ทั้งหมด",
+        area: { x: 120, y: 840, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสใหม่ด่วน",
+        area: { x: 120, y: 1010, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสใหม่ปกติ",
+        area: { x: 120, y: 1180, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "กลับสู่เมนูทีมงาน",
+        area: { x: 120, y: 1360, width: 800, height: 140 }
+      }
+    ]
   };
 }
 

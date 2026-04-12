@@ -1734,7 +1734,7 @@ function getTeamLiffUrl(baseView = "") {
 // =========================
 // HANDLE VIEW NEW SPLIT
 // =========================
-async function handleViewNewSplit(event) {
+async function handleViewNewSplit({ replyToken }) {
   try {
     const now = new Date();
     const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -1759,14 +1759,14 @@ async function handleViewNewSplit(event) {
 
     if (oldError) throw oldError;
 
-    return safeReply(event.replyToken, [
+   return safeReply(replyToken, [
       buildNewCaseSplitFlex(newCases || [], oldCases || [])
     ]);
   } catch (err) {
     console.error("handleViewNewSplit error:", err);
-    return safeReply(event.replyToken, [
-      { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสใหม่" }
-    ]);
+   return safeReply(replyToken, [
+  { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสใหม่" }
+]);
   }
 }
 

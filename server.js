@@ -2345,7 +2345,6 @@ async function buildNewCaseMenuImagemap() {
     ]
   };
 }
-async function buildUrgentCaseMenuImagemap() {
 
 async function buildUrgentCaseMenuImagemap() {
   const rootUrl = "https://satisfied-stillness-production-7942.up.railway.app";

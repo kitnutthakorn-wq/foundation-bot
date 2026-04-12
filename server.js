@@ -192,7 +192,6 @@ function buildSlaSummary(rows = []) {
 
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 

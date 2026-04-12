@@ -527,7 +527,7 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
     });
 
     // ปุ่ม 2
-    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1109, {
+    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1099, {
       font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",

@@ -2159,11 +2159,11 @@ return {
 // area: { x: 120, y: 1430, width: 800, height: 140 }
     
 actions: [
-  {
-    type: "message",
-    text: "เคสวันนี้",
-    area: { x: 70, y: 880, width: 900, height: 140 }
-  },
+ {
+  type: "message",
+  text: "ดูเคสใหม่",
+  area: { x: 70, y: 880, width: 900, height: 140 }
+},
   {
     type: "message",
     text: "ดูเคสด่วน",

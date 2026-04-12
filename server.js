@@ -4019,6 +4019,11 @@ async function getSlaMenuCounts() {
   }
 }
 
+function formatMenuBadgeLabel(label, count) {
+  const n = Number(count || 0);
+  return n > 0 ? `${label} (${n})` : label;
+}
+
 function buildSlaPreviewText(title, rows = []) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return `${title}\n\nไม่พบรายการ`;

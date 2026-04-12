@@ -199,8 +199,7 @@ function roundRectPath(ctx, x, y, width, height, radius) {
 async function getNewCaseMenuCounts() {
   const { data, error } = await supabase
     .from("help_requests")
-    .select("status, priority")
-    .eq("status", "new");
+    .select("status, priority");
 
   if (error) {
     console.error("GET NEW CASE MENU COUNTS ERROR:", error);
@@ -211,9 +210,13 @@ async function getNewCaseMenuCounts() {
     };
   }
 
-  const rows = Array.isArray(data) ? data : [];
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    const status = String(row.status || "").toLowerCase();
+    return status === "new" || status === "in_progress";
+  });
 
   const total = rows.length;
+
   const urgent = rows.filter(
     (row) => String(row.priority || "").toLowerCase() === "urgent"
   ).length;
@@ -224,7 +227,6 @@ async function getNewCaseMenuCounts() {
 
   return { total, urgent, normal };
 }
-
 async function getNewCaseMenuCounts() {
   const { data, error } = await supabase
     .from("help_requests")

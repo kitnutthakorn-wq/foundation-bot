@@ -587,13 +587,13 @@ function buildCaseMenuCarouselBubble(item = {}) {
     size: "kilo",
 
     // 🔥 HERO (คม + กดได้)
-    hero: {
-      type: "image",
-      url: heroImage,
-      size: "full",
-      aspectRatio: "16:9",
-      aspectMode: "cover",
-      action: { type: "uri", uri: detailUrl }
+   hero: {
+  type: "image",
+  url: heroImage,
+  size: "full",
+  aspectRatio: "20:13",   // 🔥 สูงขึ้นทันที
+  aspectMode: "cover"
+
     },
 
     // 🔥 BODY (Kanit vibe)

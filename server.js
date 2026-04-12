@@ -4028,7 +4028,6 @@ function buildSlaPreviewText(title, rows = []) {
   if (!Array.isArray(rows) || rows.length === 0) {
     return `${title}\n\nไม่พบรายการ`;
   }
-
   return [
     title,
     "",

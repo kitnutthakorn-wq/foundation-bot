@@ -494,7 +494,7 @@ app.get("/imagemap/search-menu-v2/:size", async (req, res) => {
   }
 });
 
-app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
+app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
   try {
     const size = String(req.params.size || "");
     const is2x = size.includes("@2x");
@@ -516,37 +516,37 @@ app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
 
-    // =========================
-    // วาดตัวเลขจำนวนเคสบนปุ่ม
-    // =========================
-const centerX = 520;
+    const centerX = 520;
 
-// ปุ่ม 1
-drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 938, {
-  font: 'bold 48px "ThaiBold", sans-serif',
-  color: "#111111",
-  align: "center",
-  maxWidth: 760
-});
+    // ปุ่ม 1
+    drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 865, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
 
-// ปุ่ม 2
-drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1095, {
-  font: 'bold 48px "ThaiBold", sans-serif',
-  color: "#111111",
-  align: "center",
-  maxWidth: 760
-});
+    // ปุ่ม 2
+    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1035, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
 
-// ปุ่ม 3
-drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1256, {
-  font: 'bold 48px "ThaiBold", sans-serif',
-  color: "#111111",
-  align: "center",
-  maxWidth: 760
-});
+    // ปุ่ม 3
+    drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1205, {
+      font: 'bold 34px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
 
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
     return res.send(buffer);
   } catch (err) {
     console.error("new-case-menu-v2 render failed:", err);

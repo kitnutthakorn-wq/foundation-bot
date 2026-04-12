@@ -8645,7 +8645,6 @@ if (String(text || "").trim() === "ดูเคสใหม่" || String(text |
   await safeReply(replyToken, [
     await buildNewCaseMenuImagemap()
   ]);
-
   return;
 }
 

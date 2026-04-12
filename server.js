@@ -1941,6 +1941,7 @@ async function buildNewCaseMenuImagemap() {
     ]
   };
 }
+
 function buildPosterModeFlex() {
   return {
     type: "flex",

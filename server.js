@@ -481,7 +481,7 @@ app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
 const centerX = 520;
 
 // ปุ่ม 1
-drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 934, {
+drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 938, {
   font: 'bold 46px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",

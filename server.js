@@ -592,7 +592,15 @@ app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 // ================================
 // URGENT CASE MENU IMAGEMAP (NO CACHE)
 // ================================
-app.get("/imagemap/urgent-case-menu-v2-r:rev", (req, res) => {
+app.get("/imagemap/urgent-case-menu-v2", (req, res) => {
+  const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2.png");
+  res.sendFile(imagePath);
+});
+
+app.get("/imagemap/urgent-case-menu-v2@2x", (req, res) => {
+  const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2@2x.png");
+  res.sendFile(imagePath);
+});
   const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2.png");
   res.sendFile(imagePath);
 });

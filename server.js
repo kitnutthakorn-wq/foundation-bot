@@ -9150,7 +9150,7 @@ const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v3`;
         },
         {
           type: "message",
-          text: "เคสด่วน กำลังดำเนินการ",
+          text: "เคสด่วน SLA ปกติ",
           area: { x: 100, y: 1220, width: 840, height: 120 }
         },
         {

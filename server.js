@@ -9114,8 +9114,32 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
     return;
   }
 
+  const revision = Date.now();
+
   await safeReply(replyToken, [
-    await buildUrgentCaseMenuImagemap()
+    {
+      type: "imagemap",
+      baseUrl: `https://YOUR_DOMAIN/imagemap/urgent-case-menu-v2-r${revision}/1040`,
+      altText: "เมนูเคสด่วน",
+      baseSize: { width: 1040, height: 1559 },
+      actions: [
+        {
+          type: "message",
+          text: "เคสด่วน SLA วิกฤต",
+          area: { x: 100, y: 900, width: 840, height: 120 }
+        },
+        {
+          type: "message",
+          text: "เคสด่วน SLA ใกล้วิกฤต",
+          area: { x: 100, y: 1060, width: 840, height: 120 }
+        },
+        {
+          type: "message",
+          text: "เคสด่วน กำลังดำเนินการ",
+          area: { x: 100, y: 1220, width: 840, height: 120 }
+        }
+      ]
+    }
   ]);
 
   return;

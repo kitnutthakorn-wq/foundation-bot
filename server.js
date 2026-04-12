@@ -8836,9 +8836,10 @@ if (text === "ดูเคสใหม่" || text === "เคสใหม่") 
     continue;
   }
 
-  await handleViewNewSplit({ replyToken });
+  await safeReply(replyToken, [buildNewCaseMenuImagemap()]);
   continue;
 }
+     
 if (text === "เคสวันนี้") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูเคสวันนี้" }]);

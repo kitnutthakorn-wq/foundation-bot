@@ -211,47 +211,18 @@ async function getNewCaseMenuCounts() {
   }
 
   const rows = (Array.isArray(data) ? data : []).filter(row => {
-    const status = String(row.status || "").toLowerCase();
+    const status = String(row.status || "").toLowerCase().trim();
     return status === "new" || status === "in_progress";
   });
 
   const total = rows.length;
 
   const urgent = rows.filter(
-    (row) => String(row.priority || "").toLowerCase() === "urgent"
+    row => String(row.priority || "").toLowerCase().trim() === "urgent"
   ).length;
 
   const normal = rows.filter(
-    (row) => String(row.priority || "").toLowerCase() !== "urgent"
-  ).length;
-
-  return { total, urgent, normal };
-}
-async function getNewCaseMenuCounts() {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("status, priority")
-    .eq("status", "new");
-
-  if (error) {
-    console.error("GET NEW CASE MENU COUNTS ERROR:", error);
-    return {
-      total: 0,
-      urgent: 0,
-      normal: 0
-    };
-  }
-
-  const rows = Array.isArray(data) ? data : [];
-
-  const total = rows.length;
-
-  const urgent = rows.filter(
-    (row) => String(row.priority || "").toLowerCase() === "urgent"
-  ).length;
-
-  const normal = rows.filter(
-    (row) => String(row.priority || "").toLowerCase() !== "urgent"
+    row => String(row.priority || "").toLowerCase().trim() !== "urgent"
   ).length;
 
   return {
@@ -260,7 +231,6 @@ async function getNewCaseMenuCounts() {
     normal
   };
 }
-
 function buildNewCaseMenuRevision(counts = {}) {
   const total = Number(counts.total || 0);
   const urgent = Number(counts.urgent || 0);

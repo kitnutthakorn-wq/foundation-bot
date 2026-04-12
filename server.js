@@ -168,17 +168,23 @@ function getSlaLevel(row = {}) {
 }
 
 function buildSlaSummary(rows = []) {
-  let critical = 0, warning = 0, normal = 0, urgent_total = 0;
+  let critical = 0;
+  let warning = 0;
+  let normal = 0;
+  let urgent_total = 0;
 
   rows.forEach(row => {
-    if (String(row.priority).toLowerCase() !== "urgent") return;
+    if (String(row.priority || "").toLowerCase() !== "urgent") return;
+
+    const level = getSlaLevel(row);
+
+    if (level === "closed") return;
 
     urgent_total++;
 
-    const level = getSlaLevel(row);
     if (level === "critical") critical++;
     else if (level === "warning") warning++;
-    else normal++;
+    else if (level === "normal") normal++;
   });
 
   return { critical, warning, normal, urgent_total };

@@ -533,6 +533,146 @@ const PUBLIC_WEB_ORIGINS = [
   process.env.URL
 ].filter(Boolean);
 
+function buildCaseMenuCarouselBubble(item = {}) {
+  const statusText = formatCaseStatusThai(item.status || "");
+  const priorityText = formatPriorityThai(item.priority || "");
+
+  const detailUrl =
+    `https://satisfied-stillness-production-7942.up.railway.app/team-case-view.html?case_code=${encodeURIComponent(item.case_code || "")}`;
+
+  const updateUrl =
+    `https://satisfied-stillness-production-7942.up.railway.app/update-case.html?case_code=${encodeURIComponent(item.case_code || "")}`;
+
+  const heroImage = "https://img2.pic.in.th/pic/kck-poster.jpg";
+
+  return {
+    type: "bubble",
+    size: "mega",
+    hero: {
+      type: "image",
+      url: heroImage,
+      size: "full",
+      aspectRatio: "20:13",
+      aspectMode: "cover"
+    },
+    body: {
+      type: "box",
+      layout: "vertical",
+      backgroundColor: "#FFFFFF",
+      cornerRadius: "20px",
+      paddingAll: "16px",
+      spacing: "md",
+      contents: [
+        {
+          type: "text",
+          text: item.case_code || "-",
+          weight: "bold",
+          size: "md",
+          color: "#0B7C86"
+        },
+        {
+          type: "text",
+          text: item.full_name || "ไม่ระบุชื่อ",
+          weight: "bold",
+          size: "lg",
+          wrap: true
+        },
+        {
+          type: "text",
+          text: `📍 ${item.location || "-"}`,
+          size: "sm",
+          color: "#666666",
+          wrap: true
+        },
+        {
+          type: "text",
+          text: `รายละเอียด: ${item.problem || "-"}`,
+          size: "sm",
+          wrap: true,
+          maxLines: 2
+        },
+        {
+          type: "box",
+          layout: "horizontal",
+          spacing: "sm",
+          contents: [
+            {
+              type: "text",
+              text: `สถานะ: ${statusText}`,
+              size: "xs",
+              color: "#0B7C86",
+              flex: 1
+            },
+            {
+              type: "text",
+              text: `ระดับ: ${priorityText}`,
+              size: "xs",
+              color: "#D32F2F",
+              align: "end",
+              flex: 1
+            }
+          ]
+        }
+      ]
+    },
+    footer: {
+      type: "box",
+      layout: "vertical",
+      spacing: "sm",
+      contents: [
+        {
+          type: "button",
+          style: "primary",
+          color: "#0B7C86",
+          action: {
+            type: "uri",
+            label: "เปิดเคส",
+            uri: detailUrl
+          }
+        },
+        {
+          type: "button",
+          style: "secondary",
+          action: {
+            type: "uri",
+            label: "อัปเดตเคส",
+            uri: updateUrl
+          }
+        }
+      ]
+    }
+  };
+}
+
+function buildCaseMenuCarouselFlex(title, cases = []) {
+  return {
+    type: "flex",
+    altText: title,
+    contents: {
+      type: "carousel",
+      contents: cases.map(item => buildCaseMenuCarouselBubble(item))
+    }
+  };
+}
+
+async function replyCaseMenuCarousel({ replyToken, title, filterType = "all" }) {
+  const cases = await getOpenCasesForMenu(filterType, 10);
+
+  if (!cases.length) {
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: `${title}\n\nยังไม่มีรายการเคสในหมวดนี้`
+      }
+    ]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    buildCaseMenuCarouselFlex(title, cases)
+  ]);
+}
+
 function resolvePublicOrigin(req) {
   const requestOrigin = String(req.headers.origin || "").trim();
   if (!requestOrigin) {

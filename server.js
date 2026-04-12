@@ -9118,13 +9118,14 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
     return;
   }
 
-  const revision = Date.now();
+  const counts = await getUrgentCaseMenuCounts();
+  const revision = `${counts.critical}-${counts.warning}-${counts.normal}`;
 
   await safeReply(replyToken, [
     {
       type: "imagemap",
-     baseUrl: `https://satisfied-stillness-production-7942.up.railway.app/imagemap/urgent-case-menu-v2-r${revision}/1040`,
-      altText: "เมนูเคสด่วน",
+      baseUrl: `https://satisfied-stillness-production-7942.up.railway.app/imagemap/urgent-case-menu-v2-r${revision}`,
+      altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.normal}`,
       baseSize: { width: 1040, height: 1559 },
       actions: [
         {
@@ -9141,6 +9142,11 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
           type: "message",
           text: "เคสด่วน กำลังดำเนินการ",
           area: { x: 100, y: 1220, width: 840, height: 120 }
+        },
+        {
+          type: "message",
+          text: "กลับสู่เมนูทีมงาน",
+          area: { x: 100, y: 1380, width: 840, height: 120 }
         }
       ]
     }
@@ -9148,7 +9154,6 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
 
   return;
 }
-
 // ================================
 // SLA: เคสด่วน วิกฤต
 // ================================

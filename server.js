@@ -482,7 +482,7 @@ const centerX = 520;
 
 // ปุ่ม 1
 drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 938, {
-  font: 'bold 46px "ThaiBold", sans-serif',
+  font: 'bold 48px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760
@@ -490,7 +490,7 @@ drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total}
 
 // ปุ่ม 2
 drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1095, {
-  font: 'bold 46px "ThaiBold", sans-serif',
+  font: 'bold 48px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760
@@ -498,7 +498,7 @@ drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, cent
 
 // ปุ่ม 3
 drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1256, {
-  font: 'bold 46px "ThaiBold", sans-serif',
+  font: 'bold 48px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760

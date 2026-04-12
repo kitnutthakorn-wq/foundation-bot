@@ -578,7 +578,7 @@ function buildCaseMenuCarouselBubble(item = {}) {
   const heroImage =
     Array.isArray(item.images) && item.images.length > 0
       ? item.images[0]
-      : "https://img2.pic.in.th/pic/kck-poster.jpg";
+      : "https://img1.pic.in.th/images/kck-poster.jpg";
 
   const isUrgent = String(item.priority || "").toLowerCase() === "urgent";
 

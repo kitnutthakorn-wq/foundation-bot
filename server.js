@@ -1821,27 +1821,22 @@ function buildNewCaseMenuImagemap() {
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-        text: "ดูเคสใหม่ทั้งหมด",
-        area: { x: 120, y: 840, width: 800, height: 135 }
-      },
-      {
-        type: "message",
-        text: "ดูเคสใหม่ด่วน",
-        area: { x: 120, y: 1010, width: 800, height: 135 }
-      },
-      {
-        type: "message",
-        text: "ดูเคสใหม่ปกติ",
-        area: { x: 120, y: 1180, width: 800, height: 135 }
-      },
-      {
-        type: "message",
-        text: "กลับสู่เมนูทีมงาน",
-        area: { x: 120, y: 1360, width: 800, height: 140 }
-      }
-    ]
+  {
+    type: "message",
+    text: "ดูเคสใหม่ทั้งหมด",
+    area: { x: 120, y: 840, width: 800, height: 135 }
+  },
+  {
+    type: "message",
+    text: "ดูเคสด่วน",
+    area: { x: 120, y: 1010, width: 800, height: 135 }
+  },
+  {
+    type: "message",
+    text: "กลับสู่เมนูทีมงาน",
+    area: { x: 120, y: 1360, width: 800, height: 140 }
+  }
+]
   };
 }
 

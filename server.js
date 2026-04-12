@@ -425,7 +425,7 @@ app.get("/imagemap/search-menu-v2/:size", async (req, res) => {
   }
 });
 
-app.get("/imagemap/new-case-menu-v1/:size", async (req, res) => {
+app.get("/imagemap/new-case-menu-v2/:size", async (req, res) => {
   try {
     const size = String(req.params.size || "");
     const is2x = size.includes("@2x");

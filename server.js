@@ -195,6 +195,31 @@ const fetch = globalThis.fetch;
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+async function getUrgentCaseMenuCounts() {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*");
+
+  if (error) {
+    console.error("GET URGENT CASE COUNTS ERROR:", error);
+    return { critical: 0, warning: 0, normal: 0 };
+  }
+
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    const status = normalizeCaseStatus(row.status);
+    return status === "new" || status === "in_progress";
+  });
+
+  const sla = buildSlaSummary(rows);
+
+  return {
+    critical: sla.critical,
+    warning: sla.warning,
+    normal: sla.normal
+  };
+}
+
+
 function drawText(ctx, text, x, y, options = {}) {
   const {
     font = 'bold 42px "ThaiBold", sans-serif',

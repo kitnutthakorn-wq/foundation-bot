@@ -3963,51 +3963,50 @@ async function getSlaMenuCounts() {
   try {
     const { data, error } = await supabase
       .from("help_requests")
-      .select("case_code, full_name, status, priority, created_at, last_action_at, assigned_to")
+      .select("case_code, full_name, status, priority, created_at")
       .order("created_at", { ascending: false })
       .limit(500);
 
-    if (error) throw error;
+    if (error) {
+      console.error("getSlaMenuCounts error:", error);
+      return {
+        overdue: 0,
+        near_due: 0,
+        open_cases: 0,
+        smart_alert: 0,
+        overdue_rows: [],
+        near_due_rows: [],
+        smart_alert_rows: []
+      };
+    }
 
     const rows = Array.isArray(data) ? data : [];
-    const merged = rows.map(mergeCaseWithSla);
-    const activeRows = merged.filter(
-      (row) => !row.sla_excluded && !["done", "cancelled"].includes(normalizeSlaStatus(row.status))
+    const summary = buildSlaSummary(rows);
+
+    const urgentRows = rows.filter(
+      row =>
+        String(row.priority || "").toLowerCase() === "urgent" &&
+        !["done", "cancelled"].includes(normalizeCaseStatus(row.status))
     );
 
-    const overdueRows = activeRows.filter((row) => row.sla_level === "breached");
-    const nearDueRows = activeRows.filter((row) => row.sla_level === "warning");
-
-    const smartAlertRows = activeRows
-      .filter((row) => row.sla_level === "breached" || row.sla_level === "warning")
-      .sort((a, b) => {
-        const levelScore = (item) => (item.sla_level === "breached" ? 2 : item.sla_level === "warning" ? 1 : 0);
-        const priorityScore = (item) => {
-          const p = normalizeSlaPriority(item.priority);
-          if (p === "urgent") return 3;
-          if (p === "high") return 2;
-          if (p === "normal") return 1;
-          return 0;
-        };
-
-        return (
-          levelScore(b) - levelScore(a) ||
-          priorityScore(b) - priorityScore(a) ||
-          (Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0))
-        );
-      });
+    const overdueRows = urgentRows.filter(row => getSlaLevel(row) === "critical");
+    const nearDueRows = urgentRows.filter(row => getSlaLevel(row) === "warning");
+    const smartAlertRows = urgentRows.filter(row => {
+      const level = getSlaLevel(row);
+      return level === "critical" || level === "warning";
+    });
 
     return {
-      overdue: overdueRows.length,
-      near_due: nearDueRows.length,
-      open_cases: activeRows.length,
-      smart_alert: smartAlertRows.length,
+      overdue: summary.critical,
+      near_due: summary.warning,
+      open_cases: summary.urgent_total,
+      smart_alert: summary.critical + summary.warning,
       overdue_rows: overdueRows.slice(0, 10),
       near_due_rows: nearDueRows.slice(0, 10),
       smart_alert_rows: smartAlertRows.slice(0, 10)
     };
   } catch (err) {
-    console.error("getSlaMenuCounts error:", err);
+    console.error("getSlaMenuCounts catch:", err);
     return {
       overdue: 0,
       near_due: 0,
@@ -4018,11 +4017,6 @@ async function getSlaMenuCounts() {
       smart_alert_rows: []
     };
   }
-}
-
-function formatMenuBadgeLabel(label, count) {
-  const n = Number(count || 0);
-  return n > 0 ? `${label} (${n})` : label;
 }
 
 function buildSlaPreviewText(title, rows = []) {

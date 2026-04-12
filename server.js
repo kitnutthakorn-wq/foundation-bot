@@ -1902,13 +1902,17 @@ async function handleViewNewSplit({ replyToken }) {
 // =========================
 // NEW CASE MENU IMAGEMAP
 // =========================
-function buildNewCaseMenuImagemap() {
-  const baseUrl = "https://satisfied-stillness-production-7942.up.railway.app";
+async function buildNewCaseMenuImagemap() {
+  const rootUrl =
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  const counts = await getNewCaseMenuCounts();
+  const rev = buildNewCaseMenuRevision(counts);
 
   return {
     type: "imagemap",
-    baseUrl: `${baseUrl}/imagemap/new-case-menu-v2`,
-    altText: "เมนูดูเคสใหม่",
+    baseUrl: `${rootUrl}/imagemap/new-case-menu-v2-r${rev}`,
+    altText: `เมนูดูเคสใหม่ | ทั้งหมด ${counts.total} | ด่วน ${counts.urgent} | ปกติ ${counts.normal}`,
     baseSize: {
       width: 1040,
       height: 1559

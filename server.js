@@ -613,6 +613,62 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
     return res.status(500).send("render failed");
   }
 });
+
+app.get("/imagemap/urgent-case-menu-v2-r:rev/:size", async (req, res) => {
+  try {
+    const size = String(req.params.size || "");
+    const is2x = size.includes("@2x");
+
+    const width = is2x ? 1040 * 2 : 1040;
+    const height = is2x ? 1559 * 2 : 1559;
+
+    const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2.png");
+    const baseImage = await loadImage(imagePath);
+
+    const counts = await getUrgentCaseMenuCounts();
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    if (is2x) {
+      ctx.scale(2, 2);
+    }
+
+    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+
+    const centerX = 520;
+
+    // 🔥 ปุ่ม 1
+    drawText(ctx, `SLA วิกฤต (${counts.critical})`, centerX, 935, {
+      font: 'bold 52px "ThaiBold"',
+      align: "center"
+    });
+
+    // 🔥 ปุ่ม 2
+    drawText(ctx, `SLA ใกล้วิกฤต (${counts.warning})`, centerX, 1095, {
+      font: 'bold 52px "ThaiBold"',
+      align: "center"
+    });
+
+    // 🔥 ปุ่ม 3
+    drawText(ctx, `กำลังดำเนินการ (${counts.normal})`, centerX, 1250, {
+      font: 'bold 52px "ThaiBold"',
+      align: "center"
+    });
+
+    const buffer = canvas.toBuffer("image/png");
+
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "no-store");
+
+    return res.send(buffer);
+
+  } catch (err) {
+    console.error("urgent-case-menu render failed:", err);
+    return res.status(500).send("render failed");
+  }
+});
+
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
 
 // ================================

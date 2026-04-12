@@ -9106,7 +9106,6 @@ if (String(text || "").trim() === "กลับสู่เมนูทีมง
 
      
 if (String(text || "").trim() === "ดูเคสด่วน" || String(text || "").trim() === "เคสด่วน") {
-  console.log("TEXT:", text);
 
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [
@@ -9120,7 +9119,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   ]);
 
   return;
-} 
+}
 
 // ================================
 // SLA: เคสด่วน วิกฤต

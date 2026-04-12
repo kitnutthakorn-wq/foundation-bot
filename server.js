@@ -2288,7 +2288,7 @@ function buildTeamMenuOverlayFlex() {
             paddingAll: "4px",
             backgroundColor: "#000000",
             contents: [
-              hit("ดูเคสวันนี้", "เคสวันนี้"),
+              hit("ดูเคสใหม่", "ดูเคสใหม่"),
               hit("ดูเคสด่วน", "ดูเคสด่วน"),
               hit("ค้นหาเคส", "ค้นหาเคส"),
               hitUri(

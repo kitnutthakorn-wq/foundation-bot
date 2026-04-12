@@ -8793,13 +8793,6 @@ if (String(text || "").trim() === "ดูเคสใหม่" || String(text |
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ทั้งหมด") {
-  if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }
-    ]);
-    return;
-  }
-
   await replyCaseMenuCarousel({
     replyToken,
     title: "รายการเคสเปิดทั้งหมด",
@@ -8809,13 +8802,6 @@ if (String(text || "").trim() === "ดูเคสใหม่ทั้งหม
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ด่วน") {
-  if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ด่วน" }
-    ]);
-    return;
-  }
-
   await replyCaseMenuCarousel({
     replyToken,
     title: "รายการเคสด่วน",
@@ -8825,13 +8811,6 @@ if (String(text || "").trim() === "ดูเคสใหม่ด่วน") {
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ปกติ") {
-  if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ปกติ" }
-    ]);
-    return;
-  }
-
   await replyCaseMenuCarousel({
     replyToken,
     title: "รายการเคสปกติ",
@@ -8839,7 +8818,6 @@ if (String(text || "").trim() === "ดูเคสใหม่ปกติ") {
   });
   return;
 }
-
 if (String(text || "").trim() === "กลับสู่เมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ใช้งานเมนูทีมงาน" }]);

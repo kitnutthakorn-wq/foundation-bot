@@ -589,6 +589,18 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
   }
 });
 app.use("/imagemap", express.static(path.join(__dirname, "imagemap")));
+// ================================
+// URGENT CASE MENU IMAGEMAP (NO CACHE)
+// ================================
+app.get("/imagemap/urgent-case-menu-v2-r:rev", (req, res) => {
+  const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2.png");
+  res.sendFile(imagePath);
+});
+
+app.get("/imagemap/urgent-case-menu-v2-r:rev@2x", (req, res) => {
+  const imagePath = path.join(__dirname, "imagemap", "urgent-case-menu-v2@2x.png");
+  res.sendFile(imagePath);
+});
 const PUBLIC_WEB_ORIGINS = [
   process.env.APP_ORIGIN,
   process.env.PUBLIC_SITE_URL,

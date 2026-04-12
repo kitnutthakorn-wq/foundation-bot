@@ -575,7 +575,7 @@ function buildCaseMenuCarouselBubble(item = {}) {
   const updateUrl =
     `https://satisfied-stillness-production-7942.up.railway.app/update-case.html?case_code=${encodeURIComponent(item.case_code || "")}`;
 
-  const heroImage = "https://img2.pic.in.th/kck-poster.jpg";
+  const heroImage = "https://img1.pic.in.th/images/kck-poster.jpg";
 
   return {
     type: "bubble",

@@ -620,12 +620,15 @@ function buildCaseMenuCarouselBubble(item = {}) {
             },
             // badge ระดับ
             {
-              type: "box",
-              layout: "vertical",
-              paddingHorizontal: "10px",
-              paddingVertical: "4px",
-              cornerRadius: "999px",
-              backgroundColor: isUrgent ? "#FDECEC" : "#EAF7EF",
+              {
+  type: "box",
+  layout: "vertical",
+  paddingStart: "10px",
+  paddingEnd: "10px",
+  paddingTop: "4px",
+  paddingBottom: "4px",
+  cornerRadius: "999px",
+  backgroundColor: isUrgent ? "#FDECEC" : "#EAF7EF",
               contents: [
                 {
                   type: "text",

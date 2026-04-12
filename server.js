@@ -644,19 +644,19 @@ app.get("/imagemap/urgent-case-menu-v2-r:rev/:size", async (req, res) => {
     const centerX = 520;
 
     // 🔥 ปุ่ม 1
-    drawText(ctx, `SLA วิกฤต (${Number(counts.critical || 0)})`, centerX, 935, {
+    drawText(ctx, `เคสด่วน SLA วิกฤต (${Number(counts.critical || 0)})`, centerX, 935, {
       font: 'bold 52px "ThaiBold"',
       align: "center"
     });
 
     // 🔥 ปุ่ม 2
-   drawText(ctx, `SLA ใกล้วิกฤต (${Number(counts.warning || 0)})`, centerX, 1095, {
+   drawText(ctx, `เคสด่วน SLA ใกล้วิกฤต (${Number(counts.warning || 0)})`, centerX, 1095, {
       font: 'bold 52px "ThaiBold"',
       align: "center"
     });
 
     // 🔥 ปุ่ม 3
-    drawText(ctx, `กำลังดำเนินการ (${Number(counts.normal || 0)})`, centerX, 1250, {
+   drawText(ctx, `เคสด่วน SLA ปกติ (${Number(counts.normal || 0)})`, centerX, 1250, {
       font: 'bold 52px "ThaiBold"',
       align: "center"
     });

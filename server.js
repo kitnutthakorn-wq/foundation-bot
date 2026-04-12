@@ -9128,8 +9128,8 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
     return;
   }
 
-  const counts = await getUrgentCaseMenuCounts();
-  const revision = `${counts.critical}-${counts.warning}-${counts.normal}`;
+const counts = await getUrgentCaseMenuCounts();
+const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v2`;
 
   await safeReply(replyToken, [
     {

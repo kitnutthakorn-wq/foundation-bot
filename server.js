@@ -2266,6 +2266,46 @@ async function buildNewCaseMenuImagemap() {
 }
 async function buildUrgentCaseMenuImagemap() {
 
+async function buildUrgentCaseMenuImagemap() {
+  const rootUrl = "https://satisfied-stillness-production-7942.up.railway.app";
+
+  const counts = await getUrgentCaseMenuCounts();
+
+  console.log("🔥 URGENT MENU COUNTS:", counts);
+
+  return {
+    type: "imagemap",
+    baseUrl: `${rootUrl}/imagemap/urgent-case-menu-v2`,
+    altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.inProgress}`,
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เคสด่วน SLA วิกฤต",
+        area: { x: 120, y: 840, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "เคสด่วน SLA ใกล้วิกฤต",
+        area: { x: 120, y: 1010, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "เคสด่วน กำลังดำเนินการ",
+        area: { x: 120, y: 1180, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "กลับสู่เมนูทีมงาน",
+        area: { x: 120, y: 1360, width: 800, height: 140 }
+      }
+    ]
+  };
+}
+ 
 function buildPosterModeFlex() {
   return {
     type: "flex",

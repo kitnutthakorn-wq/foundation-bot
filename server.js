@@ -1858,22 +1858,13 @@ async function handleViewNewSplit({ replyToken }) {
 // =========================
 // NEW CASE MENU IMAGEMAP
 // =========================
-async function buildNewCaseMenuImagemap() {
-  const baseUrl =
-    process.env.APP_BASE_URL ||
-    process.env.PUBLIC_BASE_URL ||
-    process.env.RAILWAY_STATIC_URL ||
-    process.env.RAILWAY_PUBLIC_DOMAIN ||
-    process.env.URL ||
-    "https://satisfied-stillness-production-7942.up.railway.app";
-
-  const counts = await getNewCaseMenuCounts();
-  const version = Date.now();
+function buildNewCaseMenuImagemap() {
+  const baseUrl = "https://satisfied-stillness-production-7942.up.railway.app";
 
   return {
     type: "imagemap",
-    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v2?v=${version}`,
-    altText: `เมนูดูเคสใหม่ | ทั้งหมด ${counts.total} | ด่วน ${counts.urgent} | ปกติ ${counts.normal}`,
+    baseUrl: `${baseUrl}/imagemap/new-case-menu-v2`,
+    altText: "เมนูดูเคสใหม่",
     baseSize: {
       width: 1040,
       height: 1559
@@ -1902,7 +1893,6 @@ async function buildNewCaseMenuImagemap() {
     ]
   };
 }
-
 function buildPosterModeFlex() {
   return {
     type: "flex",

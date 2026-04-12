@@ -533,6 +533,38 @@ const PUBLIC_WEB_ORIGINS = [
   process.env.URL
 ].filter(Boolean);
 
+async function getOpenCasesForMenu(filterType = "all", limit = 10) {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("GET OPEN CASES FOR MENU ERROR:", error);
+    return [];
+  }
+
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    const status = String(row.status || "").toLowerCase().trim();
+    return status === "new" || status === "in_progress";
+  });
+
+  let filtered = rows;
+
+  if (filterType === "urgent") {
+    filtered = rows.filter(
+      row => String(row.priority || "").toLowerCase().trim() === "urgent"
+    );
+  } else if (filterType === "normal") {
+    filtered = rows.filter(
+      row => String(row.priority || "").toLowerCase().trim() !== "urgent"
+    );
+  }
+
+  return filtered.slice(0, limit);
+}
+
+
 function buildCaseMenuCarouselBubble(item = {}) {
   const statusText = formatCaseStatusThai(item.status || "");
   const priorityText = formatPriorityThai(item.priority || "");

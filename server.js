@@ -2101,6 +2101,58 @@ async function handleViewNewSplit({ replyToken }) {
 // =========================
 // NEW CASE MENU IMAGEMAP
 // =========================
+
+async function getUrgentCaseMenuCounts() {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("status, priority, sla_level");
+
+  if (error) {
+    console.error("GET URGENT CASE MENU COUNTS ERROR:", error);
+    return {
+      critical: 0,
+      warning: 0,
+      inProgress: 0
+    };
+  }
+
+  const rows = (Array.isArray(data) ? data : []).filter(row => {
+    const priority = String(row.priority || "").toLowerCase().trim();
+    const status = String(row.status || "").toLowerCase().trim();
+
+    const isOpen = status === "new" || status === "in_progress";
+    const isUrgent = priority === "urgent";
+
+    return isOpen && isUrgent;
+  });
+
+  const critical = rows.filter(
+    row => String(row.sla_level || "").toLowerCase().trim() === "breached"
+  ).length;
+
+  const warning = rows.filter(
+    row => String(row.sla_level || "").toLowerCase().trim() === "warning"
+  ).length;
+
+  const inProgress = rows.filter(row => {
+    const status = String(row.status || "").toLowerCase().trim();
+    return status === "in_progress";
+  }).length;
+
+  return {
+    critical,
+    warning,
+    inProgress
+  };
+}
+
+function buildUrgentCaseMenuRevision(counts = {}) {
+  const critical = Number(counts.critical || 0);
+  const warning = Number(counts.warning || 0);
+  const inProgress = Number(counts.inProgress || 0);
+  return `${critical}-${warning}-${inProgress}`;
+}
+
 async function buildNewCaseMenuImagemap() {
   const rootUrl =
     "https://satisfied-stillness-production-7942.up.railway.app";
@@ -2140,6 +2192,46 @@ async function buildNewCaseMenuImagemap() {
     ]
   };
 }
+async function buildUrgentCaseMenuImagemap() {
+  const rootUrl = "https://satisfied-stillness-production-7942.up.railway.app";
+
+  const counts = await getUrgentCaseMenuCounts();
+  const rev = buildUrgentCaseMenuRevision(counts);
+
+  return {
+    type: "imagemap",
+    baseUrl: `${rootUrl}/imagemap/urgent-case-menu-v2-r${rev}`,
+    altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.inProgress}`,
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เคสด่วน SLA วิกฤต",
+        area: { x: 120, y: 840, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "เคสด่วน SLA ใกล้วิกฤต",
+        area: { x: 120, y: 1010, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "เคสด่วน กำลังดำเนินการ",
+        area: { x: 120, y: 1180, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "กลับสู่เมนูทีมงาน",
+        area: { x: 120, y: 1360, width: 800, height: 140 }
+      }
+    ]
+  };
+}
+
+
 
 function buildPosterModeFlex() {
   return {

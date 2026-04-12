@@ -88,7 +88,9 @@ async function getLineProfileNameSafe(event = {}) {
 
     return "";
   } catch (err) {
-    console.log("getLineProfileNameSafe error:", err?.message || err);
+   if (!String(err?.message || "").includes("404")) {
+  console.log("getLineProfileNameSafe error:", err?.message || err);
+}
     return "";
   }
 }

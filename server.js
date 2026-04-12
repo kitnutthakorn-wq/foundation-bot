@@ -1731,6 +1731,45 @@ function getTeamLiffUrl(baseView = "") {
     : `${raw}?view=${encodeURIComponent(baseView)}`;
 }
 
+// =========================
+// HANDLE VIEW NEW SPLIT
+// =========================
+async function handleViewNewSplit(event) {
+  try {
+    const now = new Date();
+    const last24h = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const { data: newCases, error: newError } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("status", "new")
+      .gte("created_at", last24h.toISOString())
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (newError) throw newError;
+
+    const { data: oldCases, error: oldError } = await supabase
+      .from("help_requests")
+      .select("*")
+      .eq("status", "new")
+      .lt("created_at", last24h.toISOString())
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (oldError) throw oldError;
+
+    return safeReply(event.replyToken, [
+      buildNewCaseSplitFlex(newCases || [], oldCases || [])
+    ]);
+  } catch (err) {
+    console.error("handleViewNewSplit error:", err);
+    return safeReply(event.replyToken, [
+      { type: "text", text: "เกิดข้อผิดพลาดในการโหลดเคสใหม่" }
+    ]);
+  }
+}
+
 function buildPosterModeFlex() {
   return {
     type: "flex",

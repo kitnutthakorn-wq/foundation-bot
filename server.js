@@ -8836,27 +8836,9 @@ if (text === "ดูเคสใหม่" || text === "เคสใหม่") 
     continue;
   }
 
-  try {
-    const cases = await getNewCases(10);
-
-    if (!cases.length) {
-      await safeReply(replyToken, [{ type: "text", text: "ตอนนี้ยังไม่มีเคสใหม่ครับ" }]);
-      continue;
-    }
-
-    await safeReply(
-      replyToken,
-      [buildCaseListFlex("เคสใหม่ล่าสุด", cases)],
-      [buildCaseListFallback("เคสใหม่ล่าสุด", cases)]
-    );
-  } catch (err) {
-    console.error("GET NEW CASES ERROR:", err);
-    await safeReply(replyToken, [{ type: "text", text: "ดึงเคสใหม่ไม่สำเร็จครับ" }]);
-  }
+  await handleViewNewSplit({ replyToken });
   continue;
 }
-
-
 if (text === "เคสวันนี้") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูเคสวันนี้" }]);

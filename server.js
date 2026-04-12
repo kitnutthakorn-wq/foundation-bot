@@ -9089,11 +9089,12 @@ if (String(text || "").trim() === "ดูเคสใหม่ทั้งหม
 }
 
 if (String(text || "").trim() === "ดูเคสใหม่ด่วน") {
-  await replyCaseMenuCarousel({
-    replyToken,
-    title: "รายการเคสด่วน",
-    filterType: "urgent"
-  });
+await replyCaseMenuCarousel({
+  replyToken,
+  title: "รายการเคสด่วน",
+  filterType: "urgent",
+  heroImage: URGENT_CASE_CAROUSEL_HERO
+});
   return;
 }
 

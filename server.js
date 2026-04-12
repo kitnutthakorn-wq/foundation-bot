@@ -1814,7 +1814,7 @@ function buildNewCaseMenuImagemap() {
 
   return {
     type: "imagemap",
-    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v1`,
+    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v2`,
     altText: "เมนูดูเคสใหม่",
     baseSize: {
       width: 1040,

@@ -7569,7 +7569,7 @@ const userId = event?.source?.userId || "";
 
   const role = await getUserRole(userId);
 
-  if (text === "เคสวันนี้") {
+  if (text === "ดูเคสใหม่" || text === "เคสวันนี้") {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 

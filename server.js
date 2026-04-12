@@ -520,15 +520,15 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
 
     // ปุ่ม 1
     drawText(ctx, `ดูเคสใหม่ทั้งหมด (${counts.total})`, centerX, 935, {
-      font: 'bold 48px "ThaiBold", sans-serif',
+      font: 'bold 50px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",
       maxWidth: 760
     });
 
     // ปุ่ม 2
-    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1105, {
-      font: 'bold 48px "ThaiBold", sans-serif',
+    drawText(ctx, `ดูเคสใหม่ด่วน (${counts.urgent})`, centerX, 1109, {
+      font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",
       maxWidth: 760
@@ -536,7 +536,7 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
 
     // ปุ่ม 3
     drawText(ctx, `ดูเคสใหม่ปกติ (${counts.normal})`, centerX, 1250, {
-      font: 'bold 48px "ThaiBold", sans-serif',
+      font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",
       maxWidth: 760

@@ -376,10 +376,13 @@ const updatedText = formatThaiDateTime(
   data?.created_at
 );
 
+const slaLevel = getSlaLevel(data || {});
+
 let slaText = "ปกติ";
-if (String(data?.sla_level || "").toLowerCase() === "breached") {
+
+if (slaLevel === "critical") {
   slaText = "ใกล้เกินกำหนด";
-} else if (String(data?.sla_level || "").toLowerCase() === "warning") {
+} else if (slaLevel === "warning") {
   slaText = "ต้องเฝ้าระวัง";
 }
 

@@ -8597,13 +8597,16 @@ if (text === "เมนูทีมงาน" || text === "เปิดเมน
 
 if (String(text || "").trim() === "ดูเคสใหม่" || String(text || "").trim() === "เคสใหม่") {
   if (!(await isViewer(userId))) {
-    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }]);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }
+    ]);
     return;
   }
 
   await safeReply(replyToken, [
     await buildNewCaseMenuImagemap()
   ]);
+
   return;
 }
 

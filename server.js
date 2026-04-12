@@ -899,18 +899,23 @@ function buildCaseMenuCarouselBubble(item = {}, options = {}) {
     }
   };
 }
-function buildCaseMenuCarouselFlex(title, cases = []) {
+function buildCaseMenuCarouselFlex(title, cases = [], options = {}) {
   return {
     type: "flex",
     altText: title,
     contents: {
       type: "carousel",
-      contents: cases.map(item => buildCaseMenuCarouselBubble(item))
+      contents: cases.map(item => buildCaseMenuCarouselBubble(item, options))
     }
   };
 }
 
-async function replyCaseMenuCarousel({ replyToken, title, filterType = "all" }) {
+async function replyCaseMenuCarousel({
+  replyToken,
+  title,
+  filterType = "all",
+  heroImage = ""
+}) {
   const cases = await getOpenCasesForMenu(filterType, 10);
 
   if (!cases.length) {
@@ -924,7 +929,7 @@ async function replyCaseMenuCarousel({ replyToken, title, filterType = "all" }) 
   }
 
   await safeReply(replyToken, [
-    buildCaseMenuCarouselFlex(title, cases)
+    buildCaseMenuCarouselFlex(title, cases, { heroImage })
   ]);
 }
 

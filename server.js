@@ -609,12 +609,6 @@ const PUBLIC_WEB_ORIGINS = [
   process.env.NETLIFY_SITE_URL,
   process.env.URL
 ].filter(Boolean);
-const PUBLIC_WEB_ORIGINS = [
-  process.env.APP_ORIGIN,
-  process.env.PUBLIC_SITE_URL,
-  process.env.NETLIFY_SITE_URL,
-  process.env.URL
-].filter(Boolean);
 
 async function getOpenCasesForMenu(filterType = "all", limit = 10) {
   const { data, error } = await supabase

@@ -8537,6 +8537,65 @@ if (text === "เมนูทีมงาน" || text === "เปิดเมน
   
 }
 
+if (String(text || "").trim() === "ดูเคสใหม่" || String(text || "").trim() === "เคสใหม่") {
+  if (!(await isViewer(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    buildNewCaseMenuImagemap()
+  ]);
+  return;
+}
+
+if (String(text || "").trim() === "ดูเคสใหม่ทั้งหมด") {
+  if (!(await isViewer(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่" }]);
+    return;
+  }
+
+  await handleViewNewSplit({ replyToken });
+  return;
+}
+
+if (String(text || "").trim() === "ดูเคสใหม่ด่วน") {
+  if (!(await isViewer(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ด่วน" }]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    { type: "text", text: "กำลังพัฒนาเมนูดูเคสใหม่ด่วน" }
+  ]);
+  return;
+}
+
+if (String(text || "").trim() === "ดูเคสใหม่ปกติ") {
+  if (!(await isViewer(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ดูข้อมูลเคสใหม่ปกติ" }]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    { type: "text", text: "กำลังพัฒนาเมนูดูเคสใหม่ปกติ" }
+  ]);
+  return;
+}
+
+if (String(text || "").trim() === "กลับสู่เมนูทีมงาน") {
+  if (!(await isViewer(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คุณไม่มีสิทธิ์ใช้งานเมนูทีมงาน" }]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    buildTeamMenuImagemap()
+  ]);
+  return;
+}
+
+     
 if (String(text || "").trim() === "ดูเคสด่วน" || String(text || "").trim() === "เคสด่วน") {
   console.log("TEXT:", text);
   if (!(await isViewer(userId))) {

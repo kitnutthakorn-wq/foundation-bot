@@ -196,6 +196,34 @@ function roundRectPath(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
+async function getNewCaseMenuCounts() {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("status, priority")
+    .eq("status", "new");
+
+  if (error) {
+    console.error("GET NEW CASE MENU COUNTS ERROR:", error);
+    return {
+      total: 0,
+      urgent: 0,
+      normal: 0
+    };
+  }
+
+  const rows = Array.isArray(data) ? data : [];
+
+  const total = rows.length;
+  const urgent = rows.filter(
+    (row) => String(row.priority || "").toLowerCase() === "urgent"
+  ).length;
+
+  const normal = rows.filter(
+    (row) => String(row.priority || "").toLowerCase() !== "urgent"
+  ).length;
+
+  return { total, urgent, normal };
+}
 
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {

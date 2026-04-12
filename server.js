@@ -9119,7 +9119,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   await safeReply(replyToken, [
     {
       type: "imagemap",
-      baseUrl: `https://YOUR_DOMAIN/imagemap/urgent-case-menu-v2-r${revision}/1040`,
+     baseUrl: `https://satisfied-stillness-production-7942.up.railway.app/imagemap/urgent-case-menu-v2-r${revision}/1040`,
       altText: "เมนูเคสด่วน",
       baseSize: { width: 1040, height: 1559 },
       actions: [

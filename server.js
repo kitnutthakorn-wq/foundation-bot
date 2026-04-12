@@ -126,6 +126,64 @@ function clearCaseSearchState(userId) {
   }
 }
 
+// =====================================================
+// CENTRAL SLA ENGINE (Golden Safe Shared Logic)
+// =====================================================
+
+function normalizeCaseStatus(status = "") {
+  const s = String(status || "").trim().toLowerCase();
+
+  if (s === "progress") return "in_progress";
+  if (s === "in progress") return "in_progress";
+  if (s === "in_progress") return "in_progress";
+  if (s === "pending") return "new";
+
+  return s || "new";
+}
+
+function getCaseBaseTime(row = {}) {
+  return row.created_at || null;
+}
+
+function getSlaHoursFromCase(row = {}, now = new Date()) {
+  const baseTime = getCaseBaseTime(row);
+  if (!baseTime) return 0;
+
+  const start = new Date(baseTime);
+  const diffMs = now - start;
+  return diffMs > 0 ? diffMs / (1000 * 60 * 60) : 0;
+}
+
+function getSlaLevel(row = {}) {
+  const status = normalizeCaseStatus(row.status);
+  if (status === "done" || status === "cancelled") return "closed";
+
+  if (String(row.priority).toLowerCase() !== "urgent") return "normal";
+
+  const hours = getSlaHoursFromCase(row);
+
+  if (hours >= 4) return "critical";
+  if (hours >= 2) return "warning";
+  return "normal";
+}
+
+function buildSlaSummary(rows = []) {
+  let critical = 0, warning = 0, normal = 0, urgent_total = 0;
+
+  rows.forEach(row => {
+    if (String(row.priority).toLowerCase() !== "urgent") return;
+
+    urgent_total++;
+
+    const level = getSlaLevel(row);
+    if (level === "critical") critical++;
+    else if (level === "warning") warning++;
+    else normal++;
+  });
+
+  return { critical, warning, normal, urgent_total };
+}
+
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 

@@ -5209,55 +5209,22 @@ app.get("/api/sla/summary", async (req, res) => {
       });
     }
 
-    const rows = Array.isArray(data) ? data : [];
-    const enriched = rows.map(mergeCaseWithSla);
-
-    // active SLA = ยังไม่ done/cancelled
-    const activeItems = enriched.filter(item => !item.sla_excluded);
-
-    const totals = {
-      all: activeItems.length,
-      normal: activeItems.filter(item => item.sla_level === "normal").length,
-      warning: activeItems.filter(item => item.sla_level === "warning").length,
-      breached: activeItems.filter(item => item.sla_level === "breached").length
-    };
-
-    let items = activeItems;
-
-    if (["normal", "warning", "breached"].includes(levelFilter)) {
-      items = activeItems.filter(item => item.sla_level === levelFilter);
-    }
-
-    items = items
-      .sort((a, b) => {
-        const rank = { breached: 3, warning: 2, normal: 1 };
-        const ra = rank[a.sla_level] || 0;
-        const rb = rank[b.sla_level] || 0;
-
-        if (rb !== ra) return rb - ra;
-
-        return (Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0));
-      });
+       const rows = Array.isArray(data) ? data : [];
+    const summary = buildSlaSummary(rows);
 
     return res.json({
       ok: true,
-      generated_at: new Date().toISOString(),
-      filters: {
-        limit,
-        level: levelFilter || null
-      },
-      totals,
-      items
+      ...summary
     });
   } catch (err) {
-    console.error("SLA summary fatal error:", err);
+    console.error("❌ /api/sla/summary error:", err);
     return res.status(500).json({
       ok: false,
-      error: err.message || "Unexpected SLA summary error"
+      error: err.message || "Internal server error"
     });
   }
 });
-
+   
 app.options("/api/cases/map", (req, res) => {
   applyPublicCors(req, res);
   return res.status(204).end();

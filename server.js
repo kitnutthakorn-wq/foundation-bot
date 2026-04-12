@@ -2166,47 +2166,42 @@ async function handleViewNewSplit({ replyToken }) {
 // =========================
 
 async function getUrgentCaseMenuCounts() {
-  const { data, error } = await supabase
-    .from("help_requests")
-    .select("status, priority, sla_level");
+  try {
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("status, priority, created_at");
 
-  if (error) {
-    console.error("GET URGENT CASE MENU COUNTS ERROR:", error);
+    if (error) {
+      console.error("GET URGENT CASE MENU COUNTS ERROR:", error);
+      return {
+        critical: 0,
+        warning: 0,
+        inProgress: 0
+      };
+    }
+
+    const rows = Array.isArray(data) ? data : [];
+    const summary = buildSlaSummary(rows);
+
+    const inProgress = rows.filter(row => {
+      const priority = String(row.priority || "").toLowerCase().trim();
+      const status = normalizeCaseStatus(row.status);
+      return priority === "urgent" && status === "in_progress";
+    }).length;
+
+    return {
+      critical: summary.critical,
+      warning: summary.warning,
+      inProgress
+    };
+  } catch (err) {
+    console.error("GET URGENT CASE MENU COUNTS CATCH:", err);
     return {
       critical: 0,
       warning: 0,
       inProgress: 0
     };
   }
-
-  const rows = (Array.isArray(data) ? data : []).filter(row => {
-    const priority = String(row.priority || "").toLowerCase().trim();
-    const status = String(row.status || "").toLowerCase().trim();
-
-    const isOpen = status === "new" || status === "in_progress";
-    const isUrgent = priority === "urgent";
-
-    return isOpen && isUrgent;
-  });
-
-  const critical = rows.filter(
-    row => String(row.sla_level || "").toLowerCase().trim() === "breached"
-  ).length;
-
-  const warning = rows.filter(
-    row => String(row.sla_level || "").toLowerCase().trim() === "warning"
-  ).length;
-
-  const inProgress = rows.filter(row => {
-    const status = String(row.status || "").toLowerCase().trim();
-    return status === "in_progress";
-  }).length;
-
-  return {
-    critical,
-    warning,
-    inProgress
-  };
 }
 
 function buildUrgentCaseMenuRevision(counts = {}) {

@@ -2388,7 +2388,7 @@ async function buildUrgentCaseMenuImagemap() {
       },
       {
         type: "message",
-        text: "เคสด่วน กำลังดำเนินการ",
+        text: "เคสด่วน SLA ปกติ",
         area: { x: 120, y: 1180, width: 800, height: 135 }
       },
       {

@@ -9024,7 +9024,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   ]);
 
   return;
-}    
+} 
 if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();
 

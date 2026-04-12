@@ -590,7 +590,7 @@ function buildCaseMenuCarouselBubble(item = {}) {
     body: {
       type: "box",
       layout: "vertical",
-      backgroundColor: "#FFFFFF",
+      backgroundColor: "#0B0F14",
       cornerRadius: "20px",
       paddingAll: "16px",
       spacing: "md",

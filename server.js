@@ -1770,6 +1770,51 @@ async function handleViewNewSplit({ replyToken }) {
   }
 }
 
+// =========================
+// NEW CASE MENU IMAGEMAP
+// =========================
+function buildNewCaseMenuImagemap() {
+  const baseUrl =
+    process.env.APP_BASE_URL ||
+    process.env.PUBLIC_BASE_URL ||
+    process.env.RAILWAY_STATIC_URL ||
+    process.env.RAILWAY_PUBLIC_DOMAIN ||
+    process.env.URL ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${String(baseUrl).replace(/\/$/, "")}/imagemap/new-case-menu-v1`,
+    altText: "เมนูดูเคสใหม่",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "ดูเคสใหม่ทั้งหมด",
+        area: { x: 120, y: 840, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสใหม่ด่วน",
+        area: { x: 120, y: 1010, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสใหม่ปกติ",
+        area: { x: 120, y: 1180, width: 800, height: 135 }
+      },
+      {
+        type: "message",
+        text: "กลับสู่เมนูทีมงาน",
+        area: { x: 120, y: 1360, width: 800, height: 140 }
+      }
+    ]
+  };
+}
+
 function buildPosterModeFlex() {
   return {
     type: "flex",

@@ -225,6 +225,47 @@ async function getNewCaseMenuCounts() {
   return { total, urgent, normal };
 }
 
+async function getNewCaseMenuCounts() {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("status, priority")
+    .eq("status", "new");
+
+  if (error) {
+    console.error("GET NEW CASE MENU COUNTS ERROR:", error);
+    return {
+      total: 0,
+      urgent: 0,
+      normal: 0
+    };
+  }
+
+  const rows = Array.isArray(data) ? data : [];
+
+  const total = rows.length;
+
+  const urgent = rows.filter(
+    (row) => String(row.priority || "").toLowerCase() === "urgent"
+  ).length;
+
+  const normal = rows.filter(
+    (row) => String(row.priority || "").toLowerCase() !== "urgent"
+  ).length;
+
+  return {
+    total,
+    urgent,
+    normal
+  };
+}
+
+function buildNewCaseMenuRevision(counts = {}) {
+  const total = Number(counts.total || 0);
+  const urgent = Number(counts.urgent || 0);
+  const normal = Number(counts.normal || 0);
+  return `${total}-${urgent}-${normal}`;
+}
+
 app.get("/imagemap/urgent-case-poster/1040", async (req, res) => {
   try {
    const rawCaseCode = String(req.query.case_code || "").trim();

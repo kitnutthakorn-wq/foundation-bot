@@ -211,34 +211,28 @@ function attachSla(row = {}) {
 }
 
 function buildSlaSummary(rows = []) {
-  let breached = 0;
-  let warning = 0;
-  let normal = 0;
-  let urgent_total = 0;
-
-  rows.forEach((row) => {
-    const item = attachSla(row);
-
-    if (isUrgentPriority(item.priority)) {
-      urgent_total++;
-    }
-
-    if (!item.is_sla_active) return;
-
-    if (item.sla_level === "breached") {
-      breached++;
-    } else if (item.sla_level === "warning") {
-      warning++;
-    } else {
-      normal++;
-    }
+  const urgentRows = (Array.isArray(rows) ? rows : []).filter((row) => {
+    const status = normalizeCaseStatus(row.status);
+    return isUrgentPriority(row.priority) && status !== "done" && status !== "cancelled";
   });
+
+  const breached = urgentRows.filter(
+    (row) => getSlaLevel(row).sla_level === "breached"
+  ).length;
+
+  const warning = urgentRows.filter(
+    (row) => getSlaLevel(row).sla_level === "warning"
+  ).length;
+
+  const normal = urgentRows.filter(
+    (row) => getSlaLevel(row).sla_level === "normal"
+  ).length;
 
   return {
     breached,
     warning,
     normal,
-    urgent_total
+    urgent_total: urgentRows.length
   };
 }
 const caseFollowupTracker = {};

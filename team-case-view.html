@@ -993,9 +993,11 @@ const latestWithProgress =
   sortedUpdates.find(item => Number(item.progress_percent) > 0)
   || {};
      
-  const latestWithStep =
-    sortedUpdates.find(item => String(item.current_step || "").trim()) || {};
-
+ const latestWithStep =
+  sortedUpdates.find(item =>
+    String(item.current_step || item.currentStep || "").trim()
+  ) || {};
+     
   const latestWithWaiting =
     sortedUpdates.find(item => String(item.waiting_for || "").trim()) || {};
 
@@ -1022,6 +1024,8 @@ const currentStep =
   latest.currentStep ||
   caseItem.current_step ||
   caseItem.currentStep ||
+  caseItem.step_name ||
+  caseItem.stepName ||
   "-";
 
 const waitingFor =

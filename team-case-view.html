@@ -956,7 +956,7 @@ const latestWithProgress =
   const latestWithLocation =
     sortedUpdates.find(item => String(item.location_text || "").trim()) || {};
 
- const progress = Number(
+ let progress = Number(
   latestWithProgress.progress_percent ??
   latestWithProgress.progressPercent ??
   latest.progress_percent ??
@@ -965,6 +965,11 @@ const latestWithProgress =
   caseItem.progressPercent ??
   0
 );
+
+// 🔥 Golden Safe Patch: auto fallback เมื่อ progress = 0
+if (!progress || progress === 0) {
+  progress = getAutoProgress(caseItem, sortedUpdates);
+}
 
 const currentStep =
   latestWithStep.current_step ||

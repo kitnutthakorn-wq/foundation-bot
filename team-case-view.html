@@ -919,8 +919,8 @@ function getAutoProgress(caseItem = {}, updates = []) {
   const latestWithStep =
     sorted.find(item => String(item.current_step || item.currentStep || "").trim()) || {};
 
-  const latestWithWaiting =
-  sortedUpdates.find(item => String(item.waiting_for || item.waitingFor || "").trim()) || {};
+ const latestWithWaiting =
+  sorted.find(item => String(item.waiting_for || item.waitingFor || "").trim()) || {};
   const latestWithStatus =
     sorted.find(item => String(item.status_after || "").trim()) || {};
 

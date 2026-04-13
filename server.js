@@ -2358,10 +2358,11 @@ async function getUrgentCaseMenuCounts() {
     if (error) {
       console.error("GET URGENT CASE MENU COUNTS ERROR:", error);
       return {
-        critical: 0,
-        warning: 0,
-        inProgress: 0
-      };
+  breached: 0,
+  critical: 0, // alias กันของเก่าพัง
+  warning: 0,
+  inProgress: 0
+};
     }
 
     const rows = Array.isArray(data) ? data : [];

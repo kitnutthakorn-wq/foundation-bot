@@ -913,8 +913,8 @@
 
   const latest = sortedUpdates[0] || {};
 
-  const latestWithProgress =
-    sortedUpdates.find(item => item.progress_percent !== null && item.progress_percent !== undefined) || {};
+const latestWithProgress =
+  sortedUpdates.find(item => Number(item.progress_percent) > 0) || sortedUpdates[0] || {};
 
   const latestWithStep =
     sortedUpdates.find(item => String(item.current_step || "").trim()) || {};

@@ -472,12 +472,71 @@ function getFallbackAvatar(name = "TK") {
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
 function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
 function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
-async function initLiff(){
-  if(!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE'){currentProfile={displayName:'Demo Team Member',pictureUrl:'',userId:'demo-user'};bindProfile(currentProfile,'ทีมงาน (Demo)');document.getElementById('envChip').textContent='Demo mode';return;}
+async function initLiff() {
+  if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
+    currentProfile = {
+      displayName: 'Demo Team Member',
+      pictureUrl: '',
+      userId: 'demo-user'
+    };
+    bindProfile(currentProfile, 'ทีมงาน (Demo)');
+    document.getElementById('envChip').textContent = 'Demo mode';
+    return;
+  }
+
   await liff.init({ liffId: CONFIG.LIFF_ID });
-  if (liff.isInClient()) { currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='LIFF in LINE'; return; }
-  if (!liff.isLoggedIn()) { liff.login(); return; }
-  currentProfile = await liff.getProfile(); bindProfile(currentProfile,'ทีมงาน'); document.getElementById('envChip').textContent='External browser';
+
+  // 1) ถ้าเปิดในแอป LINE ให้ดึง profile ตรง
+  if (liff.isInClient()) {
+    const cachedProfile = localStorage.getItem('line_profile_cache');
+
+    try {
+      currentProfile = await liff.getProfile();
+      localStorage.setItem('line_profile_cache', JSON.stringify(currentProfile));
+    } catch (err) {
+      currentProfile = cachedProfile ? JSON.parse(cachedProfile) : null;
+    }
+
+    if (!currentProfile) {
+      throw new Error('ไม่สามารถโหลด LINE profile ในแอป LINE ได้');
+    }
+
+    bindProfile(currentProfile, 'ทีมงาน');
+    document.getElementById('envChip').textContent = 'LIFF in LINE';
+    return;
+  }
+
+  // 2) ถ้าเปิดจาก browser ภายนอก
+  const cachedProfile = localStorage.getItem('line_profile_cache');
+
+  if (!liff.isLoggedIn()) {
+    // ถ้าเคย cache ไว้ ใช้แสดงผลชั่วคราวก่อน
+    if (cachedProfile) {
+      try {
+        currentProfile = JSON.parse(cachedProfile);
+        bindProfile(currentProfile, 'ทีมงาน (cached)');
+        document.getElementById('envChip').textContent = 'External browser (cached)';
+      } catch (_) {}
+    }
+
+    liff.login();
+    return;
+  }
+
+  // 3) login แล้ว ดึง profile จริง + cache ไว้
+  try {
+    currentProfile = await liff.getProfile();
+    localStorage.setItem('line_profile_cache', JSON.stringify(currentProfile));
+  } catch (err) {
+    if (cachedProfile) {
+      currentProfile = JSON.parse(cachedProfile);
+    } else {
+      throw err;
+    }
+  }
+
+  bindProfile(currentProfile, 'ทีมงาน');
+  document.getElementById('envChip').textContent = 'External browser';
 }
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}

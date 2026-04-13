@@ -654,6 +654,8 @@ app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
 
 app.get("/imagemap/urgent-case-menu-v2-r:rev/:size", async (req, res) => {
   try {
+
+    console.log("🖼 URGENT MENU IMAGE ROUTE HIT:", req.params.rev, req.params.size);
     const size = String(req.params.size || "");
     const is2x = size.includes("@2x");
 
@@ -664,6 +666,7 @@ app.get("/imagemap/urgent-case-menu-v2-r:rev/:size", async (req, res) => {
     const baseImage = await loadImage(imagePath);
 
     const counts = await getUrgentCaseMenuCounts();
+    console.log("🖼 IMAGE ROUTE COUNTS:", counts);
 
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");

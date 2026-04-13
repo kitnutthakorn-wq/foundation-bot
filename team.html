@@ -1085,16 +1085,22 @@ function applyWebLoginVisibility() {
   if (!btn || !roleEl) return false;
 
   const rawRole = String(roleEl.textContent || "").trim().toLowerCase();
-  console.log("ROLE DETECTED:", rawRole);
+console.log("ROLE DETECTED:", rawRole);
 
-  if (!rawRole || rawRole.includes("กำลังตรวจสอบ") || rawRole.includes("loading")) {
-    btn.style.display = "none";
-    return false;
-  }
-
-  btn.style.display = rawRole === "admin" ? "" : "none";
-  return true;
+if (!rawRole || rawRole.includes("กำลังตรวจสอบ") || rawRole.includes("loading")) {
+  btn.style.display = "none";
+  return false;
 }
+
+const isAdminRole = rawRole.includes("admin");
+const isStaffRole = rawRole.includes("ทีมงาน") || rawRole.includes("staff");
+
+btn.style.display =
+  (isAdminRole || isStaffRole)
+    ? ""
+    : "none";
+
+return true;}
 
 function waitForRoleAndApplyWebLogin(attempt = 0) {
   const done = applyWebLoginVisibility();

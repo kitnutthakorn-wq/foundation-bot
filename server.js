@@ -250,7 +250,8 @@ const sla = buildSlaSummary(rows);
 return {
   critical: sla.critical,
   warning: sla.warning,
-  normal: sla.normal
+  normal: sla.normal,
+  inProgress: sla.normal // 👈 เพิ่ม alias
 };
 }
 

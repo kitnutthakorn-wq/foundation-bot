@@ -907,7 +907,12 @@
     }
 
 function getAutoProgress(caseItem = {}, updates = []) {
-  const latest = updates[0] || {};
+  const latest = Array.isArray(updates) && updates.length
+  ? updates.sort((a, b) =>
+      new Date(b.updated_at || b.created_at) -
+      new Date(a.updated_at || a.created_at)
+    )[0]
+  : {};
 
   const statusAfter = String(latest.status_after || caseItem.status || "").toLowerCase();
   const currentStep = String(latest.current_step || "").toLowerCase();

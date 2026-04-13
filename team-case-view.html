@@ -1104,13 +1104,13 @@ function renderTimeline(caseItem = {}, updates=[]){
                 caseItem.status ||
                 "-"
               ))}</span>
-              <span class="chip">ความคืบหน้า ${escapeHtml(String(
-                Number(
-                  item.progress_percent ??
-                  item.progressPercent ??
-                  getAutoProgress(caseItem || {}, [item])
-                ) || 0
-              ))}%</span>
+         <span class="chip">ความคืบหน้า ${escapeHtml(String(
+  (() => {
+    const directProgress = Number(item.progress_percent ?? item.progressPercent ?? 0);
+    if (directProgress > 0) return directProgress;
+    return Number(getAutoProgress(caseItem || {}, [item])) || 0;
+  })()
+))}%</span>
             </div>
           </div>
           <div class="timeline-time">${escapeHtml(formatThaiDateTime(item.updated_at))}</div>

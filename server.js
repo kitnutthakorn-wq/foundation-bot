@@ -4139,7 +4139,7 @@ function computeSlaState(row = {}) {
 function mergeCaseWithSla(row = {}) {
   return {
     ...row,
-    ...computeSlaState(row)
+    ...getSlaLevel(row)
   };
 }
 

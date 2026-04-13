@@ -147,6 +147,10 @@
     <div class="field upload-box">
       <label for="updateImages">แนบรูปหน้างาน</label>
       <input id="updateImages" type="file" accept="image/*" capture="environment" multiple />
+<div style="margin-top:10px;display:flex;gap:10px">
+  <button type="button" class="btn-secondary" onclick="clearAllImages()">ล้างทั้งหมด</button>
+</div>
+      
       <div class="hint">รองรับหลายรูป ระบบจะอัปโหลดขึ้น Supabase Storage แล้วเก็บ URL ในฐานข้อมูล</div>
       <div id="previewWrap" class="preview-wrap hidden"></div>
     </div>

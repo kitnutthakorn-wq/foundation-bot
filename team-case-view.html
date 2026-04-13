@@ -925,9 +925,29 @@ const latestWithProgress =
   const latestWithLocation =
     sortedUpdates.find(item => String(item.location_text || "").trim()) || {};
 
-  const progress = Number(latestWithProgress.progress_percent ?? caseItem.progress_percent ?? 0);
-  const currentStep = latestWithStep.current_step || caseItem.current_step || "-";
-  const waitingFor = latestWithWaiting.waiting_for || caseItem.waiting_for || "-";
+  const progress = Number(
+  latest.progress_percent ??
+  latest.progressPercent ??
+  caseItem.progress_percent ??
+  caseItem.progressPercent ??
+  0
+);
+
+const currentStep =
+  latest.current_step ||
+  latest.currentStep ||
+  caseItem.current_step ||
+  caseItem.currentStep ||
+  "-";
+
+const waitingFor =
+  latest.waiting_for ||
+  latest.waitingFor ||
+  caseItem.waiting_for ||
+  caseItem.waitingFor ||
+  "-";
+
+     
   const statusAfter = latest.status_after || caseItem.status || "-";
   const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
   const locationText = latestWithLocation.location_text || "-";

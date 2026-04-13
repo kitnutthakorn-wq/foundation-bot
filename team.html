@@ -107,7 +107,25 @@
 .badge.role-admin{background:rgba(220,38,38,.10);color:#991B1B}
 .badge.role-staff{background:rgba(249,115,22,.12);color:#9A3412}
 .badge.role-viewer{background:rgba(11,124,134,.12);color:#0F5860}
-    
+  .brand-badge{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  border:1px solid rgba(219,227,234,.9);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  padding:4px;
+}
+
+.brand-badge-img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}  
   </style>
 </head>
 <body>
@@ -115,7 +133,9 @@
 <div id="app" class="app hidden">
   <div class="topbar">
     <div class="brand-wrap">
-      <div class="brand-badge">TK</div>
+     <div class="brand-badge">
+  <img src="/Logo.png" alt="Khon Chuay Khon Logo" class="brand-badge-img" />
+</div>
       <div><h1>มูลนิธิคนช่วยฅน KCK FD</h1><p>หยิบยื่น • แบ่งปัน • เติมฝัน • ผู้ยากไร้</p></div>
     </div>
     <div class="profile-card">

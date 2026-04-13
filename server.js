@@ -253,7 +253,14 @@ async function getUrgentCaseMenuCounts() {
 
   if (error) {
     console.error("GET URGENT CASE COUNTS ERROR:", error);
-    return { breached: 0, critical: 0, warning: 0, normal: 0 };
+    return {
+      breached: 0,
+      critical: 0, // alias กันของเก่าพัง
+      warning: 0,
+      normal: 0,
+      open_cases: 0,
+      inProgress: 0
+    };
   }
 
   const rows = (Array.isArray(data) ? data : []).filter((row) => {
@@ -289,9 +296,10 @@ async function getUrgentCaseMenuCounts() {
 
   return {
     breached: sla.breached,
-    critical: sla.breached,
+    critical: sla.breached, // alias กัน UI เก่า
     warning: sla.warning,
     normal: sla.normal,
+    open_cases: sla.urgent_total,
     inProgress: sla.normal
   };
 }

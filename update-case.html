@@ -287,6 +287,15 @@ function renderPreview(files) {
   }).join('');
 }
 
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+  
 function removeImage(index) {
   selectedFiles.splice(index, 1);
   syncInputFiles();

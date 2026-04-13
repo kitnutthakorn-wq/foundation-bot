@@ -917,12 +917,13 @@ function getAutoProgress(caseItem = {}, updates = []) {
   const latest = sorted[0] || {};
 
   const latestWithStep =
-    sorted.find(item => String(item.current_step || item.currentStep || "").trim()) || {};
+    sorted.find((item) => String(item.current_step || item.currentStep || "").trim()) || {};
 
- const latestWithWaiting =
-  sorted.find(item => String(item.waiting_for || item.waitingFor || "").trim()) || {};
+  const latestWithWaiting =
+    sorted.find((item) => String(item.waiting_for || item.waitingFor || "").trim()) || {};
+
   const latestWithStatus =
-    sorted.find(item => String(item.status_after || "").trim()) || {};
+    sorted.find((item) => String(item.status_after || "").trim()) || {};
 
   const statusAfter = String(
     latestWithStatus.status_after ||
@@ -932,14 +933,13 @@ function getAutoProgress(caseItem = {}, updates = []) {
   ).toLowerCase();
 
   const currentStep = String(
-    item.current_step ||
-item.currentStep ||
-item.step_name ||
-item.stepName ||
-item.latest_step ||
-item.latest_note ||
-item.message ||
-"-"
+    latestWithStep.current_step ||
+    latestWithStep.currentStep ||
+    caseItem.current_step ||
+    caseItem.currentStep ||
+    caseItem.step_name ||
+    caseItem.stepName ||
+    ""
   ).toLowerCase();
 
   const waitingFor = String(

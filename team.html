@@ -502,7 +502,18 @@ function bindProfile(profile, roleText){document.getElementById('displayName').t
 
 async function ensureWebSessionFromLiff() {
   try {
-    if (!currentProfile?.userId) return false;
+
+    // 🔥 รอ profile ให้แน่ใจก่อนยิง session
+    let retry = 0;
+    while (!currentProfile?.userId && retry < 5) {
+      await new Promise(r => setTimeout(r, 200));
+      retry++;
+    }
+
+    if (!currentProfile?.userId) {
+      console.warn("❌ no profile after LIFF");
+      return false;
+    }
 
     const res = await fetch(`${CONFIG.API_BASE_URL}/api/auth/web-login`, {
       method: "POST",

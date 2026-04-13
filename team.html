@@ -1004,6 +1004,23 @@ window.addEventListener('beforeunload', () => {
   // ไม่ลบ cache ตอนปิดหน้า เพื่อช่วยลดการ login ซ้ำ
   // intentionally keep cache
 });
+
+async function logoutWebSession() {
+  try {
+    await fetch(`${CONFIG.API_BASE_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include"
+    });
+  } catch (err) {
+    console.warn("logoutWebSession failed:", err.message);
+  }
+
+  try {
+    localStorage.removeItem("line_profile_cache");
+  } catch (_) {}
+
+  window.location.href = "web-login.html";
+}  
 bootstrap();
 </script>
 </body>

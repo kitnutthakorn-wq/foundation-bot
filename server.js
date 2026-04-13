@@ -2353,47 +2353,6 @@ async function handleViewNewSplit({ replyToken }) {
 // NEW CASE MENU IMAGEMAP
 // =========================
 
-async function getUrgentCaseMenuCounts() {
-  try {
-    const { data, error } = await supabase
-      .from("help_requests")
-      .select("status, priority, created_at");
-
-    if (error) {
-      console.error("GET URGENT CASE MENU COUNTS ERROR:", error);
-      return {
-  breached: 0,
-  critical: 0, // alias กันของเก่าพัง
-  warning: 0,
-  inProgress: 0
-};
-    }
-
-    const rows = Array.isArray(data) ? data : [];
-    const summary = buildSlaSummary(rows);
-
-    const inProgress = rows.filter(row => {
-      const priority = String(row.priority || "").toLowerCase().trim();
-      const status = normalizeCaseStatus(row.status);
-      return priority === "urgent" && status === "in_progress";
-    }).length;
-
-    return {
-      critical: summary.critical,
-      warning: summary.warning,
-      inProgress
-    };
-  } catch (err) {
-    console.error("GET URGENT CASE MENU COUNTS CATCH:", err);
-   return {
-  breached: 0,
-  critical: 0, // alias กันของเก่าพัง
-  warning: 0,
-  inProgress: 0
-};
-  }
-}
-
 function buildUrgentCaseMenuRevision(counts = {}) {
   const critical = Number(counts.critical || 0);
   const warning = Number(counts.warning || 0);

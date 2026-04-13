@@ -485,6 +485,11 @@ async function initLiff() {
   }
 
   await liff.init({ liffId: CONFIG.LIFF_ID });
+  // 🔥 ล้าง ?liffLogin=1 หลังกลับมา
+if (window.location.search.includes("liffLogin=1")) {
+  const cleanUrl = window.location.origin + window.location.pathname;
+  window.history.replaceState({}, document.title, cleanUrl);
+}
 
   // 1) ถ้าเปิดในแอป LINE ให้ดึง profile ตรง
   if (liff.isInClient()) {

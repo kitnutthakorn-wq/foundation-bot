@@ -1083,10 +1083,10 @@ bootstrap();
 console.log("DEBUG ROLE:", window.userRole, window.role, window.currentUser);
 
 const role =
-  window.userRole ||
-  window.role ||
-  window.currentUser?.role ||
+  document.getElementById("userRole")?.textContent?.trim() ||
   "viewer";
+
+console.log("ROLE DETECTED:", role);
 
 if (role !== "admin") {
   const btn = document.querySelector('[onclick="goToWebLogin()"]');

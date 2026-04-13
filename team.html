@@ -146,6 +146,7 @@
         <button class="btn-secondary qa-full" onclick="goToWebLogin()">เข้าระบบผ่าน Web Login</button>
        
       </div>
+      
       <div class="role-row" style="margin-top:14px">
         <div class="role-chip"><strong>Environment</strong><span id="envChip">Demo</span></div>
         <div class="role-chip"><strong>Menu Version</strong><span id="menuVersionChip">v-next</span></div>
@@ -1078,5 +1079,14 @@ async function logoutWebSession() {
 }  
 bootstrap();
 </script>
+<script>
+const role = window.userRole || "viewer";
+
+if (role !== "admin") {
+  const btn = document.querySelector('[onclick="goToWebLogin()"]');
+  if (btn) btn.style.display = "none";
+}
+</script>
+  
 </body>
 </html>

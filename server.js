@@ -180,7 +180,9 @@ function buildSlaSummary(rows = []) {
   let urgent_total = 0;
 
   rows.forEach(row => {
-   if (String(row.priority || "").trim().toLowerCase() !== "urgent") return;
+    const p = String(row.priority || "").trim().toLowerCase();
+    if (!(p === "urgent" || p === "ด่วน")) return;
+
     const level = getSlaLevel(row);
 
     if (level === "closed") return;
@@ -194,7 +196,6 @@ function buildSlaSummary(rows = []) {
 
   return { critical, warning, normal, urgent_total };
 }
-
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 const app = express();

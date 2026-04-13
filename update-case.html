@@ -284,6 +284,14 @@ function removeImage(index) {
   syncInputFiles();
   renderPreview(selectedFiles);
 }
+
+function syncInputFiles() {
+  const input = document.getElementById('updateImages');
+  const dt = new DataTransfer();
+
+  selectedFiles.forEach(file => dt.items.add(file));
+  input.files = dt.files;
+}
   
 async function captureLocation() {
   if (!navigator.geolocation) {

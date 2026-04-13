@@ -499,6 +499,30 @@ function bindProfile(profile, roleText){document.getElementById('displayName').t
     return false;
   }
 } 
+
+async function ensureWebSessionFromLiff() {
+  try {
+    if (!currentProfile?.userId) return false;
+
+    const res = await fetch(`${CONFIG.API_BASE_URL}/api/auth/web-login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        userId: currentProfile.userId,
+        displayName: currentProfile.displayName || "",
+        pictureUrl: currentProfile.pictureUrl || ""
+      })
+    });
+
+    const data = await res.json();
+    return !!(res.ok && data?.ok);
+  } catch (err) {
+    console.warn("ensureWebSessionFromLiff failed:", err.message);
+    return false;
+  }
+}
+  
   async function initLiff() {
   if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
     currentProfile = {

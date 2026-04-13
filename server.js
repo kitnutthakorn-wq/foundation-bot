@@ -161,10 +161,15 @@ const SLA_CONFIG = {
   WARNING_HOURS: 24
 };
 
+function isUrgentPriority(priority = "") {
+  const p = String(priority || "").trim().toLowerCase();
+  return p === "urgent" || p === "ด่วน";
+}
+
 function getSlaLevel(row = {}) {
   const status = normalizeCaseStatus(row.status);
 
-  // ❗ ปิดเคส = ไม่ active SLA
+  // ปิดเคส = ไม่ active SLA
   if (status === "done" || status === "cancelled") {
     return {
       sla_level: "normal",
@@ -179,7 +184,7 @@ function getSlaLevel(row = {}) {
   let slaLevel = "normal";
   let slaLabel = "ปกติ";
 
-  // 🔥 เฉพาะ urgent เท่านั้นที่โดน SLA เข้ม
+  // ใช้ SLA เข้มเฉพาะเคสด่วน
   if (isUrgentPriority(row.priority)) {
     if (hours >= SLA_CONFIG.CRITICAL_HOURS) {
       slaLevel = "breached";
@@ -203,11 +208,6 @@ function attachSla(row = {}) {
     ...row,
     ...getSlaLevel(row)
   };
-}
-
-function isUrgentPriority(priority = "") {
-  const p = String(priority || "").trim().toLowerCase();
-  return p === "urgent" || p === "ด่วน";
 }
 
 function buildSlaSummary(rows = []) {
@@ -234,9 +234,13 @@ function buildSlaSummary(rows = []) {
     }
   });
 
-  return { breached, warning, normal, urgent_total };
+  return {
+    breached,
+    warning,
+    normal,
+    urgent_total
+  };
 }
-
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 const app = express();

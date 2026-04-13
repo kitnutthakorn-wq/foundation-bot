@@ -289,6 +289,12 @@ function removeImage(index) {
   renderPreview(selectedFiles);
 }
 
+function clearAllImages() {
+  selectedFiles = [];
+  syncInputFiles();
+  renderPreview(selectedFiles);
+}
+  
 function syncInputFiles() {
   const input = document.getElementById('updateImages');
   const dt = new DataTransfer();

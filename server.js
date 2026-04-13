@@ -211,19 +211,42 @@ async function getUrgentCaseMenuCounts() {
     return { critical: 0, warning: 0, normal: 0 };
   }
 
-  const rows = (Array.isArray(data) ? data : []).filter(row => {
-    const status = normalizeCaseStatus(row.status);
-    return status === "new" || status === "in_progress";
-  });
+ const rows = (Array.isArray(data) ? data : []).filter(row => {
+  const status = normalizeCaseStatus(row.status);
+  return status === "new" || status === "in_progress";
+});
 
-  const sla = buildSlaSummary(rows);
+console.log("=== URGENT MENU DEBUG: RAW DATA ===");
+(Array.isArray(data) ? data : []).forEach(row => {
+  console.log(
+    "[RAW]",
+    row.case_code,
+    "status=", JSON.stringify(row.status),
+    "normalizedStatus=", normalizeCaseStatus(row.status),
+    "priority=", JSON.stringify(row.priority),
+    "slaLevel=", getSlaLevel(row)
+  );
+});
 
-  return {
-    critical: sla.critical,
-    warning: sla.warning,
-    normal: sla.normal
-  };
-}
+console.log("=== URGENT MENU DEBUG: FILTERED ROWS ===");
+rows.forEach(row => {
+  console.log(
+    "[ROW]",
+    row.case_code,
+    "status=", JSON.stringify(row.status),
+    "normalizedStatus=", normalizeCaseStatus(row.status),
+    "priority=", JSON.stringify(row.priority),
+    "slaLevel=", getSlaLevel(row)
+  );
+});
+
+const sla = buildSlaSummary(rows);
+
+return {
+  critical: sla.critical,
+  warning: sla.warning,
+  normal: sla.normal
+};
 
 
 function drawText(ctx, text, x, y, options = {}) {

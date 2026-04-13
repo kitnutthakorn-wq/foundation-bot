@@ -238,8 +238,6 @@ function buildSlaSummary(rows = []) {
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 
-const crypto = require("crypto");
-
 const webSessions = new Map();
 
 function generateWebSessionId() {

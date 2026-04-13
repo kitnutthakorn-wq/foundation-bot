@@ -472,7 +472,35 @@ function getFallbackAvatar(name = "TK") {
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
 function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
 function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
-async function initLiff() {
+
+ async function tryWebSessionLogin() {
+  try {
+    const res = await fetch(`${CONFIG.API_BASE_URL}/api/auth/me`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    if (!res.ok) return false;
+
+    const data = await res.json();
+    if (!data?.ok || !data?.user?.userId) return false;
+
+    currentProfile = {
+      userId: data.user.userId,
+      displayName: data.user.displayName || "ทีมงาน",
+      pictureUrl: data.user.pictureUrl || ""
+    };
+
+    bindProfile(currentProfile, `ทีมงาน (${data.user.role || "viewer"})`);
+    document.getElementById("envChip").textContent = "Web Session";
+
+    return true;
+  } catch (err) {
+    console.warn("tryWebSessionLogin failed:", err.message);
+    return false;
+  }
+} 
+  async function initLiff() {
   if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
     currentProfile = {
       displayName: 'Demo Team Member',

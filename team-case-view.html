@@ -1120,11 +1120,14 @@ function renderLatestImages(updates = []) {
   <div class="timeline-box">
     <strong>กำลังรอ</strong>
     <span>${escapeHtml(
-      item.waiting_for ||
-      item.waitingFor ||
-      item.latest_waiting ||
-      "-"
-    )}</span>
+  item.waiting_for ||
+  item.waitingFor ||
+  item.waiting ||
+  item.waiting_reason ||
+  item.waitingReason ||
+  item.latest_waiting ||
+  "-"
+)}</span>
   </div>
   <div class="timeline-box">
     <strong>ตำแหน่ง/พื้นที่</strong>

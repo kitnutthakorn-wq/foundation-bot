@@ -1097,17 +1097,21 @@ function renderLatestImages(updates = []) {
               <div>
                 <div class="timeline-title">อัปเดตโดย ${escapeHtml(item.updater_name || item.updated_by || "-")}</div>
                 <div class="timeline-meta" style="margin-top:8px;">
-                  <span class="chip">สถานะ ${escapeHtml(formatStatusThai(item.status_after || "-"))}</span>
-                  <span class="chip">ความคืบหน้า ${escapeHtml(String(item.progress_percent ?? 0))}%</span>
-                </div>
-              </div>
-              <div class="timeline-time">${escapeHtml(formatThaiDateTime(item.updated_at))}</div>
-            </div>
-
-            <div class="timeline-note">${escapeHtml(item.latest_note || item.message || "-")}</div>
-
-           <div class="timeline-grid">
-  <div class="timeline-box">
+  <span class="chip">สถานะ ${escapeHtml(formatStatusThai(
+    item.status_after ||
+    item.statusAfter ||
+    item.status ||
+    caseItem.status ||
+    "-"
+  ))}</span>
+  <span class="chip">ความคืบหน้า ${escapeHtml(String(
+    Number(
+      item.progress_percent ??
+      item.progressPercent ??
+      getAutoProgress(caseItem || {}, [item])
+    ) || 0
+  ))}%</span>
+</div>  <div class="timeline-box">
     <strong>ขั้นตอนล่าสุด</strong>
     <span>${escapeHtml(
       item.current_step ||

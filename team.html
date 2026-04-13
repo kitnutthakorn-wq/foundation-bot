@@ -918,7 +918,17 @@ function renderCases() {
     </div>
   `).join('');
 }
-function renderActivities(){document.getElementById('activityList').innerHTML=activities.map(item=>`<div class="activity-item"><strong>${escapeHtml(item.title)}</strong><div class="meta-row">${escapeHtml(item.detail)}</div><div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div></div>`).join('');}
+function renderActivities() {
+  const latestFive = (activities || []).slice(0, 5);
+
+  document.getElementById('activityList').innerHTML = latestFive.map(item => `
+    <div class="activity-item">
+      <strong>${escapeHtml(item.title)}</strong>
+      <div class="meta-row">${escapeHtml(item.detail)}</div>
+      <div class="meta-row" style="margin-top:6px">${escapeHtml(item.time)}</div>
+    </div>
+  `).join('');
+}
 function applyPresetFilter(s){currentPresetFilter='all';document.getElementById('statusFilter').value=s; renderCases();}
 function filterTodayCases(){currentPresetFilter='today';document.getElementById('statusFilter').value='all';renderCases();}
 function openCaseUpdateCenter(){alert('ให้เลือกกดปุ่ม "อัปเดตเคส" จากรายการเคสที่ต้องการ เพื่อส่งรูปและรายละเอียดของงานได้ทันที');}

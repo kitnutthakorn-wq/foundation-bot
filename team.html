@@ -925,7 +925,7 @@ function goToWebLogin() {
   const confirmGo = confirm("คุณต้องการเข้าสู่ระบบผ่าน Web Login หรือไม่?");
   if (!confirmGo) return;
 
-  window.location.href = "web-login.html";
+  window.location.href = "team.html";
 }
   
 async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}

@@ -912,7 +912,8 @@
 });
 
 const latest = sortedUpdates[0] || {};
-      const progress = Number(latest.progress_percent ?? caseItem.progress_percent ?? 0);
+      const totalSteps = updates.length || 1;
+const progress = Math.round((totalSteps / 5) * 100); // สมมุติ 5 step = 100%
       const currentStep = latest.current_step || caseItem.current_step || "-";
       const waitingFor = latest.waiting_for || caseItem.waiting_for || "-";
       const statusAfter = latest.status_after || caseItem.status || "-";

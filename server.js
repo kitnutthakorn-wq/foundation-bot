@@ -9213,53 +9213,51 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
       ]
     }
   ]);
+try {
+  const cooldownMs = 10 * 60 * 1000;
+  const trackerKey = String(foundCase.case_code || caseCode);
+  const now = Date.now();
+  const prev = caseFollowupTracker[trackerKey];
 
-  return;
-
-    const cooldownMs = 10 * 60 * 1000;
-    const trackerKey = String(foundCase.case_code || caseCode);
-    const now = Date.now();
-    const prev = caseFollowupTracker[trackerKey];
-
-    if (prev && now - prev.lastAt < cooldownMs) {
-      await safeReply(replyToken, [
-        {
-          type: "text",
-          text: "เพิ่มรายการแจ้งเตือนเคสนี้ไปไม่นาน กรุณารอสักครู่แล้วลองอีกครั้ง",
-        },
-      ]);
-      continue;
-    }
-
-    const nextCount = (prev?.count || 0) + 1;
-    caseFollowupTracker[trackerKey] = {
-      lastAt: now,
-      count: nextCount,
-    };
-
-    if (EFFECTIVE_TEAM_GROUP_ID) {
-      await pushTeamFollowupNotification(foundCase, nextCount);
-    } else {
-      console.warn("TEAM GROUP ID NOT SET FOR FOLLOWUP");
-    }
-
+  if (prev && now - prev.lastAt < cooldownMs) {
     await safeReply(replyToken, [
       {
         type: "text",
-        text: "เพิ่มการแจ้งเตือนเคสนี้ไปที่ทีมงานแล้ว กรุณารอสักครู่แล้วลองอีกครั้ง",
+        text: "เพิ่มรายการแจ้งเตือนเคสนี้ไปไม่นาน กรุณารอสักครู่แล้วลองอีกครั้ง",
       },
     ]);
-  } catch (err) {
-    console.error("FOLLOWUP NOTIFY ERROR:", err);
-    await safeReply(replyToken, [
-      {
-        type: "text",
-        text: "แจ้งเตือนทีมงานไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
-      },
-    ]);
+    continue;
   }
 
-  continue;
+  const nextCount = (prev?.count || 0) + 1;
+  caseFollowupTracker[trackerKey] = {
+    lastAt: now,
+    count: nextCount,
+  };
+
+  if (EFFECTIVE_TEAM_GROUP_ID) {
+    await pushTeamFollowupNotification(foundCase, nextCount);
+  } else {
+    console.warn("TEAM GROUP ID NOT SET FOR FOLLOWUP");
+  }
+
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "เพิ่มการแจ้งเตือนเคสนี้ไปที่ทีมงานแล้ว กรุณารอสักครู่แล้วลองอีกครั้ง",
+    },
+  ]);
+} catch (err) {
+  console.error("FOLLOWUP NOTIFY ERROR:", err);
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "แจ้งเตือนทีมงานไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
+    },
+  ]);
+}
+
+continue;
 }
 
 // ================================

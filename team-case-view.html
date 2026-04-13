@@ -940,6 +940,8 @@ const latestWithProgress =
 );
 
 const currentStep =
+  latestWithStep.current_step ||
+  latestWithStep.currentStep ||
   latest.current_step ||
   latest.currentStep ||
   caseItem.current_step ||
@@ -947,6 +949,8 @@ const currentStep =
   "-";
 
 const waitingFor =
+  latestWithWaiting.waiting_for ||
+  latestWithWaiting.waitingFor ||
   latest.waiting_for ||
   latest.waitingFor ||
   caseItem.waiting_for ||

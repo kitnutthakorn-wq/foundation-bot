@@ -1095,8 +1095,10 @@ function applyWebLoginVisibility() {
 
   btn.style.display = role === "admin" ? "" : "none";
 }
-  
 bootstrap();
+setTimeout(applyWebLoginVisibility, 500);
+setTimeout(applyWebLoginVisibility, 1200);
+setTimeout(applyWebLoginVisibility, 2000);
 </script> 
 </body>
 </html>

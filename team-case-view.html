@@ -991,7 +991,9 @@ const latestWithProgress =
   ) || {};
      
   const latestWithWaiting =
-    sortedUpdates.find(item => String(item.waiting_for || "").trim()) || {};
+  sortedUpdates.find(item =>
+    String(item.waiting_for || item.waitingFor || "").trim()
+  ) || {};
 
  const latestWithLocation =
   sortedUpdates.find(item =>

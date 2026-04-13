@@ -156,6 +156,11 @@ function getSlaHoursFromCase(row = {}, now = new Date()) {
   return diffMs > 0 ? diffMs / (1000 * 60 * 60) : 0;
 }
 
+const SLA_CONFIG = {
+  CRITICAL_HOURS: 48,
+  WARNING_HOURS: 24
+};
+
 function getSlaLevel(row = {}) {
   const status = normalizeCaseStatus(row.status);
   if (status === "done" || status === "cancelled") return "closed";
@@ -164,11 +169,10 @@ function getSlaLevel(row = {}) {
 
   const hours = getSlaHoursFromCase(row);
 
-  if (hours >= 48) return "critical";
-  if (hours >= 24) return "warning";
+  if (hours >= SLA_CONFIG.CRITICAL_HOURS) return "critical";
+  if (hours >= SLA_CONFIG.WARNING_HOURS) return "warning";
   return "normal";
 }
-
 function buildSlaSummary(rows = []) {
   let critical = 0;
   let warning = 0;

@@ -1079,7 +1079,7 @@ function renderLatestImages(updates = []) {
   `).join("");
 }
     
-    function renderTimeline(updates=[]){
+    function renderTimeline(caseItem = {}, updates=[])
       const root = document.getElementById("timelineList");
       document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;
 

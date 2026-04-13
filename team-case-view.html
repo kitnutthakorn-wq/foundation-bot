@@ -932,13 +932,14 @@ function getAutoProgress(caseItem = {}, updates = []) {
   ).toLowerCase();
 
   const currentStep = String(
-    latestWithStep.current_step ||
-    latestWithStep.currentStep ||
-    caseItem.current_step ||
-    caseItem.currentStep ||
-    caseItem.step_name ||
-    caseItem.stepName ||
-    ""
+    item.current_step ||
+item.currentStep ||
+item.step_name ||
+item.stepName ||
+item.latest_step ||
+item.latest_note ||
+item.message ||
+"-"
   ).toLowerCase();
 
   const waitingFor = String(

@@ -1105,20 +1105,41 @@ function renderLatestImages(updates = []) {
 
             <div class="timeline-note">${escapeHtml(item.latest_note || item.message || "-")}</div>
 
-            <div class="timeline-grid">
-              <div class="timeline-box">
-                <strong>ขั้นตอนล่าสุด</strong>
-                <span>${escapeHtml(item.current_step || "-")}</span>
-              </div>
-              <div class="timeline-box">
-                <strong>กำลังรอ</strong>
-                <span>${escapeHtml(item.waiting_for || "-")}</span>
-              </div>
-              <div class="timeline-box">
-                <strong>ตำแหน่ง/พื้นที่</strong>
-                <span>${escapeHtml(item.location_text || "-")}</span>
-              </div>
-            </div>
+           <div class="timeline-grid">
+  <div class="timeline-box">
+    <strong>ขั้นตอนล่าสุด</strong>
+    <span>${escapeHtml(
+      item.current_step ||
+      item.currentStep ||
+      item.step_name ||
+      item.stepName ||
+      item.latest_step ||
+      "-"
+    )}</span>
+  </div>
+  <div class="timeline-box">
+    <strong>กำลังรอ</strong>
+    <span>${escapeHtml(
+      item.waiting_for ||
+      item.waitingFor ||
+      item.latest_waiting ||
+      "-"
+    )}</span>
+  </div>
+  <div class="timeline-box">
+    <strong>ตำแหน่ง/พื้นที่</strong>
+    <span>${escapeHtml(
+      item.location_text ||
+      item.locationText ||
+      (
+        item.latitude && item.longitude
+          ? `${item.latitude}, ${item.longitude}`
+          : ""
+      ) ||
+      "-"
+    )}</span>
+  </div>
+</div>
 
             ${images.length ? `
               <div class="image-grid">

@@ -419,15 +419,23 @@ async function submitCaseUpdate() {
 document.getElementById('updateImages').addEventListener('change', (e) => {
   selectedFiles = Array.from(e.target.files || []);
 
-  // 🔥 จำกัดจำนวนรูป
   const MAX_FILES = 5;
-
   if (selectedFiles.length > MAX_FILES) {
     selectedFiles = selectedFiles.slice(0, MAX_FILES);
     alert(`อัปโหลดได้สูงสุด ${MAX_FILES} รูป`);
   }
 
-  syncInputFiles(); // สำคัญมาก
+  const MAX_SIZE_MB = 5;
+  selectedFiles = selectedFiles.filter(file => {
+    const sizeMB = file.size / 1024 / 1024;
+    if (sizeMB > MAX_SIZE_MB) {
+      alert(`${file.name} เกิน ${MAX_SIZE_MB}MB`);
+      return false;
+    }
+    return true;
+  });
+
+  syncInputFiles();
   renderPreview(selectedFiles);
 });
 

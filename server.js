@@ -449,16 +449,16 @@ const updatedText = formatThaiDateTime(
   data?.created_at
 );
 
-const slaLevel = getSlaLevel(data || {});
+const slaInfo = getSlaLevel(data || {});
+const slaLevel = slaInfo.sla_level;
 
 let slaText = "ปกติ";
 
-if (slaLevel === "critical") {
-  slaText = "ใกล้เกินกำหนด";
+if (slaLevel === "breached") {
+  slaText = "เกิน SLA";
 } else if (slaLevel === "warning") {
-  slaText = "ต้องเฝ้าระวัง";
+  slaText = "ใกล้เกิน SLA";
 }
-
 const progressPercent =
   rawStatus === "done" || rawStatus === "closed"
     ? 100

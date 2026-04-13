@@ -180,8 +180,7 @@ function buildSlaSummary(rows = []) {
   let urgent_total = 0;
 
   rows.forEach(row => {
-    if (String(row.priority || "").toLowerCase() !== "urgent") return;
-
+   if (String(row.priority || "").trim().toLowerCase() !== "urgent") return;
     const level = getSlaLevel(row);
 
     if (level === "closed") return;

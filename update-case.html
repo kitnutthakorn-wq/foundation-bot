@@ -248,8 +248,12 @@ function resetFormState() {
   document.getElementById('locationText').value = '';
   document.getElementById('notifyTeam').checked = true;
   document.getElementById('notifyRequester').checked = false;
+
+  selectedFiles = [];
+  syncInputFiles();
+  renderPreview(selectedFiles);
+
   currentLocation = null;
-  renderPreview([]);
   setStatus('ล้างแบบฟอร์มเรียบร้อย', 'warn');
 }
 

@@ -174,6 +174,13 @@ function getSlaLevel(row = {}) {
   return "normal";
 }
 
+function attachSla(row = {}) {
+  return {
+    ...row,
+    ...getSlaLevel(row)
+  };
+}
+
 function isUrgentPriority(priority = "") {
   const p = String(priority || "").trim().toLowerCase();
   return p === "urgent" || p === "ด่วน";

@@ -929,7 +929,9 @@ const latestWithProgress =
   const latestWithLocation =
     sortedUpdates.find(item => String(item.location_text || "").trim()) || {};
 
-  const progress = Number(
+ const progress = Number(
+  latestWithProgress.progress_percent ??
+  latestWithProgress.progressPercent ??
   latest.progress_percent ??
   latest.progressPercent ??
   caseItem.progress_percent ??

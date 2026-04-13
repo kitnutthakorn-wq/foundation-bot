@@ -1021,7 +1021,9 @@ const currentStep =
   caseItem.currentStep ||
   caseItem.step_name ||
   caseItem.stepName ||
-  caseItem.latest_step ||   // 🔥 เพิ่ม
+  caseItem.latest_step ||
+  latest.latest_note ||
+  latest.message ||
   "-";
 
 const waitingFor =

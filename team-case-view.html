@@ -941,6 +941,32 @@ const latestWithProgress =
 
   document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
 }
+
+function renderLatestImages(updates = []) {
+  const latestWithImages = [...updates].find(
+    item => Array.isArray(item.images) && item.images.filter(Boolean).length > 0
+  );
+
+  const root = document.getElementById("latestImages");
+  if (!root) return;
+
+  if (!latestWithImages) {
+    root.innerHTML = `<div class="empty-state" style="grid-column:1 / -1;">ยังไม่มีรูปภาพภาคสนาม</div>`;
+    return;
+  }
+
+  const imageList = latestWithImages.images.filter(Boolean);
+
+  root.innerHTML = imageList.map((src, idx) => `
+    <img
+      src="${escapeHtml(src)}"
+      class="pmx-case-thumb"
+      alt="field image ${idx + 1}"
+      onclick='openPmxImageViewer(${JSON.stringify(imageList)}, ${idx})'
+    />
+  `).join("");
+}
+    
     function renderTimeline(updates=[]){
       const root = document.getElementById("timelineList");
       document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;

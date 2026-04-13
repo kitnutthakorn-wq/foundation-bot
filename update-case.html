@@ -378,9 +378,9 @@ async function submitCaseUpdate() {
       formData.append('accuracy', String(currentLocation.accuracy || ''));
     }
 
-    Array.from(files).forEach(file => {
-      formData.append('images', file, file.name);
-    });
+   files.forEach(file => {
+  formData.append('images', file, file.name);
+});
 
     const res = await fetch(`${CONFIG.API_BASE_URL}${CONFIG.CREATE_CASE_UPDATE_ENDPOINT}`, {
       method: 'POST',

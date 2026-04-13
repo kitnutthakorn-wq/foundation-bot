@@ -9169,7 +9169,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   const counts = await getUrgentCaseMenuCounts();
   console.log("🔥 HANDLER COUNTS:", counts);
 
-  const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v7`;
+  const revision = `${counts.critical}-${counts.warning}-${counts.inProgress}-v8`;
 
   await safeReply(replyToken, [
     {

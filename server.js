@@ -164,8 +164,8 @@ function getSlaLevel(row = {}) {
 
   const hours = getSlaHoursFromCase(row);
 
-  if (hours >= 4) return "critical";
-  if (hours >= 2) return "warning";
+  if (hours >= 48) return "critical";
+  if (hours >= 24) return "warning";
   return "normal";
 }
 

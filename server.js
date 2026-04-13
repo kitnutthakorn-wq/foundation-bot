@@ -10697,6 +10697,8 @@ function mapCaseRowToTeamCase(row = {}) {
   };
 }
 
+
+
 app.get("/api/team/me", async (req, res) => {
   try {
     const userId = String(req.query.userId || "").trim();

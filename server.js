@@ -4145,6 +4145,13 @@ function mergeCaseWithSla(row = {}) {
 
 async function getSlaMenuCounts() {
   try {
+    const { data, error } = await supabase
+      .from("help_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
     const rows = Array.isArray(data) ? data : [];
     const summary = buildSlaSummary(rows);
 
@@ -4154,9 +4161,15 @@ async function getSlaMenuCounts() {
         !["done", "cancelled"].includes(normalizeCaseStatus(row.status))
     );
 
-    const overdueRows = urgentRows.filter(row => getSlaLevel(row).sla_level === "breached");
-    const nearDueRows = urgentRows.filter(row => getSlaLevel(row).sla_level === "warning");
-    const smartAlertRows = urgentRows.filter(row => {
+    const overdueRows = urgentRows.filter(
+      row => getSlaLevel(row).sla_level === "breached"
+    );
+
+    const nearDueRows = urgentRows.filter(
+      row => getSlaLevel(row).sla_level === "warning"
+    );
+
+    const smartAlertRows = urgentRows.filter((row) => {
       const level = getSlaLevel(row).sla_level;
       return level === "breached" || level === "warning";
     });

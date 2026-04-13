@@ -7708,7 +7708,10 @@ app.get("/api/dashboard/cases", checkDashboardAuth, async (req, res) => {
     const { data, error } = await query;
     if (error) throw error;
 
-    res.json({ ok: true, data: data || [] });
+    const rows = Array.isArray(data) ? data : [];
+    const finalRows = rows.map(attachSla);
+
+    res.json({ ok: true, data: finalRows });
   } catch (error) {
     console.error("DASHBOARD CASES ERROR:", error);
     res.status(500).json({ ok: false, error: error.message });
@@ -7729,7 +7732,10 @@ app.get("/api/dashboard/search", checkDashboardAuth, async (req, res) => {
     const { data, error } = await query;
     if (error) throw error;
 
-    res.json({ ok: true, data: data || [] });
+    const rows = Array.isArray(data) ? data : [];
+    const finalRows = rows.map(attachSla);
+
+    res.json({ ok: true, data: finalRows });
   } catch (error) {
     console.error("DASHBOARD SEARCH ERROR:", error);
     res.status(500).json({ ok: false, error: error.message });

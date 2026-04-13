@@ -165,7 +165,7 @@ function getSlaLevel(row = {}) {
   const status = normalizeCaseStatus(row.status);
   if (status === "done" || status === "cancelled") return "closed";
 
-  if (String(row.priority).toLowerCase() !== "urgent") return "normal";
+ if (!isUrgentPriority(row.priority)) return "normal";
 
   const hours = getSlaHoursFromCase(row);
 
@@ -173,15 +173,20 @@ function getSlaLevel(row = {}) {
   if (hours >= SLA_CONFIG.WARNING_HOURS) return "warning";
   return "normal";
 }
+
+function isUrgentPriority(priority = "") {
+  const p = String(priority || "").trim().toLowerCase();
+  return p === "urgent" || p === "ด่วน";
+}
+
 function buildSlaSummary(rows = []) {
   let critical = 0;
   let warning = 0;
   let normal = 0;
   let urgent_total = 0;
 
-  rows.forEach(row => {
-    const p = String(row.priority || "").trim().toLowerCase();
-    if (!(p === "urgent" || p === "ด่วน")) return;
+ rows.forEach(row => {
+  if (!isUrgentPriority(row.priority)) return;
 
     const level = getSlaLevel(row);
 

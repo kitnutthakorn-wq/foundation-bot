@@ -692,7 +692,7 @@ app.get("/imagemap/urgent-case-menu-v2-r:rev/:size", async (req, res) => {
     });
 
     // 🔥 ปุ่ม 3
-   drawText(ctx, `เคสด่วน SLA ปกติ (${Number(counts.normal || 0)})`, centerX, 1250, {
+   drawText(ctx, `เคสด่วน SLA ปกติ (${Number(counts.inProgress || 0)})`, centerX, 1250, {
       font: 'bold 52px "ThaiBold"',
       align: "center"
     });

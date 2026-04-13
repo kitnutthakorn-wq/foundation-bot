@@ -9161,14 +9161,18 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
     return;
   }
 
-const counts = await getUrgentCaseMenuCounts();
-const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v6`;
+  console.log("🔥 HANDLER ดูเคสด่วน START");
+
+  const counts = await getUrgentCaseMenuCounts();
+  console.log("🔥 HANDLER COUNTS:", counts);
+
+  const revision = `${counts.critical}-${counts.warning}-${counts.normal}-v7`;
 
   await safeReply(replyToken, [
     {
       type: "imagemap",
       baseUrl: `https://satisfied-stillness-production-7942.up.railway.app/imagemap/urgent-case-menu-v2-r${revision}`,
-      altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | กำลังดำเนินการ ${counts.normal}`,
+      altText: `เมนูเคสด่วน | วิกฤต ${counts.critical} | ใกล้วิกฤต ${counts.warning} | ปกติ ${counts.normal}`,
       baseSize: { width: 1040, height: 1559 },
       actions: [
         {

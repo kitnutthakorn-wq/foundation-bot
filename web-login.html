@@ -45,7 +45,9 @@
         await liff.init({ liffId: LIFF_ID });
 
         if (!liff.isLoggedIn()) {
-          liff.login({ redirectUri: window.location.href });
+          liff.login({
+  redirectUri: "https://satisfied-stillness-production-7942.up.railway.app/team.html"
+});
           return;
         }
 

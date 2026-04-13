@@ -899,8 +899,11 @@ function viewCase(code){
 function openCaseUpdateLiff(caseCode){
   const target = `update-case.html?case_code=${encodeURIComponent(caseCode)}`;
   window.location.href = target;
+}  
+function goToWebLogin() {
+  window.location.href = "web-login.html";
 }
-
+  
 async function updateCaseStatus(caseCode,status){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ${caseCode} -> ${status}`);return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.UPDATE_STATUS_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseCode,status})});if(!res.ok) throw new Error(res.error||'status update failed');await refreshCases();alert(`อัปเดตสถานะ ${caseCode} เป็นกำลังดำเนินการสำเร็จ`);}catch(err){alert(`อัปเดตสถานะไม่สำเร็จ: ${err.message}`);}}
 async function sendUpdate(){const type=document.getElementById('messageType').value, caseCode=document.getElementById('messageCaseCode').value.trim(), targetUserId=document.getElementById('messageTargetUserId').value.trim(), message=document.getElementById('messageBox').value.trim(); if(!message){alert('กรุณาพิมพ์ข้อความก่อนส่ง');return;} try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){alert(`โหมดเดโม: ส่งอัปเดตแล้ว (${type})`);document.getElementById('messageBox').value='';return;}const res=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.SEND_UPDATE_ENDPOINT}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type,message,caseCode:caseCode||null,targetUserId:targetUserId||null})});if(!res.ok) throw new Error(res.error||'send failed');alert(`ส่งอัปเดตแล้ว (${type==='team'?'กลุ่มทีม':'ผู้ขอความช่วยเหลือ'})`);document.getElementById('messageBox').value='';}catch(err){alert(`ส่งข้อความไม่สำเร็จ: ${err.message}`);}}
 async function bootstrap() {

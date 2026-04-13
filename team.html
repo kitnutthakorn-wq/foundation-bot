@@ -915,9 +915,11 @@ async function bootstrap() {
 
     const hasWebSession = await tryWebSessionLogin();
 
-    if (!hasWebSession) {
-      await initLiff();
-    }
+   if (!hasWebSession && !liff.isInClient()) {
+  console.warn("⚠️ No session → redirect to web login");
+  window.location.href = "web-login.html";
+  return;
+}
 
     await loadTeamRole();
 

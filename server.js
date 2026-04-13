@@ -237,6 +237,93 @@ function buildSlaSummary(rows = []) {
 }
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
+
+const crypto = require("crypto");
+
+const webSessions = new Map();
+
+function generateWebSessionId() {
+  return crypto.randomBytes(24).toString("hex");
+}
+
+function createWebSession(user) {
+  const sessionId = generateWebSessionId();
+
+  webSessions.set(sessionId, {
+    userId: user.userId,
+    displayName: user.displayName || "",
+    pictureUrl: user.pictureUrl || "",
+    role: user.role || "viewer",
+    createdAt: Date.now(),
+    lastSeenAt: Date.now()
+  });
+
+  return sessionId;
+}
+
+function getWebSession(sessionId) {
+  if (!sessionId) return null;
+
+  const session = webSessions.get(sessionId);
+  if (!session) return null;
+
+  const MAX_AGE = 1000 * 60 * 60 * 24 * 7; // 7 วัน
+  if (Date.now() - session.lastSeenAt > MAX_AGE) {
+    webSessions.delete(sessionId);
+    return null;
+  }
+
+  session.lastSeenAt = Date.now();
+  return session;
+}
+
+function destroyWebSession(sessionId) {
+  if (!sessionId) return;
+  webSessions.delete(sessionId);
+}
+
+function parseCookies(req) {
+  const header = req.headers.cookie || "";
+  return Object.fromEntries(
+    header
+      .split(";")
+      .map(v => v.trim())
+      .filter(Boolean)
+      .map(v => {
+        const idx = v.indexOf("=");
+        if (idx === -1) return [v, ""];
+        return [decodeURIComponent(v.slice(0, idx)), decodeURIComponent(v.slice(idx + 1))];
+      })
+  );
+}
+
+function getSessionFromRequest(req) {
+  const cookies = parseCookies(req);
+  const sessionId = cookies.kck_session || "";
+  return getWebSession(sessionId);
+}
+
+function setSessionCookie(res, sessionId) {
+  const isProd = process.env.NODE_ENV === "production";
+  const cookie = [
+    `kck_session=${encodeURIComponent(sessionId)}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    "Max-Age=604800"
+  ];
+
+  if (isProd) cookie.push("Secure");
+
+  res.setHeader("Set-Cookie", cookie.join("; "));
+}
+
+function clearSessionCookie(res) {
+  res.setHeader(
+    "Set-Cookie",
+    "kck_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0"
+  );
+}
 const app = express();
 const PORT = process.env.PORT || 3000;
 

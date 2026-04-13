@@ -904,7 +904,13 @@ async function sendUpdate(){const type=document.getElementById('messageType').va
 async function bootstrap() {
   try {
     setToday();
-    await initLiff();
+
+    const hasWebSession = await tryWebSessionLogin();
+
+    if (!hasWebSession) {
+      await initLiff();
+    }
+
     await loadTeamRole();
 
     if (isPickMemberMode()) {

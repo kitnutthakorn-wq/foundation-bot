@@ -901,6 +901,9 @@ function openCaseUpdateLiff(caseCode){
   window.location.href = target;
 }  
 function goToWebLogin() {
+  const confirmGo = confirm("คุณต้องการเข้าสู่ระบบผ่าน Web Login หรือไม่?");
+  if (!confirmGo) return;
+
   window.location.href = "web-login.html";
 }
   

@@ -1078,7 +1078,7 @@ async function logoutWebSession() {
  window.location.href = "team.html";
 } 
 
-<script>
+
 function applyWebLoginVisibility() {
   const btn = document.querySelector('[onclick="goToWebLogin()"]');
   const roleEl = document.getElementById("userRole");
@@ -1111,7 +1111,7 @@ function waitForRoleAndApplyWebLogin(attempt = 0) {
 }
 
 waitForRoleAndApplyWebLogin();
-</script>
+
 bootstrap();
 waitForRoleAndApplyWebLogin();
 </script>

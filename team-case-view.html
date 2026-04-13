@@ -1079,92 +1079,102 @@ function renderLatestImages(updates = []) {
   `).join("");
 }
     
-    function renderTimeline(caseItem = {}, updates=[])
-      const root = document.getElementById("timelineList");
-      document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;
+function renderTimeline(caseItem = {}, updates=[]){
+  const root = document.getElementById("timelineList");
+  document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;
 
-      if(!updates.length){
-        root.innerHTML = `<div class="empty-state">ยังไม่มีประวัติการอัปเดตภาคสนาม</div>`;
-        return;
-      }
+  if(!updates.length){
+    root.innerHTML = `<div class="empty-state">ยังไม่มีประวัติการอัปเดตภาคสนาม</div>`;
+    return;
+  }
 
-      root.innerHTML = updates.map(item => {
-        const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
+  root.innerHTML = updates.map(item => {
+    const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
 
-        return `
-          <div class="timeline-item">
-            <div class="timeline-head">
-              <div>
-                <div class="timeline-title">อัปเดตโดย ${escapeHtml(item.updater_name || item.updated_by || "-")}</div>
-                <div class="timeline-meta" style="margin-top:8px;">
-  <span class="chip">สถานะ ${escapeHtml(formatStatusThai(
-    item.status_after ||
-    item.statusAfter ||
-    item.status ||
-    caseItem.status ||
-    "-"
-  ))}</span>
-  <span class="chip">ความคืบหน้า ${escapeHtml(String(
-    Number(
-      item.progress_percent ??
-      item.progressPercent ??
-      getAutoProgress(caseItem || {}, [item])
-    ) || 0
-  ))}%</span>
-</div>  <div class="timeline-box">
-    <strong>ขั้นตอนล่าสุด</strong>
-    <span>${escapeHtml(
-      item.current_step ||
-      item.currentStep ||
-      item.step_name ||
-      item.stepName ||
-      item.latest_step ||
-      "-"
-    )}</span>
-  </div>
-  <div class="timeline-box">
-    <strong>กำลังรอ</strong>
-    <span>${escapeHtml(
-  item.waiting_for ||
-  item.waitingFor ||
-  item.waiting ||
-  item.waiting_reason ||
-  item.waitingReason ||
-  item.latest_waiting ||
-  "-"
-)}</span>
-  </div>
-  <div class="timeline-box">
-    <strong>ตำแหน่ง/พื้นที่</strong>
-    <span>${escapeHtml(
-      item.location_text ||
-      item.locationText ||
-      (
-        item.latitude && item.longitude
-          ? `${item.latitude}, ${item.longitude}`
-          : ""
-      ) ||
-      "-"
-    )}</span>
-  </div>
-</div>
-
-            ${images.length ? `
-              <div class="image-grid">
-                ${images.map((src, idx) => `
-                  <img
-                    src="${escapeHtml(src)}"
-                    class="pmx-case-thumb"
-                    alt="timeline image ${idx + 1}"
-                    onclick='openPmxImageViewer(${JSON.stringify(images)}, ${idx})'
-                  />
-                `).join("")}
-              </div>
-            ` : ""}
+    return `
+      <div class="timeline-item">
+        <div class="timeline-head">
+          <div>
+            <div class="timeline-title">อัปเดตโดย ${escapeHtml(item.updater_name || item.updated_by || "-")}</div>
+            <div class="timeline-meta" style="margin-top:8px;">
+              <span class="chip">สถานะ ${escapeHtml(formatStatusThai(
+                item.status_after ||
+                item.statusAfter ||
+                item.status ||
+                caseItem.status ||
+                "-"
+              ))}</span>
+              <span class="chip">ความคืบหน้า ${escapeHtml(String(
+                Number(
+                  item.progress_percent ??
+                  item.progressPercent ??
+                  getAutoProgress(caseItem || {}, [item])
+                ) || 0
+              ))}%</span>
+            </div>
           </div>
-        `;
-      }).join("");
-    }
+          <div class="timeline-time">${escapeHtml(formatThaiDateTime(item.updated_at))}</div>
+        </div>
+
+        <div class="timeline-note">${escapeHtml(item.latest_note || item.message || "-")}</div>
+
+        <div class="timeline-grid">
+          <div class="timeline-box">
+            <strong>ขั้นตอนล่าสุด</strong>
+            <span>${escapeHtml(
+              item.current_step ||
+              item.currentStep ||
+              item.step_name ||
+              item.stepName ||
+              item.latest_step ||
+              item.latest_note ||
+              item.message ||
+              "-"
+            )}</span>
+          </div>
+          <div class="timeline-box">
+            <strong>กำลังรอ</strong>
+            <span>${escapeHtml(
+              item.waiting_for ||
+              item.waitingFor ||
+              item.waiting ||
+              item.waiting_reason ||
+              item.waitingReason ||
+              item.latest_waiting ||
+              "-"
+            )}</span>
+          </div>
+          <div class="timeline-box">
+            <strong>ตำแหน่ง/พื้นที่</strong>
+            <span>${escapeHtml(
+              item.location_text ||
+              item.locationText ||
+              (
+                item.latitude != null && item.longitude != null
+                  ? `${item.latitude}, ${item.longitude}`
+                  : ""
+              ) ||
+              "-"
+            )}</span>
+          </div>
+        </div>
+
+        ${images.length ? `
+          <div class="image-grid">
+            ${images.map((src, idx) => `
+              <img
+                src="${escapeHtml(src)}"
+                class="pmx-case-thumb"
+                alt="timeline image ${idx + 1}"
+                onclick='openPmxImageViewer(${JSON.stringify(images)}, ${idx})'
+              />
+            `).join("")}
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }).join("");
+}
 
 function renderInfoUpdates(infoUpdates = []) {
   const root = document.getElementById("infoUpdateList");

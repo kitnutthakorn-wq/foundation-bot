@@ -251,6 +251,7 @@ function resetFormState() {
 
 function renderPreview(files) {
   const wrap = document.getElementById('previewWrap');
+
   if (!files || !files.length) {
     wrap.innerHTML = '';
     wrap.classList.add('hidden');
@@ -258,26 +259,25 @@ function renderPreview(files) {
   }
 
   wrap.classList.remove('hidden');
-  wrap.innerHTML = Array.from(files).map(file => {
+
+  wrap.innerHTML = files.map((file, index) => {
     const url = URL.createObjectURL(file);
+
     return `
-      <div>
+      <div style="border:1px solid #e5e7eb;border-radius:14px;padding:10px">
         <div class="hint">${escapeHtml(file.name)} • ${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+
         <img class="preview-image" src="${url}" alt="preview" />
+
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button type="button" class="btn-secondary" onclick="removeImage(${index})">
+            ลบภาพนี้
+          </button>
+        </div>
       </div>
     `;
   }).join('');
 }
-
-function escapeHtml(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
 async function captureLocation() {
   if (!navigator.geolocation) {
     setStatus('อุปกรณ์นี้ไม่รองรับการดึงตำแหน่ง', 'error');

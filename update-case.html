@@ -379,6 +379,11 @@ async function submitCaseUpdate() {
     formData.append('title', title);
     formData.append('message', message);
     formData.append('progressStatus', progressStatus);
+    const currentStep = document.getElementById('currentStepInput').value;
+    const waitingFor = document.getElementById('waitingForInput').value;
+
+formData.append('current_step', currentStep);
+formData.append('waiting_for', waitingFor);
     formData.append('senderName', currentProfile?.displayName || 'Unknown');
     formData.append('senderUserId', currentProfile?.userId || '');
     formData.append('notifyTeam', notifyTeam ? 'true' : 'false');

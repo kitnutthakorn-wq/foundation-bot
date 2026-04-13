@@ -163,15 +163,39 @@ const SLA_CONFIG = {
 
 function getSlaLevel(row = {}) {
   const status = normalizeCaseStatus(row.status);
-  if (status === "done" || status === "cancelled") return "closed";
 
- if (!isUrgentPriority(row.priority)) return "normal";
+  // ❗ ปิดเคส = ไม่ active SLA
+  if (status === "done" || status === "cancelled") {
+    return {
+      sla_level: "normal",
+      sla_label_th: "ปิดเคสแล้ว",
+      sla_hours_since_action: 0,
+      is_sla_active: false
+    };
+  }
 
   const hours = getSlaHoursFromCase(row);
 
-  if (hours >= SLA_CONFIG.CRITICAL_HOURS) return "critical";
-  if (hours >= SLA_CONFIG.WARNING_HOURS) return "warning";
-  return "normal";
+  let slaLevel = "normal";
+  let slaLabel = "ปกติ";
+
+  // 🔥 เฉพาะ urgent เท่านั้นที่โดน SLA เข้ม
+  if (isUrgentPriority(row.priority)) {
+    if (hours >= SLA_CONFIG.CRITICAL_HOURS) {
+      slaLevel = "breached";
+      slaLabel = "เกิน SLA";
+    } else if (hours >= SLA_CONFIG.WARNING_HOURS) {
+      slaLevel = "warning";
+      slaLabel = "ใกล้เกิน SLA";
+    }
+  }
+
+  return {
+    sla_level: slaLevel,
+    sla_label_th: slaLabel,
+    sla_hours_since_action: hours,
+    is_sla_active: true
+  };
 }
 
 function attachSla(row = {}) {
@@ -187,27 +211,32 @@ function isUrgentPriority(priority = "") {
 }
 
 function buildSlaSummary(rows = []) {
-  let critical = 0;
+  let breached = 0;
   let warning = 0;
   let normal = 0;
   let urgent_total = 0;
 
- rows.forEach(row => {
-  if (!isUrgentPriority(row.priority)) return;
+  rows.forEach((row) => {
+    const item = attachSla(row);
 
-    const level = getSlaLevel(row);
+    if (isUrgentPriority(item.priority)) {
+      urgent_total++;
+    }
 
-    if (level === "closed") return;
+    if (!item.is_sla_active) return;
 
-    urgent_total++;
-
-    if (level === "critical") critical++;
-    else if (level === "warning") warning++;
-    else if (level === "normal") normal++;
+    if (item.sla_level === "breached") {
+      breached++;
+    } else if (item.sla_level === "warning") {
+      warning++;
+    } else {
+      normal++;
+    }
   });
 
-  return { critical, warning, normal, urgent_total };
+  return { breached, warning, normal, urgent_total };
 }
+
 const caseFollowupTracker = {};
 const fetch = globalThis.fetch;
 const app = express();
@@ -220,46 +249,47 @@ async function getUrgentCaseMenuCounts() {
 
   if (error) {
     console.error("GET URGENT CASE COUNTS ERROR:", error);
-    return { critical: 0, warning: 0, normal: 0 };
+    return { breached: 0, critical: 0, warning: 0, normal: 0 };
   }
 
- const rows = (Array.isArray(data) ? data : []).filter(row => {
-  const status = normalizeCaseStatus(row.status);
-  return status === "new" || status === "in_progress";
-});
+  const rows = (Array.isArray(data) ? data : []).filter((row) => {
+    const status = normalizeCaseStatus(row.status);
+    return status === "new" || status === "in_progress";
+  });
 
-console.log("=== URGENT MENU DEBUG: RAW DATA ===");
-(Array.isArray(data) ? data : []).forEach(row => {
-  console.log(
-    "[RAW]",
-    row.case_code,
-    "status=", JSON.stringify(row.status),
-    "normalizedStatus=", normalizeCaseStatus(row.status),
-    "priority=", JSON.stringify(row.priority),
-    "slaLevel=", getSlaLevel(row)
-  );
-});
+  console.log("=== URGENT MENU DEBUG: RAW DATA ===");
+  (Array.isArray(data) ? data : []).forEach((row) => {
+    console.log(
+      "[RAW]",
+      row.case_code,
+      "status=", JSON.stringify(row.status),
+      "normalizedStatus=", normalizeCaseStatus(row.status),
+      "priority=", JSON.stringify(row.priority),
+      "slaLevel=", getSlaLevel(row)
+    );
+  });
 
-console.log("=== URGENT MENU DEBUG: FILTERED ROWS ===");
-rows.forEach(row => {
-  console.log(
-    "[ROW]",
-    row.case_code,
-    "status=", JSON.stringify(row.status),
-    "normalizedStatus=", normalizeCaseStatus(row.status),
-    "priority=", JSON.stringify(row.priority),
-    "slaLevel=", getSlaLevel(row)
-  );
-});
+  console.log("=== URGENT MENU DEBUG: FILTERED ROWS ===");
+  rows.forEach((row) => {
+    console.log(
+      "[ROW]",
+      row.case_code,
+      "status=", JSON.stringify(row.status),
+      "normalizedStatus=", normalizeCaseStatus(row.status),
+      "priority=", JSON.stringify(row.priority),
+      "slaLevel=", getSlaLevel(row)
+    );
+  });
 
-const sla = buildSlaSummary(rows);
+  const sla = buildSlaSummary(rows);
 
-return {
-  critical: sla.critical,
-  warning: sla.warning,
-  normal: sla.normal,
-  inProgress: sla.normal // 👈 เพิ่ม alias
-};
+  return {
+    breached: sla.breached,
+    critical: sla.breached,
+    warning: sla.warning,
+    normal: sla.normal,
+    inProgress: sla.normal
+  };
 }
 
 

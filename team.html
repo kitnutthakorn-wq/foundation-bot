@@ -948,7 +948,10 @@ async function refreshCases(){await Promise.all([loadCases(),loadActivities()]);
 function openUpdateCaseInfo(caseCode){
   window.location.href = `update-case-info.html?case_code=${encodeURIComponent(caseCode)}`;
 }
-
+window.addEventListener('beforeunload', () => {
+  // ไม่ลบ cache ตอนปิดหน้า เพื่อช่วยลดการ login ซ้ำ
+  // intentionally keep cache
+});
 bootstrap();
 </script>
 </body>

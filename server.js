@@ -10697,7 +10697,92 @@ function mapCaseRowToTeamCase(row = {}) {
   };
 }
 
+app.post("/api/auth/web-login", async (req, res) => {
+  try {
+    const { userId, displayName, pictureUrl } = req.body || {};
 
+    if (!userId) {
+      return res.status(400).json({ ok: false, error: "userId is required" });
+    }
+
+    let role = "viewer";
+
+    try {
+      const { data: roleRow } = await supabase
+        .from("line_user_roles")
+        .select("role")
+        .eq("line_user_id", userId)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (roleRow?.role) {
+        role = roleRow.role;
+      }
+    } catch (err) {
+      console.warn("web-login role lookup failed:", err.message);
+    }
+
+    const sessionId = createWebSession({
+      userId,
+      displayName,
+      pictureUrl,
+      role
+    });
+
+    setSessionCookie(res, sessionId);
+
+    return res.json({
+      ok: true,
+      user: {
+        userId,
+        displayName: displayName || "",
+        pictureUrl: pictureUrl || "",
+        role
+      }
+    });
+  } catch (err) {
+    console.error("web-login failed:", err);
+    return res.status(500).json({ ok: false, error: "web login failed" });
+  }
+});
+
+app.get("/api/auth/me", async (req, res) => {
+  try {
+    const session = getSessionFromRequest(req);
+
+    if (!session) {
+      return res.status(401).json({ ok: false, error: "no active session" });
+    }
+
+    return res.json({
+      ok: true,
+      user: {
+        userId: session.userId,
+        displayName: session.displayName,
+        pictureUrl: session.pictureUrl,
+        role: session.role
+      }
+    });
+  } catch (err) {
+    console.error("auth me failed:", err);
+    return res.status(500).json({ ok: false, error: "auth me failed" });
+  }
+});
+
+app.post("/api/auth/logout", async (req, res) => {
+  try {
+    const cookies = parseCookies(req);
+    const sessionId = cookies.kck_session || "";
+
+    destroyWebSession(sessionId);
+    clearSessionCookie(res);
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("logout failed:", err);
+    return res.status(500).json({ ok: false, error: "logout failed" });
+  }
+});
 
 app.get("/api/team/me", async (req, res) => {
   try {

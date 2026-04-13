@@ -631,7 +631,7 @@ async function loadRecentActivityRealtime() {
     }
 
     const data = await safeFetchJson(
-      `${CONFIG.API_BASE_URL}${CONFIG.RECENT_ACTIVITY_ENDPOINT}?limit=20`
+      `${CONFIG.API_BASE_URL}${CONFIG.RECENT_ACTIVITY_ENDPOINT}?limit=5`
     );
 
     const items = Array.isArray(data?.items) ? data.items : [];

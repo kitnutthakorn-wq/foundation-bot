@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KCK Web Login</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:#f4f8fb;
+      display:grid;
+      place-items:center;
+      min-height:100vh;
+      color:#1f2937;
+    }
+    .card{
+      width:min(420px,92vw);
+      background:#fff;
+      border:1px solid #dbe3ea;
+      border-radius:22px;
+      padding:28px;
+      box-shadow:0 14px 35px rgba(18,36,58,.08);
+      text-align:center;
+    }
+    h1{margin:0 0 8px;font-size:1.2rem}
+    p{margin:0;color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>กำลังเข้าสู่ระบบทีมงาน</h1>
+    <p id="status">กรุณารอสักครู่...</p>
+  </div>
+
+  <script>
+    const LIFF_ID = "2009446483-2q6biMUk";
+    const API_BASE_URL = "https://satisfied-stillness-production-7942.up.railway.app";
+
+    async function run() {
+      const statusEl = document.getElementById("status");
+
+      try {
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          liff.login({ redirectUri: window.location.href });
+          return;
+        }
+
+        const profile = await liff.getProfile();
+
+        const res = await fetch(`${API_BASE_URL}/api/auth/web-login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            userId: profile.userId,
+            displayName: profile.displayName,
+            pictureUrl: profile.pictureUrl || ""
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || "web login failed");
+        }
+
+        statusEl.textContent = "เข้าสู่ระบบสำเร็จ กำลังพาไปหน้าทีมงาน...";
+        window.location.href = "team.html";
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = "เข้าสู่ระบบไม่สำเร็จ: " + err.message;
+      }
+    }
+
+    run();
+  </script>
+</body>
+</html>

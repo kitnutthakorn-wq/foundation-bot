@@ -907,16 +907,46 @@
     }
 
 function getAutoProgress(caseItem = {}, updates = []) {
- const latest = Array.isArray(updates) && updates.length
-  ? [...updates].sort((a, b) =>
-      new Date(b.updated_at || b.created_at) -
-      new Date(a.updated_at || a.created_at)
-    )[0]
-  : {};
+  const sorted = Array.isArray(updates) && updates.length
+    ? [...updates].sort((a, b) =>
+        new Date(b.updated_at || b.created_at) -
+        new Date(a.updated_at || a.created_at)
+      )
+    : [];
 
-  const statusAfter = String(latest.status_after || caseItem.status || "").toLowerCase();
-  const currentStep = String(latest.current_step || "").toLowerCase();
-  const waitingFor = String(latest.waiting_for || "").toLowerCase();
+  const latest = sorted[0] || {};
+
+  const latestWithStep =
+    sorted.find(item => String(item.current_step || item.currentStep || "").trim()) || {};
+
+  const latestWithWaiting =
+    sorted.find(item => String(item.waiting_for || item.waitingFor || "").trim()) || {};
+
+  const latestWithStatus =
+    sorted.find(item => String(item.status_after || "").trim()) || {};
+
+  const statusAfter = String(
+    latestWithStatus.status_after ||
+    latest.status_after ||
+    caseItem.status ||
+    ""
+  ).toLowerCase();
+
+  const currentStep = String(
+    latestWithStep.current_step ||
+    latestWithStep.currentStep ||
+    caseItem.current_step ||
+    caseItem.currentStep ||
+    ""
+  ).toLowerCase();
+
+  const waitingFor = String(
+    latestWithWaiting.waiting_for ||
+    latestWithWaiting.waitingFor ||
+    caseItem.waiting_for ||
+    caseItem.waitingFor ||
+    ""
+  ).toLowerCase();
 
   // ปิดเคส
   if (statusAfter === "done") return 100;
@@ -934,6 +964,10 @@ function getAutoProgress(caseItem = {}, updates = []) {
   if (currentStep.includes("ประสาน")) return 50;
   if (currentStep.includes("ช่วยเหลือ")) return 75;
   if (currentStep.includes("เสร็จ")) return 100;
+
+  // fallback จาก status
+  if (statusAfter === "in_progress") return 50;
+  if (statusAfter === "new") return 10;
 
   return 0;
 }

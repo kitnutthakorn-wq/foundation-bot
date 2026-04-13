@@ -246,6 +246,7 @@ return {
   warning: sla.warning,
   normal: sla.normal
 };
+}
 
 
 function drawText(ctx, text, x, y, options = {}) {

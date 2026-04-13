@@ -9216,71 +9216,7 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
 
   return;
 }
-// ================================
-// SLA: เคสด่วน วิกฤต
-// ================================
-if (String(text || "").trim() === "เคสด่วน SLA วิกฤต") {
-  await replyCaseMenuCarousel({
-    replyToken,
-    title: "เคสด่วน SLA วิกฤต",
-    filterType: "urgent",
-    heroImage: URGENT_CASE_CAROUSEL_HERO
-  });
-  return;
-}
 
-// ================================
-// SLA: เคสด่วน ใกล้วิกฤต
-// ================================
-if (String(text || "").trim() === "เคสด่วน SLA ใกล้วิกฤต") {
-  const slaCounts = await getSlaMenuCounts();
-
-  await safeReply(replyToken, [{
-    type: "text",
-    text: buildSlaPreviewText("⚠️ เคสด่วน SLA ใกล้วิกฤต", slaCounts.near_due_rows)
-  }]);
-
-  return;
-}
-
-// ================================
-// SLA: เคสด่วน กำลังดำเนินการ
-// ================================
-if (String(text || "").trim() === "เคสด่วน SLA ปกติ") {
-  await replyCaseMenuCarousel({
-    replyToken,
-    title: "เคสด่วน ปกติ",
-    filterType: "urgent",
-    heroImage: URGENT_CASE_CAROUSEL_HERO
-  });
-  return;
-}
-     
-if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
-  const caseCode = text.replace(/^ติดตามอีกครั้ง\s+/i, "").trim();
-
-  try {
-    const foundCase = await findLatestCaseByCaseCodeOrPhone(caseCode);
-
-    if (!foundCase) {
-      await safeReply(replyToken, [
-        {
-          type: "text",
-          text: "ไม่พบข้อมูลเคสสำหรับแจ้งเตือนทีม กรุณาลองค้นหาเคสใหม่อีกครั้ง",
-        },
-      ]);
-      continue;
-    }
-
-    if (String(foundCase.status).toLowerCase() === "done") {
-      await safeReply(replyToken, [
-        {
-          type: "text",
-          text: "เคสนี้ปิดแล้ว จึงไม่ส่งแจ้งเตือนทีมซ้ำครับ",
-        },
-      ]);
-      continue;
-    }
 
     const cooldownMs = 10 * 60 * 1000;
     const trackerKey = String(foundCase.case_code || caseCode);
@@ -9328,7 +9264,101 @@ if (/^ติดตามอีกครั้ง\s+/i.test(text)) {
   continue;
 }
 
+// ================================
+// SLA: เคสด่วน วิกฤต
+// ================================
+if (String(text || "").trim() === "เคสด่วน SLA วิกฤต") {
+  const slaCounts = await getSlaMenuCounts();
+  const cases = Array.isArray(slaCounts.overdue_rows) ? slaCounts.overdue_rows : [];
 
+  if (!cases.length) {
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: "เคสด่วน SLA วิกฤต\n\nยังไม่มีรายการเคสในหมวดนี้"
+      }
+    ]);
+    return;
+  }
+
+    await safeReply(replyToken, [
+    buildCaseMenuCarouselFlex("เคสด่วน SLA วิกฤต", cases, {
+      heroImage: URGENT_CASE_CAROUSEL_HERO
+    })
+  ]);
+  continue;
+}
+
+// ================================
+// SLA: เคสด่วน ใกล้วิกฤต
+// ================================
+if (String(text || "").trim() === "เคสด่วน SLA ใกล้วิกฤต") {
+  const slaCounts = await getSlaMenuCounts();
+  const cases = Array.isArray(slaCounts.near_due_rows) ? slaCounts.near_due_rows : [];
+
+  if (!cases.length) {
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: "เคสด่วน SLA ใกล้วิกฤต\n\nยังไม่มีรายการเคสในหมวดนี้"
+      }
+    ]);
+    continue;
+  }
+
+  await safeReply(replyToken, [
+    buildCaseMenuCarouselFlex("เคสด่วน SLA ใกล้วิกฤต", cases.slice(0, 10), {
+      heroImage: URGENT_CASE_CAROUSEL_HERO
+    })
+  ]);
+  continue;
+}
+
+// ================================
+// SLA: เคสด่วน กำลังดำเนินการ
+// ================================
+if (String(text || "").trim() === "เคสด่วน SLA ปกติ") {
+  const { data, error } = await supabase
+    .from("help_requests")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("URGENT SLA NORMAL ERROR:", error);
+    await safeReply(replyToken, [
+      { type: "text", text: "โหลดรายการเคสด่วน SLA ปกติไม่สำเร็จ" }
+    ]);
+    return;
+  }
+
+  const cases = (Array.isArray(data) ? data : []).filter((row) => {
+    const status = normalizeCaseStatus(row.status);
+    const isActive = status === "new" || status === "in_progress";
+    const isUrgent = String(row.priority || "").trim().toLowerCase() === "urgent";
+    const slaLevel = getSlaLevel(row).sla_level;
+
+    return isActive && isUrgent && slaLevel === "normal";
+  });
+
+  if (!cases.length) {
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: "เคสด่วน SLA ปกติ\n\nยังไม่มีรายการเคสในหมวดนี้"
+      }
+    ]);
+    return;
+  }
+
+    await safeReply(replyToken, [
+    buildCaseMenuCarouselFlex("เคสด่วน SLA ปกติ", cases.slice(0, 10), {
+      heroImage: URGENT_CASE_CAROUSEL_HERO
+    })
+  ]);
+  continue;
+}
+
+         
 if (text === "ขอความช่วยเหลือ") {
   await safeReply(replyToken, [buildHelpRequestChoiceFlex()]);
   continue;

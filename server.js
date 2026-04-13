@@ -5438,9 +5438,12 @@ app.get("/api/cases/map", async (req, res) => {
       });
     }
 
+    const rawRows = Array.isArray(data) ? data : [];
+    const rows = rawRows.map(attachSla);
+
     return res.json({
       ok: true,
-      items: (data || []).map((row) => ({
+      items: rows.map((row) => ({
         id: row.id || null,
         case_code: row.case_code || "",
         full_name: row.full_name || "-",
@@ -5450,6 +5453,13 @@ app.get("/api/cases/map", async (req, res) => {
         assigned_to: row.assigned_to || "",
         status: row.status || "new",
         priority: row.priority || "normal",
+
+        // ✅ SLA จาก helper กลาง
+        sla_level: row.sla_level || "normal",
+        sla_label_th: row.sla_label_th || "ปกติ",
+        sla_hours_since_action: row.sla_hours_since_action || 0,
+        is_sla_active: !!row.is_sla_active,
+
         latitude: row.latitude,
         longitude: row.longitude,
         location_text: row.location_text || "",

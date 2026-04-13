@@ -1078,27 +1078,40 @@ async function logoutWebSession() {
  window.location.href = "team.html";
 } 
 
+<script>
 function applyWebLoginVisibility() {
   const btn = document.querySelector('[onclick="goToWebLogin()"]');
-  if (!btn) return;
+  const roleEl = document.getElementById("userRole");
+  if (!btn || !roleEl) return false;
 
-  const rawRole = document.getElementById("userRole")?.textContent?.trim() || "";
-  const role = String(rawRole).toLowerCase();
-
+  const rawRole = String(roleEl.textContent || "").trim().toLowerCase();
   console.log("ROLE DETECTED:", rawRole);
 
-  // ซ่อนก่อน ถ้ายังไม่รู้ role จริง
-  if (!role || role.includes("กำลังตรวจสอบ") || role.includes("loading")) {
+  if (!rawRole || rawRole.includes("กำลังตรวจสอบ") || rawRole.includes("loading")) {
     btn.style.display = "none";
+    return false;
+  }
+
+  btn.style.display = rawRole === "admin" ? "" : "none";
+  return true;
+}
+
+function waitForRoleAndApplyWebLogin(attempt = 0) {
+  const done = applyWebLoginVisibility();
+  if (done) return;
+
+  if (attempt >= 20) {
+    console.warn("role not ready after waiting");
     return;
   }
 
-  btn.style.display = role === "admin" ? "" : "none";
+  setTimeout(() => {
+    waitForRoleAndApplyWebLogin(attempt + 1);
+  }, 300);
 }
+
 bootstrap();
-setTimeout(applyWebLoginVisibility, 500);
-setTimeout(applyWebLoginVisibility, 1200);
-setTimeout(applyWebLoginVisibility, 2000);
-</script> 
+waitForRoleAndApplyWebLogin();
+</script></script> 
 </body>
 </html>

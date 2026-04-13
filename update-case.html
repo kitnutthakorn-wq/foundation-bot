@@ -379,7 +379,8 @@ async function submitCaseUpdate() {
 }
 
 document.getElementById('updateImages').addEventListener('change', (e) => {
-  renderPreview(e.target.files);
+  selectedFiles = Array.from(e.target.files || []);
+  renderPreview(selectedFiles);
 });
 
 async function bootstrap() {

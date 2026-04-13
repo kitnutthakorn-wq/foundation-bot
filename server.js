@@ -4139,25 +4139,6 @@ function mergeCaseWithSla(row = {}) {
 
 async function getSlaMenuCounts() {
   try {
-    const { data, error } = await supabase
-      .from("help_requests")
-      .select("case_code, full_name, status, priority, created_at")
-      .order("created_at", { ascending: false })
-      .limit(500);
-
-    if (error) {
-      console.error("getSlaMenuCounts error:", error);
-      return {
-        overdue: 0,
-        near_due: 0,
-        open_cases: 0,
-        smart_alert: 0,
-        overdue_rows: [],
-        near_due_rows: [],
-        smart_alert_rows: []
-      };
-    }
-
     const rows = Array.isArray(data) ? data : [];
     const summary = buildSlaSummary(rows);
 
@@ -4167,18 +4148,18 @@ async function getSlaMenuCounts() {
         !["done", "cancelled"].includes(normalizeCaseStatus(row.status))
     );
 
-    const overdueRows = urgentRows.filter(row => getSlaLevel(row) === "critical");
-    const nearDueRows = urgentRows.filter(row => getSlaLevel(row) === "warning");
+    const overdueRows = urgentRows.filter(row => getSlaLevel(row).sla_level === "breached");
+    const nearDueRows = urgentRows.filter(row => getSlaLevel(row).sla_level === "warning");
     const smartAlertRows = urgentRows.filter(row => {
-      const level = getSlaLevel(row);
-      return level === "critical" || level === "warning";
+      const level = getSlaLevel(row).sla_level;
+      return level === "breached" || level === "warning";
     });
 
     return {
-      overdue: summary.critical,
+      overdue: summary.breached,
       near_due: summary.warning,
       open_cases: summary.urgent_total,
-      smart_alert: summary.critical + summary.warning,
+      smart_alert: summary.breached + summary.warning,
       overdue_rows: overdueRows.slice(0, 10),
       near_due_rows: nearDueRows.slice(0, 10),
       smart_alert_rows: smartAlertRows.slice(0, 10)

@@ -1076,9 +1076,8 @@ async function logoutWebSession() {
   } catch (_) {}
 
  window.location.href = "team.html";
-}  
-bootstrap();
-</script>
+} 
+
 function applyWebLoginVisibility() {
   const btn = document.querySelector('[onclick="goToWebLogin()"]');
   if (!btn) return;
@@ -1097,5 +1096,7 @@ function applyWebLoginVisibility() {
   btn.style.display = role === "admin" ? "" : "none";
 }
   
+bootstrap();
+</script> 
 </body>
 </html>

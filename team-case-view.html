@@ -1030,7 +1030,12 @@ const waitingFor =
      
   const statusAfter = latest.status_after || caseItem.status || "-";
   const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
-  const locationText = latestWithLocation.location_text || "-";
+  const locationText =
+  latestWithLocation.location_text ||
+  latestWithLocation.locationText ||
+  caseItem.location_text ||
+  caseItem.locationText ||
+  "-";
 
   safeText("progressPercent", `${progress}%`);
   safeText("currentStep", currentStep);

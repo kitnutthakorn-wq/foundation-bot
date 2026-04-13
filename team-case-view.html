@@ -993,8 +993,10 @@ const latestWithProgress =
   const latestWithWaiting =
     sortedUpdates.find(item => String(item.waiting_for || "").trim()) || {};
 
-  const latestWithLocation =
-    sortedUpdates.find(item => String(item.location_text || "").trim()) || {};
+ const latestWithLocation =
+  sortedUpdates.find(item =>
+    String(item.location_text || item.locationText || "").trim()
+  ) || {};
 
  let progress = Number(
   latestWithProgress.progress_percent ??

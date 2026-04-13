@@ -9215,8 +9215,6 @@ if (String(text || "").trim() === "ดูเคสด่วน" || String(text |
   ]);
 
   return;
-}
-
 
     const cooldownMs = 10 * 60 * 1000;
     const trackerKey = String(foundCase.case_code || caseCode);
@@ -9271,15 +9269,15 @@ if (String(text || "").trim() === "เคสด่วน SLA วิกฤต") {
   const slaCounts = await getSlaMenuCounts();
   const cases = Array.isArray(slaCounts.overdue_rows) ? slaCounts.overdue_rows : [];
 
-  if (!cases.length) {
-    await safeReply(replyToken, [
-      {
-        type: "text",
-        text: "เคสด่วน SLA วิกฤต\n\nยังไม่มีรายการเคสในหมวดนี้"
-      }
-    ]);
-    return;
-  }
+ if (!cases.length) {
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "เคสด่วน SLA วิกฤต\n\nยังไม่มีรายการเคสในหมวดนี้"
+    }
+  ]);
+  continue;
+}
 
     await safeReply(replyToken, [
     buildCaseMenuCarouselFlex("เคสด่วน SLA วิกฤต", cases, {
@@ -9324,12 +9322,12 @@ if (String(text || "").trim() === "เคสด่วน SLA ปกติ") {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("URGENT SLA NORMAL ERROR:", error);
-    await safeReply(replyToken, [
-      { type: "text", text: "โหลดรายการเคสด่วน SLA ปกติไม่สำเร็จ" }
-    ]);
-    return;
-  }
+  console.error("URGENT SLA NORMAL ERROR:", error);
+  await safeReply(replyToken, [
+    { type: "text", text: "โหลดรายการเคสด่วน SLA ปกติไม่สำเร็จ" }
+  ]);
+  continue;
+}
 
   const cases = (Array.isArray(data) ? data : []).filter((row) => {
     const status = normalizeCaseStatus(row.status);
@@ -9340,15 +9338,15 @@ if (String(text || "").trim() === "เคสด่วน SLA ปกติ") {
     return isActive && isUrgent && slaLevel === "normal";
   });
 
-  if (!cases.length) {
-    await safeReply(replyToken, [
-      {
-        type: "text",
-        text: "เคสด่วน SLA ปกติ\n\nยังไม่มีรายการเคสในหมวดนี้"
-      }
-    ]);
-    return;
-  }
+if (!cases.length) {
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "เคสด่วน SLA ปกติ\n\nยังไม่มีรายการเคสในหมวดนี้"
+    }
+  ]);
+  continue;
+}
 
     await safeReply(replyToken, [
     buildCaseMenuCarouselFlex("เคสด่วน SLA ปกติ", cases.slice(0, 10), {
@@ -9357,6 +9355,7 @@ if (String(text || "").trim() === "เคสด่วน SLA ปกติ") {
   ]);
   continue;
 }
+
 
          
 if (text === "ขอความช่วยเหลือ") {

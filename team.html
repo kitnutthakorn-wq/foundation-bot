@@ -934,13 +934,18 @@ async function bootstrap() {
   try {
     setToday();
 
-    const hasWebSession = await tryWebSessionLogin();
+    let hasWebSession = await tryWebSessionLogin();
 
-   if (!hasWebSession && !liff.isInClient()) {
-  console.warn("⚠️ No session → redirect to web login");
-  window.location.href = "web-login.html";
-  return;
-}
+    if (!hasWebSession) {
+      await initLiff();
+
+      // ✅ หลัง LIFF login สำเร็จ ให้สร้าง web session ต่อทันที
+      hasWebSession = await ensureWebSessionFromLiff();
+
+      if (hasWebSession) {
+        document.getElementById("envChip").textContent = "Web Session + LIFF";
+      }
+    }
 
     await loadTeamRole();
 

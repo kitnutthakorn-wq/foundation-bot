@@ -332,7 +332,7 @@ async function submitCaseUpdate() {
   const title = document.getElementById('updateTitle').value.trim();
   const message = document.getElementById('updateMessage').value.trim();
   const progressStatus = document.getElementById('progressStatus').value;
-  const files = document.getElementById('updateImages').files;
+ const files = selectedFiles;
   const notifyTeam = document.getElementById('notifyTeam').checked;
   const notifyRequester = document.getElementById('notifyRequester').checked;
 

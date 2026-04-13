@@ -5392,22 +5392,7 @@ app.get("/api/sla/summary", async (req, res) => {
     });
   }
 });
-       const rows = Array.isArray(data) ? data : [];
-    const summary = buildSlaSummary(rows);
-
-    return res.json({
-      ok: true,
-      ...summary
-    });
-  } catch (err) {
-    console.error("❌ /api/sla/summary error:", err);
-    return res.status(500).json({
-      ok: false,
-      error: err.message || "Internal server error"
-    });
-  }
-});
-   
+  
 app.options("/api/cases/map", (req, res) => {
   applyPublicCors(req, res);
   return res.status(204).end();

@@ -278,6 +278,13 @@ function renderPreview(files) {
     `;
   }).join('');
 }
+
+function removeImage(index) {
+  selectedFiles.splice(index, 1);
+  syncInputFiles();
+  renderPreview(selectedFiles);
+}
+  
 async function captureLocation() {
   if (!navigator.geolocation) {
     setStatus('อุปกรณ์นี้ไม่รองรับการดึงตำแหน่ง', 'error');

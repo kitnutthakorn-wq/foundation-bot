@@ -950,12 +950,9 @@ function getAutoProgress(caseItem = {}, updates = []) {
   ) || sortedUpdates[0] || {};
 
 const latestWithProgress =
-  sortedUpdates.find(item =>
-    item.progress_percent !== null &&
-    item.progress_percent !== undefined
-  )
-  || sortedUpdates[0]
+  sortedUpdates.find(item => Number(item.progress_percent) > 0)
   || {};
+     
   const latestWithStep =
     sortedUpdates.find(item => String(item.current_step || "").trim()) || {};
 
@@ -968,14 +965,10 @@ const latestWithProgress =
  let progress = Number(
   latestWithProgress.progress_percent ??
   latestWithProgress.progressPercent ??
-  latest.progress_percent ??
-  latest.progressPercent ??
-  caseItem.progress_percent ??
-  caseItem.progressPercent ??
   0
 );
 
-// 🔥 Golden Safe Patch: auto fallback เมื่อ progress = 0
+// 🔥 ถ้าไม่มี progress จริง → ใช้ auto
 if (!progress || progress === 0) {
   progress = getAutoProgress(caseItem, sortedUpdates);
 }

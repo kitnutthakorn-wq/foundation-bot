@@ -1079,20 +1079,23 @@ async function logoutWebSession() {
 }  
 bootstrap();
 </script>
-<script>
-console.log("DEBUG ROLE:", window.userRole, window.role, window.currentUser);
-
-const role =
-  document.getElementById("userRole")?.textContent?.trim() ||
-  "viewer";
-
-console.log("ROLE DETECTED:", role);
-
-if (role !== "admin") {
+function applyWebLoginVisibility() {
   const btn = document.querySelector('[onclick="goToWebLogin()"]');
-  if (btn) btn.style.display = "none";
+  if (!btn) return;
+
+  const rawRole = document.getElementById("userRole")?.textContent?.trim() || "";
+  const role = String(rawRole).toLowerCase();
+
+  console.log("ROLE DETECTED:", rawRole);
+
+  // ซ่อนก่อน ถ้ายังไม่รู้ role จริง
+  if (!role || role.includes("กำลังตรวจสอบ") || role.includes("loading")) {
+    btn.style.display = "none";
+    return;
+  }
+
+  btn.style.display = role === "admin" ? "" : "none";
 }
-</script>
   
 </body>
 </html>

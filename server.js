@@ -5341,39 +5341,44 @@ app.get("/api/recent-activity", async (req, res) => {
 // =========================
 app.get("/api/sla/summary", async (req, res) => {
   try {
-    const limitRaw = Number(req.query.limit || 200);
-    const limit = Math.max(1, Math.min(limitRaw, 1000));
-    const levelFilter = String(req.query.level || "").trim().toLowerCase();
+    const limit = Number(req.query.limit || 200);
 
-    const db = supabase
+    const { data, error } = await supabase
       .from("help_requests")
-      .select(`
-        id,
-        case_code,
-        full_name,
-        phone,
-        problem,
-        location,
-        status,
-        priority,
-        assigned_to,
-        created_at,
-        last_action_at,
-        closed_at
-      `)
-      .order("created_at", { ascending: false })
-      .limit(limit);
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    const { data, error } = await db;
+    if (error) throw error;
 
-    if (error) {
-      console.error("SLA summary query error:", error);
-      return res.status(500).json({
-        ok: false,
-        error: error.message || "Failed to load SLA summary"
-      });
-    }
+    const rows = Array.isArray(data) ? data : [];
 
+    const enriched = rows.map(attachSla);
+
+    const activeRows = enriched.filter(row => row.is_sla_active);
+
+    const totals = {
+      normal: activeRows.filter(r => r.sla_level === "normal").length,
+      warning: activeRows.filter(r => r.sla_level === "warning").length,
+      breached: activeRows.filter(r => r.sla_level === "breached").length
+    };
+
+    const items = activeRows
+      .sort((a, b) => Number(b.sla_hours_since_action || 0) - Number(a.sla_hours_since_action || 0))
+      .slice(0, limit);
+
+    return res.json({
+      ok: true,
+      totals,
+      items
+    });
+  } catch (err) {
+    console.error("sla summary failed:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "sla summary failed"
+    });
+  }
+});
        const rows = Array.isArray(data) ? data : [];
     const summary = buildSlaSummary(rows);
 

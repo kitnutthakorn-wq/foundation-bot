@@ -943,6 +943,9 @@ function getAutoProgress(caseItem = {}, updates = []) {
   return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at);
 });
 
+console.log("DEBUG sortedUpdates:", sortedUpdates);
+console.log("DEBUG latest:", sortedUpdates[0]);
+     
  const latest =
   sortedUpdates.find(item =>
     item.progress_percent !== null ||

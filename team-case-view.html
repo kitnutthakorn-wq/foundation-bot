@@ -906,51 +906,41 @@
         `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`;
     }
 
-    function renderProgress(caseItem={}, updates=[]){
-     const sortedUpdates = [...updates].sort((a, b) => {
-  return new Date(b.updated_at) - new Date(a.updated_at);
-});
+   function renderProgress(caseItem={}, updates=[]){
+  const sortedUpdates = [...updates].sort((a, b) => {
+    return new Date(b.updated_at) - new Date(a.updated_at);
+  });
 
-const latest = sortedUpdates[0] || {};
-      const totalSteps = updates.length || 1;
-const progress = Math.round((totalSteps / 5) * 100); // สมมุติ 5 step = 100%
-      const currentStep = latest.current_step || caseItem.current_step || "-";
-      const waitingFor = latest.waiting_for || caseItem.waiting_for || "-";
-      const statusAfter = latest.status_after || caseItem.status || "-";
-      const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
-      const locationText = latest.location_text || "-";
+  const latest = sortedUpdates[0] || {};
 
-      safeText("progressPercent", `${progress}%`);
-      safeText("currentStep", currentStep);
-      safeText("waitingFor", waitingFor);
-      safeText("statusAfter", formatStatusThai(statusAfter));
-      safeText("locationText", locationText);
-      safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`);
+  const latestWithProgress =
+    sortedUpdates.find(item => item.progress_percent !== null && item.progress_percent !== undefined) || {};
 
-      document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
-    }
+  const latestWithStep =
+    sortedUpdates.find(item => String(item.current_step || "").trim()) || {};
 
-    function renderLatestImages(updates=[]){
-      const latestWithImages = updates.find(item => Array.isArray(item.images) && item.images.length > 0);
-      const root = document.getElementById("latestImages");
+  const latestWithWaiting =
+    sortedUpdates.find(item => String(item.waiting_for || "").trim()) || {};
 
-      if(!latestWithImages){
-        root.innerHTML = `<div class="empty-state" style="grid-column:1 / -1;">ยังไม่มีรูปภาพภาคสนาม</div>`;
-        return;
-      }
+  const latestWithLocation =
+    sortedUpdates.find(item => String(item.location_text || "").trim()) || {};
 
-      const imageList = latestWithImages.images.filter(Boolean);
+  const progress = Number(latestWithProgress.progress_percent ?? caseItem.progress_percent ?? 0);
+  const currentStep = latestWithStep.current_step || caseItem.current_step || "-";
+  const waitingFor = latestWithWaiting.waiting_for || caseItem.waiting_for || "-";
+  const statusAfter = latest.status_after || caseItem.status || "-";
+  const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
+  const locationText = latestWithLocation.location_text || "-";
 
-      root.innerHTML = imageList.map((src, idx) => `
-        <img
-          src="${escapeHtml(src)}"
-          class="pmx-case-thumb"
-          alt="field image ${idx + 1}"
-          onclick='openPmxImageViewer(${JSON.stringify(imageList)}, ${idx})'
-        />
-      `).join("");
-    }
+  safeText("progressPercent", `${progress}%`);
+  safeText("currentStep", currentStep);
+  safeText("waitingFor", waitingFor);
+  safeText("statusAfter", formatStatusThai(statusAfter));
+  safeText("locationText", locationText);
+  safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`);
 
+  document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
+}
     function renderTimeline(updates=[]){
       const root = document.getElementById("timelineList");
       document.getElementById("timelineCount").textContent = `${updates.length} รายการ`;

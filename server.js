@@ -7787,7 +7787,8 @@ app.get("/api/dashboard/export.csv", checkDashboardAuth, async (req, res) => {
     const { data, error } = await query;
     if (error) throw error;
 
-    const rows = data || [];
+  const rawRows = Array.isArray(data) ? data : [];
+  const rows = rawRows.map(attachSla);
     const headers = [
       "id",
       "case_code",

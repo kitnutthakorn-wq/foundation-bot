@@ -3161,6 +3161,54 @@ function buildAdminCaseMenuImagemap(baseUrlOverride = "", revision = Date.now())
   };
 }
 
+// =========================
+// ADMIN DASHBOARD MENU IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildAdminCaseMenuImagemap()
+// ใช้ภาพ dashboard.png
+// =========================
+function buildAdminDashboardMenuImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/admin-dashboard-menu-r${revision}`,
+    altText: "เมนูรายงานผู้บริหาร | ผู้ดูแลระบบ",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/dashboard`,
+        area: { x: 120, y: 875, width: 800, height: 140 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/report`,
+        area: { x: 120, y: 1035, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "Smart Alert",
+        area: { x: 120, y: 1195, width: 800, height: 140 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/command-center`,
+        area: { x: 120, y: 1365, width: 800, height: 130 }
+      },
+      {
+        type: "message",
+        text: "เมนูแอดมิน",
+        area: { x: 120, y: 1495, width: 800, height: 64 }
+      }
+    ]
+  };
+}
+
 
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   const baseUrl =

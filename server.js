@@ -3364,7 +3364,7 @@ function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()
   {
     type: "message",
     text: "เมนูรายงานผู้บริหาร",
-    area: { x: 120, y: 1423, width: 800, height: 90 }
+    area: { x: 120, y: 1418, width: 800, height: 90 }
   }
 ]
   };

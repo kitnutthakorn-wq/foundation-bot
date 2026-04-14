@@ -8580,17 +8580,19 @@ if (text === "ค้นหาด้วยเลขเคส") {
   continue;
 }
 
-if (text === "ค้นหาด้วยเบอร์โทร") {
-  setCaseSearchState(userId, { step: "waiting_phone" });
+if (String(text || "").trim() === "ค้นหาด้วยเบอร์โทร") {
+  const revision = Date.now();
+
+  setCaseSearchState(userId, {
+    mode: "phone",
+    step: "waiting_phone"
+  });
 
   await safeReply(replyToken, [
-    {
-      type: "text",
-      text: "กรุณาพิมพ์เบอร์โทร\n\nตัวอย่าง:\n0812345678"
-    }
+    buildSearchPhonePromptImagemap("", revision)
   ]);
   continue;
-}     
+}
 
 if (caseSearchState?.step === "waiting_case_code") {
   const query = String(text || "").trim();

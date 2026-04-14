@@ -833,6 +833,14 @@ app.get("/imagemap/admin-case-menu-r:rev/:size", async (req, res) => {
       maxWidth: 760
     });
 
+// ปุ่ม 4: ค้นหาเคส
+drawText(ctx, "ค้นหาเคส", centerX, 1235, {
+  font: 'bold 54px "ThaiBold", sans-serif',
+  color: "#111111",
+  align: "center",
+  maxWidth: 760
+});
+   
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");
     res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");

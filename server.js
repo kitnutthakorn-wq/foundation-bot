@@ -8647,10 +8647,11 @@ if (caseSearchState?.step === "waiting_phone") {
   const rawText = String(text || "").trim();
 
   if (
-    rawText === "กลับสู่เมนูค้นหาเคส" ||
-    rawText === "เมนูค้นหาเคส" ||
-    rawText === "ยกเลิก"
-  ) {
+  rawText === "กลับเมนูค้นหาเคส" ||
+  rawText === "กลับสู่เมนูค้นหาเคส" ||
+  rawText === "เมนูค้นหาเคส" ||
+  rawText === "ยกเลิก"
+) {
     clearCaseSearchState(userId);
 
     await safeReply(replyToken, [

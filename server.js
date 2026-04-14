@@ -8604,6 +8604,22 @@ if (String(text || "").trim() === "กลับสู่เมนูค้นห
 }
      
 if (caseSearchState?.step === "waiting_case_code") {
+
+const rawText = String(text || "").trim();
+
+if (
+  rawText === "กลับสู่เมนูค้นหาเคส" ||
+  rawText === "เมนูค้นหาเคส" ||
+  rawText === "ยกเลิก"
+) {
+  clearCaseSearchState(userId);
+
+  await safeReply(replyToken, [
+    buildSearchMenuImagemap("")
+  ]);
+  continue;
+}
+ 
   const query = String(text || "").trim();
 
   if (!query) {

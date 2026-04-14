@@ -969,6 +969,45 @@ app.get("/imagemap/admin-dashboard-menu-r:rev/:size", async (req, res) => {
   }
 });
 
+// =========================
+// SMART ALERT MENU IMAGEMAP IMAGE ROUTE
+// ใช้ไฟล์ imagemap/SmartAlert.png
+// วางหลัง /imagemap/admin-dashboard-menu-r:rev/:size
+// และก่อน /imagemap/new-case-menu-v2-r:rev/:size
+// =========================
+app.get("/imagemap/smart-alert-menu-r:rev/:size", async (req, res) => {
+  try {
+    const size = String(req.params.size || "");
+    const is2x = size.includes("@2x");
+
+    const width = is2x ? 1040 * 2 : 1040;
+    const height = is2x ? 1559 * 2 : 1559;
+
+    const imagePath = path.join(__dirname, "imagemap", "SmartAlert.png");
+    const baseImage = await loadImage(imagePath);
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    if (is2x) {
+      ctx.scale(2, 2);
+    }
+
+    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+
+    const buffer = canvas.toBuffer("image/png");
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
+
+    return res.send(buffer);
+  } catch (err) {
+    console.error("smart-alert-menu render failed:", err);
+    return res.status(500).send("render failed");
+  }
+});
+
 app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
   try {
     const size = String(req.params.size || "");

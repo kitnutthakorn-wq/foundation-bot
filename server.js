@@ -3218,31 +3218,31 @@ function buildAdminDashboardMenuImagemap(baseUrlOverride = "", revision = Date.n
       width: 1040,
       height: 1559
     },
-   actions: [
+  actions: [
   {
     type: "uri",
     linkUri: `${baseUrl}/dashboard`,
-    area: { x: 120, y: 1035, width: 800, height: 140 }
+    area: { x: 120, y: 845, width: 800, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/report`,
-    area: { x: 120, y: 1195, width: 800, height: 140 }
+    area: { x: 120, y: 1005, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "Smart Alert",
-    area: { x: 120, y: 1365, width: 800, height: 140 }
+    area: { x: 120, y: 1165, width: 800, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1525, width: 800, height: 140 }
+    area: { x: 120, y: 1325, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "เมนูแอดมิน",
-    area: { x: 120, y: 1685, width: 800, height: 64 }
+    area: { x: 120, y: 1475, width: 800, height: 70 }
   }
 ]
   };

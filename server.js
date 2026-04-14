@@ -3058,7 +3058,7 @@ function buildAdminCaseMenuImagemap(baseUrlOverride = "", revision = Date.now())
     actions: [
       {
         type: "message",
-       text: "เคสใหม่ทั้งหมด"
+       text: "ดูเคสใหม่ทั้งหมด"
         area: { x: 120, y: 875, width: 800, height: 140 }
       },
       {

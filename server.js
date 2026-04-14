@@ -3341,27 +3341,32 @@ function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-        text: "ดู SLA วิกฤต",
-        area: { x: 120, y: 905, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "ดูใกล้หลุด SLA",
-        area: { x: 120, y: 1075, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "ดูเคสเปิดทั้งหมด",
-        area: { x: 120, y: 1245, width: 800, height: 140 }
-      },
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/command-center`,
-        area: { x: 120, y: 1415, width: 800, height: 120 }
-      }
-    ]
+  {
+    type: "message",
+    text: "ดู SLA วิกฤต",
+    area: { x: 120, y: 760, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "ดูใกล้หลุด SLA",
+    area: { x: 120, y: 928, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "ดูเคสเปิดทั้งหมด",
+    area: { x: 120, y: 1096, width: 800, height: 120 }
+  },
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/command-center`,
+    area: { x: 120, y: 1264, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "เมนูรายงานผู้บริหาร",
+    area: { x: 120, y: 1438, width: 800, height: 90 }
+  }
+]
   };
 }
 

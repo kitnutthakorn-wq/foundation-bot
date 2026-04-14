@@ -3218,33 +3218,33 @@ function buildAdminDashboardMenuImagemap(baseUrlOverride = "", revision = Date.n
       width: 1040,
       height: 1559
     },
-    actions: [
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/dashboard`,
-        area: { x: 120, y: 875, width: 800, height: 140 }
-      },
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/report`,
-        area: { x: 120, y: 1035, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "Smart Alert",
-        area: { x: 120, y: 1195, width: 800, height: 140 }
-      },
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/command-center`,
-        area: { x: 120, y: 1365, width: 800, height: 130 }
-      },
-      {
-        type: "message",
-        text: "เมนูแอดมิน",
-        area: { x: 120, y: 1495, width: 800, height: 64 }
-      }
-    ]
+   actions: [
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/dashboard`,
+    area: { x: 120, y: 1035, width: 800, height: 140 }
+  },
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/report`,
+    area: { x: 120, y: 1195, width: 800, height: 140 }
+  },
+  {
+    type: "message",
+    text: "Smart Alert",
+    area: { x: 120, y: 1365, width: 800, height: 140 }
+  },
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/command-center`,
+    area: { x: 120, y: 1525, width: 800, height: 140 }
+  },
+  {
+    type: "message",
+    text: "เมนูแอดมิน",
+    area: { x: 120, y: 1685, width: 800, height: 64 }
+  }
+]
   };
 }
 

@@ -2864,6 +2864,49 @@ actions: [
 };
 }
 
+// =========================
+// ADMIN MENU IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildTeamMenuImagemap()
+// =========================
+function buildAdminMenuImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/admin-main-menu-r${revision}`,
+    altText: "เมนูแอดมิน | ผู้ดูแลระบบ",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "เมนูจัดการเคส",
+        area: { x: 120, y: 875, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "เมนูรายงานผู้บริหาร",
+        area: { x: 120, y: 1035, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "เมนูบริหารจัดการทีม",
+        area: { x: 120, y: 1195, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "SMART ALERT",
+        area: { x: 120, y: 1365, width: 800, height: 130 }
+      }
+    ]
+  };
+}
+
+
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   const baseUrl =
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||

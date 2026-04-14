@@ -2922,27 +2922,26 @@ function buildAdminMenuImagemap(baseUrlOverride = "", revision = Date.now()) {
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-        text: "เมนูจัดการเคส",
-        area: { x: 120, y: 875, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "เมนูรายงานผู้บริหาร",
-        area: { x: 120, y: 1035, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "เมนูบริหารจัดการทีม",
-        area: { x: 120, y: 1195, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "SMART ALERT",
-        area: { x: 120, y: 1365, width: 800, height: 130 }
-      }
-    ]
+     {
+  type: "message",
+  text: "เปิดเมนูจัดการเคส",
+  area: { x: 120, y: 875, width: 800, height: 140 }
+},
+{
+  type: "message",
+  text: "เมนูรายงานผู้บริหาร",
+  area: { x: 120, y: 1035, width: 800, height: 140 }
+},
+{
+  type: "message",
+  text: "เปิดเมนูจัดการทีม",
+  area: { x: 120, y: 1195, width: 800, height: 140 }
+},
+{
+  type: "message",
+  text: "Smart Alert",
+  area: { x: 120, y: 1365, width: 800, height: 130 }
+}    ]
   };
 }
 

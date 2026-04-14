@@ -3344,27 +3344,27 @@ function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()
   {
     type: "message",
     text: "ดู SLA วิกฤต",
-    area: { x: 120, y: 760, width: 800, height: 120 }
+    area: { x: 120, y: 755, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "ดูใกล้หลุด SLA",
-    area: { x: 120, y: 928, width: 800, height: 120 }
+    area: { x: 120, y: 923, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "ดูเคสเปิดทั้งหมด",
-    area: { x: 120, y: 1096, width: 800, height: 120 }
+    area: { x: 120, y: 1091, width: 800, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1264, width: 800, height: 120 }
+    area: { x: 120, y: 1259, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "เมนูรายงานผู้บริหาร",
-    area: { x: 120, y: 1438, width: 800, height: 90 }
+    area: { x: 120, y: 1433, width: 800, height: 90 }
   }
 ]
   };

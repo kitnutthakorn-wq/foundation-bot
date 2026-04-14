@@ -3359,12 +3359,12 @@ function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()
   {
     type: "uri",
     linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1254, width: 800, height: 120 }
+    area: { x: 120, y: 1250, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "เมนูรายงานผู้บริหาร",
-    area: { x: 120, y: 1428, width: 800, height: 90 }
+    area: { x: 120, y: 1423, width: 800, height: 90 }
   }
 ]
   };

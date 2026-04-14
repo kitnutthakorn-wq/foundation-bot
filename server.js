@@ -3248,6 +3248,48 @@ actions: [
   };
 }
 
+// =========================
+// SMART ALERT MENU IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildAdminDashboardMenuImagemap()
+// ใช้ภาพ SmartAlert.png
+// =========================
+function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/smart-alert-menu-r${revision}`,
+    altText: "Smart Alert | ผู้ดูแลระบบ",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "ดู SLA วิกฤต",
+        area: { x: 120, y: 905, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "ดูใกล้หลุด SLA",
+        area: { x: 120, y: 1075, width: 800, height: 140 }
+      },
+      {
+        type: "message",
+        text: "ดูเคสเปิดทั้งหมด",
+        area: { x: 120, y: 1245, width: 800, height: 140 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/command-center`,
+        area: { x: 120, y: 1415, width: 800, height: 120 }
+      }
+    ]
+  };
+}
 
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   const baseUrl =

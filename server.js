@@ -9215,7 +9215,11 @@ if (text === "เมนูแอดมิน" || text === "เปิดเมน
   continue;
 }
 
-if (text === "เปิดเมนูจัดการเคส") {
+if (
+  String(text || "").trim() === "เปิดเมนูจัดการเคส" ||
+  String(text || "").trim() === "เมนูจัดการเคส" ||
+  String(text || "").trim() === "จัดการเคส"
+) {
   if (!isGroupEvent(event)) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }]);
     continue;

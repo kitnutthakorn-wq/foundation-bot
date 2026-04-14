@@ -8635,14 +8635,16 @@ if (text === "ค้นหาเคส") {
 
 const caseSearchState = getCaseSearchState(userId);
 
-if (text === "ค้นหาด้วยเลขเคส") {
-  setCaseSearchState(userId, { step: "waiting_case_code" });
+if (String(text || "").trim() === "ค้นหาด้วยเลขเคส") {
+  const revision = Date.now();
+
+  setCaseSearchState(userId, {
+    mode: "case_code",
+    step: "waiting_case_code"
+  });
 
   await safeReply(replyToken, [
-    {
-      type: "text",
-      text: "กรุณาพิมพ์เลขเคส\n\nตัวอย่าง:\n04042026-999"
-    }
+    buildSearchCaseCodePromptImagemap("", revision)
   ]);
   continue;
 }

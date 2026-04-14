@@ -3158,6 +3158,34 @@ function buildSearchMenuImagemap(baseUrlOverride = "") {
   };
 }
 
+// =========================
+// SEARCH PHONE PROMPT IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildSearchMenuImagemap()
+// ใช้ภาพ Telcase.png
+// =========================
+function buildSearchPhonePromptImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/search-phone-prompt-r${revision}`,
+    altText: "ค้นหาเคสด้วยเบอร์โทร",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "กลับเมนูค้นหาเคส",
+        area: { x: 140, y: 1260, width: 760, height: 140 }
+      }
+    ]
+  };
+}
+
 function buildTeamMenuOverlayFlex() {
   return {
     type: "flex",

@@ -9770,7 +9770,11 @@ if (String(text || "").trim() === "เมนูรายงานผู้บร
   continue;
 }
 
-if (String(text || "").trim() === "เมนูบริหารจัดการทีม") {
+if (
+  String(text || "").trim() === "เมนูบริหารจัดการทีม" ||
+  String(text || "").trim() === "เปิดเมนูจัดการทีม" ||
+  String(text || "").trim() === "บริหารจัดการทีม"
+) {
   if (!isGroupEvent(event)) {
     await safeReply(replyToken, [{ type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }]);
     continue;

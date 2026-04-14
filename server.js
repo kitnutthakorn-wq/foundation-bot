@@ -826,7 +826,7 @@ app.get("/imagemap/admin-case-menu-r:rev/:size", async (req, res) => {
     });
 
     // ปุ่ม 3: เคสวันนี้
-    drawText(ctx, `เคสวันนี้ (${Number(todayCount || 0)})`, centerX, 1100, {
+    drawText(ctx, `เคสวันนี้ (${Number(todayCount || 0)})`, centerX, 1075, {
       font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",

@@ -1420,6 +1420,29 @@ async function replyCaseMenuCarousel({
   ]);
 }
 
+async function replyCasesFromRowsCarousel({
+  replyToken,
+  title,
+  rows = [],
+  heroImage = ""
+}) {
+  const items = Array.isArray(rows) ? rows : [];
+
+  if (!items.length) {
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: `${title}\n\nยังไม่มีรายการเคสในหมวดนี้`
+      }
+    ]);
+    return;
+  }
+
+  await safeReply(replyToken, [
+    buildCaseMenuCarouselFlex(title, items, { heroImage })
+  ]);
+}
+
 function resolvePublicOrigin(req) {
   const requestOrigin = String(req.headers.origin || "").trim();
   if (!requestOrigin) {

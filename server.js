@@ -760,6 +760,91 @@ app.get("/imagemap/admin-main-menu-r:rev/:size", async (req, res) => {
   }
 });
 
+// =========================
+// ADMIN CASE MENU IMAGEMAP IMAGE ROUTE
+// ใช้ไฟล์ imagemap/Case.png
+// วางหลัง /imagemap/admin-main-menu-r:rev/:size
+// และก่อน /imagemap/new-case-menu-v2-r:rev/:size
+// =========================
+app.get("/imagemap/admin-case-menu-r:rev/:size", async (req, res) => {
+  try {
+    const size = String(req.params.size || "");
+    const is2x = size.includes("@2x");
+
+    const width = is2x ? 1040 * 2 : 1040;
+    const height = is2x ? 1559 * 2 : 1559;
+
+    const imagePath = path.join(__dirname, "imagemap", "Case.png");
+    const baseImage = await loadImage(imagePath);
+
+    const counts = await getNewCaseMenuCounts();
+    const urgentCounts = await getUrgentCaseMenuCounts();
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const { data: todayRows, error: todayError } = await supabase
+      .from("help_requests")
+      .select("id, created_at")
+      .gte("created_at", todayStart.toISOString())
+      .lte("created_at", todayEnd.toISOString());
+
+    if (todayError) {
+      console.error("GET ADMIN CASE MENU TODAY COUNT ERROR:", todayError);
+    }
+
+    const todayCount = Array.isArray(todayRows) ? todayRows.length : 0;
+
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+
+    if (is2x) {
+      ctx.scale(2, 2);
+    }
+
+    ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+
+    const centerX = 520;
+
+    // ปุ่ม 1: ดูเคสใหม่
+    drawText(ctx, `ดูเคสใหม่ (${Number(counts.total || 0)})`, centerX, 935, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    // ปุ่ม 2: ดูเคสด่วน
+    drawText(ctx, `ดูเคสด่วน (${Number(urgentCounts.open_cases || 0)})`, centerX, 1095, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    // ปุ่ม 3: เคสวันนี้
+    drawText(ctx, `เคสวันนี้ (${Number(todayCount || 0)})`, centerX, 1250, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    const buffer = canvas.toBuffer("image/png");
+    res.set("Content-Type", "image/png");
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
+
+    return res.send(buffer);
+  } catch (err) {
+    console.error("admin-case-menu render failed:", err);
+    return res.status(500).send("render failed");
+  }
+});
 
 app.get("/imagemap/new-case-menu-v2-r:rev/:size", async (req, res) => {
   try {

@@ -1016,7 +1016,7 @@ drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})
 });
 
 // ปุ่ม 3: เคสเปิดทั้งหมด
-drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1068, {
+drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1062, {
   font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",

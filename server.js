@@ -3469,12 +3469,12 @@ function buildAdminTeamManageMenuImagemap(baseUrlOverride = "", revision = Date.
   {
     type: "uri",
     linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1260, width: 800, height: 120 }
+    area: { x: 120, y: 1255, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "เมนูแอดมิน",
-    area: { x: 120, y: 1425, width: 800, height: 90 }
+    area: { x: 120, y: 1412, width: 800, height: 90 }
   }
 ]  };
 }

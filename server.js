@@ -3224,6 +3224,35 @@ function buildSearchPhonePromptImagemap(baseUrlOverride = "", revision = Date.no
   };
 }
 
+// =========================
+// SEARCH CASE CODE PROMPT IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildSearchPhonePromptImagemap()
+// ใช้ภาพ NumberCase.png
+// =========================
+function buildSearchCaseCodePromptImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/search-casecode-prompt-r${revision}`,
+    altText: "ค้นหาเคสด้วยเลขเคส",
+    baseSize: {
+      width: 1040,
+      height: 1559
+    },
+    actions: [
+      {
+        type: "message",
+        text: "กลับสู่เมนูค้นหาเคส",
+        area: { x: 140, y: 1260, width: 760, height: 140 }
+      }
+    ]
+  };
+}
+
+
 function buildTeamMenuOverlayFlex() {
   return {
     type: "flex",

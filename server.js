@@ -818,7 +818,7 @@ app.get("/imagemap/admin-case-menu-r:rev/:size", async (req, res) => {
     });
 
     // ปุ่ม 2: ดูเคสด่วน
-    drawText(ctx, `ดูเคสด่วน (${Number(urgentCounts.open_cases || 0)})`, centerX, 945, {
+    drawText(ctx, `ดูเคสด่วน (${Number(urgentCounts.open_cases || 0)})`, centerX, 975, {
       font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",

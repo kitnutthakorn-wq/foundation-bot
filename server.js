@@ -8594,6 +8594,15 @@ if (String(text || "").trim() === "ค้นหาด้วยเบอร์โ
   continue;
 }
 
+if (String(text || "").trim() === "กลับสู่เมนูค้นหาเคส") {
+  clearCaseSearchState(userId);
+
+  await safeReply(replyToken, [
+    buildSearchMenuImagemap("")
+  ]);
+  continue;
+}
+     
 if (caseSearchState?.step === "waiting_case_code") {
   const query = String(text || "").trim();
 

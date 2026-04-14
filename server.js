@@ -3063,7 +3063,7 @@ function buildAdminCaseMenuImagemap(baseUrlOverride = "", revision = Date.now())
   },
   {
     type: "message",
-    text: "ดูเคสด่วน",
+    text: "ดูเคสใหม่ด่วน",
     area: { x: 120, y: 875, width: 800, height: 140 }
   },
   {

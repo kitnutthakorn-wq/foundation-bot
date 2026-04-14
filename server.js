@@ -3056,32 +3056,32 @@ function buildAdminCaseMenuImagemap(baseUrlOverride = "", revision = Date.now())
       height: 1559
     },
     actions: [
-      {
-        type: "message",
-       text: "ดูเคสใหม่ทั้งหมด",
-        area: { x: 120, y: 875, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "ดูเคสด่วน",
-        area: { x: 120, y: 1035, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "เคสวันนี้",
-        area: { x: 120, y: 1195, width: 800, height: 140 }
-      },
-      {
-        type: "message",
-        text: "ค้นหาเคส",
-        area: { x: 120, y: 1365, width: 800, height: 110 }
-      },
-      {
-        type: "message",
-        text: "เมนูแอดมิน",
-        area: { x: 120, y: 1488, width: 800, height: 71 }
-      }
-    ]
+  {
+    type: "message",
+    text: "ดูเคสใหม่ทั้งหมด",
+    area: { x: 120, y: 715, width: 800, height: 140 }
+  },
+  {
+    type: "message",
+    text: "ดูเคสด่วน",
+    area: { x: 120, y: 875, width: 800, height: 140 }
+  },
+  {
+    type: "message",
+    text: "เคสวันนี้",
+    area: { x: 120, y: 1035, width: 800, height: 140 }
+  },
+  {
+    type: "message",
+    text: "ค้นหาเคส",
+    area: { x: 120, y: 1195, width: 800, height: 110 }
+  },
+  {
+    type: "message",
+    text: "เมนูแอดมิน",
+    area: { x: 120, y: 1325, width: 800, height: 120 }
+  }
+]
   };
 }
 

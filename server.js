@@ -986,6 +986,8 @@ app.get("/imagemap/smart-alert-menu-r:rev/:size", async (req, res) => {
     const imagePath = path.join(__dirname, "imagemap", "SmartAlert.png");
     const baseImage = await loadImage(imagePath);
 
+    const slaCounts = await getSlaMenuCounts();
+
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
@@ -994,6 +996,40 @@ app.get("/imagemap/smart-alert-menu-r:rev/:size", async (req, res) => {
     }
 
     ctx.drawImage(baseImage, 0, 0, 1040, 1559);
+
+    const centerX = 520;
+
+    // ปุ่ม 1: SLA วิกฤต
+    drawText(ctx, `SLA วิกฤต (${Number(slaCounts.overdue || 0)})`, centerX, 930, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    // ปุ่ม 2: ใกล้หลุด SLA
+    drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})`, centerX, 1098, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    // ปุ่ม 3: เคสเปิดทั้งหมด
+    drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1266, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
+
+    // ปุ่ม 4: เปิดศูนย์ปฏิบัติการ
+    drawText(ctx, "เปิดศูนย์ปฏิบัติการ", centerX, 1434, {
+      font: 'bold 52px "ThaiBold", sans-serif',
+      color: "#111111",
+      align: "center",
+      maxWidth: 760
+    });
 
     const buffer = canvas.toBuffer("image/png");
     res.set("Content-Type", "image/png");

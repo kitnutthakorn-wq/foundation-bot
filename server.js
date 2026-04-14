@@ -9650,9 +9650,30 @@ if (text === "คำสั่งลบทีม") {
   continue;
 }
 
-if (text === "Smart Alert" || text === "ดู Smart Alert") {
-  const slaCounts = await getSlaMenuCounts();
-  await safeReply(replyToken, [buildSmartAlertFlex(slaCounts)]);
+if (
+  String(text || "").trim() === "Smart Alert" ||
+  String(text || "").trim() === "ดู Smart Alert"
+) {
+  if (!isGroupEvent(event)) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }]);
+    continue;
+  }
+
+  if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ เมนู Smart Alert ใช้ได้เฉพาะในกลุ่มทีมงานที่ได้รับอนุญาตเท่านั้น" }]);
+    continue;
+  }
+
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [{ type: "text", text: "❌ เมนูนี้สำหรับผู้ดูแลระบบ" }]);
+    continue;
+  }
+
+  const revision = Date.now();
+
+  await safeReply(replyToken, [
+    buildSmartAlertMenuImagemap("", revision)
+  ]);
   continue;
 }
  if (text === "ดู SLA วิกฤต") {

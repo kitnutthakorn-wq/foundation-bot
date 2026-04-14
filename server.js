@@ -3222,27 +3222,27 @@ function buildAdminDashboardMenuImagemap(baseUrlOverride = "", revision = Date.n
   {
     type: "uri",
     linkUri: `${baseUrl}/dashboard`,
-    area: { x: 120, y: 845, width: 800, height: 120 }
+    area: { x: 120, y: 785, width: 800, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/report`,
-    area: { x: 120, y: 1005, width: 800, height: 120 }
+    area: { x: 120, y: 945, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "Smart Alert",
-    area: { x: 120, y: 1165, width: 800, height: 120 }
+    area: { x: 120, y: 1105, width: 800, height: 120 }
   },
   {
     type: "uri",
     linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1325, width: 800, height: 120 }
+    area: { x: 120, y: 1265, width: 800, height: 120 }
   },
   {
     type: "message",
     text: "เมนูแอดมิน",
-    area: { x: 120, y: 1475, width: 800, height: 70 }
+    area: { x: 120, y: 1425, width: 800, height: 90 }
   }
 ]
   };

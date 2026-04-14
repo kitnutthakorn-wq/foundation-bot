@@ -1008,7 +1008,7 @@ drawText(ctx, `SLA วิกฤต (${Number(slaCounts.overdue || 0)})`, centerX
 });
 
 // ปุ่ม 2: ใกล้หลุด SLA
-drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})`, centerX, 915, {
+drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})`, centerX, 910, {
   font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
@@ -1016,7 +1016,7 @@ drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})
 });
 
 // ปุ่ม 3: เคสเปิดทั้งหมด
-drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1078, {
+drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1068, {
   font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",

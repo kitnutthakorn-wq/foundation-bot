@@ -3217,7 +3217,7 @@ function buildSearchPhonePromptImagemap(baseUrlOverride = "", revision = Date.no
     actions: [
       {
         type: "message",
-        text: "กลับเมนูค้นหาเคส",
+        text: "กลับสู่เมนูค้นหาเคส",
         area: { x: 140, y: 1260, width: 760, height: 140 }
       }
     ]

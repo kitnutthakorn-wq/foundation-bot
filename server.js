@@ -9739,37 +9739,41 @@ if (
   ]);
   continue;
 }
- if (text === "ดู SLA วิกฤต") {
+if (text === "ดู SLA วิกฤต") {
   const slaCounts = await getSlaMenuCounts();
-  await safeReply(replyToken, [{
-    type: "text",
-    text: buildSlaPreviewText("🚨 รายการ SLA วิกฤต", slaCounts.overdue_rows)
-  }]);
+
+  await replyCasesFromRowsCarousel({
+    replyToken,
+    title: "🚨 รายการ SLA วิกฤต",
+    rows: slaCounts.overdue_rows || [],
+    heroImage: URGENT_CASE_CAROUSEL_HERO
+  });
   continue;
 }
 
 if (text === "ดูใกล้หลุด SLA") {
   const slaCounts = await getSlaMenuCounts();
-  await safeReply(replyToken, [{
-    type: "text",
-    text: buildSlaPreviewText("⚠️ รายการใกล้หลุด SLA", slaCounts.near_due_rows)
-  }]);
+
+  await replyCasesFromRowsCarousel({
+    replyToken,
+    title: "⚠️ รายการใกล้หลุด SLA",
+    rows: slaCounts.near_due_rows || [],
+    heroImage: URGENT_CASE_CAROUSEL_HERO
+  });
   continue;
 }
 
 if (text === "ดูเคสเปิดทั้งหมด") {
-  const slaCounts = await getSlaMenuCounts();
-  await safeReply(replyToken, [{
-    type: "text",
-    text:
-      "📋 เคสเปิดทั้งหมด\n\n" +
-      `จำนวนเคสเปิด: ${slaCounts.open_cases}\n` +
-      `SLA วิกฤต: ${slaCounts.overdue}\n` +
-      `ใกล้หลุด SLA: ${slaCounts.near_due}\n` +
-      `Smart Alert: ${slaCounts.smart_alert}`
-  }]);
+  const openCases = await getOpenCasesForMenu("all", 10);
+
+  await replyCasesFromRowsCarousel({
+    replyToken,
+    title: "📋 เคสเปิดทั้งหมด",
+    rows: openCases,
+    heroImage: URGENT_CASE_CAROUSEL_HERO
+  });
   continue;
-}     
+}
 if (text === "เมนูทีมงาน" || text === "เปิดเมนูทีมงาน" || text === "รีเฟรชเมนูทีมงาน") {
   if (!(await isViewer(userId))) {
     await safeReply(replyToken, [{ type: "text", text: "เฉพาะทีมงานหรือผู้มีสิทธิ์เท่านั้น" }]);

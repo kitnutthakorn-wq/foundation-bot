@@ -3450,34 +3450,33 @@ function buildAdminTeamManageMenuImagemap(baseUrlOverride = "", revision = Date.
       width: 1040,
       height: 1560
     },
-    actions: [
-      {
-        type: "message",
-        text: "ดูทีม",
-        area: { x: 120, y: 820, width: 800, height: 120 }
-      },
-      {
-        type: "message",
-        text: "กำหนดสิทธิ์",
-        area: { x: 120, y: 990, width: 800, height: 120 }
-      },
-      {
-        type: "message",
-        text: "เพิ่มทีม",
-        area: { x: 120, y: 1160, width: 800, height: 120 }
-      },
-      {
-        type: "uri",
-        linkUri: `${baseUrl}/command-center`,
-        area: { x: 120, y: 1330, width: 800, height: 120 }
-      },
-      {
-        type: "message",
-        text: "เมนูแอดมิน",
-        area: { x: 120, y: 1448, width: 800, height: 90 }
-      }
-    ]
-  };
+   actions: [
+  {
+    type: "message",
+    text: "ดูรายชื่อทีมงาน",
+    area: { x: 120, y: 760, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "กำหนดสิทธิ์ทีมงาน",
+    area: { x: 120, y: 928, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "เพิ่มทีมงาน",
+    area: { x: 120, y: 1096, width: 800, height: 120 }
+  },
+  {
+    type: "uri",
+    linkUri: `${baseUrl}/command-center`,
+    area: { x: 120, y: 1264, width: 800, height: 120 }
+  },
+  {
+    type: "message",
+    text: "เมนูแอดมิน",
+    area: { x: 120, y: 1438, width: 800, height: 90 }
+  }
+]  };
 }
 
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {

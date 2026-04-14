@@ -8644,6 +8644,21 @@ if (caseSearchState?.step === "waiting_case_code") {
   continue;
 }
 if (caseSearchState?.step === "waiting_phone") {
+  const rawText = String(text || "").trim();
+
+  if (
+    rawText === "กลับสู่เมนูค้นหาเคส" ||
+    rawText === "เมนูค้นหาเคส" ||
+    rawText === "ยกเลิก"
+  ) {
+    clearCaseSearchState(userId);
+
+    await safeReply(replyToken, [
+      buildSearchMenuImagemap("")
+    ]);
+    continue;
+  }
+
   const query = String(text || "").replace(/\D/g, "");
 
   if (query.length < 9) {
@@ -8652,7 +8667,6 @@ if (caseSearchState?.step === "waiting_phone") {
     ]);
     continue;
   }
-
   const { data: casesByPhone, error } = await supabase
     .from("help_requests")
     .select("*")

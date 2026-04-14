@@ -3393,6 +3393,54 @@ function buildSmartAlertMenuImagemap(baseUrlOverride = "", revision = Date.now()
   };
 }
 
+// =========================
+// ADMIN TEAM MANAGE MENU IMAGEMAP (SAFE PATCH)
+// วางต่อจาก buildSmartAlertMenuImagemap()
+// ใช้ภาพ team-manage.png หรือภาพเมนูบริหารทีมของคุณ
+// =========================
+function buildAdminTeamManageMenuImagemap(baseUrlOverride = "", revision = Date.now()) {
+  const baseUrl =
+    String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
+    "https://satisfied-stillness-production-7942.up.railway.app";
+
+  return {
+    type: "imagemap",
+    baseUrl: `${baseUrl}/imagemap/admin-team-manage-menu-r${revision}`,
+    altText: "เมนูบริหารจัดการทีม | ผู้ดูแลระบบ",
+    baseSize: {
+      width: 1040,
+      height: 1560
+    },
+    actions: [
+      {
+        type: "message",
+        text: "ดูทีม",
+        area: { x: 120, y: 820, width: 800, height: 120 }
+      },
+      {
+        type: "message",
+        text: "กำหนดสิทธิ์",
+        area: { x: 120, y: 990, width: 800, height: 120 }
+      },
+      {
+        type: "message",
+        text: "เพิ่มทีม",
+        area: { x: 120, y: 1160, width: 800, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/command-center`,
+        area: { x: 120, y: 1330, width: 800, height: 120 }
+      },
+      {
+        type: "message",
+        text: "เมนูแอดมิน",
+        area: { x: 120, y: 1448, width: 800, height: 90 }
+      }
+    ]
+  };
+}
+
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {
   const baseUrl =
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||

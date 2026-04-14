@@ -1000,8 +1000,8 @@ app.get("/imagemap/smart-alert-menu-r:rev/:size", async (req, res) => {
     const centerX = 520;
 
    // ปุ่ม 1: SLA วิกฤต
-drawText(ctx, `SLA วิกฤต (${Number(slaCounts.overdue || 0)})`, centerX, 762, {
-  font: 'bold 52px "ThaiBold", sans-serif',
+drawText(ctx, `SLA วิกฤต (${Number(slaCounts.overdue || 0)})`, centerX, 752, {
+  font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760

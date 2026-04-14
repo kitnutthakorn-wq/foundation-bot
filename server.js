@@ -1008,24 +1008,24 @@ drawText(ctx, `SLA วิกฤต (${Number(slaCounts.overdue || 0)})`, centerX
 });
 
 // ปุ่ม 2: ใกล้หลุด SLA
-drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})`, centerX, 930, {
-  font: 'bold 52px "ThaiBold", sans-serif',
+drawText(ctx, `ใกล้หลุด SLA (${Number(slaCounts.near_due || 0)})`, centerX, 915, {
+  font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760
 });
 
 // ปุ่ม 3: เคสเปิดทั้งหมด
-drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1098, {
-  font: 'bold 52px "ThaiBold", sans-serif',
+drawText(ctx, `เคสเปิดทั้งหมด (${Number(slaCounts.open_cases || 0)})`, centerX, 1078, {
+  font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760
 });
 
 // ปุ่ม 4: เปิดศูนย์ปฏิบัติการ
-drawText(ctx, "เปิดศูนย์ปฏิบัติการ", centerX, 1266, {
-  font: 'bold 52px "ThaiBold", sans-serif',
+drawText(ctx, "เปิดศูนย์ปฏิบัติการ", centerX, 1216, {
+  font: 'bold 56px "ThaiBold", sans-serif',
   color: "#111111",
   align: "center",
   maxWidth: 760

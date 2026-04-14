@@ -810,7 +810,7 @@ app.get("/imagemap/admin-case-menu-r:rev/:size", async (req, res) => {
     const centerX = 520;
 
     // ปุ่ม 1: ดูเคสใหม่
-    drawText(ctx, `ดูเคสใหม่ (${Number(counts.total || 0)})`, centerX, 785, {
+    drawText(ctx, `ดูเคสใหม่ (${Number(counts.total || 0)})`, centerX, 755, {
       font: 'bold 52px "ThaiBold", sans-serif',
       color: "#111111",
       align: "center",

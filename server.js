@@ -4772,183 +4772,63 @@ function getSelectableUserAvatar(u = {}) {
   return "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 }
 
-function buildSelectableUserBubble(u = {}) {
-  const displayName = String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ");
-  const userId = String(u.line_user_id || "-");
-  const avatarUrl = getSelectableUserAvatar(u);
+function buildSelectableUserBubble(user = {}) {
+  const displayName =
+    user.display_name ||
+    user.full_name ||
+    user.name ||
+    "ไม่ทราบชื่อ";
 
-  const topInfoLabel =
-    u.source === "candidate" ? "วันที่สมัคร" : "เข้าระบบล่าสุด";
-
-  const topInfoValue = u.created_at
-    ? formatThaiDateTime(u.created_at)
-    : "-";
-
-  const bottomInfoLabel =
-    String(u.candidate_status || "").toLowerCase() === "pending"
-      ? "สถานะคำขอ"
-      : "สิทธิ์ปัจจุบัน";
-
-  const bottomInfoValue =
-    String(u.candidate_status || "").toLowerCase() === "pending"
-      ? "รออนุมัติ"
-      : (u.role || "ยังไม่กำหนด");
+  const roleText = user.role ? `บทบาท: ${user.role}` : "ผู้ใช้งานที่เลือกได้";
+  const userIdText = user.user_id || user.line_user_id || "-";
 
   return {
     type: "bubble",
-    size: "kilo",
-    header: {
-      type: "box",
-      layout: "vertical",
-      backgroundColor: "#119EAB",
-      paddingAll: "14px",
-      contents: [
-        {
-          type: "text",
-          text: "เลือกสมาชิก",
-          color: "#FFFFFF",
-          weight: "bold",
-          size: "lg"
-        },
-        {
-          type: "text",
-          text: "เลือกผู้ใช้ที่ต้องการกำหนดสิทธิ์",
-          color: "#D9F7FA",
-          size: "xs",
-          margin: "sm"
-        }
-      ]
+    size: "mega",
+    hero: {
+      type: "image",
+      url: FLEX_HEAD_IMAGE_URL,
+      size: "full",
+      aspectRatio: "20:8",
+      aspectMode: "cover"
     },
     body: {
       type: "box",
       layout: "vertical",
-      paddingAll: "14px",
-      spacing: "12px",
+      spacing: "md",
+      paddingAll: "16px",
       contents: [
         {
-          type: "box",
-          layout: "horizontal",
-          spacing: "12px",
-          contents: [
-            {
-              type: "image",
-              url: avatarUrl,
-              size: "64px",
-              aspectMode: "cover",
-              aspectRatio: "1:1",
-              flex: 0
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              flex: 1,
-              spacing: "6px",
-              contents: [
-                {
-                  type: "text",
-                  text: displayName,
-                  weight: "bold",
-                  size: "xl",
-                  color: "#1F2A37",
-                  wrap: true
-                },
-                {
-                  type: "text",
-                  text: userId,
-                  size: "xxs",
-                  color: "#7B8794",
-                  wrap: true
-                },
-                {
-                  type: "box",
-                  layout: "horizontal",
-                  spacing: "8px",
-                  margin: "sm",
-                  contents: buildSelectableUserBadges(u)
-                }
-              ]
-            }
-          ]
+          type: "text",
+          text: displayName,
+          weight: "bold",
+          size: "lg",
+          wrap: true,
+          color: "#163c72"
+        },
+        {
+          type: "text",
+          text: roleText,
+          size: "sm",
+          color: "#666666",
+          wrap: true
+        },
+        {
+          type: "separator",
+          margin: "md"
         },
         {
           type: "box",
           layout: "vertical",
-          spacing: "0px",
-          paddingAll: "12px",
-          backgroundColor: "#EEF5FB",
-          cornerRadius: "12px",
+          margin: "md",
+          spacing: "sm",
           contents: [
             {
-              type: "box",
-              layout: "horizontal",
-              spacing: "10px",
-              paddingBottom: "10px",
-              contents: [
-                {
-                  type: "text",
-                  text: "📅",
-                  size: "lg",
-                  flex: 0
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  spacing: "2px",
-                  contents: [
-                    {
-                      type: "text",
-                      text: topInfoLabel,
-                      size: "xs",
-                      color: "#4B5563"
-                    },
-                    {
-                      type: "text",
-                      text: topInfoValue,
-                      size: "sm",
-                      color: "#4B5563",
-                      wrap: true
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              type: "separator",
-              color: "#D7E3F0"
-            },
-            {
-              type: "box",
-              layout: "horizontal",
-              spacing: "10px",
-              paddingTop: "10px",
-              contents: [
-                {
-                  type: "text",
-                  text: "🛡️",
-                  size: "lg",
-                  flex: 0
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  spacing: "2px",
-                  contents: [
-                    {
-                      type: "text",
-                      text: bottomInfoLabel,
-                      size: "xs",
-                      color: "#4B5563"
-                    },
-                    {
-                      type: "text",
-                      text: bottomInfoValue,
-                      size: "sm",
-                      color: "#4B5563",
-                      wrap: true
-                    }
-                  ]
-                }
-              ]
+              type: "text",
+              text: `USER ID: ${userIdText}`,
+              size: "xs",
+              color: "#999999",
+              wrap: true
             }
           ]
         }
@@ -4957,24 +4837,24 @@ function buildSelectableUserBubble(u = {}) {
     footer: {
       type: "box",
       layout: "vertical",
-      paddingAll: "14px",
+      spacing: "sm",
+      paddingAll: "16px",
       contents: [
         {
           type: "button",
           style: "primary",
-          color: "#0B8FA1",
           height: "sm",
+          color: "#0b7c86",
           action: {
             type: "message",
-            label: "เลือกสมาชิกนี้",
-            text: `select_user ${u.line_user_id}`
+            label: "เลือกคนนี้",
+            text: `เลือกสมาชิก:${userIdText}`
           }
         }
       ]
     }
   };
 }
-
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

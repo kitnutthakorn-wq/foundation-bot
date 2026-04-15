@@ -5003,8 +5003,7 @@ function buildSelectableUserBubble(user = {}) {
       wrap: true
     }
       ]
-  }
-],
+  },
 footer: {
   type: "box",
   layout: "vertical",
@@ -5019,11 +5018,11 @@ footer: {
       action: {
         type: "message",
         label: "เลือกคนนี้",
-        text: `เลือกสมาชิก:${userIdText}`
-      }
+            text: `เลือกสมาชิก:${userIdText}`
+          }
+        }
+      ]
     }
-  ]
-}
   };
 }
 

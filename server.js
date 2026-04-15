@@ -4849,7 +4849,7 @@ function buildSelectableUserBubble(user = {}) {
                 user.source === "candidate" ? "#FFF4E5" :
                 user.source === "recent" ? "#E8F7EE" :
                 "#EEF3FF",
-              cornerRadius: "999px",
+            
               paddingStart: "10px",
               paddingEnd: "10px",
               paddingTop: "4px",

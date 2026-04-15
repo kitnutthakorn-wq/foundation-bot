@@ -12302,6 +12302,151 @@ app.get("/api/team/me", async (req, res) => {
   }
 });
 
+app.get("/api/team-management/list", checkDashboardAuth, async (req, res) => {
+  try {
+    const search = String(req.query.search || "").trim().toLowerCase();
+    const applicationStatus = String(req.query.application_status || "").trim().toLowerCase();
+    const roleFilter = String(req.query.role || "").trim().toLowerCase();
+    const activeFilter = String(req.query.is_active || "").trim().toLowerCase();
+
+    // STEP 1B = อ่านข้อมูลก่อน ยังไม่แก้ไขข้อมูลใด ๆ
+    const [candidateResult, roleResult] = await Promise.all([
+      supabase
+        .from("team_candidates")
+        .select(`
+          id,
+          line_user_id,
+          display_name,
+          picture_url,
+          source,
+          status,
+          joined_group_id,
+          note,
+          last_seen_at,
+          created_at
+        `)
+        .order("created_at", { ascending: false }),
+
+      supabase
+        .from("line_user_roles")
+        .select(`
+          line_user_id,
+          role,
+          is_active
+        `)
+    ]);
+
+    if (candidateResult.error) throw candidateResult.error;
+    if (roleResult.error) throw roleResult.error;
+
+    const candidateRows = Array.isArray(candidateResult.data) ? candidateResult.data : [];
+    const roleRows = Array.isArray(roleResult.data) ? roleResult.data : [];
+
+    const roleMap = new Map(
+      roleRows.map((row) => [
+        String(row.line_user_id || "").trim(),
+        {
+          role: String(row.role || "").trim().toLowerCase() || "none",
+          is_active: row.is_active === true
+        }
+      ])
+    );
+
+    const merged = candidateRows.map((row) => {
+      const lineUserId = String(row.line_user_id || "").trim();
+      const roleInfo = roleMap.get(lineUserId) || null;
+
+      return {
+        id: row.id || null,
+        line_user_id: lineUserId,
+        display_name: row.display_name || "",
+        picture_url: row.picture_url || "",
+        source: row.source || "candidate",
+        joined_group_id: row.joined_group_id || "",
+        note: row.note || "",
+        created_at: row.created_at || null,
+        last_seen_at: row.last_seen_at || null,
+
+        // สำหรับหน้า team-management.html
+        applied_at: row.created_at || row.last_seen_at || null,
+        application_status: String(row.status || "pending").trim().toLowerCase(),
+        role: roleInfo?.role || "none",
+        is_active: roleInfo?.is_active === true
+      };
+    });
+
+    let rows = merged;
+
+    if (search) {
+      rows = rows.filter((row) => {
+        return [
+          row.display_name,
+          row.line_user_id,
+          row.source,
+          row.joined_group_id,
+          row.note
+        ]
+          .map((value) => String(value || "").toLowerCase())
+          .some((value) => value.includes(search));
+      });
+    }
+
+    if (applicationStatus) {
+      rows = rows.filter(
+        (row) => String(row.application_status || "").toLowerCase() === applicationStatus
+      );
+    }
+
+    if (roleFilter) {
+      if (roleFilter === "none") {
+        rows = rows.filter((row) => !row.role || row.role === "none");
+      } else {
+        rows = rows.filter(
+          (row) => String(row.role || "").toLowerCase() === roleFilter
+        );
+      }
+    }
+
+    if (activeFilter) {
+      const expected = activeFilter === "true";
+      rows = rows.filter((row) => !!row.is_active === expected);
+    }
+
+    // sort: pending ก่อน แล้วค่อยล่าสุดไปเก่าสุด
+    rows.sort((a, b) => {
+      const aPending = a.application_status === "pending" ? 0 : 1;
+      const bPending = b.application_status === "pending" ? 0 : 1;
+      if (aPending !== bPending) return aPending - bPending;
+
+      const aTime = new Date(a.applied_at || 0).getTime();
+      const bTime = new Date(b.applied_at || 0).getTime();
+      return bTime - aTime;
+    });
+
+    const summary = {
+      pending: rows.filter((r) => r.application_status === "pending").length,
+      approved: rows.filter((r) => r.application_status === "approved").length,
+      rejected: rows.filter((r) => r.application_status === "rejected").length,
+      active: rows.filter((r) => r.is_active === true).length,
+      admin: rows.filter((r) => r.role === "admin").length,
+      staff: rows.filter((r) => r.role === "staff").length,
+      viewer: rows.filter((r) => r.role === "viewer").length
+    };
+
+    return res.json({
+      ok: true,
+      items: rows,
+      summary
+    });
+  } catch (err) {
+    console.error("GET /api/team-management/list error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "team management list failed"
+    });
+  }
+});
+
 app.get("/api/team/cases", async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit || "100", 10), 200);

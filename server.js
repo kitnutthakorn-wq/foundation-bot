@@ -4549,14 +4549,11 @@ async function approvePendingTeamCandidate(lineUserId, approvedRole, approvedBy 
     }
 
     const payload = {
-      status: "approved"
+      status: "approved",
+      approved_role: role || null,
+      approved_by: approvedByUser || null,
+      approved_at: new Date().toISOString()
     };
-
-    if (role) payload.approved_role = role;
-    if (approvedByUser) payload.approved_by = approvedByUser;
-
-    // ถ้าตารางมีคอลัมน์ approved_at จะใช้ได้เลย
-    payload.approved_at = new Date().toISOString();
 
     const { error: updateError } = await supabase
       .from("team_candidates")
@@ -4579,7 +4576,6 @@ async function approvePendingTeamCandidate(lineUserId, approvedRole, approvedBy 
     return { success: false, reason: "exception", error: err };
   }
 }
-
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

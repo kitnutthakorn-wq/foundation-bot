@@ -8876,6 +8876,45 @@ app.post("/webhook", async (req, res) => {
     const events = req.body.events || [];
     for (const event of events) {
 
+// =========================
+// TEAM JOIN AUTO WELCOME (memberJoined)
+// วางก่อน if (event.type !== "message") continue;
+// =========================
+if (event.type === "memberJoined" && event.source?.type === "group") {
+  try {
+    const joinedMembers = Array.isArray(event.joined?.members) ? event.joined.members : [];
+    const firstJoinedUserId = String(joinedMembers[0]?.userId || "").trim();
+
+    // ถ้าไม่มี userId ก็ข้ามไปก่อน
+    if (!firstJoinedUserId) {
+      continue;
+    }
+
+    // จำกัดให้ทำงานเฉพาะกลุ่มทีมงานที่อนุญาต
+    if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
+      continue;
+    }
+
+    let joinedDisplayName = firstJoinedUserId;
+    try {
+      const profile = await getGroupMemberProfile(event.source.groupId, firstJoinedUserId);
+      joinedDisplayName = profile?.displayName || firstJoinedUserId;
+    } catch (err) {
+      console.log("JOINED PROFILE LOAD ERROR:", err?.message || err);
+    }
+
+    upsertRecentUser(firstJoinedUserId, joinedDisplayName);
+
+    await safeReply(replyToken, [
+      buildTeamJoinWelcomeFlex(joinedDisplayName)
+    ]);
+  } catch (err) {
+    console.error("MEMBER JOINED WELCOME ERROR:", err);
+  }
+
+  continue;
+}
+     
   if (event.type !== "message") continue;
   if (!event.message || event.message.type !== "text") continue;
 

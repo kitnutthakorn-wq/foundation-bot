@@ -4824,13 +4824,13 @@ function buildSelectableUserBubble(user = {}) {
         {
           type: "box",
           layout: "horizontal",
-          spacing: "md",
+          spacing: "lg",
           alignItems: "center",
           contents: [
             {
               type: "image",
               url: getSelectableUserAvatar(user),
-              size: "64px",
+              size: "72px",
               aspectMode: "cover",
               aspectRatio: "1:1",
               flex: 0
@@ -4845,14 +4845,14 @@ function buildSelectableUserBubble(user = {}) {
                   type: "text",
                   text: displayName,
                   weight: "bold",
-                  size: "xxl",
+                  size: "3xl",
                   wrap: true,
                   color: "#FFFFFF"
                 },
                 {
                   type: "text",
                   text: roleText,
-                  size: "lg",
+                  size: "xl",
                   color: "#FFFFFF",
                   wrap: true
                 }
@@ -4869,7 +4869,7 @@ function buildSelectableUserBubble(user = {}) {
           type: "box",
           layout: "vertical",
           margin: "md",
-          spacing: "md",
+          spacing: "lg",
           contents: [
             {
               type: "box",
@@ -4879,15 +4879,15 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: "เลขที่",
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
-                  flex: 2
+                  flex: 3
                 },
                 {
                   type: "text",
                   text: numberText,
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
                   flex: 5
@@ -4902,15 +4902,15 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: "วันที่",
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
-                  flex: 2
+                  flex: 3
                 },
                 {
                   type: "text",
                   text: dateText,
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
                   flex: 5,
@@ -4926,7 +4926,7 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: "สถานะ:",
-                  size: "xxl",
+                  size: "3xl",
                   weight: "bold",
                   color: "#FFFFFF",
                   flex: 3
@@ -4934,7 +4934,7 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: statusText,
-                  size: "xxl",
+                  size: "3xl",
                   weight: "bold",
                   color: "#FFE500",
                   flex: 5,
@@ -4950,7 +4950,7 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: "ที่มา :",
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
                   flex: 3
@@ -4958,7 +4958,7 @@ function buildSelectableUserBubble(user = {}) {
                 {
                   type: "text",
                   text: sourceText,
-                  size: "xl",
+                  size: "xxl",
                   weight: "bold",
                   color: "#FFFFFF",
                   flex: 5,
@@ -4980,7 +4980,7 @@ function buildSelectableUserBubble(user = {}) {
         {
           type: "button",
           style: "primary",
-          height: "sm",
+          height: "md",
           color: "#E60012",
           action: {
             type: "message",

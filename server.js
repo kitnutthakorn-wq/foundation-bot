@@ -9182,27 +9182,61 @@ app.post("/api/team/join", async (req, res) => {
       });
     }
 
-    const row = await upsertTeamCandidate({
-      lineUserId,
-      displayName,
-      pictureUrl,
+    const { data: existingRow, error: existingError } = await supabase
+      .from("team_candidates")
+      .select("id, line_user_id, display_name, status, created_at")
+      .eq("line_user_id", lineUserId)
+      .maybeSingle();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    const payload = {
+      line_user_id: lineUserId,
+      display_name: displayName || null,
+      picture_url: pictureUrl || null,
+      joined_group_id: joinedGroupId || null,
       source: safeSource,
-      joinedGroupId,
-      status: "pending"
-    });
+      status: existingRow?.status === "approved" ? "approved" : "pending",
+      last_seen_at: new Date().toISOString()
+    };
+
+    const { data: row, error: upsertError } = await supabase
+      .from("team_candidates")
+      .upsert(payload, { onConflict: "line_user_id" })
+      .select("id, line_user_id, display_name, status, created_at")
+      .single();
+
+    if (upsertError) {
+      throw upsertError;
+    }
+
+    const alreadyRequested =
+      !!existingRow && String(existingRow.status || "").trim().toLowerCase() === "pending";
+
+    const alreadyApproved =
+      !!existingRow && String(existingRow.status || "").trim().toLowerCase() === "approved";
 
     return res.json({
       ok: true,
       request_id: row?.id || null,
       candidate_id: row?.id || null,
-      status: row?.status || "pending"
+      status: row?.status || "pending",
+      already_requested: alreadyRequested,
+      already_approved: alreadyApproved,
+      message: alreadyApproved
+        ? "คุณได้รับการอนุมัติเป็นสมาชิกแล้ว"
+        : alreadyRequested
+          ? `คุณได้ทำการสมัครสมาชิกแล้ว ตามคำขอเลขที่ ${row?.id || "-"} ขณะนี้อยู่ระหว่างรออนุมัติ ระบบจะรีบส่งข้อมูลการอนุมัติให้เร็วที่สุด ขอบคุณครับ`
+          : "สมัครเข้าทีมสำเร็จแล้ว"
     });
 
   } catch (err) {
     console.error("TEAM JOIN API ERROR:", err);
     return res.status(500).json({
       ok: false,
-      error: err?.message || "internal_error"
+      error: err.message || "internal_error"
     });
   }
 });

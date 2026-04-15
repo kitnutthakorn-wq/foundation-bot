@@ -4812,7 +4812,7 @@ function buildSelectableUserBubble(user = {}) {
               url: getSelectableUserAvatar(user),
               size: "60px",
               aspectMode: "cover",
-              aspectRatio: "1:1", 
+              aspectRatio: "1:1",
               flex: 0
             },
             {
@@ -4849,7 +4849,7 @@ function buildSelectableUserBubble(user = {}) {
                 user.source === "candidate" ? "#FFF4E5" :
                 user.source === "recent" ? "#E8F7EE" :
                 "#EEF3FF",
-            
+              cornerRadius: "999px",
               paddingStart: "10px",
               paddingEnd: "10px",
               paddingTop: "4px",
@@ -4881,148 +4881,150 @@ function buildSelectableUserBubble(user = {}) {
             }
           ]
         },
-{
-  type: "box",
-  layout: "horizontal",
-  spacing: "sm",
-  margin: "sm",
-  contents: [
-    {
-      type: "box",
-      layout: "vertical",
-      backgroundColor: "#F3F4F6",
-      cornerRadius: "999px",
-      paddingStart: "10px",
-      paddingEnd: "10px",
-      paddingTop: "4px",
-      paddingBottom: "4px",
-      flex: 1,
-      contents: [
         {
-          type: "text",
-          text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
-          size: "xs",
-          weight: "bold",
-          color: "#555555",
-          align: "center"
+          type: "box",
+          layout: "horizontal",
+          spacing: "sm",
+          margin: "sm",
+          contents: [
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#F3F4F6",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              flex: 1,
+              contents: [
+                {
+                  type: "text",
+                  text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#555555",
+                  align: "center"
+                }
+              ]
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#F9FAFB",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              flex: 1,
+              contents: [
+                {
+                  type: "text",
+                  text: `${
+                    user.created_at || user.joined_at
+                      ? formatThaiDateTime(user.created_at || user.joined_at)
+                      : "-"
+                  }`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#666666",
+                  align: "center"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          type: "separator",
+          margin: "md"
+        },
+        {
+          type: "box",
+          layout: "vertical",
+          margin: "md",
+          spacing: "sm",
+          contents: [
+            {
+              type: "text",
+              text: "LINE USER ID",
+              size: "xs",
+              color: "#999999"
+            },
+            {
+              type: "text",
+              text: userIdText,
+              size: "sm",
+              color: "#444444",
+              wrap: true
+            },
+            {
+              type: "text",
+              text:
+                user.display_name && user.display_name !== displayName
+                  ? `ชื่อในระบบ: ${user.display_name}`
+                  : "ชื่อในระบบ: -",
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            },
+            {
+              type: "text",
+              text: `กลุ่ม: ${user.joined_group_id || "-"}`,
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            },
+            {
+              type: "text",
+              text:
+                `สถานะ: ${
+                  user.status === "pending" ? "รออนุมัติ" :
+                  user.status === "approved" ? "อนุมัติแล้ว" :
+                  user.status === "active" ? "มีสิทธิ์ใช้งานแล้ว" :
+                  user.status === "rejected" ? "ไม่ผ่าน" :
+                  user.source === "candidate" ? "รออนุมัติ" :
+                  "-"
+                }`,
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            },
+            {
+              type: "text",
+              text:
+                `ที่มา: ${
+                  user.source === "candidate" ? "ผู้สมัครเข้าทีม" :
+                  user.source === "recent" ? "ผู้ใช้ล่าสุด" :
+                  user.source || "-"
+                }`,
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            }
+          ]
         }
       ]
     },
-    {
+    footer: {
       type: "box",
       layout: "vertical",
-      backgroundColor: "#F9FAFB",
-      cornerRadius: "999px",
-      paddingStart: "10px",
-      paddingEnd: "10px",
-      paddingTop: "4px",
-      paddingBottom: "4px",
-      flex: 1,
+      spacing: "sm",
+      paddingAll: "16px",
       contents: [
         {
-          type: "text",
-          text: `${
-            user.created_at || user.joined_at
-              ? formatThaiDateTime(user.created_at || user.joined_at)
-              : "-"
-          }`,
-          size: "xs",
-          weight: "bold",
-          color: "#666666",
-          align: "center"
+          type: "button",
+          style: "primary",
+          height: "sm",
+          color: "#0b7c86",
+          action: {
+            type: "message",
+            label: "เลือกคนนี้",
+            text: `เลือกสมาชิก:${userIdText}`
+          }
         }
       ]
     }
-  ]
-},
-{
-  type: "separator",
-  margin: "md"
-},
-{
-  type: "box",
-  layout: "vertical",
-  margin: "md",
-  spacing: "sm",
-  contents: [
-    {
-      type: "text",
-      text: "LINE USER ID",
-      size: "xs",
-      color: "#999999"
-    },
-    {
-      type: "text",
-      text: userIdText,
-      size: "sm",
-      color: "#444444",
-      wrap: true
-    },
-    {
-      type: "text",
-      text:
-        user.display_name && user.display_name !== displayName
-          ? `ชื่อในระบบ: ${user.display_name}`
-          : "ชื่อในระบบ: -",
-      size: "xs",
-      color: "#777777",
-      wrap: true
-    },
-    {
-      type: "text",
-      text: `กลุ่ม: ${user.joined_group_id || "-"}`,
-      size: "xs",
-      color: "#777777",
-      wrap: true
-    },
-    {
-      type: "text",
-      text:
-        `สถานะ: ${
-          user.status === "pending" ? "รออนุมัติ" :
-          user.status === "approved" ? "อนุมัติแล้ว" :
-          user.status === "active" ? "มีสิทธิ์ใช้งานแล้ว" :
-          user.status === "rejected" ? "ไม่ผ่าน" :
-          user.source === "candidate" ? "รออนุมัติ" :
-          "-"
-        }`,
-      size: "xs",
-      color: "#777777",
-      wrap: true
-    },
-       {
-      type: "text",
-      text:
-        `ที่มา: ${
-          user.source === "candidate" ? "ผู้สมัครเข้าทีม" :
-          user.source === "recent" ? "ผู้ใช้ล่าสุด" :
-          user.source || "-"
-        }`,
-      size: "xs",
-      color: "#777777",
-      wrap: true
-    }
-  ]
-},
-footer: {
-  type: "box",
-  layout: "vertical",
-  spacing: "sm",
-  paddingAll: "16px",
-  contents: [
-    {
-      type: "button",
-      style: "primary",
-      height: "sm",
-      color: "#0b7c86",
-      action: {
-        type: "message",
-        label: "เลือกคนนี้",
-        text: `เลือกสมาชิก:${userIdText}`
-      }
-    }
-  ]
-}
   };
 }
 

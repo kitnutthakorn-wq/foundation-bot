@@ -4808,7 +4808,7 @@ function buildSelectableUserBubble(user = {}) {
         })
       : "-";
 
-  function infoRow(label, value, valueColor = "#FFFFFF") {
+  function infoRow(label, value, valueColor = "#111111") {
     return {
       type: "box",
       layout: "horizontal",
@@ -4820,7 +4820,7 @@ function buildSelectableUserBubble(user = {}) {
           text: label,
           size: "xl",
           weight: "bold",
-          color: "#FFFFFF",
+          color: "#111111",
           flex: 3
         },
         {
@@ -4851,7 +4851,7 @@ function buildSelectableUserBubble(user = {}) {
       layout: "vertical",
       paddingAll: "14px",
       spacing: "none",
-      backgroundColor: "#0B0F14",
+      backgroundColor: "#FFFFFF",
       contents: [
         {
           type: "box",
@@ -4878,14 +4878,14 @@ function buildSelectableUserBubble(user = {}) {
                   text: displayName,
                   weight: "bold",
                   size: "xxl",
-                  color: "#FFFFFF",
+                  color: "#111111",
                   wrap: true
                 },
                 {
                   type: "text",
                   text: roleText,
                   size: "lg",
-                  color: "#FFFFFF",
+                  color: "#333333",
                   wrap: true
                 }
               ]
@@ -4895,11 +4895,11 @@ function buildSelectableUserBubble(user = {}) {
         {
           type: "separator",
           margin: "md",
-          color: "#E5E7EB"
+          color: "#D1D5DB"
         },
         infoRow("เลขที่", numberText),
         infoRow("วันที่", dateText),
-        infoRow("สถานะ:", statusText, "#FFE500"),
+        infoRow("สถานะ:", statusText, "#D4A000"),
         infoRow("ที่มา :", sourceText)
       ]
     },
@@ -4910,13 +4910,13 @@ function buildSelectableUserBubble(user = {}) {
       paddingBottom: "10px",
       paddingStart: "14px",
       paddingEnd: "14px",
-      backgroundColor: "#0B0F14",
+      backgroundColor: "#FFFFFF",
       contents: [
         {
           type: "button",
           style: "primary",
           height: "sm",
-          color: "#F00014",
+          color: "#0B7C86",
           action: {
             type: "message",
             label: "เลือกคนนี้",

@@ -9797,11 +9797,14 @@ if (
   continue;
 }
 
-if (text === "คำสั่งเพิ่มทีม" || text === "เพิ่มทีม") {
-
+if (
+  String(text || "").trim() === "คำสั่งเพิ่มทีม" ||
+  String(text || "").trim() === "เพิ่มทีม" ||
+  String(text || "").trim() === "เพิ่มทีมงาน"
+) {
   if (!(await isAdmin(userId))) {
     await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+      { type: "text", text: "❌ เมนูนี้สำหรับผู้ดูแลระบบ" }
     ]);
     continue;
   }
@@ -9809,9 +9812,8 @@ if (text === "คำสั่งเพิ่มทีม" || text === "เพิ
   clearAddTeamState(userId);
 
   await safeReply(replyToken, [
-    buildSelectUserFlex() // 🔥 PRO MAX
+    buildSelectUserFlex()
   ]);
-
   continue;
 }
 if (text === "คำสั่งลบทีม") {

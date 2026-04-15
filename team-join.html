@@ -556,6 +556,31 @@ function showJoinSuccessState(displayName = "", requestId = "-") {
   }
 }
 
+function setJoinSuccessMode({ alreadyRequested = false, alreadyApproved = false, message = "" } = {}) {
+  const badgeEl = document.querySelector(".success-badge");
+  const titleEl = document.querySelector(".success-title");
+  const helpEl = document.querySelector(".success-help");
+
+  if (!badgeEl || !titleEl || !helpEl) return;
+
+  if (alreadyApproved) {
+    badgeEl.textContent = "อนุมัติแล้ว";
+    titleEl.textContent = "คุณเป็นสมาชิกทีมงานแล้ว";
+    helpEl.textContent = message || "บัญชีของคุณได้รับการอนุมัติแล้ว คุณสามารถใช้งานระบบทีมงานได้ทันที";
+    return;
+  }
+
+  if (alreadyRequested) {
+    badgeEl.textContent = "สมัครไว้แล้ว";
+    titleEl.textContent = "คุณได้สมัครสมาชิกไว้แล้ว";
+    helpEl.textContent = message || "คำขอของคุณอยู่ระหว่างรออนุมัติ ระบบจะรีบแจ้งผลให้เร็วที่สุด ขอบคุณครับ";
+    return;
+  }
+
+  badgeEl.textContent = "สมัครสำเร็จ";
+  titleEl.textContent = "สมัครเข้าทีมสำเร็จแล้ว";
+}
+    
 async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
   try {
     if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) {

@@ -9485,6 +9485,16 @@ if (caseSearchState?.step === "waiting_phone") {
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================
+console.log("========== LINE EVENT ==========");
+console.log("EVENT TEXT =", text);
+console.log("USER ID =", userId);
+console.log("REPLY TOKEN =", replyToken);
+console.log("SOURCE TYPE =", event.source?.type);
+console.log("GROUP ID =", event.source?.groupId);
+console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
+console.log("ADD TEAM STATE =", getAddTeamState(userId));
+console.log("================================");
+ 
 const addState = getAddTeamState(userId);
 
 if (addState?.step === "waiting_user_id") {

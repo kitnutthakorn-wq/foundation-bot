@@ -4518,9 +4518,13 @@ async function getSelectableTeamUsers() {
   }
 }
 
-function buildSelectUserFlex() {
-  const users = [...recentUsers.values()]
-    .sort((a, b) => b.lastSeen - a.lastSeen)
+async function buildSelectUserFlex() {
+  const users = (await getSelectableTeamUsers())
+    .sort((a, b) => {
+      const aTime = new Date(a.created_at || 0).getTime();
+      const bTime = new Date(b.created_at || 0).getTime();
+      return bTime - aTime;
+    })
     .slice(0, 10);
 
   if (users.length === 0) {
@@ -4533,36 +4537,20 @@ function buildSelectUserFlex() {
         header: {
           type: "box",
           layout: "vertical",
-          backgroundColor: "#0B7C86",
-          paddingAll: "16px",
           contents: [
             {
               type: "text",
-              text: "เลือกสมาชิก",
-              color: "#FFFFFF",
+              text: "ยังไม่มีผู้ใช้",
               weight: "bold",
-              size: "lg",
-              align: "center"
-            }
-          ]
-        },
-        body: {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "16px",
-          contents: [
-            {
-              type: "text",
-              text: "❌ ยังไม่มีผู้ใช้ที่ทักบอทล่าสุด",
-              wrap: true,
-              align: "center",
-              color: "#666666"
+              size: "lg"
             }
           ]
         }
       }
     };
   }
+
+  // ของเดิมด้านล่างใช้ต่อได้
 
   return {
     type: "flex",
@@ -4601,13 +4589,14 @@ function buildSelectUserFlex() {
         paddingAll: "16px",
         contents: users.map((u) => ({
           type: "button",
-          style: "secondary",
+          style: u.source === "candidate" ? "primary" : "secondary",
+          color: u.source === "candidate" ? "#1F8F4D" : undefined,
           height: "sm",
           action: {
-  type: "message",
-  label: (u.displayName || u.userId).slice(0, 20),
-  text: `select_user ${u.userId}`
-}
+            type: "message",
+            label: String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ").slice(0, 20),
+            text: `select_user ${u.line_user_id}`
+          }
         }))
       }
     }

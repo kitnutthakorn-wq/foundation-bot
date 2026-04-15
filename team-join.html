@@ -642,12 +642,20 @@ async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
 
         const data = await res.json().catch(() => ({}));
 
-        if (!res.ok || !data?.ok) {
-          throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
-        }
+       if (!res.ok || !data?.ok) {
+  throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
+}
 
-        showJoinSuccessState(profile?.displayName || "สมาชิกใหม่");
-        $closeBtn.disabled = false;
+const requestId =
+  data?.request_id ||
+  data?.candidate_id ||
+  data?.id ||
+  data?.case_id ||
+  "-";
+
+showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
+await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
+$closeBtn.disabled = false;
 
       } catch (err) {
         console.error("TEAM JOIN SUBMIT ERROR:", err);

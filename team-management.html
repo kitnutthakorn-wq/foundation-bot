@@ -719,61 +719,47 @@
     }
 
     async function loadTeamManagement() {
-      try {
-        // STEP 1A: mock data first
-        const mockRows = [
-          {
-            line_user_id: "U745f4fc94e9e9be5f671989930c4af1d",
-            display_name: "sofiyah",
-            picture_url: "",
-            application_status: "pending",
-            role: "none",
-            is_active: false,
-            source: "candidate",
-            joined_group_id: "-",
-            note: "สมัครผ่านระบบเข้าทีม",
-            applied_at: "2026-04-15T10:59:00.000Z"
-          },
-          {
-            line_user_id: "U1234567890abcdef1234567890abcd",
-            display_name: "ทีมงานภาคสนาม A",
-            picture_url: "",
-            application_status: "approved",
-            role: "staff",
-            is_active: true,
-            source: "recent",
-            joined_group_id: "Cxxxxxxxxxxxx",
-            note: "อนุมัติแล้ว",
-            applied_at: "2026-04-12T09:15:00.000Z"
-          },
-          {
-            line_user_id: "Uadmin0000000000000000000000001",
-            display_name: "ผู้ดูแลระบบหลัก",
-            picture_url: "",
-            application_status: "approved",
-            role: "admin",
-            is_active: true,
-            source: "manual",
-            joined_group_id: "Cxxxxxxxxxxxx",
-            note: "ผู้ดูแลระบบ",
-            applied_at: "2026-04-10T08:30:00.000Z"
-          }
-        ];
+  try {
+    const params = new URLSearchParams();
 
-        // ภายหลังค่อยเปลี่ยนเป็น fetch จริง
-        // const res = await fetch(`${API_BASE_URL}/api/team-management/list`);
-        // const json = await res.json();
-        // const rows = Array.isArray(json?.items) ? json.items : [];
+    const search = safeText(document.getElementById("search_input").value);
+    const applicationStatus = safeText(document.getElementById("filter_application_status").value);
+    const role = safeText(document.getElementById("filter_role").value);
+    const isActive = safeText(document.getElementById("filter_active").value);
 
-        allRows = mockRows.map(normalizeRow);
-        computeSummary(allRows);
-        renderTable(allRows);
-      } catch (err) {
-        console.error("loadTeamManagement error:", err);
-        alert("โหลดข้อมูลบริหารทีมไม่สำเร็จ");
+    if (search) params.set("search", search);
+    if (applicationStatus) params.set("application_status", applicationStatus);
+    if (role) params.set("role", role);
+    if (isActive) params.set("is_active", isActive);
+
+    const url = `${API_BASE_URL}/api/team-management/list${params.toString() ? `?${params.toString()}` : ""}`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
       }
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json?.ok === false) {
+      throw new Error(json?.error || "โหลดข้อมูลบริหารทีมไม่สำเร็จ");
     }
 
+    const rows = Array.isArray(json?.items) ? json.items : [];
+    allRows = rows.map(normalizeRow);
+
+    computeSummary(allRows);
+    renderTable(allRows);
+  } catch (err) {
+    console.error("loadTeamManagement error:", err);
+    allRows = [];
+    computeSummary([]);
+    renderTable([]);
+    alert(`โหลดข้อมูลบริหารทีมไม่สำเร็จ\n${err.message || err}`);
+  }
+}
     function reloadTeamManagement() {
       loadTeamManagement();
     }

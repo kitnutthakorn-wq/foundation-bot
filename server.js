@@ -4990,16 +4990,34 @@ async function buildSelectUserFlex() {
       altText: "ยังไม่มีผู้ใช้",
       contents: {
         type: "bubble",
-        size: "mega",
+        size: "kilo",
         header: {
           type: "box",
           layout: "vertical",
+          backgroundColor: "#119EAB",
+          paddingAll: "14px",
           contents: [
             {
               type: "text",
               text: "ยังไม่มีผู้ใช้",
+              color: "#FFFFFF",
               weight: "bold",
-              size: "lg"
+              size: "lg",
+              align: "center"
+            }
+          ]
+        },
+        body: {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "16px",
+          contents: [
+            {
+              type: "text",
+              text: "ยังไม่มีรายชื่อผู้ใช้หรือผู้สมัครใหม่ในขณะนี้",
+              wrap: true,
+              size: "sm",
+              color: "#475569"
             }
           ]
         }
@@ -5011,77 +5029,8 @@ async function buildSelectUserFlex() {
     type: "flex",
     altText: "เลือกสมาชิก",
     contents: {
-      type: "bubble",
-      size: "mega",
-      header: {
-        type: "box",
-        layout: "vertical",
-        backgroundColor: "#0B7C86",
-        paddingAll: "16px",
-        contents: [
-          {
-            type: "text",
-            text: "เลือกสมาชิก",
-            color: "#FFFFFF",
-            weight: "bold",
-            size: "lg",
-            align: "center"
-          },
-          {
-            type: "text",
-            text: "เลือกผู้ใช้ที่ต้องการกำหนดสิทธิ์",
-            color: "#D1FAE5",
-            size: "sm",
-            align: "center",
-            margin: "sm"
-          }
-        ]
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "10px",
-        paddingAll: "16px",
-        contents: users.map((u) => ({
-          type: "box",
-          layout: "vertical",
-          spacing: "8px",
-          paddingAll: "14px",
-          cornerRadius: "16px",
-          backgroundColor: u.source === "candidate" ? "#F8FFF9" : "#F8FAFC",
-          borderColor: u.source === "candidate" ? "#BBF7D0" : "#E2E8F0",
-          borderWidth: "1px",
-          action: {
-            type: "message",
-            label: String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ").slice(0, 20),
-            text: `select_user ${u.line_user_id}`
-          },
-          contents: [
-            {
-              type: "text",
-              text: String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ"),
-              weight: "bold",
-              size: "md",
-              color: "#102A43",
-              wrap: true
-            },
-            {
-              type: "text",
-              text: String(u.line_user_id || "-"),
-              size: "xs",
-              color: "#64748B",
-              wrap: true
-            },
-            {
-              type: "box",
-              layout: "horizontal",
-              spacing: "sm",
-              flex: 0,
-              contents: buildSelectableUserBadges(u)
-            }
-          ]
-        }))
-      }
+      type: "carousel",
+      contents: users.map((u) => buildSelectableUserBubble(u))
     }
   };
 }

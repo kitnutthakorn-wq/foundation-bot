@@ -5002,9 +5002,32 @@ function buildSelectableUserBubble(user = {}) {
       color: "#777777",
       wrap: true
     }
+      ]
+  }
+],
+footer: {
+  type: "box",
+  layout: "vertical",
+  spacing: "sm",
+  paddingAll: "16px",
+  contents: [
+    {
+      type: "button",
+      style: "primary",
+      height: "sm",
+      color: "#0b7c86",
+      action: {
+        type: "message",
+        label: "เลือกคนนี้",
+        text: `เลือกสมาชิก:${userIdText}`
+      }
+    }
   ]
 }
-};
+  };
+}
+
+async function buildSelectUserFlex() {
 
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())

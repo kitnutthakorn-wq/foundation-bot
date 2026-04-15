@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>บริหารจัดการทีม | KCK Foundation</title>
+  <style>
+    :root{
+      --brand:#0b7c86;
+      --brand-dark:#163c72;
+      --accent:#1f8f4d;
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --text:#102a43;
+      --muted:#6b7280;
+      --line:#d9e2ec;
+      --danger:#dc2626;
+      --warning:#d97706;
+      --success:#16a34a;
+      --info:#2563eb;
+      --shadow:0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{
+      margin:0;
+      padding:0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    body{
+      padding:20px;
+    }
+
+    .page{
+      max-width:1400px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+
+    .title-wrap h1{
+      margin:0;
+      font-size:30px;
+      line-height:1.2;
+      color:var(--brand-dark);
+    }
+
+    .title-wrap p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:11px 16px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+      filter:brightness(.98);
+    }
+
+    .btn-primary{
+      background:var(--brand);
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:#fff;
+      color:var(--brand-dark);
+      border:1px solid var(--line);
+    }
+
+    .btn-danger{
+      background:#fff1f2;
+      color:var(--danger);
+      border:1px solid #fecdd3;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .summary-card{
+      background:var(--card);
+      border:1px solid #eaf0f6;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+
+    .summary-card .label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .summary-card .value{
+      font-size:28px;
+      font-weight:800;
+      color:var(--brand-dark);
+      line-height:1;
+    }
+
+    .summary-card .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid #eaf0f6;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel-head{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .panel-head h2{
+      margin:0;
+      font-size:20px;
+      color:var(--brand-dark);
+    }
+
+    .filters{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1.4fr auto auto;
+      gap:10px;
+      align-items:center;
+    }
+
+    .input, .select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:14px;
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+
+    .input:focus, .select:focus{
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(11,124,134,.12);
+    }
+
+    .table-wrap{
+      overflow:auto;
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:1100px;
+    }
+
+    thead th{
+      text-align:left;
+      font-size:13px;
+      color:#486581;
+      background:#f8fbfd;
+      border-bottom:1px solid var(--line);
+      padding:14px 16px;
+      position:sticky;
+      top:0;
+      z-index:1;
+      white-space:nowrap;
+    }
+
+    tbody td{
+      padding:16px;
+      border-bottom:1px solid #edf2f7;
+      vertical-align:top;
+      font-size:14px;
+    }
+
+    tbody tr:hover{
+      background:#fbfdff;
+    }
+
+    .person{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      min-width:260px;
+    }
+
+    .avatar{
+      width:52px;
+      height:52px;
+      border-radius:14px;
+      object-fit:cover;
+      background:#dbe7f0;
+      border:1px solid #e5edf5;
+      flex:0 0 52px;
+    }
+
+    .person-name{
+      font-weight:800;
+      color:var(--brand-dark);
+      font-size:15px;
+      line-height:1.25;
+      margin-bottom:4px;
+    }
+
+    .person-meta{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+      word-break:break-word;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:30px;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .badge-pending{ background:#fff3e0; color:#b45309; }
+    .badge-approved{ background:#e8f5e9; color:#166534; }
+    .badge-rejected{ background:#fdecec; color:#b91c1c; }
+
+    .badge-admin{ background:#eef2ff; color:#3730a3; }
+    .badge-staff{ background:#ecfeff; color:#0f766e; }
+    .badge-viewer{ background:#f3f4f6; color:#374151; }
+    .badge-none{ background:#f8fafc; color:#64748b; border:1px dashed #cbd5e1; }
+
+    .badge-active{ background:#e8f5e9; color:#166534; }
+    .badge-inactive{ background:#f3f4f6; color:#6b7280; }
+
+    .action-group{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      min-width:250px;
+    }
+
+    .btn-mini{
+      padding:8px 12px;
+      border-radius:10px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--brand-dark);
+      cursor:pointer;
+    }
+
+    .btn-mini:hover{
+      background:#f8fbfd;
+    }
+
+    .btn-mini.approve{
+      background:#ecfdf5;
+      color:#166534;
+      border-color:#bbf7d0;
+    }
+
+    .btn-mini.reject{
+      background:#fff1f2;
+      color:#b91c1c;
+      border-color:#fecdd3;
+    }
+
+    .btn-mini.role{
+      background:#eff6ff;
+      color:#1d4ed8;
+      border-color:#bfdbfe;
+    }
+
+    .btn-mini.disable{
+      background:#f8fafc;
+      color:#475569;
+      border-color:#cbd5e1;
+    }
+
+    .muted{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .empty{
+      padding:40px 20px;
+      text-align:center;
+      color:var(--muted);
+      display:none;
+    }
+
+    .footer-note{
+      padding:14px 18px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      background:#fcfdff;
+    }
+
+    .mobile-cards{
+      display:none;
+      padding:12px;
+      gap:12px;
+      flex-direction:column;
+    }
+
+    .mobile-card{
+      border:1px solid #edf2f7;
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+
+    .mobile-head{
+      display:flex;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .mobile-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px 12px;
+      margin:12px 0;
+      font-size:13px;
+    }
+
+    .mobile-label{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:2px;
+    }
+
+    @media (max-width: 1100px){
+      .filters{
+        grid-template-columns:1fr 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 860px){
+      body{ padding:12px; }
+      .summary-grid{
+        grid-template-columns:1fr 1fr;
+      }
+      .filters{
+        grid-template-columns:1fr;
+      }
+      .table-wrap{
+        display:none;
+      }
+      .mobile-cards{
+        display:flex;
+      }
+    }
+
+    @media (max-width: 520px){
+      .summary-grid{
+        grid-template-columns:1fr;
+      }
+      .title-wrap h1{
+        font-size:24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="title-wrap">
+        <h1>👥 บริหารจัดการทีม</h1>
+        <p>จัดการผู้สมัคร ทีมงาน สิทธิ์การใช้งาน และสถานะการเปิดใช้งาน</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-secondary" type="button" onclick="goCommandCenter()">เปิดศูนย์ควบคุม</button>
+        <button class="btn btn-primary" type="button" onclick="reloadTeamManagement()">รีเฟรชข้อมูล</button>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="label">ผู้สมัครรออนุมัติ</div>
+        <div class="value" id="sum_pending">0</div>
+        <div class="sub">สถานะสมัคร = pending</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">อนุมัติแล้ว</div>
+        <div class="value" id="sum_approved">0</div>
+        <div class="sub">สถานะสมัคร = approved</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">ทีมงานที่ใช้งานอยู่</div>
+        <div class="value" id="sum_active">0</div>
+        <div class="sub">is_active = true</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">ผู้ดูแลระบบ</div>
+        <div class="value" id="sum_admin">0</div>
+        <div class="sub">role = admin</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>รายการผู้สมัครและทีมงาน</h2>
+        <div class="muted">Golden Safe Phase A: อ่านข้อมูลก่อน ยังไม่ผูก action จริง</div>
+      </div>
+
+      <div class="filters">
+        <select class="select" id="filter_application_status">
+          <option value="">ทุกสถานะสมัคร</option>
+          <option value="pending">รออนุมัติ</option>
+          <option value="approved">อนุมัติแล้ว</option>
+          <option value="rejected">ไม่อนุมัติ</option>
+        </select>
+
+        <select class="select" id="filter_role">
+          <option value="">ทุกสิทธิ์</option>
+          <option value="admin">Admin</option>
+          <option value="staff">Staff</option>
+          <option value="viewer">Viewer</option>
+          <option value="none">ยังไม่กำหนด</option>
+        </select>
+
+        <select class="select" id="filter_active">
+          <option value="">ทุกสถานะใช้งาน</option>
+          <option value="true">ใช้งานอยู่</option>
+          <option value="false">ปิดใช้งาน</option>
+        </select>
+
+        <input class="input" id="search_input" type="text" placeholder="ค้นหาชื่อ / LINE USER ID / ที่มา" />
+
+        <button class="btn btn-secondary" type="button" onclick="applyFilters()">กรองข้อมูล</button>
+        <button class="btn btn-primary" type="button" onclick="reloadTeamManagement()">โหลดรายการ</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>บุคคล</th>
+              <th>วันที่สมัคร</th>
+              <th>สถานะสมัคร</th>
+              <th>สิทธิ์</th>
+              <th>การใช้งาน</th>
+              <th>ที่มา</th>
+              <th>คำสั่ง</th>
+            </tr>
+          </thead>
+          <tbody id="team_tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="mobile-cards" id="mobile_cards"></div>
+      <div class="empty" id="empty_state">ยังไม่พบข้อมูลที่ตรงกับเงื่อนไข</div>
+
+      <div class="footer-note">
+        หมายเหตุ: เวอร์ชันนี้เป็น STEP 1A สำหรับโครงหน้าอ่านข้อมูลก่อน เมื่อยืนยัน UI แล้วค่อยต่อ Phase B: อนุมัติ / ไม่อนุมัติ / ตั้งสิทธิ์
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = "";
+    let allRows = [];
+
+    function safeText(value) {
+      return String(value ?? "").trim();
+    }
+
+    function formatThaiDateTime(value) {
+      if (!value) return "-";
+      try {
+        return new Date(value).toLocaleString("th-TH", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      } catch {
+        return String(value);
+      }
+    }
+
+    function getApplicationStatusBadge(status = "") {
+      const s = safeText(status).toLowerCase();
+      if (s === "approved") return '<span class="badge badge-approved">อนุมัติแล้ว</span>';
+      if (s === "rejected") return '<span class="badge badge-rejected">ไม่อนุมัติ</span>';
+      return '<span class="badge badge-pending">รออนุมัติ</span>';
+    }
+
+    function getRoleBadge(role = "") {
+      const r = safeText(role).toLowerCase();
+      if (r === "admin") return '<span class="badge badge-admin">Admin</span>';
+      if (r === "staff") return '<span class="badge badge-staff">Staff</span>';
+      if (r === "viewer") return '<span class="badge badge-viewer">Viewer</span>';
+      return '<span class="badge badge-none">ยังไม่กำหนด</span>';
+    }
+
+    function getActiveBadge(isActive) {
+      return isActive
+        ? '<span class="badge badge-active">ใช้งานอยู่</span>'
+        : '<span class="badge badge-inactive">ปิดใช้งาน</span>';
+    }
+
+    function computeSummary(rows = []) {
+      const pending = rows.filter(r => (r.application_status || "pending") === "pending").length;
+      const approved = rows.filter(r => r.application_status === "approved").length;
+      const active = rows.filter(r => !!r.is_active).length;
+      const admin = rows.filter(r => (r.role || "").toLowerCase() === "admin").length;
+
+      document.getElementById("sum_pending").textContent = pending;
+      document.getElementById("sum_approved").textContent = approved;
+      document.getElementById("sum_active").textContent = active;
+      document.getElementById("sum_admin").textContent = admin;
+    }
+
+    function normalizeRow(row = {}) {
+      return {
+        line_user_id: safeText(row.line_user_id),
+        display_name: safeText(row.display_name) || "ไม่ระบุชื่อ",
+        picture_url: safeText(row.picture_url),
+        application_status: safeText(row.application_status || row.status || "pending").toLowerCase(),
+        role: safeText(row.role || "none").toLowerCase(),
+        is_active: typeof row.is_active === "boolean" ? row.is_active : !!row.is_active,
+        source: safeText(row.source || "-"),
+        joined_group_id: safeText(row.joined_group_id || "-"),
+        note: safeText(row.note || "-"),
+        applied_at: row.applied_at || row.created_at || row.last_seen_at || null,
+      };
+    }
+
+    function renderTable(rows = []) {
+      const tbody = document.getElementById("team_tbody");
+      const mobileCards = document.getElementById("mobile_cards");
+      const emptyState = document.getElementById("empty_state");
+
+      tbody.innerHTML = "";
+      mobileCards.innerHTML = "";
+
+      if (!rows.length) {
+        emptyState.style.display = "block";
+        return;
+      }
+
+      emptyState.style.display = "none";
+
+      rows.forEach((row) => {
+        const avatar = row.picture_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <div class="person">
+              <img class="avatar" src="${avatar}" alt="avatar" />
+              <div>
+                <div class="person-name">${escapeHtml(row.display_name)}</div>
+                <div class="person-meta">LINE USER ID: ${escapeHtml(row.line_user_id || "-")}</div>
+                <div class="person-meta">กลุ่ม: ${escapeHtml(row.joined_group_id || "-")}</div>
+              </div>
+            </div>
+          </td>
+          <td>${escapeHtml(formatThaiDateTime(row.applied_at))}</td>
+          <td>${getApplicationStatusBadge(row.application_status)}</td>
+          <td>${getRoleBadge(row.role)}</td>
+          <td>${getActiveBadge(row.is_active)}</td>
+          <td>
+            <div>${escapeHtml(row.source || "-")}</div>
+            <div class="muted">${escapeHtml(row.note || "-")}</div>
+          </td>
+          <td>
+            <div class="action-group">
+              <button class="btn-mini approve" type="button" onclick="alertComingSoon('อนุมัติ')">อนุมัติ</button>
+              <button class="btn-mini reject" type="button" onclick="alertComingSoon('ไม่อนุมัติ')">ไม่อนุมัติ</button>
+              <button class="btn-mini role" type="button" onclick="alertComingSoon('ตั้งสิทธิ์')">ตั้งสิทธิ์</button>
+              <button class="btn-mini disable" type="button" onclick="alertComingSoon('เปิด/ปิดใช้งาน')">เปิด/ปิดใช้งาน</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        const card = document.createElement("div");
+        card.className = "mobile-card";
+        card.innerHTML = `
+          <div class="mobile-head">
+            <img class="avatar" src="${avatar}" alt="avatar" />
+            <div>
+              <div class="person-name">${escapeHtml(row.display_name)}</div>
+              <div class="person-meta">${escapeHtml(row.line_user_id || "-")}</div>
+            </div>
+          </div>
+
+          <div class="mobile-grid">
+            <div>
+              <div class="mobile-label">วันที่สมัคร</div>
+              <div>${escapeHtml(formatThaiDateTime(row.applied_at))}</div>
+            </div>
+            <div>
+              <div class="mobile-label">สถานะสมัคร</div>
+              <div>${getApplicationStatusBadge(row.application_status)}</div>
+            </div>
+            <div>
+              <div class="mobile-label">สิทธิ์</div>
+              <div>${getRoleBadge(row.role)}</div>
+            </div>
+            <div>
+              <div class="mobile-label">ใช้งาน</div>
+              <div>${getActiveBadge(row.is_active)}</div>
+            </div>
+            <div>
+              <div class="mobile-label">ที่มา</div>
+              <div>${escapeHtml(row.source || "-")}</div>
+            </div>
+            <div>
+              <div class="mobile-label">กลุ่ม</div>
+              <div>${escapeHtml(row.joined_group_id || "-")}</div>
+            </div>
+          </div>
+
+          <div class="action-group">
+            <button class="btn-mini approve" type="button" onclick="alertComingSoon('อนุมัติ')">อนุมัติ</button>
+            <button class="btn-mini reject" type="button" onclick="alertComingSoon('ไม่อนุมัติ')">ไม่อนุมัติ</button>
+            <button class="btn-mini role" type="button" onclick="alertComingSoon('ตั้งสิทธิ์')">ตั้งสิทธิ์</button>
+          </div>
+        `;
+        mobileCards.appendChild(card);
+      });
+    }
+
+    function escapeHtml(value = "") {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function applyFilters() {
+      const appStatus = safeText(document.getElementById("filter_application_status").value).toLowerCase();
+      const role = safeText(document.getElementById("filter_role").value).toLowerCase();
+      const active = safeText(document.getElementById("filter_active").value).toLowerCase();
+      const keyword = safeText(document.getElementById("search_input").value).toLowerCase();
+
+      let rows = [...allRows];
+
+      if (appStatus) {
+        rows = rows.filter(r => (r.application_status || "") === appStatus);
+      }
+
+      if (role) {
+        if (role === "none") {
+          rows = rows.filter(r => !r.role || r.role === "none");
+        } else {
+          rows = rows.filter(r => (r.role || "") === role);
+        }
+      }
+
+      if (active) {
+        const isActive = active === "true";
+        rows = rows.filter(r => !!r.is_active === isActive);
+      }
+
+      if (keyword) {
+        rows = rows.filter(r =>
+          String(r.display_name || "").toLowerCase().includes(keyword) ||
+          String(r.line_user_id || "").toLowerCase().includes(keyword) ||
+          String(r.source || "").toLowerCase().includes(keyword)
+        );
+      }
+
+      computeSummary(rows);
+      renderTable(rows);
+    }
+
+    async function loadTeamManagement() {
+      try {
+        // STEP 1A: mock data first
+        const mockRows = [
+          {
+            line_user_id: "U745f4fc94e9e9be5f671989930c4af1d",
+            display_name: "sofiyah",
+            picture_url: "",
+            application_status: "pending",
+            role: "none",
+            is_active: false,
+            source: "candidate",
+            joined_group_id: "-",
+            note: "สมัครผ่านระบบเข้าทีม",
+            applied_at: "2026-04-15T10:59:00.000Z"
+          },
+          {
+            line_user_id: "U1234567890abcdef1234567890abcd",
+            display_name: "ทีมงานภาคสนาม A",
+            picture_url: "",
+            application_status: "approved",
+            role: "staff",
+            is_active: true,
+            source: "recent",
+            joined_group_id: "Cxxxxxxxxxxxx",
+            note: "อนุมัติแล้ว",
+            applied_at: "2026-04-12T09:15:00.000Z"
+          },
+          {
+            line_user_id: "Uadmin0000000000000000000000001",
+            display_name: "ผู้ดูแลระบบหลัก",
+            picture_url: "",
+            application_status: "approved",
+            role: "admin",
+            is_active: true,
+            source: "manual",
+            joined_group_id: "Cxxxxxxxxxxxx",
+            note: "ผู้ดูแลระบบ",
+            applied_at: "2026-04-10T08:30:00.000Z"
+          }
+        ];
+
+        // ภายหลังค่อยเปลี่ยนเป็น fetch จริง
+        // const res = await fetch(`${API_BASE_URL}/api/team-management/list`);
+        // const json = await res.json();
+        // const rows = Array.isArray(json?.items) ? json.items : [];
+
+        allRows = mockRows.map(normalizeRow);
+        computeSummary(allRows);
+        renderTable(allRows);
+      } catch (err) {
+        console.error("loadTeamManagement error:", err);
+        alert("โหลดข้อมูลบริหารทีมไม่สำเร็จ");
+      }
+    }
+
+    function reloadTeamManagement() {
+      loadTeamManagement();
+    }
+
+    function goCommandCenter() {
+      window.location.href = "/command-center.html";
+    }
+
+    function alertComingSoon(label) {
+      alert(`${label} : จะเชื่อมใน Phase ถัดไป`);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadTeamManagement();
+
+      document.getElementById("search_input").addEventListener("input", applyFilters);
+      document.getElementById("filter_application_status").addEventListener("change", applyFilters);
+      document.getElementById("filter_role").addEventListener("change", applyFilters);
+      document.getElementById("filter_active").addEventListener("change", applyFilters);
+    });
+  </script>
+</body>
+</html>

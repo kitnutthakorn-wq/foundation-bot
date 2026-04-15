@@ -128,6 +128,42 @@ function clearCaseSearchState(userId) {
   }
 }
 
+
+async function upsertTeamCandidate({
+  lineUserId,
+  displayName = "",
+  pictureUrl = "",
+  source = "liff",
+  joinedGroupId = "",
+  note = "",
+  status = "pending"
+}) {
+  const payload = {
+    line_user_id: String(lineUserId || "").trim(),
+    display_name: String(displayName || "").trim() || null,
+    picture_url: String(pictureUrl || "").trim() || null,
+    source: String(source || "liff").trim(),
+    status: String(status || "pending").trim(),
+    joined_group_id: String(joinedGroupId || "").trim() || null,
+    note: String(note || "").trim() || null,
+    last_seen_at: new Date().toISOString()
+  };
+
+  if (!payload.line_user_id) {
+    throw new Error("line_user_id is required");
+  }
+
+  const { data, error } = await supabase
+    .from("team_candidates")
+    .upsert(payload, { onConflict: "line_user_id" })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+
 // =====================================================
 // CENTRAL SLA ENGINE (Golden Safe Shared Logic)
 // =====================================================

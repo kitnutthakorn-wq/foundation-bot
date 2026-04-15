@@ -682,42 +682,8 @@
     }
 
     function applyFilters() {
-      const appStatus = safeText(document.getElementById("filter_application_status").value).toLowerCase();
-      const role = safeText(document.getElementById("filter_role").value).toLowerCase();
-      const active = safeText(document.getElementById("filter_active").value).toLowerCase();
-      const keyword = safeText(document.getElementById("search_input").value).toLowerCase();
-
-      let rows = [...allRows];
-
-      if (appStatus) {
-        rows = rows.filter(r => (r.application_status || "") === appStatus);
-      }
-
-      if (role) {
-        if (role === "none") {
-          rows = rows.filter(r => !r.role || r.role === "none");
-        } else {
-          rows = rows.filter(r => (r.role || "") === role);
-        }
-      }
-
-      if (active) {
-        const isActive = active === "true";
-        rows = rows.filter(r => !!r.is_active === isActive);
-      }
-
-      if (keyword) {
-        rows = rows.filter(r =>
-          String(r.display_name || "").toLowerCase().includes(keyword) ||
-          String(r.line_user_id || "").toLowerCase().includes(keyword) ||
-          String(r.source || "").toLowerCase().includes(keyword)
-        );
-      }
-
-      computeSummary(rows);
-      renderTable(rows);
-    }
-
+  loadTeamManagement();
+}
     async function loadTeamManagement() {
   try {
     const params = new URLSearchParams();

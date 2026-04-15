@@ -4667,6 +4667,104 @@ function buildSelectableUserBadges(user = {}) {
   return badges;
 }
 
+function buildSelectableUserBadges(u = {}) {
+  const badges = [];
+
+  if (u.source === "candidate") {
+    badges.push({
+      type: "box",
+      layout: "horizontal",
+      spacing: "4px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "5px",
+      paddingBottom: "5px",
+      cornerRadius: "999px",
+      backgroundColor: "#E8F7EC",
+      contents: [
+        {
+          type: "text",
+          text: "ผู้สมัครใหม่",
+          size: "xs",
+          weight: "bold",
+          color: "#2F855A",
+          align: "center"
+        }
+      ]
+    });
+  } else {
+    badges.push({
+      type: "box",
+      layout: "horizontal",
+      spacing: "4px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "5px",
+      paddingBottom: "5px",
+      cornerRadius: "999px",
+      backgroundColor: "#EEF2F7",
+      contents: [
+        {
+          type: "text",
+          text: "ผู้ใช้ล่าสุด",
+          size: "xs",
+          weight: "bold",
+          color: "#5B6472",
+          align: "center"
+        }
+      ]
+    });
+  }
+
+  if (String(u.candidate_status || "").toLowerCase() === "pending") {
+    badges.push({
+      type: "box",
+      layout: "horizontal",
+      spacing: "4px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "5px",
+      paddingBottom: "5px",
+      cornerRadius: "999px",
+      backgroundColor: "#FBECC8",
+      contents: [
+        {
+          type: "text",
+          text: "รออนุมัติ",
+          size: "xs",
+          weight: "bold",
+          color: "#B45309",
+          align: "center"
+        }
+      ]
+    });
+  } else if (String(u.role || "").trim()) {
+    badges.push({
+      type: "box",
+      layout: "horizontal",
+      spacing: "4px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "5px",
+      paddingBottom: "5px",
+      cornerRadius: "999px",
+      backgroundColor: "#E8F1FD",
+      contents: [
+        {
+          type: "text",
+          text: "มีสิทธิ์อยู่แล้ว",
+          size: "xs",
+          weight: "bold",
+          color: "#2563EB",
+          align: "center"
+        }
+      ]
+    });
+  }
+
+  return badges;
+}
+
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

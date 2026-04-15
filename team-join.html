@@ -357,37 +357,40 @@
         <p>ยืนยันตัวตน 1 ครั้ง เพื่อให้ผู้ดูแลระบบกำหนดสิทธิ์ให้คุณได้</p>
       </div>
 
-      <div class="body">
-        <div id="statusBox" class="status info"></div>
+<div class="body">
+  <div id="joinFormWrap">
+    <div id="statusBox" class="status info"></div>
 
-        <div class="profile">
-          <img id="avatar" class="avatar" alt="avatar" />
-          <div class="meta">
-            <div id="displayName" class="name">กำลังโหลดข้อมูล...</div>
-            <div id="userIdText" class="sub">กำลังตรวจสอบ LIFF</div>
-          </div>
-        </div>
-
-        <div class="info">
-          <h2>ก่อนเริ่มใช้งาน</h2>
-          <p>
-            เมื่อคุณสมัครเข้าทีมแล้ว ระบบจะส่งชื่อของคุณเข้าไปในคิวรออนุมัติ
-            จากนั้นผู้ดูแลระบบสามารถกำหนดสิทธิ์ให้คุณเป็น
-            Admin / Staff / Viewer ได้
-          </p>
-        </div>
-
-        <div class="notice">
-          ระบบจะบันทึกข้อมูลพื้นฐานของคุณจาก LINE ได้แก่ ชื่อที่แสดง, รูปโปรไฟล์,
-          รหัสผู้ใช้ LINE และกลุ่มที่คุณเข้ามา เพื่อใช้สำหรับกำหนดสิทธิ์ในระบบทีมงานเท่านั้น
-        </div>
-
-        <div class="actions">
-          <button id="joinBtn" class="btn-primary">สมัครเข้าทีม</button>
-          <button id="closeBtn" class="btn-secondary" type="button">ปิดหน้าต่าง</button>
-        </div>
+    <div class="profile">
+      <img id="avatar" class="avatar" alt="avatar" />
+      <div class="meta">
+        <div id="displayName" class="name">กำลังโหลดข้อมูล...</div>
+        <div id="userIdText" class="sub">กำลังตรวจสอบ LIFF</div>
       </div>
+    </div>
 
+    <div class="info">
+      <h2>ก่อนเริ่มใช้งาน</h2>
+      <p>
+        เมื่อคุณสมัครเข้าทีมแล้ว ระบบจะส่งชื่อของคุณเข้าไปในคิวรออนุมัติ
+        จากนั้นผู้ดูแลระบบสามารถกำหนดสิทธิ์ให้คุณเป็น
+        Admin / Staff / Viewer ได้
+      </p>
+    </div>
+
+    <div class="notice">
+      ระบบจะบันทึกข้อมูลพื้นฐานของคุณจาก LINE ได้แก่ ชื่อที่แสดง, รูปโปรไฟล์,
+      รหัสผู้ใช้ LINE และกลุ่มที่คุณเข้ามา เพื่อใช้สำหรับกำหนดสิทธิ์ในระบบทีมงานเท่านั้น
+    </div>
+
+    <div class="actions">
+      <button id="joinBtn" class="btn-primary">สมัครเข้าทีม</button>
+      <button id="closeBtn" class="btn-secondary" type="button">ปิดหน้าต่าง</button>
+    </div>
+  </div>
+</div>
+
+      
 <!-- SUCCESS STATE: ซ่อนไว้ก่อน แสดงเมื่อสมัครสำเร็จ -->
 <div id="joinSuccessState" style="display:none;">
   <div class="success-card">
@@ -396,7 +399,7 @@
       <div class="success-title">สมัครเข้าทีมสำเร็จแล้ว</div>
       <div class="success-subtitle" id="successDisplayName">สมาชิกใหม่</div>
     </div>
-
+    
     <div class="success-body">
       <p class="success-message">
         ขอบคุณสำหรับการสมัครเป็นสมาชิกใหม่

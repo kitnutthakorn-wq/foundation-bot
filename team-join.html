@@ -693,6 +693,7 @@ submitting = false;
 showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
 await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
 $closeBtn.disabled = false;
+    
   } catch (err) {
     console.error("TEAM JOIN SUBMIT ERROR:", err);
     showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");

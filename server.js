@@ -2781,6 +2781,105 @@ function getTeamLiffUrl(baseView = "") {
     : `${raw}?view=${encodeURIComponent(baseView)}`;
 }
 
+function buildTeamJoinWelcomeFlex(displayName = "") {
+  const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+
+  return {
+    type: "flex",
+    altText: "ยินดีต้อนรับ กรุณาสมัครเข้าทีม",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      header: {
+        type: "box",
+        layout: "vertical",
+        backgroundColor: "#0B7C86",
+        paddingAll: "18px",
+        contents: [
+          {
+            type: "text",
+            text: "ยินดีต้อนรับสู่ทีมงาน",
+            color: "#FFFFFF",
+            weight: "bold",
+            size: "lg",
+            align: "center",
+            wrap: true
+          },
+          {
+            type: "text",
+            text: safeName,
+            color: "#E0F2FE",
+            size: "sm",
+            align: "center",
+            margin: "sm",
+            wrap: true
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        paddingAll: "18px",
+        contents: [
+          {
+            type: "text",
+            text: "ก่อนเริ่มใช้งาน กรุณาสมัครเข้าทีม 1 ครั้ง เพื่อให้ผู้ดูแลระบบกำหนดสิทธิ์ให้คุณได้",
+            wrap: true,
+            size: "sm",
+            color: "#334155"
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#F8FAFC",
+            cornerRadius: "12px",
+            paddingAll: "12px",
+            contents: [
+              {
+                type: "text",
+                text: "หลังจากสมัครแล้ว ผู้ดูแลระบบจะสามารถกำหนดสิทธิ์ให้คุณเป็น Admin / Staff / Viewer ได้ทันที",
+                wrap: true,
+                size: "xs",
+                color: "#475569"
+              }
+            ]
+          }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        paddingAll: "14px",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            height: "sm",
+            color: "#22C55E",
+            action: {
+              type: "uri",
+              label: "สมัครเข้าทีม",
+              uri: getTeamLiffUrl("join-team")
+            }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            height: "sm",
+            action: {
+              type: "message",
+              label: "ภายหลัง",
+              text: "ภายหลัง"
+            }
+          }
+        ]
+      }
+    }
+  };
+}
+
 // =========================
 // HANDLE VIEW NEW SPLIT
 // =========================

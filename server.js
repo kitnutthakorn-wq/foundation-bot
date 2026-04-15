@@ -4520,6 +4520,66 @@ async function getSelectableTeamUsers() {
   }
 }
 
+async function approvePendingTeamCandidate(lineUserId, approvedRole, approvedBy = "") {
+  try {
+    const userId = String(lineUserId || "").trim();
+    const role = String(approvedRole || "").trim();
+    const approvedByUser = String(approvedBy || "").trim();
+
+    if (!userId) {
+      return { success: false, reason: "missing_line_user_id" };
+    }
+
+    const { data: pendingRow, error: findError } = await supabase
+      .from("team_candidates")
+      .select("id, line_user_id, status")
+      .eq("line_user_id", userId)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (findError) {
+      console.error("approvePendingTeamCandidate find error:", findError);
+      return { success: false, reason: "find_failed", error: findError };
+    }
+
+    if (!pendingRow) {
+      return { success: true, skipped: true, reason: "no_pending_candidate" };
+    }
+
+    const payload = {
+      status: "approved"
+    };
+
+    if (role) payload.approved_role = role;
+    if (approvedByUser) payload.approved_by = approvedByUser;
+
+    // ถ้าตารางมีคอลัมน์ approved_at จะใช้ได้เลย
+    payload.approved_at = new Date().toISOString();
+
+    const { error: updateError } = await supabase
+      .from("team_candidates")
+      .update(payload)
+      .eq("id", pendingRow.id);
+
+    if (updateError) {
+      console.error("approvePendingTeamCandidate update error:", updateError);
+      return { success: false, reason: "update_failed", error: updateError };
+    }
+
+    return {
+      success: true,
+      skipped: false,
+      candidate_id: pendingRow.id,
+      line_user_id: userId
+    };
+  } catch (err) {
+    console.error("approvePendingTeamCandidate failed:", err);
+    return { success: false, reason: "exception", error: err };
+  }
+}
+
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

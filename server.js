@@ -4494,6 +4494,7 @@ async function getSelectableTeamUsers() {
     const pendingCandidates = await listPendingTeamCandidates();
 
 const merged = [
+ 
   ...(Array.isArray(recentUsers)
     ? recentUsers.map((u) => normalizeSelectableUser(u, "recent"))
     : []),

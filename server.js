@@ -8972,8 +8972,9 @@ app.post("/webhook", async (req, res) => {
       return res.status(401).send("Invalid signature");
     }
 
-    const events = req.body.events || [];
-    for (const event of events) {
+const events = req.body.events || [];
+for (const event of events) {
+  const replyToken = event.replyToken;
 
 // =========================
 // TEAM JOIN AUTO WELCOME (memberJoined)

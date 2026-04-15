@@ -4170,17 +4170,17 @@ function buildTeamManageFlex() {
        contents: [
   btn("บริหารทีมงาน", "รายการทีม"),
   btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
-  {
-    type: "button",
-    style: "primary",
-    height: "sm",
-    color: "#22C55E",
-    action: {
-      type: "uri",
-      label: "เพิ่มทีมงาน",
-      uri: getTeamLiffUrl("pick-member")
-    }
-  }, // 👈 ต้องมี comma ตรงนี้
+{
+  type: "button",
+  style: "primary",
+  height: "sm",
+  color: "#22C55E",
+  action: {
+    type: "message",
+    label: "เพิ่มทีมงาน",
+    text: "เพิ่มทีมงาน"
+  }
+}, // 👈 ต้องมี comma ตรงนี้
   btn("ลบทีมงาน", "คำสั่งลบทีม")
 ]
       }

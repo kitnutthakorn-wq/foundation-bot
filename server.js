@@ -9624,7 +9624,6 @@ if (text.startsWith("setrole_auto ")) {
       continue;
     }
 
-    // 🔒 กันลดสิทธิ์ตัวเอง
     if (targetUserId === userId && role !== "admin") {
       await safeReply(replyToken, [
         { type: "text", text: "❌ ไม่สามารถลดสิทธิ์ของตัวเองได้" }
@@ -9636,7 +9635,6 @@ if (text.startsWith("setrole_auto ")) {
     const currentRole = await getUserRole(targetUserId);
     const adminCount = await countActiveAdmins();
 
-    // 🔒 จำกัด admin ไม่เกิน 3 คน
     if (role === "admin" && currentRole !== "admin") {
       if (adminCount >= 3) {
         await safeReply(replyToken, [
@@ -9647,7 +9645,6 @@ if (text.startsWith("setrole_auto ")) {
       }
     }
 
-    // 🔒 กัน admin คนสุดท้ายหาย
     if (currentRole === "admin" && role !== "admin") {
       if (adminCount <= 1) {
         await safeReply(replyToken, [
@@ -9718,8 +9715,6 @@ if (text.startsWith("setrole_auto ")) {
     continue;
   }
 
-  continue;
-}
   continue;
 }
 console.log("EVENT TEXT =", text);

@@ -5086,7 +5086,6 @@ async function buildSelectUserFlex() {
   };
 }
         
-
 function buildSelectRoleFlex(userId) {
   function btn(label, text, color) {
     return {

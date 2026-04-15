@@ -9556,14 +9556,6 @@ console.log("================================");
   continue;
 }
 
-if (String(text || "").trim() === "เพิ่มทีมงาน") {
-  if (!(await isAdmin(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
-    ]);
-    continue;
-  }
-
 if (String(text || "").trim() === "สมัครทีมภายหลัง") {
   await safeReply(replyToken, [
     {
@@ -9573,7 +9565,15 @@ if (String(text || "").trim() === "สมัครทีมภายหลัง
   ]);
   continue;
 }
- 
+
+if (String(text || "").trim() === "เพิ่มทีมงาน") {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
   console.log("CHECK เพิ่มทีมงาน command HIT");
 
   const flex = await buildSelectUserFlex();

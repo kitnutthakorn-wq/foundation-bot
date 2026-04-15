@@ -496,26 +496,32 @@
       `);
     }
 
-    function showJoinSuccessState(displayName = "") {
-      const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+function showJoinSuccessState(displayName = "", requestId = "-") {
+  const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+  const safeRequestId = String(requestId || "-").trim() || "-";
 
-      const formWrap = document.getElementById("joinFormWrap");
-      const successState = document.getElementById("joinSuccessState");
-      const successDisplayName = document.getElementById("successDisplayName");
+  const formWrap = document.getElementById("joinFormWrap");
+  const successState = document.getElementById("joinSuccessState");
+  const successDisplayName = document.getElementById("successDisplayName");
+  const successRequestId = document.getElementById("successRequestId");
 
-      if (successDisplayName) {
-        successDisplayName.textContent = safeName;
-      }
+  if (successDisplayName) {
+    successDisplayName.textContent = safeName;
+  }
 
-      if (formWrap) {
-        formWrap.style.display = "none";
-      }
+  if (successRequestId) {
+    successRequestId.textContent = safeRequestId;
+  }
 
-      if (successState) {
-        successState.style.display = "block";
-        successState.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
+  if (formWrap) {
+    formWrap.style.display = "none";
+  }
+
+  if (successState) {
+    successState.style.display = "block";
+    successState.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
     function bindJoinSuccessButtons() {
       const btnClose = document.getElementById("btnCloseJoinWindow");

@@ -9494,6 +9494,75 @@ console.log("GROUP ID =", event.source?.groupId);
 console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
 console.log("ADD TEAM STATE =", getAddTeamState(userId));
 console.log("================================");
+
+ if (String(text || "").trim() === "ทดสอบบอท") {
+  await safeReply(replyToken, [
+    { type: "text", text: "✅ บอททำงานอยู่" }
+  ]);
+  continue;
+}
+
+if (String(text || "").trim() === "เพิ่มทีมงาน") {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
+  console.log("CHECK เพิ่มทีมงาน command HIT");
+
+  const flex = await buildSelectUserFlex();
+  await safeReply(replyToken, [flex]);
+  continue;
+}
+
+if (String(text || "").trim() === "ดูรายชื่อทีมงาน") {
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("line_user_roles")
+      .select("line_user_id, role, is_active, updated_at")
+      .eq("is_active", true)
+      .order("updated_at", { ascending: false });
+
+    if (error) throw error;
+
+    const rows = Array.isArray(data) ? data : [];
+
+    if (!rows.length) {
+      await safeReply(replyToken, [
+        { type: "text", text: "ℹ️ ยังไม่มีรายชื่อทีมงาน" }
+      ]);
+      continue;
+    }
+
+    const textLines = rows.slice(0, 20).map((row, i) =>
+      `${i + 1}. ${row.line_user_id}\nสิทธิ์: ${row.role}`
+    );
+
+    await safeReply(replyToken, [
+      {
+        type: "text",
+        text: `รายชื่อทีมงาน\n\n${textLines.join("\n\n")}`
+      }
+    ]);
+    continue;
+
+  } catch (err) {
+    console.error("LIST TEAM ERROR:", err);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ดึงรายชื่อทีมงานไม่สำเร็จ" }
+    ]);
+    continue;
+  }
+}
  
 const addState = getAddTeamState(userId);
 

@@ -2860,7 +2860,7 @@ function buildTeamJoinWelcomeFlex(displayName = "") {
         contents: [
           {
             type: "text",
-            text: "ก่อนเริ่มใช้งาน กรุณาสมัครเข้าทีม 1 ครั้ง เพื่อให้ผู้ดูแลระบบกำหนดสิทธิ์ให้คุณได้",
+            text: "ก่อนเริ่มใช้งาน กรุณาสมัครเข้าทีม 1 ครั้ง เพื่อให้ผู้ดูแลระบบกำหนดสิทธิ์การใช้งานให้คุณได้",
             wrap: true,
             size: "sm",
             color: "#334155"
@@ -2874,7 +2874,7 @@ function buildTeamJoinWelcomeFlex(displayName = "") {
             contents: [
               {
                 type: "text",
-                text: "หลังจากสมัครแล้ว ผู้ดูแลระบบจะสามารถกำหนดสิทธิ์ให้คุณเป็น Admin / Staff / Viewer ได้ทันที",
+                text: "หลังสมัครสำเร็จ ผู้ดูแลระบบจะสามารถกำหนดสิทธิ์ให้คุณเป็น Admin / Staff / Viewer ได้ทันที",
                 wrap: true,
                 size: "xs",
                 color: "#475569"

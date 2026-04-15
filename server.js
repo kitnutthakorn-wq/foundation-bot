@@ -4812,8 +4812,7 @@ function buildSelectableUserBubble(user = {}) {
               url: getSelectableUserAvatar(user),
               size: "60px",
               aspectMode: "cover",
-              aspectRatio: "1:1",
-              cornerRadius: "999px",
+              aspectRatio: "1:1", 
               flex: 0
             },
             {

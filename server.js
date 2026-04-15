@@ -4808,13 +4808,14 @@ function buildSelectableUserBubble(user = {}) {
           alignItems: "center",
           contents: [
             {
-              type: "image",
-              url: getSelectableUserAvatar(user),
-              size: "64px",
-              aspectMode: "cover",
-              aspectRatio: "1:1",
-              flex: 0
-            },
+  type: "image",
+  url: getSelectableUserAvatar(user),
+  size: "60px",
+  aspectMode: "cover",
+  aspectRatio: "1:1",
+  cornerRadius: "999px",
+  flex: 0
+},
             {
               type: "box",
               layout: "vertical",

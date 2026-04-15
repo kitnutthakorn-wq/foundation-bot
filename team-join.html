@@ -581,32 +581,45 @@ function setJoinSuccessMode({ alreadyRequested = false, alreadyApproved = false,
   titleEl.textContent = "สมัครเข้าทีมสำเร็จแล้ว";
 }
     
-async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
+async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-", options = {}) {
   try {
-    if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) {
-      return;
-    }
-
-    if (typeof liff.sendMessages !== "function") {
-      return;
-    }
+    if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) return;
+    if (typeof liff.sendMessages !== "function") return;
 
     const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
     const safeRequestId = String(requestId || "-").trim() || "-";
+    const alreadyRequested = !!options.alreadyRequested;
+    const alreadyApproved = !!options.alreadyApproved;
 
-    await liff.sendMessages([
-      {
-        type: "text",
-        text:
+    let text = "";
+
+    if (alreadyApproved) {
+      text =
+`✅ บัญชีของคุณได้รับการอนุมัติแล้ว
+ชื่อ: ${safeName}
+เลขที่คำขอ: ${safeRequestId}
+
+คุณสามารถใช้งานระบบทีมงานได้ทันที`;
+    } else if (alreadyRequested) {
+      text =
+`ℹ️ คุณได้ทำการสมัครสมาชิกแล้ว
+ชื่อ: ${safeName}
+เลขที่คำขอ: ${safeRequestId}
+สถานะ: รอผู้ดูแลอนุมัติ
+
+ระบบจะรีบส่งข้อมูลการอนุมัติให้เร็วที่สุด ขอบคุณครับ`;
+    } else {
+      text =
 `✅ สมัครเข้าทีมสำเร็จแล้ว
 ชื่อ: ${safeName}
 เลขที่คำขอ: ${safeRequestId}
 สถานะ: รอผู้ดูแลอนุมัติ
 
 ขอบคุณที่ร่วมเป็นส่วนหนึ่งของการ
-“หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้”`
-      }
-    ]);
+“หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้”`;
+    }
+
+    await liff.sendMessages([{ type: "text", text }]);
   } catch (err) {
     console.warn("LIFF sendMessages error:", err);
   }

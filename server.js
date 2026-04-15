@@ -9099,7 +9099,6 @@ if (event.type === "memberJoined" && event.source?.type === "group") {
   if (event.type !== "message") continue;
   if (!event.message || event.message.type !== "text") continue;
 
- const replyToken = event.replyToken;
 const text = event.message.text.trim();
 console.log("👉 USER CLICK:", text);
 const userId = event?.source?.userId || "";

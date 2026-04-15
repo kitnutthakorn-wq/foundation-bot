@@ -714,6 +714,13 @@ const requestId =
 submitting = false;
 
 showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
+
+setJoinSuccessMode({
+  alreadyRequested: !!data?.already_requested,
+  alreadyApproved: !!data?.already_approved,
+  message: data?.message || ""
+});
+
 await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
 $closeBtn.disabled = false;
     

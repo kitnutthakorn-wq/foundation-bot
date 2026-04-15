@@ -4958,23 +4958,7 @@ function buildSelectableUserBubble(user = {}) {
               color: "#444444",
               wrap: true
             },
-            {
-              type: "text",
-              text:
-                user.display_name && user.display_name !== displayName
-                  ? `ชื่อในระบบ: ${user.display_name}`
-                  : "ชื่อในระบบ: -",
-              size: "xs",
-              color: "#777777",
-              wrap: true
-            },
-            {
-              type: "text",
-              text: `กลุ่ม: ${user.joined_group_id || "-"}`,
-              size: "xs",
-              color: "#777777",
-              wrap: true
-            },
+            
             {
               type: "text",
               text:

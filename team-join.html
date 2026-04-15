@@ -713,61 +713,192 @@
     });
 
     initLiff();
-    <script>
-function showJoinSuccessState(displayName = "") {
-  const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+  <script>
+  const LIFF_ID = "2009446483-3pXJDopf";
+  const API_JOIN_URL = "https://satisfied-stillness-production-7942.up.railway.app/api/team/join";
 
-  const formWrap =
-    document.getElementById("joinFormWrap") ||
-    document.getElementById("teamJoinFormWrap") ||
-    document.getElementById("joinCard") ||
-    document.getElementById("mainCard");
+  let profile = null;
+  let context = null;
+  let submitting = false;
 
-  const successState = document.getElementById("joinSuccessState");
-  const successDisplayName = document.getElementById("successDisplayName");
+  const $statusBox = document.getElementById("statusBox");
+  const $displayName = document.getElementById("displayName");
+  const $userIdText = document.getElementById("userIdText");
+  const $avatar = document.getElementById("avatar");
+  const $joinBtn = document.getElementById("joinBtn");
+  const $closeBtn = document.getElementById("closeBtn");
 
-  if (successDisplayName) {
-    successDisplayName.textContent = safeName;
+  function showStatus(message, type = "info") {
+    $statusBox.className = `status show ${type}`;
+    $statusBox.textContent = message;
   }
 
-  if (formWrap) {
-    formWrap.style.display = "none";
+  function setLoadingButton(loading) {
+    submitting = loading;
+    $joinBtn.disabled = loading;
+    $closeBtn.disabled = loading;
+
+    if (loading) {
+      $joinBtn.innerHTML = `<span class="loading"></span>กำลังส่งข้อมูลสมัคร...`;
+    } else {
+      $joinBtn.innerHTML = "สมัครเข้าทีม";
+    }
   }
 
-  if (successState) {
-    successState.style.display = "block";
-    successState.scrollIntoView({ behavior: "smooth", block: "start" });
+  function setProfileUI(p) {
+    const name = p?.displayName || "ไม่พบชื่อผู้ใช้";
+    const uid = p?.userId || "ไม่พบ userId";
+    const avatar = p?.pictureUrl || "";
+
+    $displayName.textContent = name;
+    $userIdText.textContent = uid;
+    $avatar.src = avatar || "data:image/svg+xml;utf8," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+        <rect width="100%" height="100%" fill="#dfe7ee"/>
+        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18" fill="#64748b">USER</text>
+      </svg>
+    `);
   }
-}
 
-function bindJoinSuccessButtons() {
-  const btnClose = document.getElementById("btnCloseJoinWindow");
-  const btnBack = document.getElementById("btnBackToJoinHome");
+  function showJoinSuccessState(displayName = "") {
+    const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
 
-  if (btnClose) {
-    btnClose.addEventListener("click", async () => {
-      try {
-        if (window.liff && liff.isInClient()) {
-          liff.closeWindow();
-          return;
+    const formWrap = document.getElementById("joinFormWrap");
+    const successState = document.getElementById("joinSuccessState");
+    const successDisplayName = document.getElementById("successDisplayName");
+
+    if (successDisplayName) {
+      successDisplayName.textContent = safeName;
+    }
+
+    if (formWrap) {
+      formWrap.style.display = "none";
+    }
+
+    if (successState) {
+      successState.style.display = "block";
+      successState.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function bindJoinSuccessButtons() {
+    const btnClose = document.getElementById("btnCloseJoinWindow");
+    const btnBack = document.getElementById("btnBackToJoinHome");
+
+    if (btnClose) {
+      btnClose.addEventListener("click", () => {
+        try {
+          if (window.liff && liff.isInClient()) {
+            liff.closeWindow();
+            return;
+          }
+        } catch (err) {
+          console.warn("LIFF close error:", err);
         }
-      } catch (err) {
-        console.warn("LIFF close error:", err);
+
+        window.close();
+      });
+    }
+
+    if (btnBack) {
+      btnBack.addEventListener("click", () => {
+        location.reload();
+      });
+    }
+  }
+
+  async function initLiff() {
+    if (!LIFF_ID || LIFF_ID === "PUT_YOUR_TEAM_LIFF_ID_HERE") {
+      showStatus("กรุณาใส่ LIFF ID ของหน้าสมัครเข้าทีมก่อนใช้งาน", "error");
+      $joinBtn.disabled = true;
+      return;
+    }
+
+    try {
+      await liff.init({ liffId: LIFF_ID });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
       }
 
-      window.close();
-    });
+      profile = await liff.getProfile();
+      context = liff.getContext();
+
+      setProfileUI(profile);
+
+      const groupId = context?.groupId || context?.roomId || "";
+      if (groupId) {
+        showStatus("พร้อมสมัครเข้าทีมแล้ว กดปุ่มด้านล่างเพื่อส่งข้อมูลเข้าคิวรออนุมัติ", "info");
+      } else {
+        showStatus("ระบบไม่พบ groupId จาก LIFF แต่ยังสามารถส่งข้อมูลสมัครได้", "info");
+      }
+    } catch (err) {
+      console.error("LIFF INIT ERROR:", err);
+      showStatus("ไม่สามารถเริ่มต้น LIFF ได้ กรุณาปิดแล้วลองใหม่อีกครั้ง", "error");
+      $joinBtn.disabled = true;
+    }
   }
 
-  if (btnBack) {
-    btnBack.addEventListener("click", () => {
-      location.reload();
-    });
-  }
-}
+  async function submitJoinTeam() {
+    if (submitting) return;
 
-document.addEventListener("DOMContentLoaded", bindJoinSuccessButtons);
+    if (!profile?.userId) {
+      showStatus("ไม่พบข้อมูลผู้ใช้ LINE กรุณาเปิดผ่าน LIFF จากใน LINE อีกครั้ง", "error");
+      return;
+    }
+
+    try {
+      setLoadingButton(true);
+
+      const payload = {
+        line_user_id: profile.userId,
+        display_name: profile.displayName || "",
+        picture_url: profile.pictureUrl || "",
+        joined_group_id: context?.groupId || context?.roomId || "",
+        source: "liff"
+      };
+
+      const res = await fetch(API_JOIN_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
+      }
+
+      showJoinSuccessState(profile?.displayName || "สมาชิกใหม่");
+      $closeBtn.disabled = false;
+
+    } catch (err) {
+      console.error("TEAM JOIN SUBMIT ERROR:", err);
+      showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");
+      setLoadingButton(false);
+    }
+  }
+
+  $joinBtn.addEventListener("click", submitJoinTeam);
+
+  $closeBtn.addEventListener("click", () => {
+    try {
+      if (window.liff && liff.isInClient()) {
+        liff.closeWindow();
+        return;
+      }
+    } catch (_) {}
+    window.close();
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    bindJoinSuccessButtons();
+    initLiff();
+  });
 </script>
-  </script>
 </body>
 </html>

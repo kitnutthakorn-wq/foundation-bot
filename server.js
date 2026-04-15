@@ -9159,47 +9159,66 @@ res.sendFile(path.join(__dirname, "imagemap/New_WorkTeam.png"));
 // TEAM JOIN API
 // สำหรับ LIFF สมัครเข้าทีม
 // =========================
-app.post("/api/team/join", express.json(), async (req, res) => {
+app.post("/api/team/join", async (req, res) => {
   try {
-    const lineUserId = String(req.body?.line_user_id || "").trim();
-    const displayName = String(req.body?.display_name || "").trim();
-    const pictureUrl = String(req.body?.picture_url || "").trim();
-    const joinedGroupId = String(req.body?.joined_group_id || "").trim();
-    const source = String(req.body?.source || "liff").trim();
+    const {
+      line_user_id,
+      display_name,
+      picture_url,
+      joined_group_id,
+      source
+    } = req.body || {};
+
+    const lineUserId = String(line_user_id || "").trim();
+    const displayName = String(display_name || "").trim();
+    const pictureUrl = String(picture_url || "").trim();
+    const joinedGroupId = String(joined_group_id || "").trim();
+    const safeSource = String(source || "liff").trim();
 
     if (!lineUserId) {
       return res.status(400).json({
         ok: false,
-        error: "line_user_id is required"
+        error: "missing_line_user_id"
       });
     }
 
-    const saved = await upsertTeamCandidate({
-      lineUserId,
-      displayName,
-      pictureUrl,
-      joinedGroupId,
-      source,
-      status: "pending",
-      note: "สมัครเข้าทีมผ่าน LIFF"
-    });
+    const payload = {
+      line_user_id: lineUserId,
+      display_name: displayName || null,
+      picture_url: pictureUrl || null,
+      joined_group_id: joinedGroupId || null,
+      source: safeSource,
+      status: "pending"
+    };
 
-    // เพิ่มเข้า recentUsers ด้วย จะได้โผล่ในเมนูเลือกสมาชิกทันที
-    upsertRecentUser(lineUserId, displayName || lineUserId);
+    const { data: insertedRow, error: insertError } = await supabase
+      .from("team_candidates")
+      .insert(payload)
+      .select("id, line_user_id, display_name, status, created_at")
+      .single();
+
+    if (insertError) {
+      console.error("TEAM JOIN INSERT ERROR:", insertError);
+      return res.status(500).json({
+        ok: false,
+        error: insertError.message || "insert_failed"
+      });
+    }
 
     return res.json({
       ok: true,
-      candidate: saved
+      request_id: insertedRow?.id || null,
+      candidate_id: insertedRow?.id || null
     });
+
   } catch (err) {
     console.error("TEAM JOIN API ERROR:", err);
     return res.status(500).json({
       ok: false,
-      error: err?.message || "internal error"
+      error: err.message || "internal_error"
     });
   }
 });
-
 /* =========================
    WEBHOOK
 ========================= */

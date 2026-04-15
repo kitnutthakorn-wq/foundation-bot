@@ -2912,16 +2912,13 @@ function buildTeamJoinWelcomeFlex(displayName = "") {
             }
           },
           {
-           
-  type: "button",
-  style: "secondary",
-  height: "sm",
-  action: {
-    type: "message",
-    label: "ภายหลัง",
-    text: "สมัครทีมภายหลัง"
-  }
-}
+            type: "button",
+            style: "secondary",
+            height: "sm",
+            action: {
+              type: "message",
+              label: "ภายหลัง",
+              text: "สมัครทีมภายหลัง"
             }
           }
         ]

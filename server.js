@@ -4765,6 +4765,8 @@ function buildSelectableUserBadges(u = {}) {
   return badges;
 }
 
+const FLEX_HEAD_IMAGE_URL = "https://img2.pic.in.th/Headline.jpg";
+
 function getSelectableUserAvatar(u = {}) {
   const picture = String(u.picture_url || "").trim();
   if (picture) return picture;

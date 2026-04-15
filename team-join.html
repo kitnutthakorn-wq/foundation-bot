@@ -614,56 +614,55 @@ async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
     }
 
     async function submitJoinTeam() {
-      if (submitting) return;
+  if (submitting) return;
 
-      if (!profile?.userId) {
-        showStatus("ไม่พบข้อมูลผู้ใช้ LINE กรุณาเปิดผ่าน LIFF จากใน LINE อีกครั้ง", "error");
-        return;
-      }
+  if (!profile?.userId) {
+    showStatus("ไม่พบข้อมูลผู้ใช้ LINE กรุณาเปิดผ่าน LIFF จากใน LINE อีกครั้ง", "error");
+    return;
+  }
 
-      try {
-        setLoadingButton(true);
+  try {
+    setLoadingButton(true);
 
-        const payload = {
-          line_user_id: profile.userId,
-          display_name: profile.displayName || "",
-          picture_url: profile.pictureUrl || "",
-          joined_group_id: context?.groupId || context?.roomId || "",
-          source: "liff"
-        };
+    const payload = {
+      line_user_id: profile.userId,
+      display_name: profile.displayName || "",
+      picture_url: profile.pictureUrl || "",
+      joined_group_id: context?.groupId || context?.roomId || "",
+      source: "liff"
+    };
 
-        const res = await fetch(API_JOIN_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
+    const res = await fetch(API_JOIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-        const data = await res.json().catch(() => ({}));
+    const data = await res.json().catch(() => ({}));
 
-       if (!res.ok || !data?.ok) {
-  throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
-}
-
-const requestId =
-  data?.request_id ||
-  data?.candidate_id ||
-  data?.id ||
-  data?.case_id ||
-  "-";
-
-showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
-await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
-$closeBtn.disabled = false;
-
-      } catch (err) {
-        console.error("TEAM JOIN SUBMIT ERROR:", err);
-        showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");
-        setLoadingButton(false);
-      }
+    if (!res.ok || !data?.ok) {
+      throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
     }
 
+    const requestId =
+      data?.request_id ||
+      data?.candidate_id ||
+      data?.id ||
+      data?.case_id ||
+      "-";
+
+    showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
+    await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
+    $closeBtn.disabled = false;
+
+  } catch (err) {
+    console.error("TEAM JOIN SUBMIT ERROR:", err);
+    showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");
+    setLoadingButton(false);
+  }
+}
     $joinBtn.addEventListener("click", submitJoinTeam);
 
     $closeBtn.addEventListener("click", () => {

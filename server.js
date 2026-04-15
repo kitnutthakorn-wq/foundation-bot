@@ -4591,6 +4591,82 @@ async function approvePendingTeamCandidate(lineUserId, approvedRole, approvedBy 
     return { success: false, reason: "exception", error: err };
   }
 }
+
+function buildSelectableUserBadges(user = {}) {
+  const badges = [];
+
+  if (user.source === "candidate") {
+    badges.push({
+      type: "box",
+      layout: "vertical",
+      paddingStart: "8px",
+      paddingEnd: "8px",
+      paddingTop: "4px",
+      paddingBottom: "4px",
+      cornerRadius: "999px",
+      backgroundColor: "#DCFCE7",
+      contents: [
+        {
+          type: "text",
+          text: "ผู้สมัครใหม่",
+          size: "xs",
+          weight: "bold",
+          color: "#166534",
+          align: "center"
+        }
+      ]
+    });
+  }
+
+  if (user.candidate_status === "pending") {
+    badges.push({
+      type: "box",
+      layout: "vertical",
+      paddingStart: "8px",
+      paddingEnd: "8px",
+      paddingTop: "4px",
+      paddingBottom: "4px",
+      cornerRadius: "999px",
+      backgroundColor: "#FEF3C7",
+      contents: [
+        {
+          type: "text",
+          text: "รออนุมัติ",
+          size: "xs",
+          weight: "bold",
+          color: "#92400E",
+          align: "center"
+        }
+      ]
+    });
+  }
+
+  if (user.source !== "candidate") {
+    badges.push({
+      type: "box",
+      layout: "vertical",
+      paddingStart: "8px",
+      paddingEnd: "8px",
+      paddingTop: "4px",
+      paddingBottom: "4px",
+      cornerRadius: "999px",
+      backgroundColor: "#E2E8F0",
+      contents: [
+        {
+          type: "text",
+          text: "ผู้ใช้ล่าสุด",
+          size: "xs",
+          weight: "bold",
+          color: "#475569",
+          align: "center"
+        }
+      ]
+    });
+  }
+
+  return badges;
+}
+
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

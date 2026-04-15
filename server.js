@@ -4699,8 +4699,6 @@ async function buildSelectUserFlex() {
     };
   }
 
-  // ของเดิมด้านล่างใช้ต่อได้
-
   return {
     type: "flex",
     altText: "เลือกสมาชิก",
@@ -4737,20 +4735,49 @@ async function buildSelectUserFlex() {
         spacing: "10px",
         paddingAll: "16px",
         contents: users.map((u) => ({
-          type: "button",
-          style: u.source === "candidate" ? "primary" : "secondary",
-          color: u.source === "candidate" ? "#1F8F4D" : undefined,
-          height: "sm",
+          type: "box",
+          layout: "vertical",
+          spacing: "8px",
+          paddingAll: "14px",
+          cornerRadius: "16px",
+          backgroundColor: u.source === "candidate" ? "#F8FFF9" : "#F8FAFC",
+          borderColor: u.source === "candidate" ? "#BBF7D0" : "#E2E8F0",
+          borderWidth: "1px",
           action: {
             type: "message",
             label: String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ").slice(0, 20),
             text: `select_user ${u.line_user_id}`
-          }
+          },
+          contents: [
+            {
+              type: "text",
+              text: String(u.display_name || u.line_user_id || "ไม่ระบุชื่อ"),
+              weight: "bold",
+              size: "md",
+              color: "#102A43",
+              wrap: true
+            },
+            {
+              type: "text",
+              text: String(u.line_user_id || "-"),
+              size: "xs",
+              color: "#64748B",
+              wrap: true
+            },
+            {
+              type: "box",
+              layout: "horizontal",
+              spacing: "sm",
+              flex: 0,
+              contents: buildSelectableUserBadges(u)
+            }
+          ]
         }))
       }
     }
   };
 }
+        
 
 function buildSelectRoleFlex(userId) {
   function btn(label, text, color) {

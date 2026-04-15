@@ -4441,24 +4441,24 @@ function buildTeamMemberFlex(item = {}) {
 
 
 
-function normalizeSelectableUser(raw = {}, source = "recent") {
-  const lineUserId =
-    String(raw.line_user_id || raw.user_id || raw.lineId || raw.userId || "").trim();
 
-  const displayName =
-    String(raw.display_name || raw.name || raw.full_name || "ไม่ระบุชื่อ").trim();
+ 
+  
 
-  const pictureUrl =
-    String(raw.picture_url || raw.picture || raw.avatar_url || "").trim();
+  
+   
 
-  return {
-    line_user_id: lineUserId,
-    display_name: displayName,
-    picture_url: pictureUrl,
-    source,
-    created_at: raw.created_at || null
-  };
-}
+  
+    
+
+  
+    
+    
+    
+    
+   
+  
+
 
 async function getSelectableTeamUsers() {
   try {

@@ -4990,7 +4990,7 @@ function buildSelectableUserBubble(user = {}) {
       color: "#777777",
       wrap: true
     },
-    {
+       {
       type: "text",
       text:
         `ที่มา: ${
@@ -5002,8 +5002,8 @@ function buildSelectableUserBubble(user = {}) {
       color: "#777777",
       wrap: true
     }
-      ]
-  },
+  ]
+},
 footer: {
   type: "box",
   layout: "vertical",
@@ -5018,11 +5018,11 @@ footer: {
       action: {
         type: "message",
         label: "เลือกคนนี้",
-            text: `เลือกสมาชิก:${userIdText}`
-          }
-        }
-      ]
+        text: `เลือกสมาชิก:${userIdText}`
+      }
     }
+  ]
+}
   };
 }
 

@@ -2912,7 +2912,7 @@ function buildTeamJoinWelcomeFlex(displayName = "") {
             }
           },
           {
-            {
+           
   type: "button",
   style: "secondary",
   height: "sm",

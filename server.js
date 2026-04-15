@@ -4785,6 +4785,25 @@ function buildSelectableUserBubble(user = {}) {
   const roleText = user.role ? `บทบาท: ${user.role}` : "ผู้ใช้งานที่เลือกได้";
   const userIdText = user.user_id || user.line_user_id || "-";
 
+  const statusText =
+    user.status === "pending" ? "รออนุมัติ" :
+    user.status === "approved" ? "อนุมัติแล้ว" :
+    user.status === "active" ? "มีสิทธิ์ใช้งานแล้ว" :
+    user.status === "rejected" ? "ไม่ผ่าน" :
+    user.source === "candidate" ? "รออนุมัติ" :
+    "-";
+
+  const sourceText =
+    user.source === "candidate" ? "ผู้สมัครเข้าทีม" :
+    user.source === "recent" ? "ผู้ใช้ล่าสุด" :
+    user.source || "-";
+
+  const numberText = `${user.id || user.candidate_no || user.candidate_id || "-"}`;
+  const dateText =
+    user.created_at || user.joined_at
+      ? formatThaiDateTime(user.created_at || user.joined_at)
+      : "-";
+
   return {
     type: "bubble",
     size: "mega",
@@ -4811,7 +4830,7 @@ function buildSelectableUserBubble(user = {}) {
             {
               type: "image",
               url: getSelectableUserAvatar(user),
-              size: "60px",
+              size: "64px",
               aspectMode: "cover",
               aspectRatio: "1:1",
               flex: 0
@@ -4826,57 +4845,16 @@ function buildSelectableUserBubble(user = {}) {
                   type: "text",
                   text: displayName,
                   weight: "bold",
-                  size: "xl",
+                  size: "xxl",
                   wrap: true,
                   color: "#FFFFFF"
                 },
                 {
                   type: "text",
                   text: roleText,
-                  size: "sm",
-                  color: "#B8C1CC",
+                  size: "lg",
+                  color: "#FFFFFF",
                   wrap: true
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              backgroundColor:
-                user.status === "pending" ? "#2A2116" :
-                user.status === "approved" ? "#13261A" :
-                user.status === "active" ? "#162235" :
-                user.status === "rejected" ? "#2A1717" :
-                user.source === "candidate" ? "#2A2116" :
-                user.source === "recent" ? "#13261A" :
-                "#1A2230",
-              cornerRadius: "999px",
-              paddingStart: "10px",
-              paddingEnd: "10px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              contents: [
-                {
-                  type: "text",
-                  text:
-                    user.status === "pending" ? "ผู้สมัคร" :
-                    user.status === "approved" ? "อนุมัติแล้ว" :
-                    user.status === "active" ? "ใช้งานแล้ว" :
-                    user.status === "rejected" ? "ไม่ผ่าน" :
-                    user.source === "candidate" ? "ผู้สมัคร" :
-                    user.source === "recent" ? "ล่าสุด" :
-                    "สมาชิก",
-                  size: "xs",
-                  weight: "bold",
-                  color:
-                    user.status === "pending" ? "#F0B35A" :
-                    user.status === "approved" ? "#53C26B" :
-                    user.status === "active" ? "#6EA8FF" :
-                    user.status === "rejected" ? "#FF7B7B" :
-                    user.source === "candidate" ? "#F0B35A" :
-                    user.source === "recent" ? "#53C26B" :
-                    "#8FB3FF",
-                  align: "center"
                 }
               ]
             }
@@ -4885,94 +4863,108 @@ function buildSelectableUserBubble(user = {}) {
         {
           type: "separator",
           margin: "md",
-          color: "#1F2937"
-        },
-        {
-          type: "box",
-          layout: "horizontal",
-          spacing: "sm",
-          margin: "md",
-          contents: [
-            {
-              type: "box",
-              layout: "vertical",
-              backgroundColor: "#161C23",
-              cornerRadius: "999px",
-              paddingStart: "10px",
-              paddingEnd: "10px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              flex: 1,
-              contents: [
-                {
-                  type: "text",
-                  text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
-                  size: "xs",
-                  weight: "bold",
-                  color: "#D7E0E8",
-                  align: "center"
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              backgroundColor: "#1B222B",
-              cornerRadius: "999px",
-              paddingStart: "10px",
-              paddingEnd: "10px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              flex: 1,
-              contents: [
-                {
-                  type: "text",
-                  text: `${
-                    user.created_at || user.joined_at
-                      ? formatThaiDateTime(user.created_at || user.joined_at)
-                      : "-"
-                  }`,
-                  size: "xs",
-                  weight: "bold",
-                  color: "#D7E0E8",
-                  align: "center"
-                }
-              ]
-            }
-          ]
+          color: "#E5E7EB"
         },
         {
           type: "box",
           layout: "vertical",
           margin: "md",
-          spacing: "sm",
+          spacing: "md",
           contents: [
             {
-              type: "text",
-              text:
-                `สถานะ: ${
-                  user.status === "pending" ? "รออนุมัติ" :
-                  user.status === "approved" ? "อนุมัติแล้ว" :
-                  user.status === "active" ? "มีสิทธิ์ใช้งานแล้ว" :
-                  user.status === "rejected" ? "ไม่ผ่าน" :
-                  user.source === "candidate" ? "รออนุมัติ" :
-                  "-"
-                }`,
-              size: "sm",
-              color: "#C7D0D9",
-              wrap: true
+              type: "box",
+              layout: "baseline",
+              spacing: "md",
+              contents: [
+                {
+                  type: "text",
+                  text: "เลขที่",
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 2
+                },
+                {
+                  type: "text",
+                  text: numberText,
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 5
+                }
+              ]
             },
             {
-              type: "text",
-              text:
-                `ที่มา: ${
-                  user.source === "candidate" ? "ผู้สมัครเข้าทีม" :
-                  user.source === "recent" ? "ผู้ใช้ล่าสุด" :
-                  user.source || "-"
-                }`,
-              size: "sm",
-              color: "#8FA0B3",
-              wrap: true
+              type: "box",
+              layout: "baseline",
+              spacing: "md",
+              contents: [
+                {
+                  type: "text",
+                  text: "วันที่",
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 2
+                },
+                {
+                  type: "text",
+                  text: dateText,
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 5,
+                  wrap: true
+                }
+              ]
+            },
+            {
+              type: "box",
+              layout: "baseline",
+              spacing: "md",
+              contents: [
+                {
+                  type: "text",
+                  text: "สถานะ:",
+                  size: "xxl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 3
+                },
+                {
+                  type: "text",
+                  text: statusText,
+                  size: "xxl",
+                  weight: "bold",
+                  color: "#FFE500",
+                  flex: 5,
+                  wrap: true
+                }
+              ]
+            },
+            {
+              type: "box",
+              layout: "baseline",
+              spacing: "md",
+              contents: [
+                {
+                  type: "text",
+                  text: "ที่มา :",
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 3
+                },
+                {
+                  type: "text",
+                  text: sourceText,
+                  size: "xl",
+                  weight: "bold",
+                  color: "#FFFFFF",
+                  flex: 5,
+                  wrap: true
+                }
+              ]
             }
           ]
         }
@@ -4989,7 +4981,7 @@ function buildSelectableUserBubble(user = {}) {
           type: "button",
           style: "primary",
           height: "sm",
-          color: "#0b7c86",
+          color: "#E60012",
           action: {
             type: "message",
             label: "เลือกคนนี้",

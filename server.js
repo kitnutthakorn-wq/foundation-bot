@@ -4518,6 +4518,102 @@ async function getSelectableTeamUsers() {
   }
 }
 
+async function listPendingTeamCandidates() {
+  try {
+    const { data, error } = await supabase
+      .from("team_candidates")
+      .select("id, line_user_id, display_name, picture_url, status, created_at")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("listPendingTeamCandidates error:", error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error("listPendingTeamCandidates failed:", err);
+    return [];
+  }
+}
+
+function normalizeSelectableUser(raw = {}, source = "recent") {
+  const lineUserId =
+    String(raw.line_user_id || raw.user_id || raw.lineId || raw.userId || "").trim();
+
+  const displayName =
+    String(raw.display_name || raw.name || raw.full_name || "ไม่ระบุชื่อ").trim();
+
+  const pictureUrl =
+    String(raw.picture_url || raw.picture || raw.avatar_url || "").trim();
+
+  return {
+    line_user_id: lineUserId,
+    display_name: displayName,
+    picture_url: pictureUrl,
+    source,
+    created_at: raw.created_at || null
+  };
+}
+
+async function getSelectableTeamUsers() {
+  try {
+    let recentUsers = [];
+
+    try {
+      if (typeof getRecentUsers === "function") {
+        recentUsers = await getRecentUsers();
+      } else if (typeof listRecentUsers === "function") {
+        recentUsers = await listRecentUsers();
+      } else {
+        console.warn("getSelectableTeamUsers: recent users helper not found");
+      }
+    } catch (err) {
+      console.error("getSelectableTeamUsers recentUsers failed:", err);
+      recentUsers = [];
+    }
+
+    const pendingCandidates = await listPendingTeamCandidates();
+
+    const merged = [
+      ...(Array.isArray(recentUsers) ? recentUsers.map((u) => normalizeSelectableUser(u, "recent")) : []),
+      ...(Array.isArray(pendingCandidates) ? pendingCandidates.map((u) => normalizeSelectableUser(u, "candidate")) : [])
+    ];
+
+    const map = new Map();
+
+    for (const user of merged) {
+      const key = String(user.line_user_id || "").trim();
+      if (!key) continue;
+
+      if (!map.has(key)) {
+        map.set(key, user);
+        continue;
+      }
+
+      const existing = map.get(key);
+
+      if (existing.source !== "candidate" && user.source === "candidate") {
+        map.set(key, user);
+      }
+    }
+
+    const result = Array.from(map.values());
+
+    result.sort((a, b) => {
+      if (a.source === "candidate" && b.source !== "candidate") return -1;
+      if (a.source !== "candidate" && b.source === "candidate") return 1;
+      return String(a.display_name || "").localeCompare(String(b.display_name || ""), "th");
+    });
+
+    return result;
+  } catch (err) {
+    console.error("getSelectableTeamUsers failed:", err);
+    return [];
+  }
+}
+
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

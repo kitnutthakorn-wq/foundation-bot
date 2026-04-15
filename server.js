@@ -4804,6 +4804,34 @@ function buildSelectableUserBubble(user = {}) {
       ? formatThaiDateTime(user.created_at || user.joined_at)
       : "-";
 
+  function infoRow(label, value, valueColor = "#FFFFFF") {
+    return {
+      type: "box",
+      layout: "horizontal",
+      spacing: "md",
+      margin: "md",
+      contents: [
+        {
+          type: "text",
+          text: label,
+          size: "xl",
+          weight: "bold",
+          color: "#FFFFFF",
+          flex: 3
+        },
+        {
+          type: "text",
+          text: value,
+          size: "xl",
+          weight: "bold",
+          color: valueColor,
+          wrap: true,
+          flex: 5
+        }
+      ]
+    };
+  }
+
   return {
     type: "bubble",
     size: "mega",
@@ -4817,20 +4845,20 @@ function buildSelectableUserBubble(user = {}) {
     body: {
       type: "box",
       layout: "vertical",
-      spacing: "md",
-      paddingAll: "16px",
+      paddingAll: "18px",
+      spacing: "none",
       backgroundColor: "#0B0F14",
       contents: [
         {
           type: "box",
           layout: "horizontal",
-          spacing: "lg",
+          spacing: "md",
           alignItems: "center",
           contents: [
             {
               type: "image",
               url: getSelectableUserAvatar(user),
-              size: "72px",
+              size: "56px",
               aspectMode: "cover",
               aspectRatio: "1:1",
               flex: 0
@@ -4845,14 +4873,14 @@ function buildSelectableUserBubble(user = {}) {
                   type: "text",
                   text: displayName,
                   weight: "bold",
-                  size: "3xl",
-                  wrap: true,
-                  color: "#FFFFFF"
+                  size: "xxl",
+                  color: "#FFFFFF",
+                  wrap: true
                 },
                 {
                   type: "text",
                   text: roleText,
-                  size: "xl",
+                  size: "lg",
                   color: "#FFFFFF",
                   wrap: true
                 }
@@ -4865,123 +4893,23 @@ function buildSelectableUserBubble(user = {}) {
           margin: "md",
           color: "#E5E7EB"
         },
-        {
-          type: "box",
-          layout: "vertical",
-          margin: "md",
-          spacing: "lg",
-          contents: [
-            {
-              type: "box",
-              layout: "baseline",
-              spacing: "md",
-              contents: [
-                {
-                  type: "text",
-                  text: "เลขที่",
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 3
-                },
-                {
-                  type: "text",
-                  text: numberText,
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 5
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "baseline",
-              spacing: "md",
-              contents: [
-                {
-                  type: "text",
-                  text: "วันที่",
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 3
-                },
-                {
-                  type: "text",
-                  text: dateText,
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 5,
-                  wrap: true
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "baseline",
-              spacing: "md",
-              contents: [
-                {
-                  type: "text",
-                  text: "สถานะ:",
-                  size: "3xl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 3
-                },
-                {
-                  type: "text",
-                  text: statusText,
-                  size: "3xl",
-                  weight: "bold",
-                  color: "#FFE500",
-                  flex: 5,
-                  wrap: true
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "baseline",
-              spacing: "md",
-              contents: [
-                {
-                  type: "text",
-                  text: "ที่มา :",
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 3
-                },
-                {
-                  type: "text",
-                  text: sourceText,
-                  size: "xxl",
-                  weight: "bold",
-                  color: "#FFFFFF",
-                  flex: 5,
-                  wrap: true
-                }
-              ]
-            }
-          ]
-        }
+        infoRow("เลขที่", numberText),
+        infoRow("วันที่", dateText),
+        infoRow("สถานะ:", statusText, "#FFE500"),
+        infoRow("ที่มา :", sourceText)
       ]
     },
     footer: {
       type: "box",
       layout: "vertical",
-      spacing: "sm",
-      paddingAll: "16px",
+      paddingAll: "18px",
       backgroundColor: "#0B0F14",
       contents: [
         {
           type: "button",
           style: "primary",
           height: "md",
-          color: "#E60012",
+          color: "#F00014",
           action: {
             type: "message",
             label: "เลือกคนนี้",

@@ -4461,12 +4461,16 @@ function normalizeSelectableUser(raw = {}, source = "recent") {
   const pictureUrl =
     String(raw.picture_url || raw.picture || raw.avatar_url || "").trim();
 
+  const candidateStatus =
+    String(raw.status || raw.candidate_status || "").trim().toLowerCase();
+
   return {
     line_user_id: lineUserId,
     display_name: displayName,
     picture_url: pictureUrl,
     source,
-    created_at: raw.created_at || null
+    created_at: raw.created_at || null,
+    candidate_status: candidateStatus || null
   };
 }
 

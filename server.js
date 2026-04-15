@@ -2798,6 +2798,18 @@ const headerColor = headerTheme.color;
 }
 
 function getTeamLiffUrl(baseView = "") {
+  const view = String(baseView || "").trim();
+
+  if (view === "join-team") {
+    if (process.env.TEAM_JOIN_LIFF_URL) {
+      return String(process.env.TEAM_JOIN_LIFF_URL).trim();
+    }
+
+    if (process.env.TEAM_JOIN_LIFF_ID) {
+      return `https://liff.line.me/${String(process.env.TEAM_JOIN_LIFF_ID).trim()}`;
+    }
+  }
+
   let raw = null;
 
   if (process.env.TEAM_LIFF_URL) {
@@ -2810,13 +2822,12 @@ function getTeamLiffUrl(baseView = "") {
     throw new Error("❌ TEAM_LIFF_URL / TEAM_LIFF_ID not set");
   }
 
-  if (!baseView) return raw;
+  if (!view) return raw;
 
   return raw.includes("?")
-    ? `${raw}&view=${encodeURIComponent(baseView)}`
-    : `${raw}?view=${encodeURIComponent(baseView)}`;
+    ? `${raw}&view=${encodeURIComponent(view)}`
+    : `${raw}?view=${encodeURIComponent(view)}`;
 }
-
 function buildTeamJoinWelcomeFlex(displayName = "") {
   const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
 

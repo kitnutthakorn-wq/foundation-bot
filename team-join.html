@@ -681,16 +681,18 @@ async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
       throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
     }
 
-    const requestId =
-      data?.request_id ||
-      data?.candidate_id ||
-      data?.id ||
-      data?.case_id ||
-      "-";
+const requestId =
+  data?.request_id ||
+  data?.candidate_id ||
+  data?.id ||
+  data?.case_id ||
+  "-";
 
-    showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
-    await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
-    $closeBtn.disabled = false;
+submitting = false;
+
+showJoinSuccessState(profile?.displayName || "สมาชิกใหม่", requestId);
+await sendJoinSuccessMessageToChat(profile?.displayName || "สมาชิกใหม่", requestId);
+$closeBtn.disabled = false;
 
   } catch (err) {
     console.error("TEAM JOIN SUBMIT ERROR:", err);

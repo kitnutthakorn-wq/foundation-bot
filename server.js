@@ -4792,7 +4792,7 @@ function buildSelectableUserBubble(user = {}) {
       type: "image",
       url: FLEX_HEAD_IMAGE_URL,
       size: "full",
-      aspectRatio: "20:12",
+      aspectRatio: "20:14",
       aspectMode: "cover"
     },
     body: {

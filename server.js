@@ -4800,6 +4800,7 @@ function buildSelectableUserBubble(user = {}) {
       layout: "vertical",
       spacing: "md",
       paddingAll: "16px",
+      backgroundColor: "#0B0F14",
       contents: [
         {
           type: "box",
@@ -4827,13 +4828,13 @@ function buildSelectableUserBubble(user = {}) {
                   weight: "bold",
                   size: "xl",
                   wrap: true,
-                  color: "#163c72"
+                  color: "#FFFFFF"
                 },
                 {
                   type: "text",
                   text: roleText,
                   size: "sm",
-                  color: "#666666",
+                  color: "#B8C1CC",
                   wrap: true
                 }
               ]
@@ -4842,13 +4843,13 @@ function buildSelectableUserBubble(user = {}) {
               type: "box",
               layout: "vertical",
               backgroundColor:
-                user.status === "pending" ? "#FFF4E5" :
-                user.status === "approved" ? "#E8F7EE" :
-                user.status === "active" ? "#E8F1FF" :
-                user.status === "rejected" ? "#FDECEC" :
-                user.source === "candidate" ? "#FFF4E5" :
-                user.source === "recent" ? "#E8F7EE" :
-                "#EEF3FF",
+                user.status === "pending" ? "#2A2116" :
+                user.status === "approved" ? "#13261A" :
+                user.status === "active" ? "#162235" :
+                user.status === "rejected" ? "#2A1717" :
+                user.source === "candidate" ? "#2A2116" :
+                user.source === "recent" ? "#13261A" :
+                "#1A2230",
               cornerRadius: "999px",
               paddingStart: "10px",
               paddingEnd: "10px",
@@ -4868,76 +4869,77 @@ function buildSelectableUserBubble(user = {}) {
                   size: "xs",
                   weight: "bold",
                   color:
-                    user.status === "pending" ? "#C77700" :
-                    user.status === "approved" ? "#1F8F4D" :
-                    user.status === "active" ? "#2563EB" :
-                    user.status === "rejected" ? "#D32F2F" :
-                    user.source === "candidate" ? "#C77700" :
-                    user.source === "recent" ? "#1F8F4D" :
-                    "#2563EB",
+                    user.status === "pending" ? "#F0B35A" :
+                    user.status === "approved" ? "#53C26B" :
+                    user.status === "active" ? "#6EA8FF" :
+                    user.status === "rejected" ? "#FF7B7B" :
+                    user.source === "candidate" ? "#F0B35A" :
+                    user.source === "recent" ? "#53C26B" :
+                    "#8FB3FF",
                   align: "center"
                 }
               ]
             }
           ]
         },
-       {
-  type: "box",
-  layout: "horizontal",
-  spacing: "sm",
-  margin: "sm",
-  contents: [
-    {
-      type: "box",
-      layout: "vertical",
-      backgroundColor: "#F3F4F6",
-      cornerRadius: "999px",
-      paddingStart: "10px",
-      paddingEnd: "10px",
-      paddingTop: "4px",
-      paddingBottom: "4px",
-      flex: 1,
-      contents: [
-        {
-          type: "text",
-          text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
-          size: "xs",
-          weight: "bold",
-          color: "#555555",
-          align: "center"
-        }
-      ]
-    },
-    {
-      type: "box",
-      layout: "vertical",
-      backgroundColor: "#F9FAFB",
-      cornerRadius: "999px",
-      paddingStart: "10px",
-      paddingEnd: "10px",
-      paddingTop: "4px",
-      paddingBottom: "4px",
-      flex: 1,
-      contents: [
-        {
-          type: "text",
-          text: `${
-            user.created_at || user.joined_at
-              ? formatThaiDateTime(user.created_at || user.joined_at)
-              : "-"
-          }`,
-          size: "xs",
-          weight: "bold",
-          color: "#666666",
-          align: "center"
-        }
-      ]
-    }
-  ]
-},
         {
           type: "separator",
-          margin: "md"
+          margin: "md",
+          color: "#1F2937"
+        },
+        {
+          type: "box",
+          layout: "horizontal",
+          spacing: "sm",
+          margin: "md",
+          contents: [
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#161C23",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              flex: 1,
+              contents: [
+                {
+                  type: "text",
+                  text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#D7E0E8",
+                  align: "center"
+                }
+              ]
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#1B222B",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              flex: 1,
+              contents: [
+                {
+                  type: "text",
+                  text: `${
+                    user.created_at || user.joined_at
+                      ? formatThaiDateTime(user.created_at || user.joined_at)
+                      : "-"
+                  }`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#D7E0E8",
+                  align: "center"
+                }
+              ]
+            }
+          ]
         },
         {
           type: "box",
@@ -4945,7 +4947,6 @@ function buildSelectableUserBubble(user = {}) {
           margin: "md",
           spacing: "sm",
           contents: [
- 
             {
               type: "text",
               text:
@@ -4957,8 +4958,8 @@ function buildSelectableUserBubble(user = {}) {
                   user.source === "candidate" ? "รออนุมัติ" :
                   "-"
                 }`,
-              size: "xs",
-              color: "#777777",
+              size: "sm",
+              color: "#C7D0D9",
               wrap: true
             },
             {
@@ -4969,8 +4970,8 @@ function buildSelectableUserBubble(user = {}) {
                   user.source === "recent" ? "ผู้ใช้ล่าสุด" :
                   user.source || "-"
                 }`,
-              size: "xs",
-              color: "#777777",
+              size: "sm",
+              color: "#8FA0B3",
               wrap: true
             }
           ]
@@ -4982,6 +4983,7 @@ function buildSelectableUserBubble(user = {}) {
       layout: "vertical",
       spacing: "sm",
       paddingAll: "16px",
+      backgroundColor: "#0B0F14",
       contents: [
         {
           type: "button",
@@ -4998,7 +5000,6 @@ function buildSelectableUserBubble(user = {}) {
     }
   };
 }
-
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

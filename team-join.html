@@ -523,6 +523,37 @@ function showJoinSuccessState(displayName = "", requestId = "-") {
   }
 }
 
+async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-") {
+  try {
+    if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) {
+      return;
+    }
+
+    if (typeof liff.sendMessages !== "function") {
+      return;
+    }
+
+    const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+    const safeRequestId = String(requestId || "-").trim() || "-";
+
+    await liff.sendMessages([
+      {
+        type: "text",
+        text:
+`✅ สมัครเข้าทีมสำเร็จแล้ว
+ชื่อ: ${safeName}
+เลขที่คำขอ: ${safeRequestId}
+สถานะ: รอผู้ดูแลอนุมัติ
+
+ขอบคุณที่ร่วมเป็นส่วนหนึ่งของการ
+“หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้”`
+      }
+    ]);
+  } catch (err) {
+    console.warn("LIFF sendMessages error:", err);
+  }
+}
+    
     function bindJoinSuccessButtons() {
       const btnClose = document.getElementById("btnCloseJoinWindow");
       const btnBack = document.getElementById("btnBackToJoinHome");

@@ -4885,7 +4885,7 @@ function buildSelectableUserBubble(user = {}) {
                   type: "text",
                   text: roleText,
                   size: "lg",
-                  color: "#333333",
+                  color: "#4B5563",
                   wrap: true
                 }
               ]
@@ -4899,8 +4899,8 @@ function buildSelectableUserBubble(user = {}) {
         },
         infoRow("เลขที่", numberText),
         infoRow("วันที่", dateText),
-        infoRow("สถานะ:", statusText, "#D4A000"),
-        infoRow("ที่มา :", sourceText)
+        infoRow("สถานะ:", statusText, "#0F766E"),
+        infoRow("ที่มา :", sourceText, "#374151")
       ]
     },
     footer: {

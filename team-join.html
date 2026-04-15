@@ -25,8 +25,8 @@
 
     body{
       margin:0;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background: linear-gradient(180deg, #edf2f5 0%, #e6eef2 100%);
+      font-family:"Segoe UI", Tahoma, sans-serif;
+      background:linear-gradient(180deg, #edf2f5 0%, #e6eef2 100%);
       color:var(--text);
     }
 
@@ -49,7 +49,7 @@
     }
 
     .hero{
-      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+      background:linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
       color:#fff;
       padding:28px 24px 24px;
       text-align:center;
@@ -150,16 +150,19 @@
     }
 
     .status.show{ display:block; }
+
     .status.info{
       background:#eff6ff;
       color:#1d4ed8;
       border:1px solid #bfdbfe;
     }
+
     .status.success{
       background:#ecfdf5;
       color:#15803d;
       border:1px solid #bbf7d0;
     }
+
     .status.error{
       background:#fef2f2;
       color:#b91c1c;
@@ -225,247 +228,127 @@
     }
 
     @keyframes spin{
-  to{ transform:rotate(360deg); }
-}
+      to{ transform:rotate(360deg); }
+    }
 
-#joinSuccessState {
-  display: none;
-  margin-top: 16px;
-}
+    #joinSuccessState{
+      display:none;
+    }
 
-.success-card {
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
-  border: 1px solid #e5e7eb;
-}
+    .success-card{
+      background:#ffffff;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 10px 30px rgba(15, 23, 42, 0.10);
+      border:1px solid #e5e7eb;
+    }
 
-.success-header {
-  background: linear-gradient(180deg, #0B7C86 0%, #0E8A95 100%);
-  padding: 24px 20px 20px;
-  text-align: center;
-  color: #ffffff;
-}
+    .success-header{
+      background:linear-gradient(180deg, #0B7C86 0%, #0E8A95 100%);
+      padding:24px 20px 20px;
+      text-align:center;
+      color:#ffffff;
+    }
 
-.success-icon {
-  font-size: 34px;
-  line-height: 1;
-  margin-bottom: 10px;
-}
+    .success-icon{
+      font-size:34px;
+      line-height:1;
+      margin-bottom:10px;
+    }
 
-.success-title {
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.3;
-}
+    .success-title{
+      font-size:24px;
+      font-weight:800;
+      line-height:1.3;
+    }
 
-.success-subtitle {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #D1FAE5;
-  word-break: break-word;
-}
+    .success-subtitle{
+      margin-top:8px;
+      font-size:14px;
+      color:#D1FAE5;
+      word-break:break-word;
+    }
 
-.success-body {
-  padding: 20px;
-}
+    .success-body{
+      padding:20px;
+    }
 
-.success-message,
-.success-help {
-  font-size: 15px;
-  line-height: 1.7;
-  color: #334155;
-  margin: 0 0 16px 0;
-}
+    .success-message,
+    .success-help{
+      font-size:15px;
+      line-height:1.7;
+      color:#334155;
+      margin:0 0 16px 0;
+    }
 
-.success-note {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 16px;
-}
+    .success-note{
+      background:#F8FAFC;
+      border:1px solid #E2E8F0;
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:16px;
+    }
 
-.success-note-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0B7C86;
-  margin-bottom: 6px;
-}
+    .success-note-title{
+      font-size:13px;
+      font-weight:700;
+      color:#0B7C86;
+      margin-bottom:6px;
+    }
 
-.success-note-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #475569;
-}
+    .success-note-text{
+      font-size:14px;
+      line-height:1.6;
+      color:#475569;
+    }
 
-.success-status-box {
-  background: #ECFDF5;
-  border: 1px solid #BBF7D0;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 16px;
-  text-align: center;
-}
+    .success-status-box{
+      background:#ECFDF5;
+      border:1px solid #BBF7D0;
+      border-radius:14px;
+      padding:14px;
+      margin-bottom:16px;
+      text-align:center;
+    }
 
-.success-status-label {
-  font-size: 12px;
-  color: #166534;
-  margin-bottom: 4px;
-}
+    .success-status-label{
+      font-size:12px;
+      color:#166534;
+      margin-bottom:4px;
+    }
 
-.success-status-value {
-  font-size: 16px;
-  font-weight: 800;
-  color: #15803D;
-}
+    .success-status-value{
+      font-size:16px;
+      font-weight:800;
+      color:#15803D;
+    }
 
-.success-footer {
-  padding: 0 20px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    .success-footer{
+      padding:0 20px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
 
-.btn-success-close,
-.btn-success-secondary {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  min-height: 48px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
+    .btn-success-close,
+    .btn-success-secondary{
+      width:100%;
+      border:none;
+      border-radius:14px;
+      min-height:48px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
 
-.btn-success-close {
-  background: #22C55E;
-  color: #ffffff;
-}
+    .btn-success-close{
+      background:#22C55E;
+      color:#ffffff;
+    }
 
-.btn-success-secondary {
-  background: #E5E7EB;
-  color: #111827;
-}
-  margin-top: 16px;
-}
-
-.success-card {
-  background: #ffffff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
-  border: 1px solid #e5e7eb;
-}
-
-.success-header {
-  background: linear-gradient(180deg, #0B7C86 0%, #0E8A95 100%);
-  padding: 24px 20px 20px;
-  text-align: center;
-  color: #ffffff;
-}
-
-.success-icon {
-  font-size: 34px;
-  line-height: 1;
-  margin-bottom: 10px;
-}
-
-.success-title {
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.success-subtitle {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #D1FAE5;
-  word-break: break-word;
-}
-
-.success-body {
-  padding: 20px;
-}
-
-.success-message,
-.success-help {
-  font-size: 15px;
-  line-height: 1.7;
-  color: #334155;
-  margin: 0 0 16px 0;
-}
-
-.success-note {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 16px;
-}
-
-.success-note-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0B7C86;
-  margin-bottom: 6px;
-}
-
-.success-note-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: #475569;
-}
-
-.success-status-box {
-  background: #ECFDF5;
-  border: 1px solid #BBF7D0;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-.success-status-label {
-  font-size: 12px;
-  color: #166534;
-  margin-bottom: 4px;
-}
-
-.success-status-value {
-  font-size: 16px;
-  font-weight: 800;
-  color: #15803D;
-}
-
-.success-footer {
-  padding: 0 20px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.btn-success-close,
-.btn-success-secondary {
-  width: 100%;
-  border: none;
-  border-radius: 14px;
-  min-height: 48px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-success-close {
-  background: #22C55E;
-  color: #ffffff;
-}
-
-.btn-success-secondary {
-  background: #E5E7EB;
-  color: #111827;
-} 
+    .btn-success-secondary{
+      background:#E5E7EB;
+      color:#111827;
     }
   </style>
 </head>
@@ -477,86 +360,84 @@
         <p>ยืนยันตัวตน 1 ครั้ง เพื่อให้ผู้ดูแลระบบกำหนดสิทธิ์ให้คุณได้</p>
       </div>
 
-<div class="body">
-  <div id="joinFormWrap">
-    <div id="statusBox" class="status info"></div>
+      <div class="body">
+        <div id="joinFormWrap">
+          <div id="statusBox" class="status info"></div>
 
-    <div class="profile">
-      <img id="avatar" class="avatar" alt="avatar" />
-      <div class="meta">
-        <div id="displayName" class="name">กำลังโหลดข้อมูล...</div>
-        <div id="userIdText" class="sub">กำลังตรวจสอบ LIFF</div>
-      </div>
-    </div>
+          <div class="profile">
+            <img id="avatar" class="avatar" alt="avatar" />
+            <div class="meta">
+              <div id="displayName" class="name">กำลังโหลดข้อมูล...</div>
+              <div id="userIdText" class="sub">กำลังตรวจสอบ LIFF</div>
+            </div>
+          </div>
 
-    <div class="info">
-      <h2>ก่อนเริ่มใช้งาน</h2>
-      <p>
-        เมื่อคุณสมัครเข้าทีมแล้ว ระบบจะส่งชื่อของคุณเข้าไปในคิวรออนุมัติ
-        จากนั้นผู้ดูแลระบบสามารถกำหนดสิทธิ์ให้คุณเป็น
-        Admin / Staff / Viewer ได้
-      </p>
-    </div>
+          <div class="info">
+            <h2>ก่อนเริ่มใช้งาน</h2>
+            <p>
+              เมื่อคุณสมัครเข้าทีมแล้ว ระบบจะส่งชื่อของคุณเข้าไปในคิวรออนุมัติ
+              จากนั้นผู้ดูแลระบบสามารถกำหนดสิทธิ์ให้คุณเป็น
+              Admin / Staff / Viewer ได้
+            </p>
+          </div>
 
-    <div class="notice">
-      ระบบจะบันทึกข้อมูลพื้นฐานของคุณจาก LINE ได้แก่ ชื่อที่แสดง, รูปโปรไฟล์,
-      รหัสผู้ใช้ LINE และกลุ่มที่คุณเข้ามา เพื่อใช้สำหรับกำหนดสิทธิ์ในระบบทีมงานเท่านั้น
-    </div>
+          <div class="notice">
+            ระบบจะบันทึกข้อมูลพื้นฐานของคุณจาก LINE ได้แก่ ชื่อที่แสดง, รูปโปรไฟล์,
+            รหัสผู้ใช้ LINE และกลุ่มที่คุณเข้ามา เพื่อใช้สำหรับกำหนดสิทธิ์ในระบบทีมงานเท่านั้น
+          </div>
 
-    <div class="actions">
-      <button id="joinBtn" class="btn-primary">สมัครเข้าทีม</button>
-      <button id="closeBtn" class="btn-secondary" type="button">ปิดหน้าต่าง</button>
-    </div>
-  </div>
-</div>
+          <div class="actions">
+            <button id="joinBtn" class="btn-primary" type="button">สมัครเข้าทีม</button>
+            <button id="closeBtn" class="btn-secondary" type="button">ปิดหน้าต่าง</button>
+          </div>
+        </div>
 
-      
-<!-- SUCCESS STATE: ซ่อนไว้ก่อน แสดงเมื่อสมัครสำเร็จ -->
-<div id="joinSuccessState" style="display:none;">
-  <div class="success-card">
-    <div class="success-header">
-      <div class="success-icon">✅</div>
-      <div class="success-title">สมัครเข้าทีมสำเร็จแล้ว</div>
-      <div class="success-subtitle" id="successDisplayName">สมาชิกใหม่</div>
-    </div>
-    
-    <div class="success-body">
-      <p class="success-message">
-        ขอบคุณสำหรับการสมัครเป็นสมาชิกใหม่
-        และยินดีต้อนรับเข้าสู่ระบบทีมงานของมูลนิธิ
-      </p>
+        <div id="joinSuccessState">
+          <div class="success-card">
+            <div class="success-header">
+              <div class="success-icon">✅</div>
+              <div class="success-title">สมัครเข้าทีมสำเร็จแล้ว</div>
+              <div class="success-subtitle" id="successDisplayName">สมาชิกใหม่</div>
+            </div>
 
-      <div class="success-note">
-        <div class="success-note-title">ร่วมปณิธานเดียวกัน</div>
-        <div class="success-note-text">
-          เรามีร่วมปณิธานในการ
-          “หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้”
-          ไปด้วยกัน
+            <div class="success-body">
+              <p class="success-message">
+                ขอบคุณสำหรับการสมัครเป็นสมาชิกใหม่
+                และยินดีต้อนรับเข้าสู่ระบบทีมงานของมูลนิธิ
+              </p>
+
+              <div class="success-note">
+                <div class="success-note-title">ร่วมปณิธานเดียวกัน</div>
+                <div class="success-note-text">
+                  เรามีร่วมปณิธานในการ
+                  “หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้”
+                  ไปด้วยกัน
+                </div>
+              </div>
+
+              <div class="success-status-box">
+                <div class="success-status-label">สถานะปัจจุบัน</div>
+                <div class="success-status-value">รอผู้ดูแลอนุมัติ</div>
+              </div>
+
+              <p class="success-help">
+                ระบบได้ส่งคำขอของคุณให้ผู้ดูแลเรียบร้อยแล้ว
+                เมื่อได้รับการอนุมัติ คุณจะสามารถใช้งานระบบทีมงานได้ทันที
+              </p>
+            </div>
+
+            <div class="success-footer">
+              <button type="button" class="btn-success-close" id="btnCloseJoinWindow">
+                ปิดหน้าต่างนี้
+              </button>
+              <button type="button" class="btn-success-secondary" id="btnBackToJoinHome">
+                กลับหน้าหลัก
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="success-status-box">
-        <div class="success-status-label">สถานะปัจจุบัน</div>
-        <div class="success-status-value">รอผู้ดูแลอนุมัติ</div>
-      </div>
-
-      <p class="success-help">
-        ระบบได้ส่งคำขอของคุณให้ผู้ดูแลเรียบร้อยแล้ว
-        เมื่อได้รับการอนุมัติ คุณจะสามารถใช้งานระบบทีมงานได้ทันที
-      </p>
-    </div>
-
-    <div class="success-footer">
-      <button type="button" class="btn-success-close" id="btnCloseJoinWindow">
-        ปิดหน้าต่างนี้
-      </button>
-      <button type="button" class="btn-success-secondary" id="btnBackToJoinHome">
-        กลับหน้าหลัก
-      </button>
-    </div>
-  </div>
-</div>
-      
       <div class="foot">
         KCK Team Join • หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้
       </div>
@@ -564,18 +445,9 @@
   </div>
 
   <script>
-    // =========================
-    // CONFIG
-    // =========================
-    // ใส่ LIFF ID ของหน้าสมัครเข้าทีมตรงนี้
     const LIFF_ID = "2009446483-3pXJDopf";
+    const API_JOIN_URL = "https://satisfied-stillness-production-7942.up.railway.app/api/team/join";
 
-    // ใช้ same-origin ตาม Railway/โดเมนจริง
-   const API_JOIN_URL = "https://satisfied-stillness-production-7942.up.railway.app/api/team/join";
-
-    // =========================
-    // STATE
-    // =========================
     let profile = null;
     let context = null;
     let submitting = false;
@@ -598,7 +470,7 @@
       $closeBtn.disabled = loading;
 
       if (loading) {
-        $joinBtn.innerHTML = `<span class="loading"></span>กำลังส่งข้อมูลสมัคร...`;
+        $joinBtn.innerHTML = '<span class="loading"></span>กำลังส่งข้อมูลสมัคร...';
       } else {
         $joinBtn.innerHTML = "สมัครเข้าทีม";
       }
@@ -617,6 +489,53 @@
           <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18" fill="#64748b">USER</text>
         </svg>
       `);
+    }
+
+    function showJoinSuccessState(displayName = "") {
+      const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
+
+      const formWrap = document.getElementById("joinFormWrap");
+      const successState = document.getElementById("joinSuccessState");
+      const successDisplayName = document.getElementById("successDisplayName");
+
+      if (successDisplayName) {
+        successDisplayName.textContent = safeName;
+      }
+
+      if (formWrap) {
+        formWrap.style.display = "none";
+      }
+
+      if (successState) {
+        successState.style.display = "block";
+        successState.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    function bindJoinSuccessButtons() {
+      const btnClose = document.getElementById("btnCloseJoinWindow");
+      const btnBack = document.getElementById("btnBackToJoinHome");
+
+      if (btnClose) {
+        btnClose.addEventListener("click", () => {
+          try {
+            if (window.liff && liff.isInClient()) {
+              liff.closeWindow();
+              return;
+            }
+          } catch (err) {
+            console.warn("LIFF close error:", err);
+          }
+
+          window.close();
+        });
+      }
+
+      if (btnBack) {
+        btnBack.addEventListener("click", () => {
+          location.reload();
+        });
+      }
     }
 
     async function initLiff() {
@@ -685,18 +604,13 @@
           throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
         }
 
-        showStatus("สมัครเข้าทีมสำเร็จแล้ว ผู้ดูแลระบบสามารถเห็นชื่อของคุณในรายการรออนุมัติได้ทันที", "success");
-        $joinBtn.disabled = true;
-        $joinBtn.textContent = "สมัครเรียบร้อยแล้ว";
+        showJoinSuccessState(profile?.displayName || "สมาชิกใหม่");
+        $closeBtn.disabled = false;
+
       } catch (err) {
         console.error("TEAM JOIN SUBMIT ERROR:", err);
         showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");
-      } finally {
-        if (!$joinBtn.disabled) {
-          setLoadingButton(false);
-        } else {
-          $closeBtn.disabled = false;
-        }
+        setLoadingButton(false);
       }
     }
 
@@ -712,193 +626,10 @@
       window.close();
     });
 
-    initLiff();
-  <script>
-  const LIFF_ID = "2009446483-3pXJDopf";
-  const API_JOIN_URL = "https://satisfied-stillness-production-7942.up.railway.app/api/team/join";
-
-  let profile = null;
-  let context = null;
-  let submitting = false;
-
-  const $statusBox = document.getElementById("statusBox");
-  const $displayName = document.getElementById("displayName");
-  const $userIdText = document.getElementById("userIdText");
-  const $avatar = document.getElementById("avatar");
-  const $joinBtn = document.getElementById("joinBtn");
-  const $closeBtn = document.getElementById("closeBtn");
-
-  function showStatus(message, type = "info") {
-    $statusBox.className = `status show ${type}`;
-    $statusBox.textContent = message;
-  }
-
-  function setLoadingButton(loading) {
-    submitting = loading;
-    $joinBtn.disabled = loading;
-    $closeBtn.disabled = loading;
-
-    if (loading) {
-      $joinBtn.innerHTML = `<span class="loading"></span>กำลังส่งข้อมูลสมัคร...`;
-    } else {
-      $joinBtn.innerHTML = "สมัครเข้าทีม";
-    }
-  }
-
-  function setProfileUI(p) {
-    const name = p?.displayName || "ไม่พบชื่อผู้ใช้";
-    const uid = p?.userId || "ไม่พบ userId";
-    const avatar = p?.pictureUrl || "";
-
-    $displayName.textContent = name;
-    $userIdText.textContent = uid;
-    $avatar.src = avatar || "data:image/svg+xml;utf8," + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
-        <rect width="100%" height="100%" fill="#dfe7ee"/>
-        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="18" fill="#64748b">USER</text>
-      </svg>
-    `);
-  }
-
-  function showJoinSuccessState(displayName = "") {
-    const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
-
-    const formWrap = document.getElementById("joinFormWrap");
-    const successState = document.getElementById("joinSuccessState");
-    const successDisplayName = document.getElementById("successDisplayName");
-
-    if (successDisplayName) {
-      successDisplayName.textContent = safeName;
-    }
-
-    if (formWrap) {
-      formWrap.style.display = "none";
-    }
-
-    if (successState) {
-      successState.style.display = "block";
-      successState.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }
-
-  function bindJoinSuccessButtons() {
-    const btnClose = document.getElementById("btnCloseJoinWindow");
-    const btnBack = document.getElementById("btnBackToJoinHome");
-
-    if (btnClose) {
-      btnClose.addEventListener("click", () => {
-        try {
-          if (window.liff && liff.isInClient()) {
-            liff.closeWindow();
-            return;
-          }
-        } catch (err) {
-          console.warn("LIFF close error:", err);
-        }
-
-        window.close();
-      });
-    }
-
-    if (btnBack) {
-      btnBack.addEventListener("click", () => {
-        location.reload();
-      });
-    }
-  }
-
-  async function initLiff() {
-    if (!LIFF_ID || LIFF_ID === "PUT_YOUR_TEAM_LIFF_ID_HERE") {
-      showStatus("กรุณาใส่ LIFF ID ของหน้าสมัครเข้าทีมก่อนใช้งาน", "error");
-      $joinBtn.disabled = true;
-      return;
-    }
-
-    try {
-      await liff.init({ liffId: LIFF_ID });
-
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
-
-      profile = await liff.getProfile();
-      context = liff.getContext();
-
-      setProfileUI(profile);
-
-      const groupId = context?.groupId || context?.roomId || "";
-      if (groupId) {
-        showStatus("พร้อมสมัครเข้าทีมแล้ว กดปุ่มด้านล่างเพื่อส่งข้อมูลเข้าคิวรออนุมัติ", "info");
-      } else {
-        showStatus("ระบบไม่พบ groupId จาก LIFF แต่ยังสามารถส่งข้อมูลสมัครได้", "info");
-      }
-    } catch (err) {
-      console.error("LIFF INIT ERROR:", err);
-      showStatus("ไม่สามารถเริ่มต้น LIFF ได้ กรุณาปิดแล้วลองใหม่อีกครั้ง", "error");
-      $joinBtn.disabled = true;
-    }
-  }
-
-  async function submitJoinTeam() {
-    if (submitting) return;
-
-    if (!profile?.userId) {
-      showStatus("ไม่พบข้อมูลผู้ใช้ LINE กรุณาเปิดผ่าน LIFF จากใน LINE อีกครั้ง", "error");
-      return;
-    }
-
-    try {
-      setLoadingButton(true);
-
-      const payload = {
-        line_user_id: profile.userId,
-        display_name: profile.displayName || "",
-        picture_url: profile.pictureUrl || "",
-        joined_group_id: context?.groupId || context?.roomId || "",
-        source: "liff"
-      };
-
-      const res = await fetch(API_JOIN_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || !data?.ok) {
-        throw new Error(data?.error || "สมัครเข้าทีมไม่สำเร็จ");
-      }
-
-      showJoinSuccessState(profile?.displayName || "สมาชิกใหม่");
-      $closeBtn.disabled = false;
-
-    } catch (err) {
-      console.error("TEAM JOIN SUBMIT ERROR:", err);
-      showStatus(err?.message || "เกิดข้อผิดพลาดในการสมัครเข้าทีม", "error");
-      setLoadingButton(false);
-    }
-  }
-
-  $joinBtn.addEventListener("click", submitJoinTeam);
-
-  $closeBtn.addEventListener("click", () => {
-    try {
-      if (window.liff && liff.isInClient()) {
-        liff.closeWindow();
-        return;
-      }
-    } catch (_) {}
-    window.close();
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    bindJoinSuccessButtons();
-    initLiff();
-  });
-</script>
+    document.addEventListener("DOMContentLoaded", () => {
+      bindJoinSuccessButtons();
+      initLiff();
+    });
+  </script>
 </body>
 </html>

@@ -9191,19 +9191,19 @@ app.post("/api/team/join", async (req, res) => {
       status: "pending"
     };
 
-    const { data: insertedRow, error: insertError } = await supabase
-      .from("team_candidates")
-      .insert(payload)
-      .select("id, line_user_id, display_name, status, created_at")
-      .single();
+const { data: insertedRow, error: upsertError } = await supabase
+  .from("team_candidates")
+  .upsert(payload, { onConflict: "line_user_id" })
+  .select("id, line_user_id, display_name, status, created_at")
+  .single();
 
-    if (insertError) {
-      console.error("TEAM JOIN INSERT ERROR:", insertError);
-      return res.status(500).json({
-        ok: false,
-        error: insertError.message || "insert_failed"
-      });
-    }
+if (upsertError) {
+  console.error("TEAM JOIN UPSERT ERROR:", upsertError);
+  return res.status(500).json({
+    ok: false,
+    error: upsertError.message || "upsert_failed"
+  });
+}
 
     return res.json({
       ok: true,

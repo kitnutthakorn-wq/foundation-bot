@@ -9589,6 +9589,37 @@ if (addState?.step === "waiting_user_id") {
   continue;
 }
 
+if (text.startsWith("select_user ")) {
+
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+    ]);
+    continue;
+  }
+
+  console.log("CHECK select_user command HIT:", text);
+
+  const targetUserId = text.replace("select_user ", "").trim();
+
+  if (!targetUserId.startsWith("U")) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
+    ]);
+    continue;
+  }
+
+  setAddTeamState(userId, "waiting_role", { targetUserId });
+
+  await safeReply(replyToken, [
+    buildSelectRoleFlex(targetUserId)
+  ]);
+
+  continue;
+}
+
+
+ 
 if (text.startsWith("setrole_auto ")) {
 
   if (!(await isAdmin(userId))) {
@@ -9597,6 +9628,8 @@ if (text.startsWith("setrole_auto ")) {
     ]);
     continue;
   }
+
+  console.log("CHECK setrole_auto command HIT:", text);
 
   const role = (text.split(" ")[1] || "").toLowerCase();
   const addTeamState = getAddTeamState(userId);
@@ -9637,24 +9670,20 @@ if (text.startsWith("setrole_auto ")) {
     const currentRole = await getUserRole(targetUserId);
     const adminCount = await countActiveAdmins();
 
-    if (role === "admin" && currentRole !== "admin") {
-      if (adminCount >= 3) {
-        await safeReply(replyToken, [
-          { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
-        ]);
-        clearAddTeamState(userId);
-        continue;
-      }
+    if (role === "admin" && currentRole !== "admin" && adminCount >= 3) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
+      ]);
+      clearAddTeamState(userId);
+      continue;
     }
 
-    if (currentRole === "admin" && role !== "admin") {
-      if (adminCount <= 1) {
-        await safeReply(replyToken, [
-          { type: "text", text: "❌ ต้องมีผู้ดูแลระบบอย่างน้อย 1 คน" }
-        ]);
-        clearAddTeamState(userId);
-        continue;
-      }
+    if (currentRole === "admin" && role !== "admin" && adminCount <= 1) {
+      await safeReply(replyToken, [
+        { type: "text", text: "❌ ต้องมีผู้ดูแลระบบอย่างน้อย 1 คน" }
+      ]);
+      clearAddTeamState(userId);
+      continue;
     }
 
     const { data: existing, error: existingError } = await supabase
@@ -9663,9 +9692,7 @@ if (text.startsWith("setrole_auto ")) {
       .eq("line_user_id", targetUserId)
       .maybeSingle();
 
-    if (existingError) {
-      throw existingError;
-    }
+    if (existingError) throw existingError;
 
     if (existing && existing.is_active !== false && existing.role === role) {
       await safeReply(replyToken, [
@@ -9686,9 +9713,7 @@ if (text.startsWith("setrole_auto ")) {
         { onConflict: "line_user_id" }
       );
 
-    if (upsertError) {
-      throw upsertError;
-    }
+    if (upsertError) throw upsertError;
 
     const approveResult = await approvePendingTeamCandidate(targetUserId, role, userId);
 
@@ -9718,8 +9743,7 @@ if (text.startsWith("setrole_auto ")) {
   }
 
   continue;
-}
-console.log("EVENT TEXT =", text);
+}console.log("EVENT TEXT =", text);
 console.log("USER ID =", userId);
 
 

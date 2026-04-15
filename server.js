@@ -4881,60 +4881,60 @@ function buildSelectableUserBubble(user = {}) {
             }
           ]
         },
+       {
+  type: "box",
+  layout: "horizontal",
+  spacing: "sm",
+  margin: "sm",
+  contents: [
+    {
+      type: "box",
+      layout: "vertical",
+      backgroundColor: "#F3F4F6",
+      cornerRadius: "999px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "4px",
+      paddingBottom: "4px",
+      flex: 1,
+      contents: [
         {
-          type: "box",
-          layout: "horizontal",
-          spacing: "sm",
-          margin: "sm",
-          contents: [
-            {
-              type: "box",
-              layout: "vertical",
-              backgroundColor: "#F3F4F6",
-              cornerRadius: "999px",
-              paddingStart: "10px",
-              paddingEnd: "10px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              flex: 1,
-              contents: [
-                {
-                  type: "text",
-                  text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
-                  size: "xs",
-                  weight: "bold",
-                  color: "#555555",
-                  align: "center"
-                }
-              ]
-            },
-            {
-              type: "box",
-              layout: "vertical",
-              backgroundColor: "#F9FAFB",
-              cornerRadius: "999px",
-              paddingStart: "10px",
-              paddingEnd: "10px",
-              paddingTop: "4px",
-              paddingBottom: "4px",
-              flex: 1,
-              contents: [
-                {
-                  type: "text",
-                  text: `${
-                    user.created_at || user.joined_at
-                      ? formatThaiDateTime(user.created_at || user.joined_at)
-                      : "-"
-                  }`,
-                  size: "xs",
-                  weight: "bold",
-                  color: "#666666",
-                  align: "center"
-                }
-              ]
-            }
-          ]
-        },
+          type: "text",
+          text: `เลขที่ ${user.id || user.candidate_no || user.candidate_id || "-"}`,
+          size: "xs",
+          weight: "bold",
+          color: "#555555",
+          align: "center"
+        }
+      ]
+    },
+    {
+      type: "box",
+      layout: "vertical",
+      backgroundColor: "#F9FAFB",
+      cornerRadius: "999px",
+      paddingStart: "10px",
+      paddingEnd: "10px",
+      paddingTop: "4px",
+      paddingBottom: "4px",
+      flex: 1,
+      contents: [
+        {
+          type: "text",
+          text: `${
+            user.created_at || user.joined_at
+              ? formatThaiDateTime(user.created_at || user.joined_at)
+              : "-"
+          }`,
+          size: "xs",
+          weight: "bold",
+          color: "#666666",
+          align: "center"
+        }
+      ]
+    }
+  ]
+},
         {
           type: "separator",
           margin: "md"

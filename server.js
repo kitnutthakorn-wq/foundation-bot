@@ -4891,7 +4891,7 @@ function buildSelectableUserBubble(user = {}) {
               type: "box",
               layout: "vertical",
               backgroundColor: "#F3F4F6",
-              cornerRadius: "999px",
+             
               paddingStart: "10px",
               paddingEnd: "10px",
               paddingTop: "4px",
@@ -4911,7 +4911,7 @@ function buildSelectableUserBubble(user = {}) {
               type: "box",
               layout: "vertical",
               backgroundColor: "#F9FAFB",
-              cornerRadius: "999px",
+              
               paddingStart: "10px",
               paddingEnd: "10px",
               paddingTop: "4px",

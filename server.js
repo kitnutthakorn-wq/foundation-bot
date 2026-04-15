@@ -4800,19 +4800,19 @@ function buildSelectableUserBubble(user = {}) {
 
   const numberText = `${user.id || user.candidate_no || user.candidate_id || "-"}`;
   const dateText =
-  user.created_at || user.joined_at
-    ? new Date(user.created_at || user.joined_at).toLocaleDateString("th-TH", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      })
-    : "-";
+    user.created_at || user.joined_at
+      ? new Date(user.created_at || user.joined_at).toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        })
+      : "-";
 
   function infoRow(label, value, valueColor = "#FFFFFF") {
     return {
       type: "box",
       layout: "horizontal",
-      spacing: "md",
+      spacing: "sm",
       margin: "md",
       contents: [
         {
@@ -4849,7 +4849,7 @@ function buildSelectableUserBubble(user = {}) {
     body: {
       type: "box",
       layout: "vertical",
-      paddingAll: "18px",
+      paddingAll: "14px",
       spacing: "none",
       backgroundColor: "#0B0F14",
       contents: [
@@ -4862,7 +4862,7 @@ function buildSelectableUserBubble(user = {}) {
             {
               type: "image",
               url: getSelectableUserAvatar(user),
-              size: "56px",
+              size: "54px",
               aspectMode: "cover",
               aspectRatio: "1:1",
               flex: 0
@@ -4906,13 +4906,16 @@ function buildSelectableUserBubble(user = {}) {
     footer: {
       type: "box",
       layout: "vertical",
-      paddingAll: "18px",
+      paddingTop: "8px",
+      paddingBottom: "10px",
+      paddingStart: "14px",
+      paddingEnd: "14px",
       backgroundColor: "#0B0F14",
       contents: [
         {
           type: "button",
           style: "primary",
-          height: "md",
+          height: "sm",
           color: "#F00014",
           action: {
             type: "message",

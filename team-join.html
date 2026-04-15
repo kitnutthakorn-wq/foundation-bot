@@ -225,9 +225,129 @@
     }
 
     @keyframes spin{
-      to{ transform:rotate(360deg); }
+  to{ transform:rotate(360deg); }
+}
 
-     #joinSuccessState {
+#joinSuccessState {
+  display: none;
+  margin-top: 16px;
+}
+
+.success-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+  border: 1px solid #e5e7eb;
+}
+
+.success-header {
+  background: linear-gradient(180deg, #0B7C86 0%, #0E8A95 100%);
+  padding: 24px 20px 20px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.success-icon {
+  font-size: 34px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.success-subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #D1FAE5;
+  word-break: break-word;
+}
+
+.success-body {
+  padding: 20px;
+}
+
+.success-message,
+.success-help {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #334155;
+  margin: 0 0 16px 0;
+}
+
+.success-note {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.success-note-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0B7C86;
+  margin-bottom: 6px;
+}
+
+.success-note-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #475569;
+}
+
+.success-status-box {
+  background: #ECFDF5;
+  border: 1px solid #BBF7D0;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.success-status-label {
+  font-size: 12px;
+  color: #166534;
+  margin-bottom: 4px;
+}
+
+.success-status-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #15803D;
+}
+
+.success-footer {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-success-close,
+.btn-success-secondary {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  min-height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-success-close {
+  background: #22C55E;
+  color: #ffffff;
+}
+
+.btn-success-secondary {
+  background: #E5E7EB;
+  color: #111827;
+}
   margin-top: 16px;
 }
 

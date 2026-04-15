@@ -4419,6 +4419,27 @@ function buildTeamMemberFlex(item = {}) {
     }
   };
 }
+
+async function listPendingTeamCandidates() {
+  try {
+    const { data, error } = await supabase
+      .from("team_candidates")
+      .select("id, line_user_id, display_name, picture_url, status, created_at")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("listPendingTeamCandidates error:", error);
+      return [];
+    }
+
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.error("listPendingTeamCandidates failed:", err);
+    return [];
+  }
+}
+
 function buildSelectUserFlex() {
   const users = [...recentUsers.values()]
     .sort((a, b) => b.lastSeen - a.lastSeen)

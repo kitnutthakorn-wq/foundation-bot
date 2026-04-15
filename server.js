@@ -9222,19 +9222,19 @@ if (event.type === "memberJoined" && event.source?.type === "group") {
       continue;
     }
 
-    let joinedDisplayName = firstJoinedUserId;
-    try {
-      const profile = await getGroupMemberProfile(event.source.groupId, firstJoinedUserId);
-      joinedDisplayName = profile?.displayName || firstJoinedUserId;
-    } catch (err) {
-      console.log("JOINED PROFILE LOAD ERROR:", err?.message || err);
-    }
+  let joinedDisplayName = "สมาชิกใหม่";
+try {
+  const profile = await getGroupMemberProfile(event.source.groupId, firstJoinedUserId);
+  joinedDisplayName = String(profile?.displayName || "").trim() || "สมาชิกใหม่";
+} catch (err) {
+  console.log("JOINED PROFILE LOAD ERROR:", err?.message || err);
+}
 
-    upsertRecentUser(firstJoinedUserId, joinedDisplayName);
+upsertRecentUser(firstJoinedUserId, joinedDisplayName);
 
-    await safeReply(replyToken, [
-      buildTeamJoinWelcomeFlex(joinedDisplayName)
-    ]);
+await safeReply(replyToken, [
+  buildTeamJoinWelcomeFlex(joinedDisplayName)
+]);
   } catch (err) {
     console.error("MEMBER JOINED WELCOME ERROR:", err);
   }

@@ -1357,7 +1357,7 @@ function buildCaseMenuCarouselBubble(item = {}, options = {}) {
   paddingEnd: "10px",
   paddingTop: "4px",
   paddingBottom: "4px",
-  cornerRadius: "999px",
+ 
   backgroundColor: isUrgent ? "#FDECEC" : "#EAF7EF",
               contents: [
                 {

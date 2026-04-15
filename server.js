@@ -8998,6 +8998,51 @@ app.get("/imagemap/team-menu/1040", (req, res) => {
 res.sendFile(path.join(__dirname, "imagemap/New_WorkTeam.png"));
 });
 
+// =========================
+// TEAM JOIN API
+// สำหรับ LIFF สมัครเข้าทีม
+// =========================
+app.post("/api/team/join", express.json(), async (req, res) => {
+  try {
+    const lineUserId = String(req.body?.line_user_id || "").trim();
+    const displayName = String(req.body?.display_name || "").trim();
+    const pictureUrl = String(req.body?.picture_url || "").trim();
+    const joinedGroupId = String(req.body?.joined_group_id || "").trim();
+    const source = String(req.body?.source || "liff").trim();
+
+    if (!lineUserId) {
+      return res.status(400).json({
+        ok: false,
+        error: "line_user_id is required"
+      });
+    }
+
+    const saved = await upsertTeamCandidate({
+      lineUserId,
+      displayName,
+      pictureUrl,
+      joinedGroupId,
+      source,
+      status: "pending",
+      note: "สมัครเข้าทีมผ่าน LIFF"
+    });
+
+    // เพิ่มเข้า recentUsers ด้วย จะได้โผล่ในเมนูเลือกสมาชิกทันที
+    upsertRecentUser(lineUserId, displayName || lineUserId);
+
+    return res.json({
+      ok: true,
+      candidate: saved
+    });
+  } catch (err) {
+    console.error("TEAM JOIN API ERROR:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err?.message || "internal error"
+    });
+  }
+});
+
 /* =========================
    WEBHOOK
 ========================= */

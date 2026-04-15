@@ -4804,20 +4804,48 @@ function buildSelectableUserBubble(user = {}) {
         {
           type: "box",
           layout: "horizontal",
+          spacing: "md",
+          alignItems: "center",
           contents: [
             {
-              type: "text",
-              text: displayName,
-              weight: "bold",
-              size: "xl",
-              wrap: true,
-              color: "#163c72",
-              flex: 1
+              type: "image",
+              url: getSelectableUserAvatar(user),
+              size: "64px",
+              aspectMode: "cover",
+              aspectRatio: "1:1",
+              flex: 0
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              flex: 1,
+              spacing: "xs",
+              contents: [
+                {
+                  type: "text",
+                  text: displayName,
+                  weight: "bold",
+                  size: "xl",
+                  wrap: true,
+                  color: "#163c72"
+                },
+                {
+                  type: "text",
+                  text: roleText,
+                  size: "sm",
+                  color: "#666666",
+                  wrap: true
+                }
+              ]
             },
             {
               type: "box",
               layout: "vertical",
               backgroundColor:
+                user.status === "pending" ? "#FFF4E5" :
+                user.status === "approved" ? "#E8F7EE" :
+                user.status === "active" ? "#E8F1FF" :
+                user.status === "rejected" ? "#FDECEC" :
                 user.source === "candidate" ? "#FFF4E5" :
                 user.source === "recent" ? "#E8F7EE" :
                 "#EEF3FF",
@@ -4826,17 +4854,24 @@ function buildSelectableUserBubble(user = {}) {
               paddingEnd: "10px",
               paddingTop: "4px",
               paddingBottom: "4px",
-              margin: "sm",
               contents: [
                 {
                   type: "text",
                   text:
+                    user.status === "pending" ? "ผู้สมัคร" :
+                    user.status === "approved" ? "อนุมัติแล้ว" :
+                    user.status === "active" ? "ใช้งานแล้ว" :
+                    user.status === "rejected" ? "ไม่ผ่าน" :
                     user.source === "candidate" ? "ผู้สมัคร" :
                     user.source === "recent" ? "ล่าสุด" :
                     "สมาชิก",
                   size: "xs",
                   weight: "bold",
                   color:
+                    user.status === "pending" ? "#C77700" :
+                    user.status === "approved" ? "#1F8F4D" :
+                    user.status === "active" ? "#2563EB" :
+                    user.status === "rejected" ? "#D32F2F" :
                     user.source === "candidate" ? "#C77700" :
                     user.source === "recent" ? "#1F8F4D" :
                     "#2563EB",
@@ -4847,11 +4882,56 @@ function buildSelectableUserBubble(user = {}) {
           ]
         },
         {
-          type: "text",
-          text: roleText,
-          size: "sm",
-          color: "#666666",
-          wrap: true
+          type: "box",
+          layout: "horizontal",
+          spacing: "sm",
+          margin: "sm",
+          contents: [
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#F3F4F6",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              contents: [
+                {
+                  type: "text",
+                  text: `เลขที่ ${user.id || user.candidate_no || "-"}`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#555555",
+                  align: "center"
+                }
+              ]
+            },
+            {
+              type: "box",
+              layout: "vertical",
+              backgroundColor: "#F9FAFB",
+              cornerRadius: "999px",
+              paddingStart: "10px",
+              paddingEnd: "10px",
+              paddingTop: "4px",
+              paddingBottom: "4px",
+              contents: [
+                {
+                  type: "text",
+                  text: `${
+                    user.created_at || user.joined_at
+                      ? formatThaiDateTime(user.created_at || user.joined_at)
+                      : "-"
+                  }`,
+                  size: "xs",
+                  weight: "bold",
+                  color: "#666666",
+                  align: "center"
+                }
+              ]
+            }
+          ]
         },
         {
           type: "separator",
@@ -4888,10 +4968,33 @@ function buildSelectableUserBubble(user = {}) {
             },
             {
               type: "text",
+              text: `กลุ่ม: ${user.joined_group_id || "-"}`,
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            },
+            {
+              type: "text",
               text:
-                user.joined_group_id
-                  ? `กลุ่ม: ${user.joined_group_id}`
-                  : "กลุ่ม: -",
+                `สถานะ: ${
+                  user.status === "pending" ? "รออนุมัติ" :
+                  user.status === "approved" ? "อนุมัติแล้ว" :
+                  user.status === "active" ? "มีสิทธิ์ใช้งานแล้ว" :
+                  user.status === "rejected" ? "ไม่ผ่าน" :
+                  "-"
+                }`,
+              size: "xs",
+              color: "#777777",
+              wrap: true
+            },
+            {
+              type: "text",
+              text:
+                `ที่มา: ${
+                  user.source === "candidate" ? "ผู้สมัครเข้าทีม" :
+                  user.source === "recent" ? "ผู้ใช้ล่าสุด" :
+                  user.source || "-"
+                }`,
               size: "xs",
               color: "#777777",
               wrap: true
@@ -4921,7 +5024,6 @@ function buildSelectableUserBubble(user = {}) {
     }
   };
 }
-
 async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {

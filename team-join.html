@@ -583,8 +583,13 @@ function setJoinSuccessMode({ alreadyRequested = false, alreadyApproved = false,
     
 async function sendJoinSuccessMessageToChat(displayName = "", requestId = "-", options = {}) {
   try {
-    if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) return;
-    if (typeof liff.sendMessages !== "function") return;
+    if (!(window.liff && typeof liff.isInClient === "function" && liff.isInClient())) {
+      return;
+    }
+
+    if (typeof liff.sendMessages !== "function") {
+      return;
+    }
 
     const safeName = String(displayName || "").trim() || "สมาชิกใหม่";
     const safeRequestId = String(requestId || "-").trim() || "-";

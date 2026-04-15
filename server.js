@@ -9182,40 +9182,27 @@ app.post("/api/team/join", async (req, res) => {
       });
     }
 
-    const payload = {
-      line_user_id: lineUserId,
-      display_name: displayName || null,
-      picture_url: pictureUrl || null,
-      joined_group_id: joinedGroupId || null,
+    const row = await upsertTeamCandidate({
+      lineUserId,
+      displayName,
+      pictureUrl,
       source: safeSource,
+      joinedGroupId,
       status: "pending"
-    };
-
-const { data: insertedRow, error: upsertError } = await supabase
-  .from("team_candidates")
-  .upsert(payload, { onConflict: "line_user_id" })
-  .select("id, line_user_id, display_name, status, created_at")
-  .single();
-
-if (upsertError) {
-  console.error("TEAM JOIN UPSERT ERROR:", upsertError);
-  return res.status(500).json({
-    ok: false,
-    error: upsertError.message || "upsert_failed"
-  });
-}
+    });
 
     return res.json({
       ok: true,
-      request_id: insertedRow?.id || null,
-      candidate_id: insertedRow?.id || null
+      request_id: row?.id || null,
+      candidate_id: row?.id || null,
+      status: row?.status || "pending"
     });
 
   } catch (err) {
     console.error("TEAM JOIN API ERROR:", err);
     return res.status(500).json({
       ok: false,
-      error: err.message || "internal_error"
+      error: err?.message || "internal_error"
     });
   }
 });

@@ -4800,9 +4800,13 @@ function buildSelectableUserBubble(user = {}) {
 
   const numberText = `${user.id || user.candidate_no || user.candidate_id || "-"}`;
   const dateText =
-    user.created_at || user.joined_at
-      ? formatThaiDateTime(user.created_at || user.joined_at)
-      : "-";
+  user.created_at || user.joined_at
+    ? new Date(user.created_at || user.joined_at).toLocaleDateString("th-TH", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      })
+    : "-";
 
   function infoRow(label, value, valueColor = "#FFFFFF") {
     return {

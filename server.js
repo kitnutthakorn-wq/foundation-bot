@@ -4945,20 +4945,7 @@ function buildSelectableUserBubble(user = {}) {
           margin: "md",
           spacing: "sm",
           contents: [
-            {
-              type: "text",
-              text: "LINE USER ID",
-              size: "xs",
-              color: "#999999"
-            },
-            {
-              type: "text",
-              text: userIdText,
-              size: "sm",
-              color: "#444444",
-              wrap: true
-            },
-            
+ 
             {
               type: "text",
               text:

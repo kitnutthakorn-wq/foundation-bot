@@ -4748,7 +4748,7 @@ function buildSelectableUserBadges(u = {}) {
       paddingEnd: "10px",
       paddingTop: "5px",
       paddingBottom: "5px",
-      cornerRadius: "999px",
+      
       backgroundColor: "#E8F1FD",
       contents: [
         {

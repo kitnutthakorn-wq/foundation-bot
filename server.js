@@ -9808,17 +9808,37 @@ if (String(text || "").trim() === "สมัครทีมภายหลัง
 }
 
 if (String(text || "").trim() === "เพิ่มทีมงาน") {
-  if (!(await isAdmin(userId))) {
+  if (!isGroupEvent(event)) {
     await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
+      { type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในไลน์กลุ่มเท่านั้น" }
     ]);
     continue;
   }
 
-  console.log("CHECK เพิ่มทีมงาน command HIT");
+  if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คำสั่งนี้ใช้ได้เฉพาะในกลุ่มทีมงานที่ได้รับอนุญาตเท่านั้น" }
+    ]);
+    continue;
+  }
 
-  const flex = await buildSelectUserFlex();
-  await safeReply(replyToken, [flex]);
+  if (!(await isAdmin(userId))) {
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ คำสั่งนี้สำหรับผู้ดูแลระบบ" }
+    ]);
+    continue;
+  }
+
+  try {
+    const flex = await buildSelectUserFlex();
+    await safeReply(replyToken, [flex]);
+  } catch (err) {
+    console.error("เพิ่มทีมงาน buildSelectUserFlex error:", err);
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ โหลดรายชื่อทีมงานไม่สำเร็จ" }
+    ]);
+  }
+
   continue;
 }
 

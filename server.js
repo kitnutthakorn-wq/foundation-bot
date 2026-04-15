@@ -5028,8 +5028,6 @@ footer: {
 }
 
 async function buildSelectUserFlex() {
-
-async function buildSelectUserFlex() {
   const users = (await getSelectableTeamUsers())
     .sort((a, b) => {
       const aTime = new Date(a.created_at || 0).getTime();

@@ -9564,6 +9564,16 @@ if (String(text || "").trim() === "เพิ่มทีมงาน") {
     continue;
   }
 
+if (String(text || "").trim() === "สมัครทีมภายหลัง") {
+  await safeReply(replyToken, [
+    {
+      type: "text",
+      text: "รับทราบครับ 😊 เมื่อพร้อมแล้วสามารถกดสมัครเข้าทีมได้ทุกเมื่อ ระบบจะรอการยืนยันจากคุณอยู่เสมอ"
+    }
+  ]);
+  continue;
+}
+ 
   console.log("CHECK เพิ่มทีมงาน command HIT");
 
   const flex = await buildSelectUserFlex();

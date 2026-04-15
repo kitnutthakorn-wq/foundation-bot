@@ -9508,109 +9508,6 @@ if (addState?.step === "waiting_user_id") {
   continue;
 }
 
-if (text.startsWith("setrole ")) {
-
-  if (!(await isAdmin(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
-    ]);
-    continue;
-  }
-
-  const parts = text.trim().split(/\s+/);
-  const targetUserId = parts[1] || "";
-  const role = (parts[2] || "").toLowerCase();
-
-  try {
-    if (!targetUserId.startsWith("U")) {
-      await safeReply(replyToken, [
-        { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
-      ]);
-      continue;
-    }
-
-    if (!["admin", "staff", "viewer"].includes(role)) {
-      await safeReply(replyToken, [
-        { type: "text", text: "❌ role ต้องเป็น admin, staff หรือ viewer เท่านั้น" }
-      ]);
-      continue;
-    }
-
-    if (role === "admin") {
-      const adminCount = await countActiveAdmins();
-      if (adminCount >= 3) {
-        await safeReply(replyToken, [
-          { type: "text", text: "❌ Admin เต็มแล้ว (สูงสุด 3 คน)" }
-        ]);
-        continue;
-      }
-    }
-
-    const { data: existing } = await supabase
-      .from("line_user_roles")
-      .select("line_user_id, is_active, role")
-      .eq("line_user_id", targetUserId)
-      .maybeSingle();
-
-if (existing && existing.is_active !== false) {
-
-  if (existing.role === role) {
-    await safeReply(replyToken, [
-      { type: "text", text: "⚠️ ผู้ใช้นี้มีสิทธิ์นี้อยู่แล้ว" }
-    ]);
-    clearAddTeamState(userId);   // ✅ เพิ่ม
-    continue;
-  }
-
-  await setLineUserRole(targetUserId, role);
-
-  await safeReply(replyToken, [
-    { type: "text", text: `🔄 อัปเดตสิทธิ์สำเร็จ (${role})` }
-  ]);
-
-  clearAddTeamState(userId);     // ✅ เพิ่ม
-  continue;
-} 
-
- }catch (err) {
-  console.error("SET ROLE ERROR:", err);
-
-  await safeReply(replyToken, [
-    { type: "text", text: "❌ เกิดข้อผิดพลาด" }
-  ]);
-
-  clearAddTeamState(userId);   // ✅ ต้องเพิ่มตรงนี้
-
-  continue;
-}
-}
-
- if (text.startsWith("select_user ")) {
-
-  if (!(await isAdmin(userId))) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ ไม่มีสิทธิ์ใช้งานคำสั่งนี้" }
-    ]);
-    continue;
-  }
-
-  const targetUserId = text.replace("select_user ", "").trim();
-
-  if (!targetUserId.startsWith("U")) {
-    await safeReply(replyToken, [
-      { type: "text", text: "❌ USER ID ไม่ถูกต้อง" }
-    ]);
-    continue;
-  }
-
-  setAddTeamState(userId, "waiting_role", { targetUserId });
-
-  await safeReply(replyToken, [
-    buildSelectRoleFlex(targetUserId)
-  ]);
-
-  continue;
-}    
 if (text.startsWith("setrole_auto ")) {
 
   if (!(await isAdmin(userId))) {
@@ -9700,7 +9597,7 @@ if (text.startsWith("setrole_auto ")) {
       continue;
     }
 
-    await supabase
+    const { error: upsertError } = await supabase
       .from("line_user_roles")
       .upsert(
         {
@@ -9711,6 +9608,16 @@ if (text.startsWith("setrole_auto ")) {
         { onConflict: "line_user_id" }
       );
 
+    if (upsertError) {
+      throw upsertError;
+    }
+
+    const approveResult = await approvePendingTeamCandidate(targetUserId, role, userId);
+
+    if (!approveResult.success) {
+      console.warn("approvePendingTeamCandidate warning:", approveResult);
+    }
+
     roleCache.delete(targetUserId);
     clearAddTeamState(userId);
 
@@ -9720,18 +9627,20 @@ if (text.startsWith("setrole_auto ")) {
         text: `✅ อัปเดตสิทธิ์สำเร็จ (${role})\nUSER ID: ${targetUserId}`
       }
     ]);
- }catch (err) {
-  console.error("SET ROLE ERROR:", err);
 
-  await safeReply(replyToken, [
-    { type: "text", text: "❌ เกิดข้อผิดพลาด" }
-  ]);
+  } catch (err) {
+    console.error("SET ROLE ERROR:", err);
 
-  clearAddTeamState(userId);   // ✅ ต้องเพิ่มตรงนี้
+    await safeReply(replyToken, [
+      { type: "text", text: "❌ เกิดข้อผิดพลาด" }
+    ]);
+
+    clearAddTeamState(userId);
+    continue;
+  }
 
   continue;
 }
-
   continue;
 }
 console.log("EVENT TEXT =", text);

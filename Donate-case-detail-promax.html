@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ดูรายละเอียดและบริจาค | ProMAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef3f7; --card:#ffffff; --line:#d9e2ec; --text:#16324f; --muted:#6b7280;
+    --brand:#0b7c86; --brand-2:#19a84a; --accent:#2457d6; --yellow:#ffcc29;
+    --shadow:0 18px 40px rgba(18,36,58,.12); --shadow-soft:0 10px 24px rgba(18,36,58,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
+  a{text-decoration:none;color:inherit}
+  .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(238,243,247,.84);border-bottom:1px solid rgba(255,255,255,.7)}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .back-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)}
+  .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:500}
+  .dot{width:8px;height:8px;border-radius:999px;background:var(--brand-2);box-shadow:0 0 0 5px rgba(25,168,74,.12)}
+  .hero{position:relative;min-height:540px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,25,40,.86) 0%, rgba(7,25,40,.72) 36%, rgba(7,25,40,.36) 68%, rgba(7,25,40,.18) 100%)}
+  .hero-inner{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:64px 18px 84px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:26px;align-items:end}
+  .eyebrow{display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px}
+  .hero h1{margin:0 0 14px;font-size:56px;line-height:1.04;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+  .hero p{margin:0 0 22px;font-size:19px;line-height:1.8;max-width:760px;color:rgba(255,255,255,.95)}
+  .hero-badges{display:flex;flex-wrap:wrap;gap:12px}
+  .hero-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:10px 14px;font-weight:700;font-size:15px}
+  .hero-card{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.45);border-radius:30px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.18)}
+  .hero-card-img{height:250px;background:center/cover no-repeat}
+  .hero-card-body{padding:20px;color:var(--text)}
+  .hero-card-body h3{margin:0 0 8px;font-size:28px;line-height:1.1}
+  .hero-card-body p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+  .main{margin-top:-58px;position:relative;z-index:2}
+  .layout{max-width:1240px;margin:0 auto;padding:0 18px 46px;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);gap:24px;align-items:start}
+  .panel,.summary-card,.story-card{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+  .panel-body,.summary-body,.story-body{padding:24px}
+  .section-title{margin:0 0 8px;font-size:34px;line-height:1.15}
+  .section-lead{margin:0;color:var(--muted);font-size:17px;line-height:1.7}
+  .meta-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+  .meta-box{border-radius:20px;background:#f5f8fb;border:1px solid #dbe4ee;padding:16px}
+  .meta-box .label{font-size:12px;color:var(--muted);margin-bottom:6px}
+  .meta-box .value{font-size:20px;font-weight:700;line-height:1.2}
+  .progress-wrap{margin-top:22px}
+  .progress-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
+  .progress-top strong{font-size:18px}
+  .progress-top span{color:var(--muted);font-size:15px}
+  .progress{height:16px;border-radius:999px;background:#e8edf3;overflow:hidden}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,#18a347 0%, #22c55e 100%)}
+  .amount-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+  .amount-box{border-radius:20px;background:#fff;border:1px solid var(--line);padding:18px}
+  .amount-box .small{font-size:13px;color:var(--muted);margin-bottom:4px}
+  .amount-box .big{font-size:34px;font-weight:800;line-height:1.05}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:none;border-radius:16px;padding:0 18px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Kanit',sans-serif}
+  .btn-primary{background:linear-gradient(135deg,var(--brand-2),#20c44c);color:#fff;box-shadow:0 10px 18px rgba(25,168,74,.24);flex:1 1 240px}
+  .btn-secondary{background:#fff;color:var(--text);border:1px solid var(--line);flex:1 1 200px}
+  .story-card{margin-top:24px}
+  .story-body h3{margin:0 0 12px;font-size:28px}
+  .story-body p{margin:0 0 14px;color:#56677d;line-height:1.85;font-size:16px}
+  .sticky{position:sticky;top:18px}
+  .summary-hero{position:relative;height:260px;background:#d7e4ef center/cover no-repeat}
+  .summary-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))}
+  .summary-title{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;color:#fff}
+  .summary-title .mini{font-size:14px;font-weight:700;color:#ffde7a;margin-bottom:8px}
+  .summary-title h3{margin:0;font-size:32px;line-height:1.04}
+  .big-amount{font-size:36px;font-weight:800;color:#17324f}
+  .stat-row{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:15px;color:#56677d}
+  .cta{width:100%;border:none;min-height:56px;border-radius:18px;cursor:pointer;font-size:20px;font-weight:800;margin-top:16px;background:linear-gradient(135deg,#ffcc29,#f7b500);color:#1a1a1a;font-family:'Kanit',sans-serif}
+  .safe-box{margin-top:16px;background:#f8fbfd;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .safe-box h4{margin:0 0 10px;font-size:20px}
+  .safe-box p{margin:0 0 6px;color:#596b81;line-height:1.7}
+  .footer{padding:0 18px 40px}
+  .footer-inner{max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px}
+  .footer-inner h3{margin:0 0 8px;font-size:28px}.footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .footer-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800}
+  .footer-actions .yellow{background:#ffcc29;color:#1a1a1a}.footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  @media (max-width:1100px){.hero-inner,.layout,.footer-inner{grid-template-columns:1fr}.sticky{position:static}.hero h1{font-size:46px}}
+  @media (max-width:760px){.topbar-inner{padding:12px}.topmeta{display:none}.hero-inner{padding:34px 18px 76px}.hero h1{font-size:34px}.hero p{font-size:16px}.hero-card-img{height:210px}.section-title{font-size:28px}.meta-grid,.amount-strip{grid-template-columns:1fr}.summary-title h3{font-size:28px}.summary-hero{height:240px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="back-btn" id="backToCases" href="#">← กลับหน้าเคส</a>
+      <div class="topmeta"><span class="dot"></span><span>ดูรายละเอียดและบริจาค · ProMAX</span></div>
+    </div>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow" id="heroEyebrow">โครงการ</div>
+        <h1 id="heroTitle">กำลังโหลดรายละเอียดเคส</h1>
+        <p id="heroDesc">กำลังเตรียมข้อมูลเคส</p>
+        <div class="hero-badges" id="heroBadges"></div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-img" id="heroCardImg"></div>
+        <div class="hero-card-body">
+          <h3 id="heroCardTitle">รายละเอียดเคส</h3>
+          <p id="heroCardText">สรุปสั้นของเคสนี้</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="main">
+    <div class="layout">
+      <section>
+        <article class="panel">
+          <div class="panel-body">
+            <h2 class="section-title" id="detailTitle">ชื่อเคส</h2>
+            <p class="section-lead" id="detailLead">คำอธิบายเคส</p>
+
+            <div class="meta-grid">
+              <div class="meta-box"><div class="label">พื้นที่ช่วยเหลือ</div><div class="value" id="metaLocation">-</div></div>
+              <div class="meta-box"><div class="label">กลุ่มเป้าหมาย</div><div class="value" id="metaBeneficiary">-</div></div>
+              <div class="meta-box"><div class="label">ช่วงเวลาที่ต้องการ</div><div class="value" id="metaUrgent">-</div></div>
+            </div>
+
+            <div class="progress-wrap">
+              <div class="progress-top">
+                <strong id="progressTitle">ความคืบหน้า 0%</strong>
+                <span id="progressText">ช่วยแล้ว 0 / 0 บาท</span>
+              </div>
+              <div class="progress"><div id="progressBar"></div></div>
+            </div>
+
+            <div class="amount-strip">
+              <div class="amount-box">
+                <div class="small">ยอดที่ช่วยแล้ว</div>
+                <div class="big" id="raisedAmount">0 บาท</div>
+              </div>
+              <div class="amount-box">
+                <div class="small">เป้าหมายรวม</div>
+                <div class="big" id="goalAmount">0 บาท</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <a class="btn btn-primary" id="goDonate" href="#">ไปหน้าบริจาคโครงการนี้</a>
+              <a class="btn btn-secondary" id="goStory" href="#">อ่านเรื่องราวเคส</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="story-card">
+          <div class="story-body">
+            <h3>ภาพรวมเคสนี้</h3>
+            <p id="story1">-</p>
+            <p id="story2">-</p>
+            <p id="story3">-</p>
+          </div>
+        </article>
+      </section>
+
+      <aside class="sticky">
+        <div class="summary-card">
+          <div class="summary-hero" id="summaryHero">
+            <div class="summary-title">
+              <div class="mini" id="summaryMini">Project Summary</div>
+              <h3 id="summaryTitle">กำลังโหลดโครงการ</h3>
+            </div>
+          </div>
+          <div class="summary-body">
+            <div class="big-amount" id="summaryAmount">฿ 1,000</div>
+            <div class="stat-row"><span>ยอดสนับสนุนปัจจุบัน</span><strong id="raisedText">฿ 0</strong></div>
+            <div class="progress"><div id="summaryProgressBar"></div></div>
+            <div class="stat-row"><span>เป้าหมายโครงการ</span><strong id="targetText">฿ 0</strong></div>
+            <div class="stat-row"><span>ความคืบหน้า</span><strong id="percentText">0%</strong></div>
+            <button class="cta" id="summaryDonateBtn">ร่วมสนับสนุนโครงการนี้</button>
+            <div class="safe-box">
+              <h4>สรุปข้อมูล</h4>
+              <p><strong>โครงการ:</strong> <span id="sumProject">-</span></p>
+              <p><strong>เคส:</strong> <span id="sumCase">-</span></p>
+              <p><strong>สถานะ:</strong> เปิดรับบริจาค</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>มูลนิธิคนช่วยฅน</h3>
+        <p>หน้าดูรายละเอียดและบริจาคนี้ออกแบบให้เชื่อมธีมเดียวกับหน้าโครงการ หน้าเคส และหน้าบริจาคหลักของระบบ</p>
+      </div>
+      <div class="footer-actions">
+        <a class="yellow" href="#hero">กลับขึ้นด้านบน</a>
+        <a class="white" id="footerBackCases" href="#">กลับหน้าเคส</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const PROJECTS = {
+  education: {
+    title:"เพื่อการศึกษา", eyebrow:"โครงการเพื่อการศึกษา", description:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน", image:"images/project1.png",
+    cases:[
+      {id:'edu-001', title:'ทุนเรียนต่อระดับมัธยม', description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน', image:'images/project1.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'ภายในเดือนนี้', raised:35000, goal:60000, badge:'ม.ปลาย', story:['นักเรียนหลายคนมีศักยภาพ แต่ต้องหยุดการเรียนเพราะภาระค่าใช้จ่ายพื้นฐานในครอบครัว','การสนับสนุนนี้ช่วยให้เด็กยังคงอยู่ในระบบการศึกษาและมีโอกาสต่อยอดอนาคต','ทุกยอดช่วยเหลือคือการต่ออายุความหวังและสร้างเส้นทางชีวิตที่มั่นคงขึ้น']},
+      {id:'edu-002', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน', image:'images/project7.png', location:'ปัตตานี', beneficiary:'3 เด็ก', urgent:'7 วัน', raised:22000, goal:45000, badge:'เปิดด่วน', story:['เด็กกำพร้าหลายคนยังขาดอุปกรณ์จำเป็นในการเริ่มต้นปีการศึกษาใหม่','การมีชุดนักเรียนและอุปกรณ์ครบถ้วนช่วยให้เด็กเข้าสังคมโรงเรียนได้อย่างมั่นใจ','การสนับสนุนนี้ช่วยลดภาระผู้ดูแลและเปิดโอกาสให้เด็กได้เรียนอย่างต่อเนื่อง']},
+      {id:'edu-003', title:'ทุนเดินทางและอาหารกลางวัน', description:'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกล', image:'images/project1.png', location:'นราธิวาส', beneficiary:'5 คน', urgent:'15 วัน', raised:18000, goal:50000, badge:'นราธิวาส', story:['เด็กในพื้นที่ห่างไกลต้องเสียค่าเดินทางสูงกว่าครอบครัวจะรับไหว','ค่าอาหารกลางวันและการเดินทางเป็นต้นทุนเล็ก ๆ ที่ตัดสินอนาคตการเรียนของเด็กได้','การให้ครั้งนี้คือการช่วยให้เด็กไปถึงโรงเรียนและเรียนได้อย่างมีพลัง']}
+    ]
+  },
+  zakat: {
+    title:"ซากาตเพื่อผู้ยากไร้", eyebrow:"โครงการซากาต", description:"ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย", image:"images/project2.png",
+    cases:[
+      {id:'zakat-001', title:'มอบซากาตช่วยครอบครัวยากไร้', description:'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้น', image:'images/project2.png', location:'สงขลา', beneficiary:'2 ครอบครัว', urgent:'10 วัน', raised:42000, goal:100000, badge:'สงขลา', story:['หลายครอบครัวต้องเผชิญภาวะขาดแคลนทั้งอาหารและค่าใช้จ่ายพื้นฐาน','ซากาตที่ถูกส่งต่ออย่างเหมาะสมจะช่วยประคองชีวิตให้ผ่านวิกฤตสำคัญได้','การสนับสนุนนี้ช่วยคืนโอกาสและศักดิ์ศรีให้กับผู้เปราะบางในชุมชน']},
+      {id:'zakat-002', title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย', description:'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแล', image:'images/project2.png', location:'ปัตตานี', beneficiary:'8 ราย', urgent:'5 วัน', raised:30000, goal:80000, badge:'เปิดด่วน', story:['ผู้สูงอายุและแม่หม้ายจำนวนหนึ่งอยู่ลำพังโดยไม่มีรายได้เพียงพอ','ความช่วยเหลือเร่งด่วนช่วยให้เข้าถึงยา อาหาร และของใช้จำเป็นในแต่ละวัน','ซากาตคือสะพานเชื่อมความเมตตาไปสู่ผู้ที่ต้องการอย่างแท้จริง']}
+    ]
+  },
+  housing: {
+    title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้", eyebrow:"โครงการที่อยู่อาศัยเพื่อผู้ยากไร้", description:"ซ่อมแซมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย", image:"images/project5.png",
+    cases:[
+      {id:'housing-001', title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ', description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย', image:'images/project5.png', location:'สงขลา', beneficiary:'1 หลัง', urgent:'14 วัน', raised:76000, goal:180000, badge:'บ้านพัง', story:['บ้านที่ทรุดโทรมทำให้ผู้สูงอายุใช้ชีวิตอย่างเสี่ยงอันตรายในทุกวัน','การซ่อมบ้านคือการคืนพื้นที่ปลอดภัยและศักดิ์ศรีของการมีบ้านที่มั่นคง','การสนับสนุนของคุณช่วยเปลี่ยนโครงสร้างบ้านให้กลายเป็นโครงสร้างชีวิตที่มั่นคงขึ้น']},
+      {id:'housing-002', title:'สร้างบ้านใหม่ให้ครอบครัวยากไร้', description:'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน', image:'images/project5.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'30 วัน', raised:92000, goal:250000, badge:'เปิดรับ', story:['บางครอบครัวไม่มีบ้านที่มั่นคงพอจะอยู่อาศัยอย่างปลอดภัยได้','การสร้างบ้านใหม่คือการสร้างรากฐานชีวิตใหม่ให้ทั้งครอบครัว','ทุกยอดบริจาคช่วยให้ความฝันเรื่องบ้านที่ปลอดภัยใกล้ความจริงขึ้น']}
+    ]
+  }
+};
+
+function ensureCases(project){
+  const base = project || PROJECTS.education;
+  return base;
+}
+function findCase(project, caseId){
+  const cfg = ensureCases(project);
+  return cfg.cases.find(c => c.id === caseId) || cfg.cases[0];
+}
+function fmt(n){return '฿ ' + Number(n || 0).toLocaleString('th-TH');}
+function percent(raised, goal){return Math.max(0, Math.min(100, Math.round((raised / Math.max(goal,1)) * 100)));}
+const params = new URLSearchParams(location.search);
+const projectSlug = params.get('project') || 'education';
+const caseId = params.get('case') || '';
+const project = ensureCases(PROJECTS[projectSlug] || PROJECTS.education);
+const currentCase = findCase(project, caseId);
+const pct = percent(currentCase.raised, currentCase.goal);
+
+document.title = `${currentCase.title} | ดูรายละเอียดและบริจาค`;
+document.getElementById('backToCases').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
+document.getElementById('footerBackCases').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
+document.getElementById('goDonate').href = `donate-form-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+document.getElementById('goStory').href = `donate-case-story-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+document.getElementById('summaryDonateBtn').onclick = () => location.href = `donate-form-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+
+document.getElementById('hero').style.backgroundImage = `url("${currentCase.image}")`;
+document.getElementById('heroCardImg').style.backgroundImage = `url("${currentCase.image}")`;
+document.getElementById('summaryHero').style.backgroundImage = `url("${currentCase.image}")`;
+
+document.getElementById('heroEyebrow').textContent = project.eyebrow;
+document.getElementById('heroTitle').textContent = currentCase.title;
+document.getElementById('heroDesc').textContent = currentCase.description;
+document.getElementById('heroCardTitle').textContent = project.title;
+document.getElementById('heroCardText').textContent = 'หน้านี้สรุปข้อมูลเคสแบบกระชับ พร้อมลิงก์ไปหน้าบริจาคและหน้าเล่าเรื่องราวเคสในธีมเดียวกัน';
+document.getElementById('detailTitle').textContent = currentCase.title;
+document.getElementById('detailLead').textContent = currentCase.description;
+document.getElementById('metaLocation').textContent = currentCase.location;
+document.getElementById('metaBeneficiary').textContent = currentCase.beneficiary;
+document.getElementById('metaUrgent').textContent = currentCase.urgent;
+document.getElementById('progressTitle').textContent = `ความคืบหน้าการช่วยเหลือ ${pct}%`;
+document.getElementById('progressText').textContent = `ช่วยแล้ว ${fmt(currentCase.raised)} / ${fmt(currentCase.goal)}`;
+document.getElementById('progressBar').style.width = pct + '%';
+document.getElementById('raisedAmount').textContent = fmt(currentCase.raised);
+document.getElementById('goalAmount').textContent = fmt(currentCase.goal);
+document.getElementById('story1').textContent = currentCase.story?.[0] || '-';
+document.getElementById('story2').textContent = currentCase.story?.[1] || '-';
+document.getElementById('story3').textContent = currentCase.story?.[2] || '-';
+document.getElementById('summaryMini').textContent = project.eyebrow;
+document.getElementById('summaryTitle').textContent = project.title;
+document.getElementById('raisedText').textContent = fmt(currentCase.raised);
+document.getElementById('targetText').textContent = fmt(currentCase.goal);
+document.getElementById('percentText').textContent = pct + '%';
+document.getElementById('summaryProgressBar').style.width = pct + '%';
+document.getElementById('sumProject').textContent = project.title;
+document.getElementById('sumCase').textContent = currentCase.title;
+document.getElementById('heroBadges').innerHTML = [currentCase.badge, currentCase.location, currentCase.urgent].map(t => `<div class="hero-badge">${t}</div>`).join('');
+</script>
+</body>
+</html>

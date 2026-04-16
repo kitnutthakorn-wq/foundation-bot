@@ -765,6 +765,36 @@ async function approveTeamCandidate(lineUserId) {
     console.error("approveTeamCandidate error:", err);
     alert(`อนุมัติไม่สำเร็จ\n${err.message || err}`);
   }
+
+  async function rejectTeamCandidate(lineUserId) {
+  try {
+    const confirmed = confirm("ยืนยันไม่อนุมัติผู้สมัครคนนี้ใช่หรือไม่?");
+    if (!confirmed) return;
+
+    const res = await fetch(`${API_BASE_URL}/api/team-management/reject`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        line_user_id: lineUserId
+      })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json?.ok === false) {
+      throw new Error(json?.error || "ไม่อนุมัติไม่สำเร็จ");
+    }
+
+    await loadTeamManagement();
+    alert("ไม่อนุมัติสำเร็จ");
+  } catch (err) {
+    console.error("rejectTeamCandidate error:", err);
+    alert(`ไม่อนุมัติไม่สำเร็จ\n${err.message || err}`);
+  }
+}
 }
     window.addEventListener("DOMContentLoaded", () => {
       loadTeamManagement();

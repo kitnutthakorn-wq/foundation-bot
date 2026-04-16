@@ -4344,14 +4344,16 @@ function buildTeamManageFlex() {
   btn("บริหารทีมงาน", "รายการทีม"),
   btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
 {
+ {
   type: "button",
-  style: "primary",
-  height: "sm",
-  color: "#22C55E",
+  style: "secondary",
   action: {
-    type: "message",
+    type: "uri",
     label: "เพิ่มทีมงาน",
-    text: "เพิ่มทีมงาน"
+    uri: `${TEAM_MANAGEMENT_URL}?mode=add`
+  }
+}
+   
   }
 }, // 👈 ต้องมี comma ตรงนี้
   btn("ลบทีมงาน", "คำสั่งลบทีม")

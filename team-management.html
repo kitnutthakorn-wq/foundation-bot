@@ -765,8 +765,9 @@ async function approveTeamCandidate(lineUserId) {
     console.error("approveTeamCandidate error:", err);
     alert(`อนุมัติไม่สำเร็จ\n${err.message || err}`);
   }
+}
 
-  async function rejectTeamCandidate(lineUserId) {
+async function rejectTeamCandidate(lineUserId) {
   try {
     const confirmed = confirm("ยืนยันไม่อนุมัติผู้สมัครคนนี้ใช่หรือไม่?");
     if (!confirmed) return;
@@ -832,8 +833,6 @@ async function setTeamRole(lineUserId) {
     console.error("setTeamRole error:", err);
     alert(`ตั้งสิทธิ์ไม่สำเร็จ\n${err.message || err}`);
   }
-}
-  
 }
     window.addEventListener("DOMContentLoaded", () => {
       loadTeamManagement();

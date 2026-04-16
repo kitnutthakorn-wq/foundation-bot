@@ -4379,6 +4379,7 @@ function buildTeamManageFlex() {
     }
   };
 }
+
 function getTeamRoleTheme(role = "") {
   const r = String(role || "").toLowerCase();
 

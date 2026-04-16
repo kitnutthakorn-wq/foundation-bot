@@ -2154,18 +2154,37 @@ function buildCaseUpdateStageQuickReply() {
 
 function checkDashboardAuth(req, res, next) {
   const auth = req.headers.authorization || "";
+  const wantsJson =
+    String(req.path || "").startsWith("/api/") ||
+    String(req.headers.accept || "").includes("application/json");
 
   if (!auth.startsWith("Basic ")) {
     res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+
+    if (wantsJson) {
+      return res.status(401).json({
+        ok: false,
+        error: "Authentication required"
+      });
+    }
+
     return res.status(401).send("Authentication required");
   }
 
-  const base64 = auth.split(" ")[1];
+  const base64 = auth.split(" ")[1] || "";
   const decoded = Buffer.from(base64, "base64").toString("utf8");
   const [username, password] = decoded.split(":");
 
   if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
     res.setHeader("WWW-Authenticate", 'Basic realm="Dashboard"');
+
+    if (wantsJson) {
+      return res.status(401).json({
+        ok: false,
+        error: "Invalid credentials"
+      });
+    }
+
     return res.status(401).send("Invalid credentials");
   }
 

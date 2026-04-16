@@ -7920,7 +7920,13 @@ function buildRequesterAutoText(action, row = {}, actorName = "ทีมงา�
   ].join("\n");
 }
 
-
+function lineImage(url, version = "v1") {
+  const clean = String(url || "").trim();
+  if (!clean) return "";
+  return clean.includes("?")
+    ? `${clean}&v=${encodeURIComponent(version)}`
+    : `${clean}?v=${encodeURIComponent(version)}`;
+}
 /* =========================
    DONATION FLEX
 ========================= */
@@ -7929,7 +7935,7 @@ function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
     type: "bubble",
     hero: {
       type: "image",
-      url: imageUrl,
+      url: lineImage(imageUrl, "donation-20260416"),
       size: "full",
       aspectRatio: "1:1",
       aspectMode: "cover",
@@ -7979,7 +7985,6 @@ function createProjectBubble(title, subtitle, imageUrl, projectUrl) {
     },
   };
 }
-
 const donationFlex = {
   type: "flex",
   altText: "โครงการช่วยเหลือของมูลนิธิ",

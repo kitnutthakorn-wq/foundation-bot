@@ -4343,19 +4343,40 @@ function buildTeamManageFlex() {
        contents: [
   btn("บริหารทีมงาน", "รายการทีม"),
   btn("บริหารสิทธิ์ทีมงาน", "คำสั่งดูสิทธิ์"),
-{
- {
-  type: "button",
-  style: "secondary",
-  action: {
-    type: "uri",
-    label: "เพิ่มทีมงาน",
-    uri: `${TEAM_MANAGEMENT_URL}?mode=add`
-  }
-}
-   
-  }
-}, // 👈 ต้องมี comma ตรงนี้
+
+contents: [
+  {
+    type: "button",
+    style: "primary",
+    height: "sm",
+    color: "#22C55E",
+    action: {
+      type: "uri",
+      label: "ดูรายชื่อทีมงาน",
+      uri: `${TEAM_MANAGEMENT_URL}?mode=list`
+    }
+  },
+  {
+    type: "button",
+    style: "primary",
+    height: "sm",
+    color: "#22C55E",
+    action: {
+      type: "uri",
+      label: "กำหนดสิทธิ์ทีมงาน",
+      uri: `${TEAM_MANAGEMENT_URL}?mode=role`
+    }
+  },
+  {
+    type: "button",
+    style: "secondary",
+    height: "sm",
+    action: {
+      type: "uri",
+      label: "เพิ่มทีมงาน",
+      uri: `${TEAM_MANAGEMENT_URL}?mode=add`
+    }
+  },
   btn("ลบทีมงาน", "คำสั่งลบทีม")
 ]
       }

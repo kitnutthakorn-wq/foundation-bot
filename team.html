@@ -460,6 +460,49 @@ async function saveSelectedTeamMember() {
   }
 }
 
+
+<script>
+async function toggleTeamUserActive(lineUserId, currentActive) {
+  try {
+    const nextActive = !Boolean(currentActive);
+    const actionText = nextActive ? "เปิดใช้งาน" : "ปิดใช้งาน";
+
+    const confirmed = window.confirm(`ยืนยัน${actionText}ผู้ใช้งานนี้ใช่หรือไม่?`);
+    if (!confirmed) return;
+
+    const res = await fetch("/api/team-management/toggle-active", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        line_user_id: lineUserId,
+        is_active: nextActive
+      })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.ok) {
+      throw new Error(result.error || "toggle active failed");
+    }
+
+    alert(result.message || "บันทึกสำเร็จ");
+
+    if (typeof loadTeamDirectory === "function") {
+      await loadTeamDirectory();
+    } else if (typeof loadTeamMembers === "function") {
+      await loadTeamMembers();
+    } else {
+      location.reload();
+    }
+  } catch (err) {
+    console.error("toggleTeamUserActive error:", err);
+    alert("เกิดข้อผิดพลาด: " + (err.message || err));
+  }
+}
+</script>
+  
 function closeRoleModal(){
   document.getElementById('roleModalBackdrop').style.display = 'none';
   selectedMember = null;

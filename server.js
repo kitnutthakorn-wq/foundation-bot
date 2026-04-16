@@ -9868,7 +9868,7 @@ if (caseSearchState?.step === "waiting_phone") {
  // =========================
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================
-const text = event.message.text.trim();
+
 console.log("👉 USER CLICK:", text);
 const userId = event?.source?.userId || "";
 

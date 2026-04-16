@@ -618,7 +618,13 @@
              <button class="btn-mini approve" type="button" onclick="approveTeamCandidate('${escapeHtml(row.line_user_id)}')">อนุมัติ</button>
              <button class="btn-mini reject" type="button" onclick="rejectTeamCandidate('${escapeHtml(row.line_user_id)}')">ไม่อนุมัติ</button>
               <button class="btn-mini role" type="button" onclick="setTeamRole('${escapeHtml(row.line_user_id)}')">ตั้งสิทธิ์</button>
-              <button class="btn-mini disable" type="button" onclick="alertComingSoon('เปิด/ปิดใช้งาน')">เปิด/ปิดใช้งาน</button>
+             <button
+  class="btn-mini disable"
+  type="button"
+  onclick="toggleTeamActive('${escapeHtml(row.line_user_id)}', ${row.is_active ? "true" : "false"})"
+>
+  ${row.is_active ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+</button>
             </div>
           </td>
         `;

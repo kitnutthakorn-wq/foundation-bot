@@ -374,11 +374,39 @@ function renderMemberPicker() {
   }
 
 root.innerHTML = filtered.map(m => `
-  <div class="member-item" onclick="openRoleModalById('${String(m.userId || "").replace(/'/g, "\\'")}')">
+  <div class="member-item">
     <img class="member-avatar" src="${m.pictureUrl || getFallbackAvatar(m.displayName)}" />
+    
     <div class="member-meta">
       <div class="member-name">${m.displayName || "-"}</div>
       <div class="member-sub">${m.userId}</div>
+
+      <div class="member-badges">
+        <span class="badge ${m.role === 'admin' ? 'role-admin' : m.role === 'staff' ? 'role-staff' : 'role-viewer'}">
+          ${m.role || 'viewer'}
+        </span>
+        <span class="badge ${m.is_active ? 'new' : 'progress'}">
+          ${m.is_active ? 'ใช้งานอยู่' : 'ปิดใช้งาน'}
+        </span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="event.stopPropagation(); openRoleModalById('${String(m.userId || "").replace(/'/g, "\\'")}')"
+      >
+        ตั้งสิทธิ์
+      </button>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        onclick="event.stopPropagation(); toggleTeamUserActive('${String(m.userId || "").replace(/'/g, "\\'")}', ${m.is_active ? "true" : "false"})"
+      >
+        ${m.is_active ? "ปิดใช้งาน" : "เปิดใช้งาน"}
+      </button>
     </div>
   </div>
 `).join('');

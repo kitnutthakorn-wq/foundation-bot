@@ -7994,7 +7994,7 @@ const donationFlex = {
       createProjectBubble(
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
-        "https://img5.pic.in.th/file/secure-sv1/KCK142b3df0c343ae11c.png",
+        "https://img2.pic.in.th/project2.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
       ),
       createProjectBubble(

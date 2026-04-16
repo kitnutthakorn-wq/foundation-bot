@@ -795,6 +795,45 @@ async function approveTeamCandidate(lineUserId) {
     alert(`ไม่อนุมัติไม่สำเร็จ\n${err.message || err}`);
   }
 }
+
+async function setTeamRole(lineUserId) {
+  try {
+    const role = prompt("กำหนดสิทธิ์ให้ผู้ใช้นี้: admin / staff / viewer", "staff");
+    if (role === null) return;
+
+    const normalizedRole = String(role || "").trim().toLowerCase();
+
+    if (!["admin", "staff", "viewer"].includes(normalizedRole)) {
+      alert("กรุณากรอกสิทธิ์ให้ถูกต้อง: admin / staff / viewer");
+      return;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/team-management/set-role`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        line_user_id: lineUserId,
+        role: normalizedRole
+      })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json?.ok === false) {
+      throw new Error(json?.error || "ตั้งสิทธิ์ไม่สำเร็จ");
+    }
+
+    await loadTeamManagement();
+    alert(`ตั้งสิทธิ์สำเร็จ: ${normalizedRole}`);
+  } catch (err) {
+    console.error("setTeamRole error:", err);
+    alert(`ตั้งสิทธิ์ไม่สำเร็จ\n${err.message || err}`);
+  }
+}
+  
 }
     window.addEventListener("DOMContentLoaded", () => {
       loadTeamManagement();

@@ -6500,9 +6500,9 @@ async function buildExecutiveDecisionBoard(limit = 10) {
     .map((row) => {
       const profile = buildRiskDecisionProfile(row);
       const recentAutoAssign = recentAutoAssignMap.get(String(row.case_code || '')) || null;
-      return {
-        case: row,
-        ...profile,
+     return {
+  case: row,
+  ...profile,
         auto_assign_enabled: AUTO_ASSIGN_ENABLED,
         auto_assign_candidate: !row.assigned_to && Number(profile.risk_score || 0) >= AUTO_ASSIGN_HIGH_THRESHOLD,
         auto_assign_threshold: AUTO_ASSIGN_HIGH_THRESHOLD,

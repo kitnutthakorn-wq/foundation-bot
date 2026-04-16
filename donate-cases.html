@@ -170,13 +170,12 @@
       backdrop-filter:blur(8px);
     }
 
-    .hero h1{
+    .hero h2{
       margin:0 0 14px;
       font-size:56px;
-      line-height:1.02;
-      letter-spacing:-.02em;
+      line-height:1;
+      letter-spacing:-.03em;
       max-width:720px;
-      font-weight:700;
     }
 
     .hero p{
@@ -313,8 +312,8 @@
       line-height:1.08;
       letter-spacing:-.02em;
       max-width:100%;
-      word-break:break-word;
       text-shadow:0 2px 12px rgba(0,0,0,.24);
+      word-break:break-word;
     }
 
     .featured-text{
@@ -681,9 +680,10 @@
     @media (max-width:1180px){
       .hero-grid{grid-template-columns:1fr;min-height:auto;padding:28px}
       .hero{min-height:auto}
-      .hero h1{font-size:46px}
+      .hero h2{font-size:46px}
       .hero-right{justify-content:flex-start}
       .featured-card{min-height:380px}
+      .grid{grid-template-columns:1fr}
     }
 
     @media (max-width:760px){
@@ -694,7 +694,7 @@
       .hero{border-radius:26px}
       .hero-grid{padding:18px;gap:18px}
       .eyebrow{font-size:12px;margin-bottom:14px}
-      .hero h1{font-size:32px}
+      .hero h2{font-size:32px}
       .hero p{font-size:15px;line-height:1.75}
       .hero-stats{grid-template-columns:1fr;gap:10px}
       .hero-note{width:100%}
@@ -713,7 +713,6 @@
       .toolbar-left h2{font-size:24px}
       .section-shell{padding:16px;border-radius:28px}
       .chip{min-height:36px;padding:0 12px;font-size:13px}
-      .grid{grid-template-columns:1fr}
       .case-cover-wrap{height:230px}
       .case-body{padding:16px}
       .case-title{font-size:22px}
@@ -744,7 +743,7 @@
           <div class="hero-copy">
             <div>
               <div class="eyebrow" id="heroEyebrow">เปิดรับบริจาค</div>
-              <h1 id="heroTitle">รายการเคสเพื่อการช่วยเหลือ</h1>
+              <h2 id="heroTitle">รายการเคสเพื่อการช่วยเหลือ</h2>
               <p id="heroDescription">เลือกเคสที่ต้องการร่วมสนับสนุน เพื่อส่งต่อความช่วยเหลืออย่างตรงจุด โปร่งใส และติดตามผลได้</p>
             </div>
 
@@ -805,11 +804,9 @@
       <section class="section-shell">
         <section class="grid" id="caseGrid"></section>
       </section>
-
       <section class="empty-state" id="emptyState">
         ไม่พบข้อมูลโครงการที่เลือก กรุณากลับไปเลือกใหม่จากหน้าเมนูบริจาค
       </section>
-
       <div class="footer-space"></div>
     </main>
   </div>
@@ -820,7 +817,7 @@
         eyebrow: 'โครงการเพื่อการศึกษา',
         title: 'เพื่อการศึกษา ส่งน้องเรียน',
         description: 'ร่วมเปิดโอกาสให้เด็กและเยาวชนที่ขาดแคลน ได้มีอุปกรณ์การเรียน ทุนการศึกษา และค่าใช้จ่ายพื้นฐานในการเดินทางไปโรงเรียน',
-        heroImage: 'images/project1.png',
+        heroImage: 'images/Edu1.png',
         heroCardTitle: 'โครงการการศึกษาที่กำลังเปิดรับ',
         heroCardText: 'ทุกการสนับสนุนช่วยให้เด็กคนหนึ่งได้มีโอกาสเรียนต่ออย่างมั่นคงและมีศักดิ์ศรี',
         chips: ['ทุนการศึกษา', 'อุปกรณ์การเรียน', 'ค่าเดินทาง'],
@@ -832,7 +829,7 @@
             statusText: 'เปิดรับบริจาค',
             title: 'ทุนเรียนต่อระดับมัธยม',
             description: 'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
-            image: 'images/project1.png',
+            image: 'images/Edu1.png',
             location: 'ยะลา',
             beneficiary: '1 ครอบครัว',
             urgent: 'ภายในเดือนนี้',
@@ -860,7 +857,7 @@
             statusText: 'กำลังระดมทุน',
             title: 'ทุนเดินทางและอาหารกลางวัน',
             description: 'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
-            image: 'images/project1.png',
+            image: 'images/Edu1.png',
             location: 'นราธิวาส',
             beneficiary: '5 คน',
             urgent: '15 วัน',
@@ -869,7 +866,6 @@
           }
         ]
       },
-
       zakat: {
         eyebrow: 'โครงการซากาต',
         title: 'ซากาตเพื่อผู้ยากไร้',
@@ -923,7 +919,6 @@
           }
         ]
       },
-
       transport: {
         eyebrow: 'อาสาพามัยยิดกลับบ้าน',
         title: 'อาสาพามัยยิดกลับบ้าน',
@@ -963,7 +958,6 @@
           }
         ]
       },
-
       relief: {
         eyebrow: 'บรรเทาธารณภัย',
         title: 'เพื่อการบรรเทาธารณภัย',
@@ -1003,7 +997,6 @@
           }
         ]
       },
-
       housing: {
         eyebrow: 'ที่อยู่อาศัยเพื่อผู้ยากไร้',
         title: 'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
@@ -1043,7 +1036,6 @@
           }
         ]
       },
-
       disaster: {
         eyebrow: 'ช่วยเหลือผู้ประสบภัย',
         title: 'ช่วยเหลือผู้ประสบภัย',
@@ -1069,7 +1061,6 @@
           }
         ]
       },
-
       orphan: {
         eyebrow: 'โครงการเด็กกำพร้า',
         title: 'ช่วยเหลือเด็กกำพร้า',
@@ -1113,10 +1104,49 @@
 
     const qs = new URLSearchParams(window.location.search);
     const projectKey = qs.get('project') || 'education';
-    const config = PROJECT_CONFIG[projectKey];
+    const rawConfig = PROJECT_CONFIG[projectKey];
+    const config = ensureSixCases(rawConfig, projectKey);
 
     const emptyState = document.getElementById('emptyState');
     const caseGrid = document.getElementById('caseGrid');
+
+    function ensureSixCases(cfg, projectSlug){
+      if (!cfg || !Array.isArray(cfg.cases)) return cfg;
+      const sourceCases = cfg.cases.map(item => ({ ...item }));
+      const expanded = [...sourceCases];
+      const titleSuffixes = [
+        'กรณีเร่งด่วน',
+        'ระยะต่อเนื่อง',
+        'ระยะฟื้นฟู',
+        'เคสสนับสนุนเพิ่มเติม',
+        'เคสขยายโอกาส',
+        'เคสช่วยเหลือเฉพาะหน้า'
+      ];
+      const locationSuffixes = ['ยะลา','ปัตตานี','นราธิวาส','สงขลา','สตูล','กรุงเทพฯ'];
+
+      let i = 0;
+      while (expanded.length < 6 && sourceCases.length > 0) {
+        const base = sourceCases[i % sourceCases.length];
+        const cloneIndex = expanded.length + 1;
+        const raised = Number(base.raised || 0) + (cloneIndex * 2500);
+        const goal = Number(base.goal || 0) + (cloneIndex * 5000);
+        expanded.push({
+          ...base,
+          id: `${projectSlug}-auto-${cloneIndex}`,
+          title: `${base.title} · ${titleSuffixes[i % titleSuffixes.length]}`,
+          location: locationSuffixes[i % locationSuffixes.length],
+          raised,
+          goal: goal > raised ? goal : raised + 10000,
+          urgent: `${7 + (i * 3)} วัน`
+        });
+        i += 1;
+      }
+
+      return {
+        ...cfg,
+        cases: expanded.slice(0, 6)
+      };
+    }
 
     function formatMoney(value){
       return Number(value || 0).toLocaleString('th-TH');
@@ -1215,7 +1245,6 @@
                 <strong>ความคืบหน้าการช่วยเหลือ ${percent}%</strong>
                 <span>ช่วยแล้ว ${formatMoney(item.raised)} / ${formatMoney(item.goal)} บาท</span>
               </div>
-
               <div class="progress-track">
                 <div class="progress-bar" style="width:${percent}%"></div>
               </div>

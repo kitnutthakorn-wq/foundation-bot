@@ -6650,8 +6650,8 @@ app.get("/api/recent-activity", async (req, res) => {
           "ทีมงาน";
 
         return {
-          ...row,
-          label,
+  ...row,
+  label,
           title: `${row.case_code || "-"} · ${label}`,
           subtitle: `อัปเดตโดย ${actor}`,
           detail: label,

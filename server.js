@@ -8006,7 +8006,7 @@ const donationFlex = {
       createProjectBubble(
         "ที่อยู่อาศัย",
         "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
-        "https://img5.pic.in.th/file/secure-sv1/KCK3.png",
+        "https://img1.pic.in.th/images/project5.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
       ),
       createProjectBubble(

@@ -12376,6 +12376,54 @@ app.post("/api/team-management/reject", checkDashboardAuth, async (req, res) => 
   }
 });
 
+app.post("/api/team-management/set-role", checkDashboardAuth, async (req, res) => {
+  try {
+    const lineUserId = String(req.body?.line_user_id || "").trim();
+    const role = String(req.body?.role || "").trim().toLowerCase();
+
+    if (!lineUserId) {
+      return res.status(400).json({
+        ok: false,
+        error: "line_user_id is required"
+      });
+    }
+
+    if (!["admin", "staff", "viewer"].includes(role)) {
+      return res.status(400).json({
+        ok: false,
+        error: "invalid role"
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("line_user_roles")
+      .upsert(
+        {
+          line_user_id: lineUserId,
+          role,
+          is_active: true
+        },
+        { onConflict: "line_user_id" }
+      )
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return res.json({
+      ok: true,
+      item: data || null
+    });
+  } catch (err) {
+    console.error("POST /api/team-management/set-role error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "set role failed"
+    });
+  }
+});
+
+
 app.get("/api/team-management/list", checkDashboardAuth, async (req, res) => {
   try {
     const search = String(req.query.search || "").trim().toLowerCase();

@@ -490,22 +490,31 @@ async function saveSelectedTeamMember() {
 
 async function toggleTeamUserActive(lineUserId, currentActive) {
   try {
-   const result = await safeFetchJson(
-  `${CONFIG.API_BASE_URL}/api/team-management/toggle-active`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      line_user_id: lineUserId,
-      is_active: nextActive
-    })
-  }
-);
+    const nextActive = !Boolean(currentActive);
+    const actionText = nextActive ? "เปิดใช้งาน" : "ปิดใช้งาน";
 
-alert(result.message || "บันทึกสำเร็จ");
-await loadGroupMembersForPicker();
+    const confirmed = window.confirm(`ยืนยัน${actionText}ผู้ใช้งานนี้ใช่หรือไม่?`);
+    if (!confirmed) return;
+
+    const result = await safeFetchJson(
+      `${CONFIG.API_BASE_URL}/api/team-management/toggle-active`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          line_user_id: lineUserId,
+          is_active: nextActive
+        })
+      }
+    );
+
+    alert(result.message || "บันทึกสำเร็จ");
+    await loadGroupMembersForPicker();
+  } catch (err) {
+    console.error("toggleTeamUserActive error:", err);
+    alert("เกิดข้อผิดพลาด: " + (err.message || err));
   }
 }
    

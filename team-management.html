@@ -842,7 +842,7 @@ async function setTeamRole(lineUserId) {
       return;
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/team-management/set-role`, {
+    await safeFetchJson(`${API_BASE_URL}/api/team-management/set-role`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -853,12 +853,6 @@ async function setTeamRole(lineUserId) {
         role: normalizedRole
       })
     });
-
-    const json = await res.json();
-
-    if (!res.ok || json?.ok === false) {
-      throw new Error(json?.error || "ตั้งสิทธิ์ไม่สำเร็จ");
-    }
 
     await loadTeamManagement();
     alert(`ตั้งสิทธิ์สำเร็จ: ${normalizedRole}`);

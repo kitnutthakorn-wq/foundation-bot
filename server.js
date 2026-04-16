@@ -9568,6 +9568,12 @@ app.post("/api/team/join", async (req, res) => {
 ========================= */
 app.post("/webhook", async (req, res) => {
   try {
+ console.log("ROLE CHECK DEBUG userId =", userId);
+console.log("ROLE CHECK DEBUG text =", text);
+console.log("ROLE CHECK DEBUG role =", await getUserRole(userId));
+console.log("ROLE CHECK DEBUG sourceType =", event.source?.type);
+console.log("ROLE CHECK DEBUG groupId =", event.source?.groupId || "");
+console.log("ROLE CHECK DEBUG allowedGroupId =", ALLOWED_TEAM_GROUP_ID);  
 console.log("WEBHOOK DEBUG signature =", req.get("x-line-signature"));
 console.log("WEBHOOK DEBUG rawBody exists =", !!req.rawBody);
 console.log("WEBHOOK DEBUG body exists =", !!req.body);

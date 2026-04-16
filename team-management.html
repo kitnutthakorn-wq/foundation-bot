@@ -616,7 +616,7 @@
           <td>
             <div class="action-group">
              <button class="btn-mini approve" type="button" onclick="approveTeamCandidate('${escapeHtml(row.line_user_id)}')">อนุมัติ</button>
-              <button class="btn-mini reject" type="button" onclick="alertComingSoon('ไม่อนุมัติ')">ไม่อนุมัติ</button>
+             <button class="btn-mini reject" type="button" onclick="rejectTeamCandidate('${escapeHtml(row.line_user_id)}')">ไม่อนุมัติ</button>
               <button class="btn-mini role" type="button" onclick="alertComingSoon('ตั้งสิทธิ์')">ตั้งสิทธิ์</button>
               <button class="btn-mini disable" type="button" onclick="alertComingSoon('เปิด/ปิดใช้งาน')">เปิด/ปิดใช้งาน</button>
             </div>
@@ -664,7 +664,7 @@
 
           <div class="action-group">
            <button class="btn-mini approve" type="button" onclick="approveTeamCandidate('${escapeHtml(row.line_user_id)}')">อนุมัติ</button>
-            <button class="btn-mini reject" type="button" onclick="alertComingSoon('ไม่อนุมัติ')">ไม่อนุมัติ</button>
+           <button class="btn-mini reject" type="button" onclick="rejectTeamCandidate('${escapeHtml(row.line_user_id)}')">ไม่อนุมัติ</button>
             <button class="btn-mini role" type="button" onclick="alertComingSoon('ตั้งสิทธิ์')">ตั้งสิทธิ์</button>
           </div>
         `;

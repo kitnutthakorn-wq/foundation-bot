@@ -12581,28 +12581,42 @@ app.get("/api/team-management/list", checkDashboardAuth, async (req, res) => {
       ])
     );
 
-    const merged = candidateRows.map((row) => {
-      const lineUserId = String(row.line_user_id || "").trim();
-      const roleInfo = roleMap.get(lineUserId) || null;
+   const candidateMap = new Map(
+  candidateRows.map((row) => [
+    String(row.line_user_id || "").trim(),
+    row
+  ])
+);
 
-      return {
-        id: row.id || null,
-        line_user_id: lineUserId,
-        display_name: row.display_name || "",
-        picture_url: row.picture_url || "",
-        source: row.source || "candidate",
-        joined_group_id: row.joined_group_id || "",
-        note: row.note || "",
-        created_at: row.created_at || null,
-        last_seen_at: row.last_seen_at || null,
+const allUserIds = Array.from(
+  new Set([
+    ...candidateRows.map((row) => String(row.line_user_id || "").trim()).filter(Boolean),
+    ...roleRows.map((row) => String(row.line_user_id || "").trim()).filter(Boolean)
+  ])
+);
 
-        // สำหรับหน้า team-management.html
-        applied_at: row.created_at || row.last_seen_at || null,
-        application_status: String(row.status || "pending").trim().toLowerCase(),
-        role: roleInfo?.role || "none",
-        is_active: roleInfo?.is_active === true
-      };
-    });
+const merged = allUserIds.map((lineUserId) => {
+  const row = candidateMap.get(lineUserId) || null;
+  const roleInfo = roleMap.get(lineUserId) || null;
+
+  return {
+    id: row?.id || null,
+    line_user_id: lineUserId,
+    display_name: row?.display_name || "",
+    picture_url: row?.picture_url || "",
+    source: row?.source || "role_only",
+    joined_group_id: row?.joined_group_id || "",
+    note: row?.note || "",
+    created_at: row?.created_at || null,
+    last_seen_at: row?.last_seen_at || null,
+
+    // สำหรับหน้า team-management.html
+    applied_at: row?.created_at || row?.last_seen_at || null,
+    application_status: String(row?.status || "approved").trim().toLowerCase(),
+    role: roleInfo?.role || "none",
+    is_active: roleInfo?.is_active === true
+  };
+});
 
     let rows = merged;
 

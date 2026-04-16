@@ -1,63 +1,1036 @@
 <!DOCTYPE html>
 <html lang="th">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>เลือกเคสบริจาค | Demo Safe</title>
-<style>:root{--bg:#edf2f5;--card:#fff;--line:#dbe3ea;--text:#16324f;--muted:#6b7280;--brand:#1ea644;--blue:#2f64e3;--shadow:0 12px 30px rgba(18,36,58,.10)}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}.page{max-width:1100px;margin:0 auto;padding:20px 16px 36px}.top{text-align:center;margin-bottom:20px}.back{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--blue);color:#fff;text-decoration:none;font-weight:700;margin-bottom:18px}h1{margin:0;font-size:28px}.sub{margin-top:10px;color:var(--muted);font-size:16px}.list{display:grid;gap:16px}.case-card{background:var(--card);border-radius:22px;box-shadow:var(--shadow);border:1px solid rgba(219,227,234,.85);padding:20px}.tag{display:inline-flex;padding:7px 12px;border-radius:999px;background:#eef2ff;color:#2f46cc;font-size:13px;font-weight:700;margin-bottom:12px}.case-title{font-size:20px;font-weight:800;margin-bottom:10px}.money{font-size:16px;margin-bottom:12px}.bar{height:16px;border-radius:999px;background:#e5e7eb;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,#19a84a,#18a43f)}.actions{margin-top:14px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 18px;border:none;border-radius:12px;background:var(--brand);color:#fff;text-decoration:none;font-weight:800}.empty{padding:22px;text-align:center;color:var(--muted)}@media (max-width:640px){.page{padding:14px 12px 28px}h1{font-size:24px}.case-card{padding:16px}.case-title{font-size:18px}.money{font-size:15px}}</style>
-</head><body><div class="page"><div class="top"><a class="back" href="donate-projects.html">← กลับไปหน้าโครงการ</a><h1 id="projectTitle">กำลังโหลดโครงการ</h1><div class="sub">เลือกเคสที่ต้องการร่วมช่วยเหลือ</div></div><div class="list" id="caseList"></div></div>
-<script>
-const DATA = {
-  housing: { title:'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้', items:[
-    {id:'house-01', province:'สุราษฎร์ธานี', title:'ซ่อมแซมบ้านครอบครัวผู้สูงอายุ', raised_amount:120000, target_amount:250000},
-    {id:'house-02', province:'นครศรีธรรมราช', title:'สร้างห้องนอนปลอดภัยให้เด็กเล็ก', raised_amount:85000, target_amount:180000},
-    {id:'house-03', province:'พัทลุง', title:'ปรับปรุงหลังคาบ้านผู้ป่วยติดเตียง', raised_amount:40000, target_amount:120000}
-  ]},
-  education: { title:'เพื่อการศึกษา', items:[
-    {id:'edu-01', province:'ยะลา', title:'ทุนเรียนต่อระดับมัธยม', raised_amount:35000, target_amount:60000},
-    {id:'edu-02', province:'ปัตตานี', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', raised_amount:22000, target_amount:45000},
-    {id:'edu-03', province:'นราธิวาส', title:'ทุนเดินทางและอาหารกลางวัน', raised_amount:18000, target_amount:50000}
-  ]},
-  zakat: { title:'ซากาตเพื่อผู้ยากไร้', items:[
-    {id:'zakat-01', province:'สงขลา', title:'มอบซากาตช่วยครอบครัวผู้ยากไร้', raised_amount:42000, target_amount:100000},
-    {id:'zakat-02', province:'ปัตตานี', title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย', raised_amount:30000, target_amount:80000},
-    {id:'zakat-03', province:'นราธิวาส', title:'กองทุนยังชีพตามหลักซากาต', raised_amount:15000, target_amount:70000}
-  ]},
-  transport: { title:'อาสาพาน้องกลับบ้าน', items:[
-    {id:'transport-01', province:'กรุงเทพฯ', title:'ช่วยค่าส่งร่างผู้เสียชีวิตเดินทางกลับภูมิลำเนา', raised_amount:18000, target_amount:45000},
-    {id:'transport-02', province:'หาดใหญ่', title:'ส่งต่อเคสตกค้าง', raised_amount:25000, target_amount:60000},
-    {id:'transport-03', province:'ยะลา', title:'ค่าน้ำมันและค่าดูแลและซ่อมบำรุงรถ', raised_amount:12000, target_amount:35000}
-  ]},
-  relief: { title:'เพื่อการบรรเทาธารณภัย', items:[
-    {id:'relief-01', province:'ชุมพร', title:'ถุงยังชีพช่วยผู้ประสบเหตุฉุกเฉิน', raised_amount:50000, target_amount:120000},
-    {id:'relief-02', province:'สุราษฎร์ธานี', title:'กู้ชีพและสนับสนุนภาคสนาม', raised_amount:64000, target_amount:150000},
-    {id:'relief-03', province:'พัทลุง', title:'เครื่องอุปโภคบริโภคเร่งด่วน', raised_amount:22000, target_amount:70000}
-  ]},
-  disaster: { title:'ช่วยเหลือผู้ประสบภัย', items:[
-    {id:'disaster-01', province:'น่าน', title:'ช่วยผู้ประสบอุทกภัยระยะเร่งด่วน', raised_amount:70000, target_amount:160000},
-    {id:'disaster-02', province:'เชียงราย', title:'ฟื้นฟูชีวิตหลังน้ำลด', raised_amount:33000, target_amount:90000},
-    {id:'disaster-03', province:'ตรัง', title:'สนับสนุนอาหารและสิ่งจำเป็น', raised_amount:21000, target_amount:65000}
-  ]},
-  orphan: { title:'ช่วยเหลือเด็กกำพร้า', items:[
-    {id:'orphan-01', province:'ยะลา', title:'ทุนยังชีพเด็กกำพร้า', raised_amount:26000, target_amount:70000},
-    {id:'orphan-02', province:'ปัตตานี', title:'ชุดนักเรียนและอุปกรณ์การเรียน', raised_amount:19000, target_amount:50000},
-    {id:'orphan-03', province:'นราธิวาส', title:'ดูแลค่าอาหารและการเดินทาง', raised_amount:14000, target_amount:45000}
-  ]}
-};
-(function(){
-  const params = new URLSearchParams(location.search);
-  const projectSlug = params.get('project') || 'housing';
-  const titleEl = document.getElementById('projectTitle');
-  const list = document.getElementById('caseList');
-  const formatMoney = n => Number(n || 0).toLocaleString('th-TH');
-  const project = DATA[projectSlug];
-  if (!project) {
-    titleEl.textContent = 'ไม่พบโครงการ';
-    list.innerHTML = '<div class="case-card">ไม่พบข้อมูลโครงการที่เลือก</div>';
-    return;
-  }
-  titleEl.textContent = project.title;
-  list.innerHTML = project.items.map(item => {
-    const percent = Math.max(0, Math.min(100, Math.round((Number(item.raised_amount||0) / Math.max(Number(item.target_amount||0),1)) * 100)));
-    return `<article class="case-card"><div class="tag">${item.province}</div><div class="case-title">${item.title}</div><div class="money">ช่วยแล้ว ${formatMoney(item.raised_amount)} / ${formatMoney(item.target_amount)} บาท (${percent}%)</div><div class="bar"><div class="fill" style="width:${percent}%"></div></div><div class="actions"><a class="btn" href="donate-form.html?project=${encodeURIComponent(projectSlug)}&caseId=${encodeURIComponent(item.id)}">บริจาคเคสนี้</a></div></article>`;
-  }).join('');
-})();
-</script></body></html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รายการเคสบริจาค | ProMAX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#edf2f5;
+      --surface:#ffffff;
+      --surface-2:#f7fafc;
+      --text:#16324f;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#19a84a;
+      --brand-dark:#12823a;
+      --accent:#2457d6;
+      --shadow:0 12px 30px rgba(18,36,58,.10);
+      --shadow-soft:0 8px 18px rgba(18,36,58,.07);
+      --radius-xl:28px;
+      --radius-lg:20px;
+      --radius-md:14px;
+      --container:1200px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:'Kanit',sans-serif;
+      background:linear-gradient(180deg,#eef3f6 0%, #e9eef2 100%);
+      color:var(--text);
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+
+    .page{
+      min-height:100vh;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      backdrop-filter:blur(12px);
+      background:rgba(237,242,245,.82);
+      border-bottom:1px solid rgba(255,255,255,.55);
+    }
+
+    .topbar-inner{
+      max-width:var(--container);
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .back-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:46px;
+      border:none;
+      border-radius:14px;
+      background:linear-gradient(135deg,#3c6ef0,#2457d6);
+      color:#fff;
+      padding:0 16px;
+      font-size:16px;
+      font-weight:700;
+      box-shadow:0 10px 20px rgba(36,87,214,.24);
+    }
+
+    .topbar-meta{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:var(--brand);
+      box-shadow:0 0 0 5px rgba(25,168,74,.12);
+      flex:0 0 auto;
+    }
+
+    .container{
+      max-width:var(--container);
+      margin:0 auto;
+      padding:24px 18px 44px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:32px;
+      background:linear-gradient(135deg,#0f2f52 0%, #1d4f80 42%, #2f7a58 100%);
+      box-shadow:var(--shadow);
+      min-height:320px;
+      margin-bottom:22px;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.18), transparent 24%),
+        radial-gradient(circle at 85% 15%, rgba(255,255,255,.08), transparent 28%),
+        linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.34));
+      pointer-events:none;
+    }
+
+    .hero-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:20px;
+      align-items:stretch;
+      min-height:320px;
+    }
+
+    .hero-copy{
+      padding:34px 32px 32px;
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      width:max-content;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:16px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:46px;
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+
+    .hero p{
+      margin:0;
+      max-width:680px;
+      font-size:18px;
+      line-height:1.75;
+      color:rgba(255,255,255,.88);
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      margin-top:24px;
+    }
+
+    .stat{
+      border-radius:18px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+      padding:14px 14px 12px;
+    }
+
+    .stat .label{
+      font-size:13px;
+      color:rgba(255,255,255,.76);
+      margin-bottom:4px;
+    }
+
+    .stat .value{
+      font-size:24px;
+      font-weight:800;
+      line-height:1.1;
+      color:#fff;
+    }
+
+    .hero-visual{
+      position:relative;
+      min-height:320px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:flex-end;
+      padding:22px;
+    }
+
+    .hero-main-image{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:0;
+      position:absolute;
+      inset:0;
+      opacity:.38;
+      mix-blend-mode:screen;
+    }
+
+    .hero-float-card{
+      position:relative;
+      z-index:2;
+      width:min(360px,100%);
+      border-radius:22px;
+      overflow:hidden;
+      background:rgba(255,255,255,.92);
+      box-shadow:0 24px 50px rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.45);
+    }
+
+    .hero-float-card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+      display:block;
+    }
+
+    .hero-float-body{
+      padding:16px 16px 18px;
+      color:var(--text);
+    }
+
+    .hero-float-body h3{
+      margin:0 0 8px;
+      font-size:22px;
+      line-height:1.2;
+    }
+
+    .hero-float-body p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.65;
+    }
+
+    .toolbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+
+    .toolbar-left h2{
+      margin:0;
+      font-size:28px;
+      line-height:1.15;
+    }
+
+    .toolbar-left p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .chip-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--text);
+      font-size:14px;
+      font-weight:600;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .case-card{
+      background:var(--surface);
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.7);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .case-cover-wrap{
+      position:relative;
+      height:286px;
+      overflow:hidden;
+      background:#dbe4ea;
+    }
+
+    .case-cover{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      transition:transform .5s ease;
+    }
+
+    .case-card:hover .case-cover{
+      transform:scale(1.03);
+    }
+
+    .case-cover-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.22));
+    }
+
+    .case-topbadges{
+      position:absolute;
+      top:16px;
+      left:16px;
+      right:16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      z-index:2;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      background:rgba(255,255,255,.88);
+      color:var(--accent);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .tag.status-open{color:#0b7b3b}
+    .tag.status-urgent{color:#c2410c}
+    .tag.status-progress{color:#1d4ed8}
+
+    .case-body{
+      padding:18px 18px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      flex:1;
+    }
+
+    .case-title{
+      margin:0;
+      font-size:28px;
+      line-height:1.2;
+      letter-spacing:-.01em;
+    }
+
+    .case-desc{
+      margin:0;
+      font-size:15px;
+      line-height:1.75;
+      color:var(--muted);
+      min-height:78px;
+    }
+
+    .meta-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .meta-box{
+      border-radius:16px;
+      background:var(--surface-2);
+      border:1px solid var(--line);
+      padding:12px;
+    }
+
+    .meta-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:4px;
+    }
+
+    .meta-value{
+      font-size:18px;
+      font-weight:700;
+      color:var(--text);
+      line-height:1.2;
+    }
+
+    .progress-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .progress-top strong{
+      font-size:18px;
+      line-height:1.2;
+    }
+
+    .progress-top span{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .progress-track{
+      width:100%;
+      height:14px;
+      border-radius:999px;
+      background:#d9dde3;
+      overflow:hidden;
+    }
+
+    .progress-bar{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#18a347 0%, #22c55e 100%);
+    }
+
+    .amount-row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .amount-main{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .amount-main .raised{
+      font-size:16px;
+      color:var(--muted);
+    }
+
+    .amount-main .raised strong{
+      color:var(--text);
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
+    .amount-main .goal{
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .case-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:auto;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      border:none;
+      border-radius:15px;
+      padding:0 18px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--brand),#20c44c);
+      color:#fff;
+      box-shadow:0 10px 18px rgba(25,168,74,.24);
+      flex:1 1 220px;
+    }
+
+    .btn-secondary{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+      flex:1 1 180px;
+    }
+
+    .empty-state{
+      display:none;
+      background:#fff;
+      border-radius:28px;
+      padding:34px 22px;
+      text-align:center;
+      box-shadow:var(--shadow);
+      color:var(--muted);
+    }
+
+    .footer-space{height:12px}
+
+    @media (max-width:1080px){
+      .hero-grid{grid-template-columns:1fr}
+      .hero-copy{padding:28px 24px 12px}
+      .hero h1{font-size:40px}
+      .hero-visual{min-height:260px;padding:0 24px 24px;justify-content:flex-start}
+      .hero-float-card{width:min(420px,100%)}
+      .grid{grid-template-columns:1fr}
+    }
+
+    @media (max-width:680px){
+      .topbar-inner{padding:12px 12px}
+      .back-btn{font-size:15px;padding:0 14px;min-height:44px}
+      .topbar-meta{display:none}
+      .container{padding:16px 12px 34px}
+      .hero{border-radius:24px;min-height:auto}
+      .hero-copy{padding:22px 18px 10px}
+      .eyebrow{font-size:12px;margin-bottom:14px}
+      .hero h1{font-size:32px}
+      .hero p{font-size:15px;line-height:1.7}
+      .hero-stats{grid-template-columns:1fr;gap:10px}
+      .hero-visual{padding:0 18px 18px;min-height:auto}
+      .hero-float-card img{height:170px}
+      .toolbar-left h2{font-size:24px}
+      .chip{min-height:36px;padding:0 12px;font-size:13px}
+      .case-cover-wrap{height:220px}
+      .case-body{padding:16px}
+      .case-title{font-size:24px}
+      .case-desc{font-size:14px;min-height:auto}
+      .meta-grid{grid-template-columns:1fr}
+      .meta-value{font-size:16px}
+      .amount-main .raised strong{font-size:24px}
+      .btn{min-height:46px;font-size:15px}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <a class="back-btn" href="donate-projects.html">← กลับไปหน้าโครงการ</a>
+        <div class="topbar-meta">
+          <span class="dot"></span>
+          <span>Khon Chuay Khon Donation ProMAX</span>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <section class="hero" id="heroSection">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow" id="heroEyebrow">เปิดรับบริจาค</div>
+            <h1 id="heroTitle">รายการเคสเพื่อการช่วยเหลือ</h1>
+            <p id="heroDescription">เลือกเคสที่ต้องการร่วมสนับสนุน เพื่อส่งต่อความช่วยเหลืออย่างตรงจุด โปร่งใส และติดตามผลได้</p>
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="label">จำนวนเคสที่เปิดรับ</div>
+                <div class="value" id="statCases">0 เคส</div>
+              </div>
+              <div class="stat">
+                <div class="label">ยอดระดมรวมเป้าหมาย</div>
+                <div class="value" id="statGoal">0 บาท</div>
+              </div>
+              <div class="stat">
+                <div class="label">ช่วยแล้วรวม</div>
+                <div class="value" id="statRaised">0 บาท</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <img id="heroMainImage" class="hero-main-image" src="images/project2.png" alt="ภาพประกอบโครงการ">
+            <article class="hero-float-card">
+              <img id="heroCardImage" src="images/project2.png" alt="ภาพเคสเด่น">
+              <div class="hero-float-body">
+                <h3 id="heroCardTitle">เคสเด่นประจำโครงการ</h3>
+                <p id="heroCardText">ติดตามเรื่องราวของเคสที่เปิดรับบริจาค พร้อมยอดช่วยเหลือและความคืบหน้าแบบเข้าใจง่าย</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <div class="toolbar-left">
+          <h2 id="sectionTitle">ทุกเคสในโครงการนี้</h2>
+          <p id="sectionSubtitle">ออกแบบให้อ่านง่ายบนมือถือและดูน่าเชื่อถือในทุกอุปกรณ์</p>
+        </div>
+        <div class="chip-row" id="chipRow"></div>
+      </section>
+
+      <section class="grid" id="caseGrid"></section>
+      <section class="empty-state" id="emptyState">
+        ไม่พบข้อมูลโครงการที่เลือก กรุณากลับไปเลือกใหม่จากหน้าเมนูบริจาค
+      </section>
+      <div class="footer-space"></div>
+    </main>
+  </div>
+
+  <script>
+    const PROJECT_CONFIG = {
+      education: {
+        eyebrow: 'โครงการเพื่อการศึกษา',
+        title: 'เพื่อการศึกษา ส่งน้องเรียน',
+        description: 'ร่วมเปิดโอกาสให้เด็กและเยาวชนที่ขาดแคลน ได้มีอุปกรณ์การเรียน ทุนการศึกษา และค่าใช้จ่ายพื้นฐานในการเดินทางไปโรงเรียน',
+        heroImage: 'images/project1.png',
+        heroCardTitle: 'โครงการการศึกษาที่กำลังเปิดรับ',
+        heroCardText: 'ทุกการสนับสนุนช่วยให้เด็กคนหนึ่งได้มีโอกาสเรียนต่ออย่างมั่นคงและมีศักดิ์ศรี',
+        chips: ['ทุนการศึกษา', 'อุปกรณ์การเรียน', 'ค่าเดินทาง'],
+        cases: [
+          {
+            id: 'edu-001',
+            badge: 'ม.ปลาย',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ทุนเรียนต่อระดับมัธยม',
+            description: 'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
+            image: 'images/project1.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: 'ภายในเดือนนี้',
+            raised: 35000,
+            goal: 60000
+          },
+          {
+            id: 'edu-002',
+            badge: 'เปิดด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ค่าอุปกรณ์การเรียนเด็กกำพร้า',
+            description: 'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน',
+            image: 'images/project7.png',
+            location: 'ปัตตานี',
+            beneficiary: '3 เด็ก',
+            urgent: '7 วัน',
+            raised: 22000,
+            goal: 45000
+          },
+          {
+            id: 'edu-003',
+            badge: 'นราธิวาส',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'ทุนเดินทางและอาหารกลางวัน',
+            description: 'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
+            image: 'images/project1.png',
+            location: 'นราธิวาส',
+            beneficiary: '5 คน',
+            urgent: '15 วัน',
+            raised: 18000,
+            goal: 50000
+          }
+        ]
+      },
+      zakat: {
+        eyebrow: 'โครงการซากาต',
+        title: 'ซากาตเพื่อผู้ยากไร้',
+        description: 'ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย เพื่อช่วยผู้ยากไร้ ผู้สูงอายุ และครอบครัวเปราะบางให้ผ่านพ้นวิกฤต',
+        heroImage: 'images/project2.png',
+        heroCardTitle: 'เคสซากาตที่ต้องการการสนับสนุน',
+        heroCardText: 'ทุกยอดบริจาคช่วยต่อชีวิตให้ครอบครัวยากไร้มีอาหาร ของใช้จำเป็น และความหวังในการเริ่มต้นใหม่',
+        chips: ['ซากาต', 'อาหารยังชีพ', 'ผู้เปราะบาง'],
+        cases: [
+          {
+            id: 'zakat-001',
+            badge: 'สงขลา',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'มอบซากาตช่วยครอบครัวยากไร้',
+            description: 'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต',
+            image: 'images/project2.png',
+            location: 'สงขลา',
+            beneficiary: '2 ครอบครัว',
+            urgent: '10 วัน',
+            raised: 42000,
+            goal: 100000
+          },
+          {
+            id: 'zakat-002',
+            badge: 'เปิดด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ช่วยเหลือผู้สูงอายุและแม่หม้าย',
+            description: 'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน',
+            image: 'images/project2.png',
+            location: 'ปัตตานี',
+            beneficiary: '8 ราย',
+            urgent: '5 วัน',
+            raised: 30000,
+            goal: 80000
+          },
+          {
+            id: 'zakat-003',
+            badge: 'นราธิวาส',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'กองทุนยังชีพตามหลักซากาต',
+            description: 'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต',
+            image: 'images/project2.png',
+            location: 'นราธิวาส',
+            beneficiary: '12 ราย',
+            urgent: '20 วัน',
+            raised: 15000,
+            goal: 70000
+          }
+        ]
+      },
+      transport: {
+        eyebrow: 'อาสาพามัยยิดกลับบ้าน',
+        title: 'อาสาพามัยยิดกลับบ้าน',
+        description: 'ร่วมช่วยเหลือค่าขนย้ายร่างผู้เสียชีวิตกลับภูมิลำเนา ให้ครอบครัวได้ส่งคนที่รักกลับบ้านอย่างสมเกียรติ',
+        heroImage: 'images/project3.png',
+        heroCardTitle: 'เคสขนย้ายร่างกลับภูมิลำเนา',
+        heroCardText: 'ทุกการช่วยเหลือทำให้ครอบครัวลดภาระหนักในวันที่เจ็บปวดที่สุด และได้ส่งผู้เสียชีวิตกลับบ้านอย่างเหมาะสม',
+        chips: ['ค่าขนส่ง', 'ส่งกลับบ้าน', 'ช่วยเร่งด่วน'],
+        cases: [
+          {
+            id: 'transport-001',
+            badge: 'เร่งด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ค่าขนย้ายร่างกลับภูมิลำเนา',
+            description: 'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งร่างผู้เสียชีวิตกลับบ้านเกิด',
+            image: 'images/project3.png',
+            location: 'กรุงเทพฯ → ปัตตานี',
+            beneficiary: '1 ครอบครัว',
+            urgent: 'ภายใน 48 ชม.',
+            raised: 28000,
+            goal: 45000
+          },
+          {
+            id: 'transport-002',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต',
+            description: 'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน',
+            image: 'images/project3.png',
+            location: 'ชลบุรี → นราธิวาส',
+            beneficiary: '1 ครอบครัว',
+            urgent: '3 วัน',
+            raised: 18000,
+            goal: 50000
+          }
+        ]
+      },
+      relief: {
+        eyebrow: 'บรรเทาธารณภัย',
+        title: 'เพื่อการบรรเทาธารณภัย',
+        description: 'ช่วยเหลือผู้ประสบเหตุฉุกเฉิน น้ำท่วม ไฟไหม้ และความสูญเสียเฉียบพลัน ด้วยความช่วยเหลือที่ไปถึงอย่างรวดเร็ว',
+        heroImage: 'images/project4.png',
+        heroCardTitle: 'เคสฉุกเฉินที่กำลังเปิดรับ',
+        heroCardText: 'ออกแบบให้ติดตามง่าย เห็นยอดชัด และพร้อมร่วมช่วยได้ทันทีเมื่อเกิดเหตุ',
+        chips: ['ภัยพิบัติ', 'ช่วยเร่งด่วน', 'ถุงยังชีพ'],
+        cases: [
+          {
+            id: 'relief-001',
+            badge: 'ไฟไหม้',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง',
+            description: 'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด',
+            image: 'images/project6.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: '7 วัน',
+            raised: 67000,
+            goal: 120000
+          },
+          {
+            id: 'relief-002',
+            badge: 'อุทกภัย',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม',
+            description: 'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน',
+            image: 'images/project4.png',
+            location: 'นราธิวาส',
+            beneficiary: '25 ครัวเรือน',
+            urgent: '10 วัน',
+            raised: 54000,
+            goal: 150000
+          }
+        ]
+      },
+      housing: {
+        eyebrow: 'ที่อยู่อาศัยเพื่อผู้ยากไร้',
+        title: 'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
+        description: 'ซ่อมแซมบ้านที่ทรุดโทรมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย เพื่อคืนศักดิ์ศรีและคุณภาพชีวิตให้ครอบครัวเปราะบาง',
+        heroImage: 'images/project5.png',
+        heroCardTitle: 'เคสซ่อมแซมและสร้างบ้าน',
+        heroCardText: 'บ้านที่ปลอดภัยคือจุดเริ่มต้นของการมีชีวิตที่มั่นคงขึ้นสำหรับทั้งครอบครัว',
+        chips: ['ซ่อมบ้าน', 'ที่อยู่อาศัย', 'ความปลอดภัย'],
+        cases: [
+          {
+            id: 'housing-001',
+            badge: 'บ้านพัง',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ',
+            description: 'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย',
+            image: 'images/project5.png',
+            location: 'สงขลา',
+            beneficiary: '1 หลัง',
+            urgent: '14 วัน',
+            raised: 76000,
+            goal: 180000
+          },
+          {
+            id: 'housing-002',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'สร้างบ้านใหม่ให้ครอบครัวยากไร้',
+            description: 'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน',
+            image: 'images/project5.png',
+            location: 'ปัตตานี',
+            beneficiary: '1 ครอบครัว',
+            urgent: '30 วัน',
+            raised: 92000,
+            goal: 250000
+          }
+        ]
+      },
+      disaster: {
+        eyebrow: 'ช่วยเหลือผู้ประสบภัย',
+        title: 'ช่วยเหลือผู้ประสบภัย',
+        description: 'ฟื้นฟูชีวิตผู้ประสบภัยจากเหตุฉุกเฉินและความเสียหายฉับพลัน ให้มีทั้งความช่วยเหลือระยะสั้นและการเริ่มต้นใหม่ในระยะยาว',
+        heroImage: 'images/project6.png',
+        heroCardTitle: 'เคสฟื้นฟูหลังเหตุการณ์',
+        heroCardText: 'ทั้งความช่วยเหลือเร่งด่วนและการฟื้นฟูหลังเหตุการณ์ถูกรวมไว้ในมุมมองเดียว เข้าใจง่ายและลงมือช่วยได้จริง',
+        chips: ['ฟื้นฟู', 'ฉุกเฉิน', 'ครอบครัวเดือดร้อน'],
+        cases: [
+          {
+            id: 'disaster-001',
+            badge: 'เร่งฟื้นฟู',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้',
+            description: 'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง',
+            image: 'images/project6.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: '20 วัน',
+            raised: 48000,
+            goal: 130000
+          }
+        ]
+      },
+      orphan: {
+        eyebrow: 'โครงการเด็กกำพร้า',
+        title: 'ช่วยเหลือเด็กกำพร้า',
+        description: 'ส่งต่อโอกาสแก่เด็กกำพร้าให้มีอาหาร การศึกษา สิ่งจำเป็น และการดูแลที่เหมาะสม เพื่อเติบโตอย่างมีคุณภาพและความหวัง',
+        heroImage: 'images/project7.png',
+        heroCardTitle: 'เคสเด็กกำพร้าที่เปิดรับบริจาค',
+        heroCardText: 'มอบโอกาสให้เด็กได้เติบโตอย่างปลอดภัย มีอาหาร อุปกรณ์การเรียน และคุณภาพชีวิตที่ดีขึ้น',
+        chips: ['เด็กกำพร้า', 'อาหาร', 'การศึกษา'],
+        cases: [
+          {
+            id: 'orphan-001',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ทุนดูแลเด็กกำพร้ารายเดือน',
+            description: 'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น',
+            image: 'images/project7.png',
+            location: 'นราธิวาส',
+            beneficiary: '6 เด็ก',
+            urgent: 'เดือนนี้',
+            raised: 26000,
+            goal: 70000
+          },
+          {
+            id: 'orphan-002',
+            badge: 'การศึกษา',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'อุปกรณ์การเรียนเด็กกำพร้า',
+            description: 'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน',
+            image: 'images/project7.png',
+            location: 'ปัตตานี',
+            beneficiary: '10 เด็ก',
+            urgent: '12 วัน',
+            raised: 14000,
+            goal: 42000
+          }
+        ]
+      }
+    };
+
+    const qs = new URLSearchParams(window.location.search);
+    const projectKey = qs.get('project') || 'education';
+    const config = PROJECT_CONFIG[projectKey];
+
+    const emptyState = document.getElementById('emptyState');
+    const caseGrid = document.getElementById('caseGrid');
+
+    function formatMoney(value){
+      return Number(value || 0).toLocaleString('th-TH');
+    }
+
+    function progressPercent(raised, goal){
+      if (!goal) return 0;
+      return Math.max(0, Math.min(100, Math.round((raised / goal) * 100)));
+    }
+
+    function statusClass(status){
+      if (status === 'urgent') return 'status-urgent';
+      if (status === 'progress') return 'status-progress';
+      return 'status-open';
+    }
+
+    function updateHero(cfg){
+      document.title = `${cfg.title} | รายการเคสบริจาค ProMAX`;
+      document.getElementById('heroEyebrow').textContent = cfg.eyebrow;
+      document.getElementById('heroTitle').textContent = cfg.title;
+      document.getElementById('heroDescription').textContent = cfg.description;
+      document.getElementById('heroMainImage').src = cfg.heroImage;
+      document.getElementById('heroCardImage').src = cfg.heroImage;
+      document.getElementById('heroCardTitle').textContent = cfg.heroCardTitle;
+      document.getElementById('heroCardText').textContent = cfg.heroCardText;
+      document.getElementById('sectionTitle').textContent = `เคสทั้งหมดในโครงการ “${cfg.title}”`;
+      document.getElementById('sectionSubtitle').textContent = 'เลือกเคสที่ต้องการช่วยเหลือ แล้วกดดูรายละเอียดหรือดำเนินการบริจาคต่อได้ทันที';
+
+      const totalCases = cfg.cases.length;
+      const totalGoal = cfg.cases.reduce((sum, item) => sum + item.goal, 0);
+      const totalRaised = cfg.cases.reduce((sum, item) => sum + item.raised, 0);
+
+      document.getElementById('statCases').textContent = `${totalCases} เคส`;
+      document.getElementById('statGoal').textContent = `${formatMoney(totalGoal)} บาท`;
+      document.getElementById('statRaised').textContent = `${formatMoney(totalRaised)} บาท`;
+
+      document.getElementById('chipRow').innerHTML = cfg.chips
+        .map(chip => `<span class="chip">${chip}</span>`)
+        .join('');
+    }
+
+    function renderCases(cfg){
+      caseGrid.innerHTML = cfg.cases.map(item => {
+        const percent = progressPercent(item.raised, item.goal);
+        const detailHref = `donate-case-detail.html?project=${encodeURIComponent(projectKey)}&case=${encodeURIComponent(item.id)}`;
+        return `
+          <article class="case-card">
+            <div class="case-cover-wrap">
+              <img class="case-cover" src="${item.image}" alt="${item.title}">
+              <div class="case-cover-overlay"></div>
+              <div class="case-topbadges">
+                <span class="tag">${item.badge}</span>
+                <span class="tag ${statusClass(item.status)}">${item.statusText}</span>
+              </div>
+            </div>
+
+            <div class="case-body">
+              <h3 class="case-title">${item.title}</h3>
+              <p class="case-desc">${item.description}</p>
+
+              <div class="meta-grid">
+                <div class="meta-box">
+                  <div class="meta-label">พื้นที่ช่วยเหลือ</div>
+                  <div class="meta-value">${item.location}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">กลุ่มเป้าหมาย</div>
+                  <div class="meta-value">${item.beneficiary}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">ช่วงเวลาที่ต้องการ</div>
+                  <div class="meta-value">${item.urgent}</div>
+                </div>
+              </div>
+
+              <div class="progress-top">
+                <strong>ความคืบหน้าการช่วยเหลือ ${percent}%</strong>
+                <span>ช่วยแล้ว ${formatMoney(item.raised)} / ${formatMoney(item.goal)} บาท</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar" style="width:${percent}%"></div>
+              </div>
+
+              <div class="amount-row">
+                <div class="amount-main">
+                  <div class="raised">ยอดที่ช่วยแล้ว <strong>${formatMoney(item.raised)}</strong> บาท</div>
+                  <div class="goal">เป้าหมายรวม ${formatMoney(item.goal)} บาท</div>
+                </div>
+              </div>
+
+              <div class="case-actions">
+                <a class="btn btn-primary" href="${detailHref}">ดูรายละเอียดและบริจาค</a>
+                <a class="btn btn-secondary" href="${detailHref}">อ่านเรื่องราวเคส</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    if (!config) {
+      emptyState.style.display = 'block';
+      document.getElementById('heroSection').style.display = 'none';
+      document.querySelector('.toolbar').style.display = 'none';
+    } else {
+      updateHero(config);
+      renderCases(config);
+    }
+  </script>
+</body>
+</html>

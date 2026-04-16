@@ -9870,7 +9870,6 @@ if (caseSearchState?.step === "waiting_phone") {
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================
 
-let lineDisplayName = "";
  if (String(text || "").trim() === "ทดสอบบอท") {
   await safeReply(replyToken, [
     { type: "text", text: "✅ บอททำงานอยู่" }

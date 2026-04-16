@@ -7998,21 +7998,21 @@ const donationFlex = {
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
       ),
       createProjectBubble(
-        "การศึกษา",
+        "เพื่อการศึกษา ส่งน้องเรียน",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img2.pic.in.th/project1.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
       ),
       createProjectBubble(
-        "ที่อยู่อาศัย",
-        "ช่วยเหลือด้านที่พักอาศัยผู้ยากไร้",
+        "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
+        "ช่วยเหลือด้านที่พักอาศัย",
         "https://img1.pic.in.th/images/project5.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
       ),
       createProjectBubble(
-        "ภัยพิบัติ",
-        "ช่วยเหลือผู้ประสบเหตุเร่งด่วน",
-        "https://img5.pic.in.th/file/secure-sv1/KCK4.png",
+        "ช่วยเหลือผู้ประสบภัย",
+        "ช่วยเหลือผู้ประสบภัยเร่งด่วน",
+        "https://img2.pic.in.th/project6.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
       ),
       createProjectBubble(
@@ -8022,7 +8022,7 @@ const donationFlex = {
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
       ),
       createProjectBubble(
-        "เด็กกำพร้า",
+        "กองทุนซากาตเพื่อเด็กกำพร้า",
         "ส่งต่อโอกาสและอนาคตที่ดี",
         "https://img2.pic.in.th/project7.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"

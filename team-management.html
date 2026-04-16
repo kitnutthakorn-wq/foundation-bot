@@ -811,7 +811,7 @@ async function rejectTeamCandidate(lineUserId) {
     const confirmed = confirm("ยืนยันไม่อนุมัติผู้สมัครคนนี้ใช่หรือไม่?");
     if (!confirmed) return;
 
-    const res = await fetch(`${API_BASE_URL}/api/team-management/reject`, {
+    await safeFetchJson(`${API_BASE_URL}/api/team-management/reject`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -821,12 +821,6 @@ async function rejectTeamCandidate(lineUserId) {
         line_user_id: lineUserId
       })
     });
-
-    const json = await res.json();
-
-    if (!res.ok || json?.ok === false) {
-      throw new Error(json?.error || "ไม่อนุมัติไม่สำเร็จ");
-    }
 
     await loadTeamManagement();
     alert("ไม่อนุมัติสำเร็จ");

@@ -9569,79 +9569,83 @@ app.post("/api/team/join", async (req, res) => {
 ========================= */
 app.post("/webhook", async (req, res) => {
   try {
- console.log("ROLE CHECK DEBUG userId =", userId);
-console.log("ROLE CHECK DEBUG text =", text);
-console.log("ROLE CHECK DEBUG role =", await getUserRole(userId));
-console.log("ROLE CHECK DEBUG sourceType =", event.source?.type);
-console.log("ROLE CHECK DEBUG groupId =", event.source?.groupId || "");
-console.log("ROLE CHECK DEBUG allowedGroupId =", ALLOWED_TEAM_GROUP_ID);  
-console.log("WEBHOOK DEBUG signature =", req.get("x-line-signature"));
-console.log("WEBHOOK DEBUG rawBody exists =", !!req.rawBody);
-console.log("WEBHOOK DEBUG body exists =", !!req.body);
+    console.log("WEBHOOK DEBUG signature =", req.get("x-line-signature"));
+    console.log("WEBHOOK DEBUG rawBody exists =", !!req.rawBody);
+    console.log("WEBHOOK DEBUG body exists =", !!req.body);
+
     if (!verifySignature(req)) {
       console.error("❌ Invalid LINE signature");
       return res.status(401).send("Invalid signature");
     }
 
-const events = req.body.events || [];
-for (const event of events) {
-  const replyToken = event.replyToken;
+    const events = req.body.events || [];
 
-// =========================
-// TEAM JOIN AUTO WELCOME (memberJoined)
-// วางก่อน if (event.type !== "message") continue;
-// =========================
-if (event.type === "memberJoined" && event.source?.type === "group") {
-  try {
-    const joinedMembers = Array.isArray(event.joined?.members) ? event.joined.members : [];
-    const firstJoinedUserId = String(joinedMembers[0]?.userId || "").trim();
+    for (const event of events) {
+      const replyToken = event.replyToken;
 
-    // ถ้าไม่มี userId ก็ข้ามไปก่อน
-    if (!firstJoinedUserId) {
-      continue;
-    }
+      // =========================
+      // TEAM JOIN AUTO WELCOME (memberJoined)
+      // วางก่อน if (event.type !== "message") continue;
+      // =========================
+      if (event.type === "memberJoined" && event.source?.type === "group") {
+        try {
+          const joinedMembers = Array.isArray(event.joined?.members) ? event.joined.members : [];
+          const firstJoinedUserId = String(joinedMembers[0]?.userId || "").trim();
 
-    // จำกัดให้ทำงานเฉพาะกลุ่มทีมงานที่อนุญาต
-    if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
-      continue;
-    }
+          if (!firstJoinedUserId) {
+            continue;
+          }
 
-  let joinedDisplayName = "สมาชิกใหม่";
-try {
-  const profile = await getGroupMemberProfile(event.source.groupId, firstJoinedUserId);
-  joinedDisplayName = String(profile?.displayName || "").trim() || "สมาชิกใหม่";
-} catch (err) {
-  console.log("JOINED PROFILE LOAD ERROR:", err?.message || err);
-}
+          if (TEAM_GROUP_ENABLED && !isAllowedTeamGroup(event)) {
+            continue;
+          }
 
-upsertRecentUser(firstJoinedUserId, joinedDisplayName);
+          let joinedDisplayName = "สมาชิกใหม่";
 
-await safeReply(replyToken, [
-  buildTeamJoinWelcomeFlex(joinedDisplayName)
-]);
-  } catch (err) {
-    console.error("MEMBER JOINED WELCOME ERROR:", err);
-  }
+          try {
+            const profile = await getGroupMemberProfile(event.source.groupId, firstJoinedUserId);
+            joinedDisplayName = String(profile?.displayName || "").trim() || "สมาชิกใหม่";
+          } catch (err) {
+            console.log("JOINED PROFILE LOAD ERROR:", err?.message || err);
+          }
 
-  continue;
-}
-     
-  if (event.type !== "message") continue;
-  if (!event.message || event.message.type !== "text") continue;
+          upsertRecentUser(firstJoinedUserId, joinedDisplayName);
 
-const text = String(event?.message?.text || "").trim();
-console.log("👉 USER CLICK:", text);
-const userId = event?.source?.userId || "";
+          await safeReply(replyToken, [
+            buildTeamJoinWelcomeFlex(joinedDisplayName)
+          ]);
+        } catch (err) {
+          console.error("MEMBER JOINED WELCOME ERROR:", err);
+        }
 
-  let lineDisplayName = "";
+        continue;
+      }
 
-  try {
-    lineDisplayName = await getLineProfileNameSafe(event);
-  } catch (err) {
-    console.log("LINE display name load error:", err?.message || err);
-  }
+      if (event.type !== "message") continue;
+      if (!event.message || event.message.type !== "text") continue;
 
-  upsertRecentUser(userId, lineDisplayName || userId);
+      const text = String(event?.message?.text || "").trim();
+      console.log("👉 USER CLICK:", text);
+      const userId = event?.source?.userId || "";
+
+      console.log("ROLE CHECK DEBUG userId =", userId);
+      console.log("ROLE CHECK DEBUG text =", text);
+      console.log("ROLE CHECK DEBUG role =", await getUserRole(userId));
+      console.log("ROLE CHECK DEBUG sourceType =", event.source?.type);
+      console.log("ROLE CHECK DEBUG groupId =", event.source?.groupId || "");
+      console.log("ROLE CHECK DEBUG allowedGroupId =", ALLOWED_TEAM_GROUP_ID);
+
+      let lineDisplayName = "";
+
+      try {
+        lineDisplayName = await getLineProfileNameSafe(event);
+      } catch (err) {
+        console.log("LINE display name load error:", err?.message || err);
+      }
+
+      upsertRecentUser(userId, lineDisplayName || userId);
+
+      // จากตรงนี้ค่อยต่อ logic message เดิมของคุณลงไป
 
   const role = await getUserRole(userId);
 
@@ -9697,7 +9701,7 @@ if (text === "ค้นหาเคส") {
   continue;
 }
 
-  // 👉 STEP FLOW ของคุณต่อจากนี้
+  // 👉 STEP FLOW ของต่อจากนี้
 
 const caseSearchState = getCaseSearchState(userId);
 

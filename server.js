@@ -12340,6 +12340,102 @@ app.post("/api/team-management/approve", checkDashboardAuth, async (req, res) =>
   }
 });
 
+app.post("/api/team-management/toggle-active", checkDashboardAuth, async (req, res) => {
+  try {
+    const lineUserId = String(req.body?.line_user_id || "").trim();
+    const nextActive = req.body?.is_active;
+
+    if (!lineUserId) {
+      return res.status(400).json({
+        ok: false,
+        error: "line_user_id is required"
+      });
+    }
+
+    if (typeof nextActive !== "boolean") {
+      return res.status(400).json({
+        ok: false,
+        error: "is_active must be boolean"
+      });
+    }
+
+    const { data: existing, error: findError } = await supabase
+      .from("line_user_roles")
+      .select("line_user_id, role, is_active")
+      .eq("line_user_id", lineUserId)
+      .maybeSingle();
+
+    if (findError) {
+      console.error("toggle-active findError:", findError);
+      return res.status(500).json({
+        ok: false,
+        error: findError.message
+      });
+    }
+
+    if (!existing) {
+      return res.status(404).json({
+        ok: false,
+        error: "ไม่พบผู้ใช้งานในระบบทีม"
+      });
+    }
+
+    // กันพังระดับองค์กร: ต้องเหลือ admin ที่ active อย่างน้อย 1 คน
+    if (existing.role === "admin" && nextActive === false) {
+      const { count: activeAdminCount, error: countError } = await supabase
+        .from("line_user_roles")
+        .select("*", { count: "exact", head: true })
+        .eq("role", "admin")
+        .eq("is_active", true);
+
+      if (countError) {
+        console.error("toggle-active countError:", countError);
+        return res.status(500).json({
+          ok: false,
+          error: countError.message
+        });
+      }
+
+      if ((activeAdminCount || 0) <= 1) {
+        return res.status(400).json({
+          ok: false,
+          error: "ไม่สามารถปิดใช้งานแอดมินคนสุดท้ายได้"
+        });
+      }
+    }
+
+    const { data, error } = await supabase
+      .from("line_user_roles")
+      .update({
+        is_active: nextActive
+      })
+      .eq("line_user_id", lineUserId)
+      .select("line_user_id, role, is_active")
+      .single();
+
+    if (error) {
+      console.error("toggle-active updateError:", error);
+      return res.status(500).json({
+        ok: false,
+        error: error.message
+      });
+    }
+
+    return res.json({
+      ok: true,
+      message: nextActive ? "เปิดใช้งานสำเร็จ" : "ปิดใช้งานสำเร็จ",
+      user: data
+    });
+  } catch (err) {
+    console.error("toggle-active unexpected:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "toggle active failed"
+    });
+  }
+});
+
+
 app.post("/api/team-management/reject", checkDashboardAuth, async (req, res) => {
   try {
     const lineUserId = String(req.body?.line_user_id || "").trim();

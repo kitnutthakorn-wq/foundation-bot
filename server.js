@@ -6655,10 +6655,10 @@ app.get("/api/recent-activity", async (req, res) => {
           row.updated_by ||
           "ทีมงาน";
 
-        return {
+       return {
   ...row,
   label,
-          title: `${row.case_code || "-"} · ${label}`,
+  title: `${row.case_code || "-"} · ${label}`,
           subtitle: `อัปเดตโดย ${actor}`,
           detail: label,
           updated_at: row.updated_at || null,

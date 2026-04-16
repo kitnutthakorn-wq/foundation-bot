@@ -12302,6 +12302,41 @@ app.get("/api/team/me", async (req, res) => {
   }
 });
 
+app.post("/api/team-management/approve", checkDashboardAuth, async (req, res) => {
+  try {
+    const lineUserId = String(req.body?.line_user_id || "").trim();
+
+    if (!lineUserId) {
+      return res.status(400).json({
+        ok: false,
+        error: "line_user_id is required"
+      });
+    }
+
+    const { data, error } = await supabase
+      .from("team_candidates")
+      .update({
+        status: "approved",
+        last_seen_at: new Date().toISOString()
+      })
+      .eq("line_user_id", lineUserId)
+      .select()
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return res.json({
+      ok: true,
+      item: data || null
+    });
+  } catch (err) {
+    console.error("POST /api/team-management/approve error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "approve failed"
+    });
+  }
+});
 app.get("/api/team-management/list", checkDashboardAuth, async (req, res) => {
   try {
     const search = String(req.query.search || "").trim().toLowerCase();

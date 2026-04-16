@@ -10,27 +10,128 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800&display=swap" rel="stylesheet">
 
 <style>
-:root{--bg:#edf2f5;--card:#fff;--text:#16324f;--muted:#6b7280;--brand:#19a84a;--shadow:0 12px 30px rgba(18,36,58,.10)}
+:root{
+  --bg:#edf2f5;
+  --card:#fff;
+  --text:#16324f;
+  --muted:#6b7280;
+  --brand:#19a84a;
+  --shadow:0 12px 30px rgba(18,36,58,.10)
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
-.page{max-width:1200px;margin:0 auto;padding:22px 18px 40px}
-.hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
-.hero h1{margin:0;font-size:38px;line-height:1.1}
-.hero p{margin:10px 0 0;color:var(--muted);font-size:17px;line-height:1.7}
-.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 14px;background:#fff;box-shadow:var(--shadow);font-size:14px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{background:#fff;border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
-.cover{height:360px;background-size:cover;background-position:center;position:relative}
-.overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.68))}
-.caption{position:absolute;left:20px;right:20px;bottom:18px;color:#fff}
-.caption .title{font-size:34px;font-weight:800;line-height:1.02;text-shadow:0 2px 12px rgba(0,0,0,.25)}
-.body{padding:18px 18px 20px}
-.body h3{margin:0 0 8px;font-size:28px;line-height:1.2}
-.body p{margin:0 0 16px;color:var(--muted);line-height:1.7;min-height:72px}
-.btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:48px;border:none;border-radius:14px;background:#20c44c;color:#fff;font-size:22px;font-weight:800;cursor:pointer;text-decoration:none}
-.footer-note{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
-@media (max-width:1024px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cover{height:320px}.caption .title{font-size:28px}.body h3{font-size:24px}}
-@media (max-width:640px){.page{padding:14px 12px 30px}.hero h1{font-size:28px}.hero p{font-size:15px}.grid{grid-template-columns:1fr;gap:14px}.cover{height:300px}.caption .title{font-size:24px}.body{padding:14px}.body h3{font-size:20px}.btn{font-size:18px;min-height:44px}}
+body{
+  margin:0;
+  font-family:'Kanit',sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:22px 18px 40px
+}
+.hero{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+  margin-bottom:18px
+}
+.hero h1{
+  margin:0;
+  font-size:38px;
+  line-height:1.1
+}
+.hero p{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.7
+}
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  border-radius:999px;
+  padding:10px 14px;
+  background:#fff;
+  box-shadow:var(--shadow);
+  font-size:14px;
+  font-weight:700
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px
+}
+.card{
+  background:#fff;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:var(--shadow)
+}
+.cover{
+  height:360px;
+  background-size:cover;
+  background-position:center;
+  position:relative
+}
+.overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.30))
+}
+.body{
+  padding:18px 18px 20px
+}
+.body h3{
+  margin:0 0 8px;
+  font-size:28px;
+  line-height:1.2
+}
+.body p{
+  margin:0 0 16px;
+  color:var(--muted);
+  line-height:1.7;
+  min-height:72px
+}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:48px;
+  border:none;
+  border-radius:14px;
+  background:#20c44c;
+  color:#fff;
+  font-size:22px;
+  font-weight:800;
+  cursor:pointer;
+  text-decoration:none
+}
+.footer-note{
+  margin-top:22px;
+  color:var(--muted);
+  font-size:13px;
+  text-align:center
+}
+@media (max-width:1024px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cover{height:320px}
+  .body h3{font-size:24px}
+}
+@media (max-width:640px){
+  .page{padding:14px 12px 30px}
+  .hero h1{font-size:28px}
+  .hero p{font-size:15px}
+  .grid{grid-template-columns:1fr;gap:14px}
+  .cover{height:300px}
+  .body{padding:14px}
+  .body h3{font-size:20px}
+  .btn{font-size:18px;min-height:44px}
+}
 </style>
 </head>
 <body>
@@ -42,27 +143,64 @@ body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--te
     </div>
     <div class="pill">Demo Safe · พร้อมพรีเซ็น</div>
   </div>
+
   <div class="grid" id="grid"></div>
-  <div class="footer-note">เวอร์ชันนี้เป็น HTML Demo Mode สำหรับพรีเซ็น สามารถคลิกเชื่อมกันครบ 3 หน้าได้ทันที</div>
+
+  <div class="footer-note">
+    เวอร์ชันนี้เป็น HTML Demo Mode สำหรับพรีเซ็น สามารถคลิกเชื่อมกันครบ 3 หน้าได้ทันที
+  </div>
 </div>
+
 <script>
 const PROJECTS = [
-  { slug:"education", title:"เพื่อการศึกษา ส่งน้องเรียน", subtitle:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน", img:"images/project1.png" },
-  { slug:"zakat", title:"ซากาตเพื่อผู้ยากไร้", subtitle:"ส่งต่อซากาตเพื่อช่วยเหลือผู้ยากไร้ตามหลักศาสนา", img:"images/project2.png" },
-  { slug:"transport", title:"อาสาพามัยยิดกลับบ้าน", subtitle:"ช่วยเหลือค่านำส่งร่างผู้เสียชีวิตส่งกลับภูมิลำเนา", img:"images/project3.png" },
-  { slug:"relief", title:"เพื่อการบรรเทาธารณภัย", subtitle:"ช่วยเหลือผู้ประสบภัยเร่งด่วนทั่วประเทศ", img:"images/project4.png" },
-  { slug:"housing", title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้", subtitle:"ซ่อมแซมและสร้างบ้านให้ครอบครัวที่ขาดแคลน", img:"images/project5.png" },
-  { slug:"disaster", title:"ช่วยเหลือผู้ประสบภัย", subtitle:"ช่วยเหลือผู้ประสบอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ", img:"images/project6.png" },
-  { slug:"orphan", title:"ช่วยเหลือเด็กกำพร้า", subtitle:"ดูแลและสนับสนุนเด็กกำพร้าให้มีคุณภาพชีวิตที่ดีขึ้น", img:"images/project7.png" }
+  {
+    slug:"education",
+    title:"เพื่อการศึกษา ส่งน้องเรียน",
+    subtitle:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน",
+    img:"images/project1.png"
+  },
+  {
+    slug:"zakat",
+    title:"ซากาตเพื่อผู้ยากไร้",
+    subtitle:"ส่งต่อซากาตเพื่อช่วยเหลือผู้ยากไร้ตามหลักศาสนา",
+    img:"images/project2.png"
+  },
+  {
+    slug:"transport",
+    title:"อาสาพามัยยิดกลับบ้าน",
+    subtitle:"ช่วยเหลือค่านำส่งร่างผู้เสียชีวิตส่งกลับภูมิลำเนา",
+    img:"images/project3.png"
+  },
+  {
+    slug:"relief",
+    title:"เพื่อการบรรเทาธารณภัย",
+    subtitle:"ช่วยเหลือผู้ประสบภัยเร่งด่วนทั่วประเทศ",
+    img:"images/project4.png"
+  },
+  {
+    slug:"housing",
+    title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
+    subtitle:"ซ่อมแซมและสร้างบ้านให้ครอบครัวที่ขาดแคลน",
+    img:"images/project5.png"
+  },
+  {
+    slug:"disaster",
+    title:"ช่วยเหลือผู้ประสบภัย",
+    subtitle:"ช่วยเหลือผู้ประสบอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ",
+    img:"images/project6.png"
+  },
+  {
+    slug:"orphan",
+    title:"ช่วยเหลือเด็กกำพร้า",
+    subtitle:"ดูแลและสนับสนุนเด็กกำพร้าให้มีคุณภาพชีวิตที่ดีขึ้น",
+    img:"images/project7.png"
+  }
 ];
 
-document.getElementById("grid").innerHTML = PROJECTS.map(p=>`
+document.getElementById("grid").innerHTML = PROJECTS.map(p => `
 <article class="card">
   <div class="cover" style="background-image:url('${p.img}')">
     <div class="overlay"></div>
-    <div class="caption">
-      <div class="title">${p.title}</div>
-    </div>
   </div>
   <div class="body">
     <h3>${p.title}</h3>

@@ -834,6 +834,41 @@ async function setTeamRole(lineUserId) {
     alert(`ตั้งสิทธิ์ไม่สำเร็จ\n${err.message || err}`);
   }
 }
+
+async function toggleTeamActive(lineUserId, currentActive) {
+  try {
+    const nextActive = !Boolean(currentActive);
+    const actionText = nextActive ? "เปิดใช้งาน" : "ปิดใช้งาน";
+
+    const confirmed = confirm(`ยืนยัน${actionText}ผู้ใช้งานนี้ใช่หรือไม่?`);
+    if (!confirmed) return;
+
+    const res = await fetch(`${API_BASE_URL}/api/team-management/toggle-active`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        line_user_id: lineUserId,
+        is_active: nextActive
+      })
+    });
+
+    const json = await res.json();
+
+    if (!res.ok || json?.ok === false) {
+      throw new Error(json?.error || `${actionText}ไม่สำเร็จ`);
+    }
+
+    await loadTeamManagement();
+    alert(json?.message || `${actionText}สำเร็จ`);
+  } catch (err) {
+    console.error("toggleTeamActive error:", err);
+    alert(`ดำเนินการไม่สำเร็จ\n${err.message || err}`);
+  }
+}
+    
     window.addEventListener("DOMContentLoaded", () => {
       loadTeamManagement();
 

@@ -8001,7 +8001,7 @@ const donationFlex = {
         "เพื่อการศึกษา ส่งน้องเรียน",
         "สนับสนุนอนาคตของเด็ก ๆ",
         "https://img2.pic.in.th/project1.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=education"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education"
       ),
       createProjectBubble(
         "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",

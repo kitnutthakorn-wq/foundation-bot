@@ -172,17 +172,20 @@
 
     .hero h2{
       margin:0 0 14px;
-      font-size:56px;
-      line-height:1;
-      letter-spacing:-.03em;
-      max-width:720px;
+      font-size:48px;
+      line-height:1.08;
+      letter-spacing:-.015em;
+      font-weight:700;
+      max-width:760px;
+      text-wrap:balance;
     }
 
     .hero p{
       margin:0;
-      max-width:680px;
-      font-size:17px;
-      line-height:1.8;
+      max-width:700px;
+      font-size:16px;
+      line-height:1.9;
+      font-weight:500;
       color:rgba(255,255,255,.88);
     }
 
@@ -680,22 +683,18 @@
     @media (max-width:1180px){
       .hero-grid{grid-template-columns:1fr;min-height:auto;padding:28px}
       .hero{min-height:auto}
-      .hero h2{font-size:46px}
+      .hero h2{font-size:40px;line-height:1.1;letter-spacing:-.012em}
       .hero-right{justify-content:flex-start}
+      .featured-card{min-height:380px}
+      .grid{grid-template-columns:1fr}
+    }
       .featured-card{min-height:380px}
       .grid{grid-template-columns:1fr}
     }
 
     @media (max-width:760px){
       .topbar-inner{padding:12px}
-      .back-btn{font-size:15px;padding:0 14px;min-height:44px}
-      .topbar-meta{display:none}
-      .container{padding:16px 12px 34px}
-      .hero{border-radius:26px}
-      .hero-grid{padding:18px;gap:18px}
-      .eyebrow{font-size:12px;margin-bottom:14px}
-      .hero h2{font-size:32px}
-      .hero p{font-size:15px;line-height:1.75}
+      .back-btn{font-size:15px;pad
       .hero-stats{grid-template-columns:1fr;gap:10px}
       .hero-note{width:100%}
       .featured-card{min-height:320px;border-radius:24px}

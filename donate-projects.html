@@ -3,203 +3,648 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>เมนูบริจาค | Demo Safe</title>
+<title>เมนูบริจาค | Khon Chuay Khon ProMAX</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#edf2f5;
-  --card:#fff;
+  --bg:#eef3f7;
+  --surface:#ffffff;
+  --surface-2:#f7fafc;
   --text:#16324f;
   --muted:#6b7280;
-  --brand:#19a84a;
-  --shadow:0 12px 30px rgba(18,36,58,.10)
+  --line:#d9e2ec;
+  --brand:#0b7c86;
+  --brand-2:#19a84a;
+  --accent:#2457d6;
+  --yellow:#ffcc29;
+  --shadow:0 16px 40px rgba(18,36,58,.10);
+  --shadow-soft:0 10px 24px rgba(18,36,58,.07);
+  --radius-2xl:34px;
+  --radius-xl:28px;
+  --radius-lg:20px;
+  --radius-md:16px;
+  --container:1240px;
 }
+
 *{box-sizing:border-box}
+html,body{margin:0;padding:0}
 body{
-  margin:0;
   font-family:'Kanit',sans-serif;
-  background:var(--bg);
-  color:var(--text)
+  background:
+    radial-gradient(circle at top left, rgba(36,87,214,.08), transparent 18%),
+    linear-gradient(180deg, #eef3f7 0%, #eaf0f4 100%);
+  color:var(--text);
 }
-.page{
-  max-width:1200px;
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:30;
+  backdrop-filter:blur(14px);
+  background:rgba(238,243,247,.82);
+  border-bottom:1px solid rgba(255,255,255,.65);
+}
+.topbar-inner{
+  max-width:var(--container);
   margin:0 auto;
-  padding:22px 18px 40px
-}
-.hero{
+  padding:14px 18px;
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  gap:16px;
-  align-items:flex-start;
-  flex-wrap:wrap;
-  margin-bottom:18px
+  gap:12px;
+}
+.topbar-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:15px;
+  font-weight:700;
+}
+.topbar-dot{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:var(--brand-2);
+  box-shadow:0 0 0 5px rgba(25,168,74,.12);
+}
+.topbar-meta{
+  color:var(--muted);
+  font-size:14px;
+  font-weight:500;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:560px;
+  background:
+    linear-gradient(120deg, rgba(11,28,55,.94) 0%, rgba(16,56,96,.86) 40%, rgba(13,110,84,.70) 100%),
+    #0f3157;
+  color:#fff;
+  box-shadow:0 24px 60px rgba(18,36,58,.16);
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.18), transparent 18%),
+    radial-gradient(circle at 78% 22%, rgba(255,255,255,.10), transparent 22%),
+    linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.32));
+  pointer-events:none;
+}
+.hero-bg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.22;
+  mix-blend-mode:screen;
+}
+.hero-inner{
+  position:relative;
+  z-index:1;
+  max-width:var(--container);
+  margin:0 auto;
+  padding:56px 18px 70px;
+  display:grid;
+  grid-template-columns:1.08fr .92fr;
+  gap:28px;
+  align-items:end;
+  min-height:560px;
+}
+.hero-copy{
+  max-width:760px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:18px;
 }
 .hero h1{
-  margin:0;
-  font-size:38px;
-  line-height:1.1
+  margin:0 0 14px;
+  font-size:60px;
+  line-height:1.02;
+  font-weight:800;
+  letter-spacing:-.02em;
+  text-shadow:0 2px 12px rgba(0,0,0,.22);
 }
 .hero p{
-  margin:10px 0 0;
-  color:var(--muted);
-  font-size:17px;
-  line-height:1.7
+  margin:0;
+  font-size:19px;
+  line-height:1.8;
+  color:rgba(255,255,255,.92);
+  max-width:720px;
 }
+.hero-badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:24px;
+}
+.hero-badge{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:999px;
+  padding:10px 14px;
+  font-weight:700;
+  font-size:15px;
+}
+.hero-side{
+  display:flex;
+  justify-content:flex-end;
+}
+.hero-featured{
+  width:min(420px,100%);
+  border-radius:30px;
+  overflow:hidden;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 24px 50px rgba(0,0,0,.18);
+}
+.hero-featured-image{
+  height:260px;
+  background:center/cover no-repeat;
+}
+.hero-featured-body{
+  padding:20px;
+  color:var(--text);
+}
+.hero-featured-mini{
+  font-size:13px;
+  font-weight:700;
+  color:var(--brand);
+  margin-bottom:8px;
+}
+.hero-featured-body h3{
+  margin:0 0 8px;
+  font-size:28px;
+  line-height:1.1;
+  letter-spacing:-.02em;
+}
+.hero-featured-body p{
+  margin:0;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.7;
+}
+
+.main{
+  margin-top:-56px;
+  position:relative;
+  z-index:2;
+}
+.container{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 18px 46px;
+}
+.section-shell{
+  background:linear-gradient(180deg, rgba(255,255,255,.76), rgba(255,255,255,.52));
+  border:1px solid rgba(255,255,255,.68);
+  border-radius:36px;
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+.section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+.section-head h2{
+  margin:0;
+  font-size:34px;
+  line-height:1.1;
+  letter-spacing:-.02em;
+}
+.section-head p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.75;
+}
+.section-chips{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:40px;
+  padding:0 14px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid rgba(229,231,235,.9);
+  color:var(--text);
+  font-size:14px;
+  font-weight:600;
+  box-shadow:var(--shadow-soft);
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:18px
+  gap:22px;
 }
 .card{
-  background:#fff;
-  border-radius:28px;
+  background:var(--surface);
+  border-radius:30px;
   overflow:hidden;
-  box-shadow:var(--shadow)
+  box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,.74);
+  display:flex;
+  flex-direction:column;
+  min-width:0;
 }
-.cover{
-  height:360px;
-  background-size:cover;
-  background-position:center;
-  position:relative
+.card-cover{
+  position:relative;
+  height:300px;
+  overflow:hidden;
+  background:#dbe4ea;
 }
-.overlay{
+.card-cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .55s ease;
+}
+.card:hover .card-cover img{
+  transform:scale(1.04);
+}
+.card-cover::after{
+  content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.30))
+  background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.22));
 }
-.body{
-  padding:18px 18px 20px
+.card-top{
+  position:absolute;
+  top:16px;
+  left:16px;
+  right:16px;
+  z-index:2;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
 }
-.body h3{
-  margin:0 0 8px;
+.tag{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:0 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.90);
+  color:var(--accent);
+  font-size:13px;
+  font-weight:700;
+  backdrop-filter:blur(10px);
+  box-shadow:var(--shadow-soft);
+}
+.card-body{
+  padding:20px 20px 22px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  flex:1;
+}
+.card h3{
+  margin:0;
   font-size:28px;
-  line-height:1.2
+  line-height:1.14;
+  letter-spacing:-.02em;
 }
-.body p{
-  margin:0 0 16px;
+.card p{
+  margin:0;
   color:var(--muted);
-  line-height:1.7;
-  min-height:72px
+  font-size:15px;
+  line-height:1.8;
+  min-height:82px;
+}
+.meta-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.meta-box{
+  border-radius:18px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  padding:13px 12px;
+}
+.meta-label{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:4px;
+}
+.meta-value{
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.2;
+}
+.card-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:auto;
 }
 .btn{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:100%;
-  min-height:48px;
+  min-height:52px;
   border:none;
-  border-radius:14px;
-  background:#20c44c;
-  color:#fff;
-  font-size:22px;
-  font-weight:800;
+  border-radius:16px;
+  padding:0 18px;
+  font-size:16px;
+  font-weight:700;
   cursor:pointer;
-  text-decoration:none
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  font-family:'Kanit',sans-serif;
 }
-.footer-note{
-  margin-top:22px;
-  color:var(--muted);
-  font-size:13px;
-  text-align:center
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--brand-2),#20c44c);
+  color:#fff;
+  box-shadow:0 10px 18px rgba(25,168,74,.24);
+  flex:1 1 220px;
 }
-@media (max-width:1024px){
+.btn-secondary{
+  background:#fff;
+  color:var(--text);
+  border:1px solid var(--line);
+  flex:1 1 180px;
+}
+
+.footer{
+  padding:0 18px 40px;
+}
+.footer-inner{
+  max-width:var(--container);
+  margin:0 auto;
+  background:#0f2840;
+  color:#fff;
+  border-radius:28px;
+  padding:28px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:20px;
+}
+.footer-inner h3{
+  margin:0 0 8px;
+  font-size:28px;
+}
+.footer-inner p{
+  margin:0;
+  color:rgba(255,255,255,.82);
+  line-height:1.7;
+}
+.footer-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.footer-actions a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:46px;
+  padding:0 18px;
+  border-radius:14px;
+  font-weight:800;
+}
+.footer-actions .yellow{background:#ffcc29;color:#1a1a1a}
+.footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+
+@media (max-width:1180px){
+  .hero-inner{grid-template-columns:1fr;min-height:auto}
+  .hero h1{font-size:48px}
+  .hero-side{justify-content:flex-start}
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cover{height:320px}
-  .body h3{font-size:24px}
 }
-@media (max-width:640px){
-  .page{padding:14px 12px 30px}
-  .hero h1{font-size:28px}
-  .hero p{font-size:15px}
-  .grid{grid-template-columns:1fr;gap:14px}
-  .cover{height:300px}
-  .body{padding:14px}
-  .body h3{font-size:20px}
-  .btn{font-size:18px;min-height:44px}
+@media (max-width:760px){
+  .topbar-inner{padding:12px}
+  .topbar-meta{display:none}
+  .hero{min-height:auto}
+  .hero-inner{padding:34px 18px 76px}
+  .hero h1{font-size:34px}
+  .hero p{font-size:16px}
+  .hero-featured-image{height:210px}
+  .hero-featured-body h3{font-size:24px}
+  .main{margin-top:-42px}
+  .container{padding:0 12px 34px}
+  .section-shell{padding:16px;border-radius:28px}
+  .section-head h2{font-size:26px}
+  .grid{grid-template-columns:1fr;gap:16px}
+  .card-cover{height:230px}
+  .card-body{padding:16px}
+  .card h3{font-size:24px}
+  .card p{font-size:14px;min-height:auto}
+  .meta-grid{grid-template-columns:1fr}
+  .meta-value{font-size:16px}
+  .btn{min-height:46px;font-size:15px}
+  .footer-inner{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="hero">
-    <div>
-      <h1>เมนูบริจาค</h1>
-      <p>เลือกโครงการที่ต้องการสนับสนุน เพื่อเข้าสู่รายการเคสที่เปิดรับบริจาคในแต่ละโครงการ</p>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-title">
+      <span class="topbar-dot"></span>
+      <span>Khon Chuay Khon Donation ProMAX</span>
     </div>
-   
-  </div>
-
-  <div class="grid" id="grid"></div>
-
-  <div class="footer-note">
-    เวอร์ชันนี้เป็น HTML Demo Mode สำหรับพรีเซ็น สามารถคลิกเชื่อมกันครบ 3 หน้าได้ทันที
+    <div class="topbar-meta">หน้าโครงการหลัก · เชื่อมต่อไปยังหน้าเคสและหน้าบริจาคแบบธีมเดียวกัน</div>
   </div>
 </div>
 
-<script>
-const PROJECT_BASE_URL = "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=";
+<section class="hero">
+  <img class="hero-bg" src="images/project5.png" alt="ภาพรวมโครงการ">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+      <h1>เลือกโครงการที่ต้องการสนับสนุน แล้วส่งต่อความช่วยเหลือได้ทันที</h1>
+      <p>หน้าเมนูบริจาคเวอร์ชัน ProMAX ออกแบบให้เชื่อมต่อกับหน้าเคสและหน้าบริจาคของแต่ละโครงการแบบลื่นไหล ใช้ภาพจริงของแต่ละโครงการ และรองรับการใช้งานทั้งเดสก์ท็อปและมือถือ</p>
+      <div class="hero-badges">
+        <div class="hero-badge">ภาพโครงการแยกเฉพาะ</div>
+        <div class="hero-badge">เชื่อมหน้าเคสอัตโนมัติ</div>
+        <div class="hero-badge">ธีมเดียวทั้งระบบ</div>
+      </div>
+    </div>
 
+    <div class="hero-side">
+      <article class="hero-featured">
+        <div class="hero-featured-image" style="background-image:url('images/project2.png')"></div>
+        <div class="hero-featured-body">
+          <div class="hero-featured-mini">Donation Journey</div>
+          <h3>Projects → Cases → Donation Form</h3>
+          <p>ทุกโครงการจะพาไปยังหน้าเคสย่อย และต่อไปยังหน้าบริจาคด้วย slug และภาพที่ตรงกันทั้งระบบ เพื่อให้ประสบการณ์ใช้งานดูเป็นหนึ่งเดียวมากที่สุด</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<main class="main">
+  <div class="container">
+    <section class="section-shell">
+      <div class="section-head">
+        <div>
+          <h2>โครงการที่เปิดรับการสนับสนุน</h2>
+          <p>แต่ละโครงการมีภาพ ข้อความ และเส้นทางลิงก์ของตัวเอง เมื่อกด “ดูโครงการ” จะไปที่หน้า <strong>donate-cases.html?project=...</strong> และต่อไปยังหน้า <strong>donate-form-promax.html</strong> ได้ทันที</p>
+        </div>
+        <div class="section-chips">
+          <span class="chip">Kanit</span>
+          <span class="chip">ProMAX UI</span>
+          <span class="chip">Mobile Ready</span>
+        </div>
+      </div>
+
+      <section class="grid" id="projectGrid"></section>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <h3>มูลนิธิคนช่วยฅน</h3>
+      <p>มนุษย์ที่ประเสริฐที่สุดคือมนุษย์ที่สร้างคุณประโยชน์ให้เพื่อนมนุษย์ได้มากที่สุด · หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</p>
+    </div>
+    <div class="footer-actions">
+      <a class="yellow" href="#">กลับขึ้นด้านบน</a>
+      <a class="white" href="donate-cases.html?project=education">ทดลองหน้าเคส</a>
+    </div>
+  </div>
+</footer>
+
+<script>
 const PROJECTS = [
   {
     slug: "education",
-    title: "เพื่อการศึกษา ส่งน้องเรียน",
+    title: "เพื่อการศึกษา",
     subtitle: "ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน",
-    img: "images/project1.png"
+    image: "images/project1.png",
+    cases: "6 เคสย่อย",
+    target: "ต่อยอดอนาคต",
+    accent: "การศึกษา"
   },
   {
     slug: "zakat",
     title: "ซากาตเพื่อผู้ยากไร้",
     subtitle: "ส่งต่อซากาตเพื่อช่วยเหลือผู้ยากไร้ตามหลักศาสนา",
-    img: "images/project2.png"
+    image: "images/project2.png",
+    cases: "6 เคสย่อย",
+    target: "ผู้เปราะบาง",
+    accent: "ซากาต"
   },
   {
     slug: "transport",
-    title: "อาสาพามัยยิดกลับบ้าน",
-    subtitle: "ช่วยเหลือค่านำส่งร่างผู้เสียชีวิตส่งกลับภูมิลำเนา",
-    img: "images/project3.png"
+    title: "อาสาพาน้องกลับบ้าน",
+    subtitle: "ช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนาอย่างปลอดภัย",
+    image: "images/project3.png",
+    cases: "6 เคสย่อย",
+    target: "ช่วยเร่งด่วน",
+    accent: "เดินทาง"
   },
   {
     slug: "relief",
     title: "เพื่อการบรรเทาธารณภัย",
-    subtitle: "ช่วยเหลือผู้ประสบภัยเร่งด่วนทั่วประเทศ",
-    img: "images/project4.png"
+    subtitle: "ช่วยเหลือผู้ประสบภัยเร่งด่วนทั้งถุงยังชีพและการลงพื้นที่",
+    image: "images/project4.png",
+    cases: "6 เคสย่อย",
+    target: "ภาคสนาม",
+    accent: "ภัยพิบัติ"
   },
   {
     slug: "housing",
     title: "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
-    subtitle: "ซ่อมแซมและสร้างบ้านให้ครอบครัวที่ขาดแคลน",
-    img: "images/project5.png"
+    subtitle: "ซ่อมแซมและสร้างที่อยู่อาศัยที่ปลอดภัยให้ครอบครัวยากไร้",
+    image: "images/project5.png",
+    cases: "6 เคสย่อย",
+    target: "บ้านและความปลอดภัย",
+    accent: "ที่อยู่อาศัย"
   },
   {
     slug: "disaster",
     title: "ช่วยเหลือผู้ประสบภัย",
-    subtitle: "ช่วยเหลือผู้ประสบอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ",
-    img: "images/project6.png"
+    subtitle: "ฟื้นฟูครอบครัวหลังอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ",
+    image: "images/project6.png",
+    cases: "6 เคสย่อย",
+    target: "ฟื้นฟูหลังวิกฤต",
+    accent: "ฉุกเฉิน"
   },
   {
     slug: "orphan",
     title: "ช่วยเหลือเด็กกำพร้า",
     subtitle: "ดูแลและสนับสนุนเด็กกำพร้าให้มีคุณภาพชีวิตที่ดีขึ้น",
-    img: "images/project7.png"
+    image: "images/project7.png",
+    cases: "6 เคสย่อย",
+    target: "ชีวิตและการศึกษา",
+    accent: "เด็กกำพร้า"
   }
 ];
 
-document.getElementById("grid").innerHTML = PROJECTS.map(p => `
-<article class="card">
-  <div class="cover" style="background-image:url('${p.img}')">
-    <div class="overlay"></div>
-  </div>
-  <div class="body">
-    <h3>${p.title}</h3>
-    <p>${p.subtitle}</p>
-    <a class="btn" href="${PROJECT_BASE_URL + encodeURIComponent(p.slug)}">ดูโครงการ</a>
-  </div>
-</article>
-`).join("");
+document.getElementById('projectGrid').innerHTML = PROJECTS.map(p => {
+  const casesHref = `donate-cases.html?project=${encodeURIComponent(p.slug)}`;
+  const donateHref = `donate-form-promax.html?project=${encodeURIComponent(p.slug)}`;
+
+  return `
+    <article class="card">
+      <div class="card-cover">
+        <img src="${p.image}" alt="${p.title}">
+        <div class="card-top">
+          <span class="tag">${p.accent}</span>
+          <span class="tag">${p.cases}</span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h3>${p.title}</h3>
+        <p>${p.subtitle}</p>
+
+        <div class="meta-grid">
+          <div class="meta-box">
+            <div class="meta-label">จำนวนเคสในหน้า</div>
+            <div class="meta-value">${p.cases}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">จุดเน้นโครงการ</div>
+            <div class="meta-value">${p.target}</div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <a class="btn btn-primary" href="${casesHref}">ดูโครงการ</a>
+          <a class="btn btn-secondary" href="${donateHref}">ไปหน้าบริจาค</a>
+        </div>
+      </div>
+    </article>
+  `;
+}).join('');
 </script>
+
 </body>
 </html>

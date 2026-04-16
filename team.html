@@ -496,7 +496,7 @@ async function toggleTeamUserActive(lineUserId, currentActive) {
     const confirmed = window.confirm(`ยืนยัน${actionText}ผู้ใช้งานนี้ใช่หรือไม่?`);
     if (!confirmed) return;
 
-    const res = await fetch("/api/team-management/toggle-active", {
+   const res = await fetch(`${CONFIG.API_BASE_URL}/api/team-management/toggle-active`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

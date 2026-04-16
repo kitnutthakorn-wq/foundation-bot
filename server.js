@@ -9870,15 +9870,6 @@ if (caseSearchState?.step === "waiting_phone") {
 // STEP FLOW: เพิ่มทีม (รับ USER ID)
 // =========================
 
-console.log("👉 USER CLICK:", text);
-const userId = event?.source?.userId || "";
-
-console.log("EVENT TEXT =", text);
-console.log("USER ID =", userId);
-console.log("SOURCE TYPE =", event.source?.type);
-console.log("GROUP ID =", event.source?.groupId);
-console.log("IS TEAM GROUP =", event.source?.groupId === ALLOWED_TEAM_GROUP_ID);
-
 let lineDisplayName = "";
  if (String(text || "").trim() === "ทดสอบบอท") {
   await safeReply(replyToken, [

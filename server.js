@@ -6196,6 +6196,7 @@ async function pickAutoAssignee() {
       return String(labelA).localeCompare(String(labelB), 'th');
     });
 
+   
     const picked = sorted[0] || null;
     if (!picked) return null;
 

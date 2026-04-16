@@ -9562,6 +9562,9 @@ app.post("/api/team/join", async (req, res) => {
 ========================= */
 app.post("/webhook", async (req, res) => {
   try {
+console.log("WEBHOOK DEBUG signature =", req.get("x-line-signature"));
+console.log("WEBHOOK DEBUG rawBody exists =", !!req.rawBody);
+console.log("WEBHOOK DEBUG body exists =", !!req.body);
     if (!verifySignature(req)) {
       console.error("❌ Invalid LINE signature");
       return res.status(401).send("Invalid signature");

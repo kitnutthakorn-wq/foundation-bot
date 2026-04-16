@@ -761,6 +761,28 @@ if (!res.ok || json?.ok === false) {
     function alertComingSoon(label) {
       alert(`${label} : จะเชื่อมใน Phase ถัดไป`);
     }
+
+async function safeFetchJson(url, options = {}) {
+  const res = await fetch(url, options);
+  const raw = await res.text();
+
+  let json = null;
+  try {
+    json = raw ? JSON.parse(raw) : {};
+  } catch (parseErr) {
+    if (res.status === 401) {
+      throw new Error("Authentication required");
+    }
+    throw new Error(raw || "รูปแบบข้อมูลจากเซิร์ฟเวอร์ไม่ถูกต้อง");
+  }
+
+  if (!res.ok || json?.ok === false) {
+    throw new Error(json?.error || `คำขอล้มเหลว (HTTP ${res.status})`);
+  }
+
+  return json;
+}
+    
 async function approveTeamCandidate(lineUserId) {
   try {
     const confirmed = confirm("ยืนยันอนุมัติผู้สมัครคนนี้ใช่หรือไม่?");

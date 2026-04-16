@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>อ่านเรื่องราวเคส | ProMAX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef3f7; --card:#ffffff; --line:#d9e2ec; --text:#16324f; --muted:#6b7280;
+    --brand:#0b7c86; --brand-2:#19a84a; --accent:#2457d6; --yellow:#ffcc29;
+    --shadow:0 18px 40px rgba(18,36,58,.12);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
+  a{text-decoration:none;color:inherit}
+  .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(238,243,247,.84);border-bottom:1px solid rgba(255,255,255,.7)}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .back-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)}
+  .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:500}
+  .dot{width:8px;height:8px;border-radius:999px;background:var(--brand-2);box-shadow:0 0 0 5px rgba(25,168,74,.12)}
+  .hero{position:relative;min-height:500px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,25,40,.84) 0%, rgba(7,25,40,.72) 40%, rgba(7,25,40,.28) 100%)}
+  .hero-inner{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:64px 18px 80px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:26px;align-items:end}
+  .eyebrow{display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px}
+  .hero h1{margin:0 0 14px;font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+  .hero p{margin:0;font-size:18px;line-height:1.8;max-width:760px;color:rgba(255,255,255,.95)}
+  .hero-side{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.45);border-radius:30px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.18)}
+  .hero-side-img{height:240px;background:center/cover no-repeat}
+  .hero-side-body{padding:20px;color:var(--text)}
+  .hero-side-body h3{margin:0 0 8px;font-size:28px;line-height:1.1}
+  .hero-side-body p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+  .main{margin-top:-58px;position:relative;z-index:2}
+  .layout{max-width:1240px;margin:0 auto;padding:0 18px 46px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:24px;align-items:start}
+  .article,.sidebar-card,.gallery{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+  .article-body,.sidebar-body,.gallery-body{padding:24px}
+  .article h2{margin:0 0 12px;font-size:34px;line-height:1.15}
+  .article p{margin:0 0 16px;color:#56677d;line-height:1.9;font-size:17px}
+  .quote{margin:22px 0;padding:20px 22px;border-left:5px solid var(--brand-2);background:#f6faf7;border-radius:18px;color:#24523a;font-weight:600;line-height:1.8}
+  .timeline{display:grid;gap:14px;margin-top:24px}
+  .timeline-item{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:start}
+  .timeline-badge{min-height:42px;border-radius:14px;background:#eff5fb;border:1px solid #dbe4ee;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent)}
+  .timeline-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px}
+  .timeline-card h4{margin:0 0 6px;font-size:20px}
+  .timeline-card p{margin:0;color:#5b6d82;line-height:1.75;font-size:15px}
+  .sidebar-card{overflow:hidden}
+  .sidebar-hero{height:240px;background:center/cover no-repeat;position:relative}
+  .sidebar-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))}
+  .sidebar-title{position:absolute;left:18px;right:18px;bottom:18px;z-index:1;color:#fff}
+  .sidebar-title .mini{font-size:13px;font-weight:700;color:#ffde7a;margin-bottom:8px}
+  .sidebar-title h3{margin:0;font-size:28px;line-height:1.05}
+  .stat{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:#56677d;font-size:15px}
+  .progress{height:16px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:12px 0}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#18a347 0%, #22c55e 100%)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:none;border-radius:16px;padding:0 18px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Kanit',sans-serif;width:100%}
+  .btn-primary{background:linear-gradient(135deg,var(--brand-2),#20c44c);color:#fff;box-shadow:0 10px 18px rgba(25,168,74,.24)}
+  .btn-secondary{margin-top:12px;background:#fff;color:var(--text);border:1px solid var(--line)}
+  .gallery{margin-top:24px}
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .gallery-item{border-radius:20px;overflow:hidden;background:#d7e4ef;height:170px}
+  .gallery-item img{width:100%;height:100%;object-fit:cover}
+  .footer{padding:0 18px 40px}
+  .footer-inner{max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px}
+  .footer-inner h3{margin:0 0 8px;font-size:28px}.footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.footer-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800}.footer-actions .yellow{background:#ffcc29;color:#1a1a1a}.footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  @media (max-width:1100px){.hero-inner,.layout,.footer-inner{grid-template-columns:1fr}.hero h1{font-size:44px}}
+  @media (max-width:760px){.topbar-inner{padding:12px}.topmeta{display:none}.hero-inner{padding:34px 18px 76px}.hero h1{font-size:32px}.hero p{font-size:16px}.hero-side-img,.sidebar-hero{height:210px}.article h2{font-size:28px}.article p{font-size:16px}.timeline-item{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="back-btn" id="backToDetail" href="#">← กลับหน้ารายละเอียดและบริจาค</a>
+      <div class="topmeta"><span class="dot"></span><span>อ่านเรื่องราวเคส · ProMAX</span></div>
+    </div>
+  </div>
+
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow" id="heroEyebrow">เรื่องราวเคส</div>
+        <h1 id="heroTitle">กำลังโหลดเรื่องราวเคส</h1>
+        <p id="heroDesc">กำลังเตรียมข้อมูลเคส</p>
+      </div>
+      <div class="hero-side">
+        <div class="hero-side-img" id="heroSideImg"></div>
+        <div class="hero-side-body">
+          <h3 id="heroSideTitle">เรื่องราวจากภาคสนาม</h3>
+          <p id="heroSideText">หน้านี้ออกแบบเพื่อเล่าเรื่องราวเคสให้ลึกขึ้น โดยคงธีมเดียวกับหน้าบริจาคและหน้ารายละเอียด</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="main">
+    <div class="layout">
+      <section>
+        <article class="article">
+          <div class="article-body">
+            <h2 id="articleTitle">ชื่อเคส</h2>
+            <p id="articleP1">-</p>
+            <p id="articleP2">-</p>
+            <div class="quote" id="articleQuote">-</div>
+            <p id="articleP3">-</p>
+            <p id="articleP4">-</p>
+
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-badge">1</div>
+                <div class="timeline-card"><h4>จุดเริ่มต้นของปัญหา</h4><p id="timeline1">-</p></div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-badge">2</div>
+                <div class="timeline-card"><h4>ความเร่งด่วนในวันนี้</h4><p id="timeline2">-</p></div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-badge">3</div>
+                <div class="timeline-card"><h4>สิ่งที่การสนับสนุนจะเปลี่ยนได้</h4><p id="timeline3">-</p></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="gallery">
+          <div class="gallery-body">
+            <h2 style="margin:0 0 14px;font-size:30px">ภาพประกอบเคส</h2>
+            <div class="gallery-grid" id="galleryGrid"></div>
+          </div>
+        </article>
+      </section>
+
+      <aside>
+        <div class="sidebar-card">
+          <div class="sidebar-hero" id="sidebarHero">
+            <div class="sidebar-title">
+              <div class="mini" id="sidebarMini">Case Story</div>
+              <h3 id="sidebarTitle">ชื่อเคส</h3>
+            </div>
+          </div>
+          <div class="sidebar-body">
+            <div class="stat"><span>ยอดที่ช่วยแล้ว</span><strong id="raisedText">฿ 0</strong></div>
+            <div class="progress"><div id="progressBar"></div></div>
+            <div class="stat"><span>เป้าหมายรวม</span><strong id="targetText">฿ 0</strong></div>
+            <div class="stat"><span>ความคืบหน้า</span><strong id="percentText">0%</strong></div>
+            <button class="btn btn-primary" id="goDonateBtn">ดูรายละเอียดและบริจาค</button>
+            <a class="btn btn-secondary" id="backCasesBtn" href="#">กลับหน้าเคส</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <h3>มูลนิธิคนช่วยฅน</h3>
+        <p>หน้าบอกเล่าเรื่องราวเคสนี้ช่วยให้ผู้สนับสนุนเข้าใจบริบท ความจำเป็น และผลลัพธ์ของการให้ได้ลึกขึ้น โดยยังคงภาษาออกแบบเดียวกันทั้งระบบ</p>
+      </div>
+      <div class="footer-actions">
+        <a class="yellow" href="#hero">กลับขึ้นด้านบน</a>
+        <a class="white" id="footerBackDetail" href="#">กลับหน้ารายละเอียด</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+const PROJECTS = {
+  education: {
+    eyebrow:'โครงการเพื่อการศึกษา', image:'images/project1.png',
+    cases:[
+      {id:'edu-001', title:'ทุนเรียนต่อระดับมัธยม', description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน', image:'images/project1.png', raised:35000, goal:60000, story:['เด็กคนหนึ่งอาจไม่ได้ขาดความสามารถ แต่ขาดค่าใช้จ่ายที่จำเป็นเพียงไม่กี่รายการในการเดินหน้าต่อ','เมื่อครอบครัวต้องเลือกระหว่างค่าใช้จ่ายประจำวันกับค่าเรียน เด็กมักเป็นฝ่ายที่ต้องหยุดความฝันก่อนเสมอ','เคสนี้จึงไม่ใช่แค่เรื่องเงิน แต่เป็นเรื่องของโอกาส การเห็นคุณค่า และการยืนยันว่าชีวิตของเด็กคนหนึ่งควรเดินต่อได้','เมื่อมีคนช่วยคนละนิด ความต่อเนื่องทางการศึกษาจะไม่ใช่ภาระที่หนักเกินไปอีกต่อไป'], timeline:['ครอบครัวมีรายได้จำกัดจนไม่สามารถรับภาระค่าเรียนและค่าเดินทางต่อได้','หากไม่ได้รับการสนับสนุน เด็กมีแนวโน้มต้องหยุดเรียนกลางคันในช่วงหัวเลี้ยวหัวต่อสำคัญ','การสนับสนุนช่วยให้เด็กยังอยู่ในระบบการศึกษาและมองเห็นอนาคตของตัวเองชัดขึ้น']},
+      {id:'edu-002', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน', image:'images/project7.png', raised:22000, goal:45000, story:['สำหรับเด็กกำพร้า อุปกรณ์การเรียนคือประตูบานแรกของการเข้าสู่ปีการศึกษาใหม่อย่างมีศักดิ์ศรี','สิ่งที่ดูเหมือนเล็กน้อยอย่างกระเป๋า รองเท้า หรือชุดนักเรียน อาจเป็นกำแพงใหญ่สำหรับผู้ดูแลที่มีรายได้จำกัด','การสนับสนุนนี้จึงช่วยมากกว่าการซื้อของ แต่คือการช่วยให้เด็กไม่รู้สึกว่าตนเองด้อยกว่าผู้อื่น','เมื่อเด็กมีความพร้อมพื้นฐาน เขาจะมีสมาธิและความมั่นใจในการเรียนรู้มากขึ้น'], timeline:['ครอบครัวผู้ดูแลไม่สามารถจัดหาอุปกรณ์พื้นฐานให้เด็กได้ครบก่อนเปิดเทอม','หากขาดอุปกรณ์ เด็กอาจขาดความมั่นใจและได้รับผลกระทบต่อการเรียน','การสนับสนุนช่วยให้เด็กเริ่มต้นปีการศึกษาได้อย่างเท่าเทียมกับเพื่อน ๆ']}
+    ]
+  },
+  housing: {
+    eyebrow:'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้', image:'images/project5.png',
+    cases:[
+      {id:'housing-001', title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ', description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย', image:'images/project5.png', raised:76000, goal:180000, story:['บ้านที่ทรุดโทรมไม่ใช่เพียงภาพของความยากจน แต่คือพื้นที่ที่เต็มไปด้วยความเสี่ยงในทุกลมหายใจของผู้สูงอายุ','ผนังที่ผุ พื้นที่ยวบ และหลังคาที่รั่วทำให้ชีวิตประจำวันกลายเป็นเรื่องที่ต้องระวังอยู่ตลอดเวลา','การซ่อมแซมบ้านหลังนี้จึงไม่ใช่เพียงการปรับปรุงโครงสร้าง แต่คือการคืนความปลอดภัยและความมั่นคงทางใจ','ทุกการสนับสนุนช่วยเปลี่ยนสภาพแวดล้อมที่เปราะบางให้กลับมาเป็นบ้านที่อุ่นใจได้อีกครั้ง'], timeline:['บ้านมีสภาพชำรุดสะสมมาเป็นเวลานาน และไม่มีงบประมาณซ่อมแซม','ผู้สูงอายุต้องใช้ชีวิตในบ้านที่ไม่ปลอดภัยและเสี่ยงต่ออุบัติเหตุทุกวัน','การสนับสนุนช่วยเร่งซ่อมจุดเสี่ยงสำคัญและสร้างคุณภาพชีวิตที่ดีขึ้นอย่างชัดเจน']}
+    ]
+  }
+};
+function fmt(n){return '฿ ' + Number(n || 0).toLocaleString('th-TH');}
+function percent(raised, goal){return Math.max(0, Math.min(100, Math.round((raised / Math.max(goal,1)) * 100)));}
+const params = new URLSearchParams(location.search);
+const projectSlug = params.get('project') || 'education';
+const caseId = params.get('case') || '';
+const project = PROJECTS[projectSlug] || PROJECTS.education;
+const currentCase = project.cases.find(c => c.id === caseId) || project.cases[0];
+const pct = percent(currentCase.raised, currentCase.goal);
+
+document.title = `${currentCase.title} | อ่านเรื่องราวเคส`;
+document.getElementById('backToDetail').href = `donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+document.getElementById('footerBackDetail').href = `donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+document.getElementById('backCasesBtn').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
+document.getElementById('goDonateBtn').onclick = () => location.href = `donate-form-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+
+document.getElementById('hero').style.backgroundImage = `url("${currentCase.image}")`;
+document.getElementById('heroSideImg').style.backgroundImage = `url("${currentCase.image}")`;
+document.getElementById('sidebarHero').style.backgroundImage = `url("${currentCase.image}")`;
+document.getElementById('heroEyebrow').textContent = project.eyebrow;
+document.getElementById('heroTitle').textContent = currentCase.title;
+document.getElementById('heroDesc').textContent = currentCase.description;
+document.getElementById('heroSideTitle').textContent = 'เรื่องราวจากภาคสนาม';
+document.getElementById('heroSideText').textContent = 'หน้านี้ใช้เล่าเรื่องราวเคสให้ลึกขึ้น เพื่อให้ผู้สนับสนุนเห็นที่มา ความจำเป็น และผลกระทบของการให้';
+document.getElementById('articleTitle').textContent = currentCase.title;
+document.getElementById('articleP1').textContent = currentCase.story?.[0] || '-';
+document.getElementById('articleP2').textContent = currentCase.story?.[1] || '-';
+document.getElementById('articleQuote').textContent = 'ทุกการช่วยเหลือไม่ใช่แค่การแก้ปัญหาเฉพาะหน้า แต่คือการคืนศักดิ์ศรีและโอกาสในการเริ่มต้นใหม่';
+document.getElementById('articleP3').textContent = currentCase.story?.[2] || '-';
+document.getElementById('articleP4').textContent = currentCase.story?.[3] || currentCase.description;
+document.getElementById('timeline1').textContent = currentCase.timeline?.[0] || '-';
+document.getElementById('timeline2').textContent = currentCase.timeline?.[1] || '-';
+document.getElementById('timeline3').textContent = currentCase.timeline?.[2] || '-';
+document.getElementById('sidebarMini').textContent = project.eyebrow;
+document.getElementById('sidebarTitle').textContent = currentCase.title;
+document.getElementById('raisedText').textContent = fmt(currentCase.raised);
+document.getElementById('targetText').textContent = fmt(currentCase.goal);
+document.getElementById('percentText').textContent = pct + '%';
+document.getElementById('progressBar').style.width = pct + '%';
+
+document.getElementById('galleryGrid').innerHTML = [currentCase.image, project.image, currentCase.image].map(src => `
+  <div class="gallery-item"><img src="${src}" alt="${currentCase.title}"></div>
+`).join('');
+</script>
+</body>
+</html>

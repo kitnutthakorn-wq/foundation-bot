@@ -309,17 +309,19 @@
     .featured-title{
       margin:0 0 8px;
       font-size:34px;
-      line-height:1.04;
+      line-height:1.08;
       letter-spacing:-.02em;
-      max-width:90%;
+      max-width:100%;
+      text-shadow:0 2px 12px rgba(0,0,0,.24);
+      word-break:break-word;
     }
 
     .featured-text{
       margin:0 0 16px;
       font-size:15px;
-      line-height:1.75;
+      line-height:1.72;
       color:rgba(255,255,255,.88);
-      max-width:90%;
+      max-width:100%;
     }
 
     .featured-progress-line{
@@ -697,9 +699,17 @@
       .hero-stats{grid-template-columns:1fr;gap:10px}
       .hero-note{width:100%}
       .featured-card{min-height:320px;border-radius:24px}
-      .featured-title{font-size:28px;max-width:100%}
-      .featured-text{max-width:100%}
+      .featured-content{padding:18px}
+      .featured-chip{min-height:30px;padding:0 10px;font-size:12px;margin-bottom:10px}
+      .featured-title{font-size:24px;line-height:1.08;max-width:100%}
+      .featured-text{font-size:14px;line-height:1.62;margin-bottom:12px;max-width:100%}
+      .featured-progress-line{height:8px;margin-bottom:10px}
+      .featured-amounts{font-size:12px;gap:8px}
+      .featured-amounts strong{font-size:15px}
       .featured-mini-grid{grid-template-columns:1fr}
+      .mini-card img{height:120px}
+      .mini-card-body h4{font-size:16px}
+      .mini-card-body p{font-size:12px}
       .toolbar-left h2{font-size:26px}
       .section-shell{padding:16px;border-radius:28px}
       .chip{min-height:36px;padding:0 12px;font-size:13px}

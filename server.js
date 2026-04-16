@@ -3615,6 +3615,8 @@ function buildAdminTeamManageMenuImagemap(baseUrlOverride = "", revision = Date.
     String(baseUrlOverride || process.env.APP_ORIGIN || process.env.URL || "").replace(/\/+$/, "") ||
     "https://satisfied-stillness-production-7942.up.railway.app";
 
+  const teamManagementUrl = `${baseUrl}/team-management.html`;
+
   return {
     type: "imagemap",
     baseUrl: `${baseUrl}/imagemap/admin-team-manage-menu-r${revision}`,
@@ -3623,33 +3625,34 @@ function buildAdminTeamManageMenuImagemap(baseUrlOverride = "", revision = Date.
       width: 1040,
       height: 1560
     },
-   actions: [
-  {
-    type: "message",
-    text: "ดูรายชื่อทีมงาน",
-    area: { x: 120, y: 760, width: 800, height: 120 }
-  },
-  {
-    type: "message",
-    text: "กำหนดสิทธิ์ทีมงาน",
-    area: { x: 120, y: 928, width: 800, height: 120 }
-  },
-  {
-    type: "message",
-    text: "เพิ่มทีมงาน",
-    area: { x: 120, y: 1096, width: 800, height: 120 }
-  },
-  {
-    type: "uri",
-    linkUri: `${baseUrl}/command-center`,
-    area: { x: 120, y: 1255, width: 800, height: 120 }
-  },
-  {
-    type: "message",
-    text: "เมนูแอดมิน",
-    area: { x: 120, y: 1412, width: 800, height: 90 }
-  }
-]  };
+    actions: [
+      {
+        type: "uri",
+        linkUri: `${teamManagementUrl}?mode=list`,
+        area: { x: 120, y: 760, width: 800, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: `${teamManagementUrl}?mode=role`,
+        area: { x: 120, y: 928, width: 800, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: `${teamManagementUrl}?mode=add`,
+        area: { x: 120, y: 1096, width: 800, height: 120 }
+      },
+      {
+        type: "uri",
+        linkUri: `${baseUrl}/command-center`,
+        area: { x: 120, y: 1255, width: 800, height: 120 }
+      },
+      {
+        type: "message",
+        text: "เมนูแอดมิน",
+        area: { x: 120, y: 1412, width: 800, height: 90 }
+      }
+    ]
+  };
 }
 
 function buildUrgentCasePosterImagemap(caseData = {}, baseUrlOverride = "") {

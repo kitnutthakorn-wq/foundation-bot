@@ -707,18 +707,28 @@
 
     const url = `${API_BASE_URL}/api/team-management/list${params.toString() ? `?${params.toString()}` : ""}`;
 
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    });
+   const res = await fetch(url, {
+  method: "GET",
+  headers: {
+    "Accept": "application/json"
+  }
+});
 
-    const json = await res.json();
+const raw = await res.text();
+let json = null;
 
-    if (!res.ok || json?.ok === false) {
-      throw new Error(json?.error || "โหลดข้อมูลบริหารทีมไม่สำเร็จ");
-    }
+try {
+  json = raw ? JSON.parse(raw) : {};
+} catch (parseErr) {
+  if (res.status === 401) {
+    throw new Error("Authentication required");
+  }
+  throw new Error(raw || "รูปแบบข้อมูลจากเซิร์ฟเวอร์ไม่ถูกต้อง");
+}
+
+if (!res.ok || json?.ok === false) {
+  throw new Error(json?.error || "โหลดข้อมูลบริหารทีมไม่สำเร็จ");
+}
 
     const rows = Array.isArray(json?.items) ? json.items : [];
     allRows = rows.map(normalizeRow);

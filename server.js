@@ -8024,13 +8024,13 @@ const donationFlex = {
       createProjectBubble(
         "เด็กกำพร้า",
         "ส่งต่อโอกาสและอนาคตที่ดี",
-        "https://img5.pic.in.th/file/secure-sv1/KCK6.png",
+        "https://img2.pic.in.th/project7.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
       ),
       createProjectBubble(
         "มูลนิธิคนช่วยฅน",
         "สนับสนุนภารกิจช่วยเหลือสังคม",
-        "https://img5.pic.in.th/file/secure-sv1/KCK7.png",
+        "https://img1.pic.in.th/images/project4.png",
         "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
       ),
     ],

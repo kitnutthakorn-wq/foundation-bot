@@ -1072,15 +1072,15 @@
     <div class="topbar">
       <div class="container topbar-inner">
         <div class="topbar-left">
-          <span>มูลนิธิคนช่วยฅน | Khon Chuay Khon Foundation</span>
+          <span id="topbar-brand">มูลนิธิคนช่วยฅน | Khon Chuay Khon Foundation</span>
         </div>
         <div class="topbar-right">
-          <a href="#">ข่าวสาร</a>
-          <a href="#">ติดต่อเรา</a>
-          <a href="#">ร่วมงานกับเรา</a>
-          <a href="#">News</a>
-          <a href="#">Contact</a>
-          <a href="#">Careers</a>
+          <a href="#" id="topbar-news">ข่าวสาร</a>
+          <a href="#" id="topbar-contact">ติดต่อเรา</a>
+          <a href="#" id="topbar-careers-th">ร่วมงานกับเรา</a>
+          <a href="#" id="topbar-news-en">News</a>
+          <a href="#" id="topbar-contact-en">Contact</a>
+          <a href="#" id="topbar-careers-en">Careers</a>
           <a href="#" aria-label="Facebook">f</a>
           <a href="#" aria-label="YouTube">▶</a>
           <a href="#" aria-label="Search">⌕</a>
@@ -1097,8 +1097,8 @@
             <img src="./Images/logo.png" alt="Khon Chuay Khon Foundation Logo" />
           </div>
           <div class="brand-text">
-            <h1>คนช่วยฅน</h1>
-            <p>Khon Chuay Khon Foundation</p>
+            <h1 id="brand-name">คนช่วยฅน</h1>
+            <p id="brand-sub">Khon Chuay Khon Foundation</p>
           </div>
         </a>
 
@@ -1210,9 +1210,9 @@
           <div class="quick-card-content">
             <div class="quick-copy">
               <div class="quick-icon">♡</div>
-              <h3 class="quick-title-th">ขอความช่วยเหลือ</h3>
-              <div class="quick-title-en">Request Help</div>
-              <div class="quick-sub">เพราะวันนี้ของคุณสำคัญ</div>
+              <h3 class="quick-title-th" id="quick1-th">ขอความช่วยเหลือ</h3>
+              <div class="quick-title-en" id="quick1-en">Request Help</div>
+              <div class="quick-sub" id="quick1-sub">เพราะวันนี้ของคุณสำคัญ</div>
             </div>
             <div class="quick-arrow">➜</div>
           </div>
@@ -1223,9 +1223,9 @@
           <div class="quick-card-content">
             <div class="quick-copy">
               <div class="quick-icon">🔎</div>
-              <h3 class="quick-title-th">ติดตามเคส</h3>
-              <div class="quick-title-en">Track a Case</div>
-              <div class="quick-sub">ตรวจสอบสถานะความช่วยเหลือ</div>
+              <h3 class="quick-title-th" id="quick2-th">ติดตามเคส</h3>
+              <div class="quick-title-en" id="quick2-en">Track a Case</div>
+              <div class="quick-sub" id="quick2-sub">ตรวจสอบสถานะความช่วยเหลือ</div>
             </div>
             <div class="quick-arrow">➜</div>
           </div>
@@ -1236,9 +1236,9 @@
           <div class="quick-card-content">
             <div class="quick-copy">
               <div class="quick-icon">🤲</div>
-              <h3 class="quick-title-th">ร่วมสนับสนุน</h3>
-              <div class="quick-title-en">Support Us</div>
-              <div class="quick-sub">เปลี่ยนชีวิตด้วยการให้</div>
+              <h3 class="quick-title-th" id="quick3-th">ร่วมสนับสนุน</h3>
+              <div class="quick-title-en" id="quick3-en">Support Us</div>
+              <div class="quick-sub" id="quick3-sub">เปลี่ยนชีวิตด้วยการให้</div>
             </div>
             <div class="quick-arrow">➜</div>
           </div>
@@ -1253,7 +1253,7 @@
             <div class="section-label" id="section-programs-label">ภารกิจของเรา</div>
             <h2 class="section-title" id="section-programs-title">Our Programs</h2>
           </div>
-          <a class="section-link" href="#">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
+          <a class="section-link" href="#" id="section-programs-link">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
         </div>
 
        <div class="program-grid">
@@ -1322,7 +1322,7 @@
               <div class="story-kicker" id="story-kicker">เรื่องราวที่สร้างการเปลี่ยนแปลง</div>
               <div class="story-kicker-en" id="story-kicker-en">Featured Story</div>
               <h3 class="story-title" id="story-title">จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง</h3>
-              <p class="story-desc">
+              <p class="story-desc" id="story-desc">
                 ครอบครัว 5 ชีวิตได้บ้านใหม่
                 หลังบ้านเดิมได้รับความช่วยเหลือ
                 ของมูลนิธิฯ
@@ -1338,14 +1338,14 @@
               <div class="news-kicker" id="section-news-label">ข่าวสารและผลงาน</div>
               <h3 class="news-title" id="section-news-title">Latest News</h3>
             </div>
-            <a class="news-link" href="#">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
+            <a class="news-link" href="#" id="section-news-link">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
           </div>
 
           <article class="news-card">
             <img src="./images/Z1.png" alt="News 1" />
             <div class="news-body">
               <div class="news-date">15 เม.ย. 2568</div>
-              <p class="news-text">ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย</p>
+              <p class="news-text" id="news1-text">ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย</p>
             </div>
           </article>
 
@@ -1353,7 +1353,7 @@
             <img src="./images/Edu2.png" alt="News 2" />
             <div class="news-body">
               <div class="news-date">8 ม.ค. 2568</div>
-              <p class="news-text">เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3</p>
+              <p class="news-text" id="news2-text">เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3</p>
             </div>
           </article>
         </aside>
@@ -1373,7 +1373,7 @@
             ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง
             <span>Be Part of the Change</span>
           </h3>
-          <p>
+          <p id="cta-desc">
             ทุกการให้ของคุณ คือโอกาสใหม่ของผู้ที่กำลังรอความช่วยเหลือ
           </p>
           <div class="cta-actions">
@@ -1384,8 +1384,8 @@
 
         <div class="cta-quote">
           <div class="mark">“</div>
-          <p>การให้ที่ยิ่งใหญ่ ไม่ใช่การให้มากที่สุด แต่คือการให้ด้วยหัวใจที่ลึกซึ้ง</p>
-          <small>The greatest giving is not in how much we give, but in how deeply we care.</small>
+          <p id="cta-quote-th">การให้ที่ยิ่งใหญ่ ไม่ใช่การให้มากที่สุด แต่คือการให้ด้วยหัวใจที่ลึกซึ้ง</p>
+          <small id="cta-quote-en">The greatest giving is not in how much we give, but in how deeply we care.</small>
         </div>
       </div>
     </section>
@@ -1393,8 +1393,8 @@
     <section class="partners">
       <div class="container partners-wrap">
         <div class="partners-title">
-          <h4>องค์กรและเครือข่ายที่ร่วมขับเคลื่อน</h4>
-          <p>Our Partners</p>
+          <h4 id="partners-title-th">องค์กรและเครือข่ายที่ร่วมขับเคลื่อน</h4>
+          <p id="partners-title-en">Our Partners</p>
         </div>
         <div class="partner-logos">
           <div class="partner-arrow">‹</div>
@@ -1418,7 +1418,7 @@
             <img src="data:image/png;base64,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" alt="Logo" />
           </div>
           <div>
-            <h5>คนช่วยฅน</h5>
+            <h5 id="footer-brand-name">คนช่วยฅน</h5>
             <p>
               มูลนิธิคนช่วยฅน องค์กรสาธารณกุศลที่ทำงาน
               เพื่อช่วยเหลือผู้ยากไร้ในสังคมไทย
@@ -1433,11 +1433,11 @@
       </div>
 
       <div class="footer-col">
-        <h6>ลิงก์สำคัญ</h6>
+        <h6 id="footer-links-title">ลิงก์สำคัญ</h6>
         <ul class="footer-links">
-          <li><a href="#">หน้าหลัก</a></li>
-          <li><a href="#">เกี่ยวกับเรา</a></li>
-          <li><a href="#">ภารกิจของเรา</a></li>
+          <li><a href="#" id="footer-link-home">หน้าหลัก</a></li>
+          <li><a href="#" id="footer-link-about">เกี่ยวกับเรา</a></li>
+          <li><a href="#" id="footer-link-programs">ภารกิจของเรา</a></li>
           <li><a href="#request-help">ขอความช่วยเหลือ</a></li>
           <li><a href="#track-case">ติดตามเคส</a></li>
           <li><a href="#donate">ร่วมสนับสนุน</a></li>
@@ -1445,7 +1445,7 @@
       </div>
 
       <div class="footer-col footer-contact">
-        <h6>ติดต่อเรา</h6>
+        <h6 id="footer-contact-title">ติดต่อเรา</h6>
         <p>มูลนิธิคนช่วยฅน</p>
         <p>เลขที่ 123/456 แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10200</p>
         <p>02-123-4567</p>
@@ -1454,22 +1454,22 @@
       </div>
 
       <div class="footer-col newsletter">
-        <h6>รับข่าวสารจากเรา</h6>
-        <p>ติดตามเรื่องราวและผลงานการช่วยเหลือของมูลนิธิ</p>
+        <h6 id="footer-newsletter-title">รับข่าวสารจากเรา</h6>
+        <p id="footer-newsletter-desc">ติดตามเรื่องราวและผลงานการช่วยเหลือของมูลนิธิ</p>
         <form class="subscribe">
-          <input type="email" placeholder="กรอกอีเมลของคุณ" />
+          <input type="email" id="footer-newsletter-input" placeholder="กรอกอีเมลของคุณ" />
           <button type="submit">สมัครรับข่าวสาร</button>
         </form>
       </div>
     </div>
 
     <div class="container footer-bottom">
-      <div>© 2025 Khon Chuay Khon Foundation. All Rights Reserved.</div>
+      <div><span id="footer-copyright">© 2025 Khon Chuay Khon Foundation. All Rights Reserved.</span></div>
       <nav>
-        <a href="#">นโยบายความเป็นส่วนตัว</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">เงื่อนไขการใช้งาน</a>
-        <a href="#">Terms of Use</a>
+        <a href="#" id="footer-policy">นโยบายความเป็นส่วนตัว</a>
+        <a href="#" id="footer-policy-en">Privacy Policy</a>
+        <a href="#" id="footer-terms">เงื่อนไขการใช้งาน</a>
+        <a href="#" id="footer-terms-en">Terms of Use</a>
       </nav>
     </div>
   </footer>
@@ -1512,38 +1512,227 @@
     }
   </script>
 
+  
   <script>
     (function () {
-      const toggle = document.querySelector('.menu-toggle');
-      const menu = document.getElementById('site-menu');
+      const dictionary = {
+        th: {
+          "topbar-brand": "มูลนิธิคนช่วยฅน | Khon Chuay Khon Foundation",
+          "topbar-news": "ข่าวสาร",
+          "topbar-contact": "ติดต่อเรา",
+          "topbar-careers-th": "ร่วมงานกับเรา",
+          "topbar-news-en": "News",
+          "topbar-contact-en": "Contact",
+          "topbar-careers-en": "Careers",
 
-      if (toggle && menu) {
-        toggle.addEventListener('click', () => {
-          const isOpen = menu.classList.toggle('is-open');
-          toggle.classList.toggle('is-open', isOpen);
-          toggle.setAttribute('aria-expanded', String(isOpen));
-        });
-      }
+          "brand-name": "คนช่วยฅน",
+          "brand-sub": "Khon Chuay Khon Foundation",
 
-      const slides = document.querySelectorAll('.hero-slide');
-      if (slides.length) {
-        let current = 0;
-        const intervalTime = 4000;
+          "menu-home": ["หน้าหลัก", "Home"],
+          "menu-about": ["เกี่ยวกับเรา", "About Us"],
+          "menu-programs": ["ภารกิจของเรา", "Our Programs"],
+          "menu-request": ["ขอความช่วยเหลือ", "Request Help"],
+          "menu-track": ["ติดตามเคส", "Track a Case"],
+          "menu-donate": ["ร่วมสนับสนุน", "Donate"],
+          "menu-news": ["ข่าวสารและผลงาน", "News & Impact"],
 
-        function showSlide(index) {
-          slides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === index);
-          });
+          "i18n-eyebrow": "หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้",
+          "i18n-hero-title": "เพราะทุกชีวิต มีคุณค่า<span class=\"accent\">Every Life Matters</span>",
+          "i18n-hero-desc-th": "มูลนิธิคนช่วยฅน ทำงานเพื่อช่วยเหลือผู้ยากไร้ ผู้ประสบภัย และครอบครัว ที่ต้องการโอกาส ผ่านการลงมือช่วยเหลือจริงในทุกพื้นที่ที่เข้าถึงของประเทศไทย",
+          "i18n-hero-desc-en": "We provide timely support, create opportunities,<br>and restore hope where it’s needed most.",
+          "btn-donate-main": "ร่วมบริจาค <span class=\"circle\">➜</span>",
+          "btn-request-main": "ขอความช่วยเหลือ <span class=\"circle\">➜</span>",
+
+          "stat1-th": "เคสที่ช่วยเหลือแล้ว", "stat1-en": "Cases Supported",
+          "stat2-th": "จังหวัดที่ให้ความช่วยเหลือ", "stat2-en": "Provinces Reached",
+          "stat3-th": "ครอบครัวที่ได้รับความช่วยเหลือ", "stat3-en": "Families Helped",
+          "stat4-th": "อาสาสมัครและเครือข่าย", "stat4-en": "Volunteers &amp; Partners",
+
+          "quick1-th": "ขอความช่วยเหลือ", "quick1-en": "Request Help", "quick1-sub": "เพราะวันนี้ของคุณสำคัญ",
+          "quick2-th": "ติดตามเคส", "quick2-en": "Track a Case", "quick2-sub": "ตรวจสอบสถานะความช่วยเหลือ",
+          "quick3-th": "ร่วมสนับสนุน", "quick3-en": "Support Us", "quick3-sub": "เปลี่ยนชีวิตด้วยการให้",
+
+          "section-programs-label": "ภารกิจของเรา",
+          "section-programs-title": "Our Programs",
+          "section-programs-link": "ดูทั้งหมด<br><span style=\"font-size:13px;font-weight:700;color:#4fb3ab;\">View All Programs →</span>",
+          "section-news-label": "ข่าวสารและผลงาน",
+          "section-news-title": "Latest News",
+          "section-news-link": "ดูข่าวทั้งหมด<br><span style=\"font-size:13px;font-weight:700;color:#4fb3ab;\">View All News →</span>",
+
+          "prog1-th": "การศึกษา", "prog1-en": "Education Support",
+          "prog2-th": "ที่อยู่อาศัย", "prog2-en": "Housing Assistance",
+          "prog3-th": "สร้างอาชีพ", "prog3-en": "Livelihood Support",
+          "prog4-th": "เด็กกำพร้า", "prog4-en": "Orphan Care",
+          "prog5-th": "ภัยพิบัติ", "prog5-en": "Disaster Relief",
+          "prog6-th": "เคสเร่งด่วน", "prog6-en": "Emergency Response",
+
+          "story-kicker": "เรื่องราวที่สร้างการเปลี่ยนแปลง",
+          "story-kicker-en": "Featured Story",
+          "story-title": "จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง",
+          "story-desc": "ครอบครัว 5 ชีวิตได้บ้านใหม่ หลังบ้านเดิมได้รับความช่วยเหลือ ของมูลนิธิฯ",
+          "story-btn": "อ่านเรื่องราว <span style=\"font-size:24px;\">➜</span>",
+          "news1-text": "ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย",
+          "news2-text": "เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3",
+
+          "cta-title": "ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง<span>Be Part of the Change</span>",
+          "cta-desc": "ทุกการให้ของคุณ คือโอกาสใหม่ของผู้ที่กำลังรอความช่วยเหลือ",
+          "cta-donate-btn": "บริจาคตอนนี้ <span class=\"circle\" style=\"background:rgba(0,0,0,.12)\">➜</span>",
+          "cta-how-btn": "ดูวิธีการบริจาค <span class=\"circle\">➜</span>",
+          "cta-quote-th": "การให้ที่ยิ่งใหญ่ ไม่ใช่การให้มากที่สุด แต่คือการให้ด้วยหัวใจที่ลึกซึ้ง",
+          "cta-quote-en": "The greatest giving is not in how much we give, but in how deeply we care.",
+
+          "partners-title-th": "องค์กรและเครือข่ายที่ร่วมขับเคลื่อน",
+          "partners-title-en": "Our Partners",
+
+          "footer-brand-name": "คนช่วยฅน",
+          "footer-brand-desc": "มูลนิธิคนช่วยฅน องค์กรสาธารณกุศลที่ทำงาน เพื่อช่วยเหลือผู้ยากไร้ในสังคมไทย",
+          "footer-links-title": "ลิงก์สำคัญ",
+          "footer-link-home": "หน้าหลัก",
+          "footer-link-about": "เกี่ยวกับเรา",
+          "footer-link-programs": "ภารกิจของเรา",
+          "footer-link-request": "ขอความช่วยเหลือ",
+          "footer-link-track": "ติดตามเคส",
+          "footer-link-donate": "ร่วมสนับสนุน",
+          "footer-contact-title": "ติดต่อเรา",
+          "footer-contact-text": "มูลนิธิคนช่วยฅน<br>เลขที่ 123/456 แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10200<br>02-123-4567<br>info@khonchuaykhon.org<br>จันทร์ - ศุกร์ 08:30 - 17:30",
+          "footer-newsletter-title": "รับข่าวสารจากเรา",
+          "footer-newsletter-desc": "ติดตามเรื่องราวและผลงานการช่วยเหลือของมูลนิธิ",
+          "footer-newsletter-input": "กรอกอีเมลของคุณ",
+          "footer-newsletter-btn": "สมัครรับข่าวสาร",
+          "footer-copyright": "© 2025 Khon Chuay Khon Foundation. All Rights Reserved.",
+          "footer-policy": "นโยบายความเป็นส่วนตัว",
+          "footer-policy-en": "Privacy Policy",
+          "footer-terms": "เงื่อนไขการใช้งาน",
+          "footer-terms-en": "Terms of Use"
+        },
+        en: {
+          "topbar-brand": "Khon Chuay Khon Foundation",
+          "topbar-news": "News",
+          "topbar-contact": "Contact",
+          "topbar-careers-th": "Careers",
+          "topbar-news-en": "News",
+          "topbar-contact-en": "Contact",
+          "topbar-careers-en": "Careers",
+
+          "brand-name": "Khon Chuay Khon",
+          "brand-sub": "Khon Chuay Khon Foundation",
+
+          "menu-home": ["Home", "Home"],
+          "menu-about": ["About Us", "About Us"],
+          "menu-programs": ["Our Programs", "Our Programs"],
+          "menu-request": ["Request Help", "Request Help"],
+          "menu-track": ["Track a Case", "Track a Case"],
+          "menu-donate": ["Donate", "Donate"],
+          "menu-news": ["News & Impact", "News & Impact"],
+
+          "i18n-eyebrow": "Give Hope. Share Care. Create Opportunity.",
+          "i18n-hero-title": "Every Life Matters<span class=\"accent\">Together We Can Help</span>",
+          "i18n-hero-desc-th": "Khon Chuay Khon Foundation supports vulnerable people, disaster victims, and families who need a real chance in life through practical help across Thailand.",
+          "i18n-hero-desc-en": "We provide timely support, create opportunities,<br>and restore hope where it’s needed most.",
+          "btn-donate-main": "Donate Now <span class=\"circle\">➜</span>",
+          "btn-request-main": "Request Help <span class=\"circle\">➜</span>",
+
+          "stat1-th": "Cases Supported", "stat1-en": "Cases Supported",
+          "stat2-th": "Provinces Reached", "stat2-en": "Provinces Reached",
+          "stat3-th": "Families Helped", "stat3-en": "Families Helped",
+          "stat4-th": "Volunteers & Partners", "stat4-en": "Volunteers &amp; Partners",
+
+          "quick1-th": "Request Help", "quick1-en": "Request Help", "quick1-sub": "Because your situation matters today",
+          "quick2-th": "Track a Case", "quick2-en": "Track a Case", "quick2-sub": "Check the progress of assistance",
+          "quick3-th": "Support Us", "quick3-en": "Support Us", "quick3-sub": "Change lives through giving",
+
+          "section-programs-label": "Our Mission",
+          "section-programs-title": "Our Programs",
+          "section-programs-link": "View All<br><span style=\"font-size:13px;font-weight:700;color:#4fb3ab;\">View All Programs →</span>",
+          "section-news-label": "News & Impact",
+          "section-news-title": "Latest News",
+          "section-news-link": "View All News<br><span style=\"font-size:13px;font-weight:700;color:#4fb3ab;\">View All News →</span>",
+
+          "prog1-th": "Education", "prog1-en": "Education Support",
+          "prog2-th": "Housing", "prog2-en": "Housing Assistance",
+          "prog3-th": "Livelihood", "prog3-en": "Livelihood Support",
+          "prog4-th": "Orphans", "prog4-en": "Orphan Care",
+          "prog5-th": "Disasters", "prog5-en": "Disaster Relief",
+          "prog6-th": "Urgent Cases", "prog6-en": "Emergency Response",
+
+          "story-kicker": "Stories of Change",
+          "story-kicker-en": "Featured Story",
+          "story-title": "From Collapse to a Home of Hope",
+          "story-desc": "A family of five received a new home after their damaged house was restored with support from the foundation.",
+          "story-btn": "Read Story <span style=\"font-size:24px;\">➜</span>",
+          "news1-text": "Relief bags delivered to flood victims in Chiang Rai.",
+          "news2-text": "Scholarship Program Year 3 officially launched by the foundation.",
+
+          "cta-title": "Be Part of the Change<span>Your support creates new hope</span>",
+          "cta-desc": "Every donation creates a new opportunity for someone waiting for help.",
+          "cta-donate-btn": "Donate Now <span class=\"circle\" style=\"background:rgba(0,0,0,.12)\">➜</span>",
+          "cta-how-btn": "Ways to Give <span class=\"circle\">➜</span>",
+          "cta-quote-th": "The greatest giving is not in how much we give, but in how deeply we care.",
+          "cta-quote-en": "The greatest giving is not in how much we give, but in how deeply we care.",
+
+          "partners-title-th": "Organizations and Networks Driving Change",
+          "partners-title-en": "Our Partners",
+
+          "footer-brand-name": "Khon Chuay Khon",
+          "footer-brand-desc": "Khon Chuay Khon Foundation is a public charity organization working to support vulnerable people in Thailand.",
+          "footer-links-title": "Quick Links",
+          "footer-link-home": "Home",
+          "footer-link-about": "About Us",
+          "footer-link-programs": "Our Programs",
+          "footer-link-request": "Request Help",
+          "footer-link-track": "Track a Case",
+          "footer-link-donate": "Donate",
+          "footer-contact-title": "Contact",
+          "footer-contact-text": "Khon Chuay Khon Foundation<br>123/456 Example Subdistrict, Example District, Bangkok 10200<br>02-123-4567<br>info@khonchuaykhon.org<br>Mon - Fri 08:30 - 17:30",
+          "footer-newsletter-title": "Newsletter",
+          "footer-newsletter-desc": "Stay updated with the foundation’s stories and impact.",
+          "footer-newsletter-input": "Enter your email",
+          "footer-newsletter-btn": "Subscribe",
+          "footer-copyright": "© 2025 Khon Chuay Khon Foundation. All Rights Reserved.",
+          "footer-policy": "Privacy Policy",
+          "footer-policy-en": "Privacy Policy",
+          "footer-terms": "Terms of Use",
+          "footer-terms-en": "Terms of Use"
         }
+      };
 
-        showSlide(current);
-        setInterval(() => {
-          current = (current + 1) % slides.length;
-          showSlide(current);
-        }, intervalTime);
+      function applyLanguage(lang) {
+        document.documentElement.lang = lang;
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        Object.entries(dictionary[lang]).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+
+          if (id === 'footer-newsletter-input') {
+            el.placeholder = value;
+            return;
+          }
+
+          if (Array.isArray(value)) {
+            const strong = el.querySelector('strong');
+            const span = el.querySelector('span');
+            if (strong) strong.textContent = value[0];
+            if (span) span.textContent = value[1];
+          } else {
+            el.innerHTML = value;
+          }
+        });
+
+        localStorage.setItem('siteLang', lang);
       }
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+      });
+
+      applyLanguage(localStorage.getItem('siteLang') || 'th');
     })();
   </script>
+
 
 
   <script>

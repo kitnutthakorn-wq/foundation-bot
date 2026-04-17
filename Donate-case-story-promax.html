@@ -9,64 +9,151 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#eef3f7; --card:#ffffff; --line:#d9e2ec; --text:#16324f; --muted:#6b7280;
-    --brand:#0b7c86; --brand-2:#19a84a; --accent:#2457d6; --yellow:#ffcc29;
+    --bg:#eef3f7;
+    --card:#ffffff;
+    --line:#d9e2ec;
+    --text:#16324f;
+    --muted:#6b7280;
+    --brand:#0b7c86;
+    --brand-2:#19a84a;
+    --accent:#2457d6;
+    --yellow:#ffcc29;
     --shadow:0 18px 40px rgba(18,36,58,.12);
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
   a{text-decoration:none;color:inherit}
-  .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(238,243,247,.84);border-bottom:1px solid rgba(255,255,255,.7)}
-  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .back-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)}
+
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    backdrop-filter:blur(14px);
+    background:rgba(238,243,247,.84);
+    border-bottom:1px solid rgba(255,255,255,.7)
+  }
+  .topbar-inner{
+    max-width:1240px;margin:0 auto;padding:14px 18px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px
+  }
+  .back-btn{
+    display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;
+    border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;
+    padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)
+  }
   .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:500}
   .dot{width:8px;height:8px;border-radius:999px;background:var(--brand-2);box-shadow:0 0 0 5px rgba(25,168,74,.12)}
-  .hero{position:relative;min-height:500px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat}
-  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,25,40,.84) 0%, rgba(7,25,40,.72) 40%, rgba(7,25,40,.28) 100%)}
-  .hero-inner{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:64px 18px 80px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:26px;align-items:end}
-  .eyebrow{display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px}
-  .hero h1{margin:0 0 14px;font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+
+  .hero{
+    position:relative;min-height:500px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(7,25,40,.84) 0%, rgba(7,25,40,.72) 40%, rgba(7,25,40,.28) 100%)
+  }
+  .hero-inner{
+    position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:64px 18px 80px;
+    display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:26px;align-items:end
+  }
+  .eyebrow{
+    display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);
+    border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px
+  }
+  .hero h1{
+    margin:0 0 14px;font-size:54px;line-height:1.04;font-weight:800;letter-spacing:-.02em;
+    text-shadow:0 2px 12px rgba(0,0,0,.22)
+  }
   .hero p{margin:0;font-size:18px;line-height:1.8;max-width:760px;color:rgba(255,255,255,.95)}
-  .hero-side{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.45);border-radius:30px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.18)}
+  .hero-side{
+    background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.45);
+    border-radius:30px;overflow:hidden;box-shadow:0 24px 50px rgba(0,0,0,.18)
+  }
   .hero-side-img{height:240px;background:center/cover no-repeat}
   .hero-side-body{padding:20px;color:var(--text)}
   .hero-side-body h3{margin:0 0 8px;font-size:28px;line-height:1.1}
   .hero-side-body p{margin:0;color:var(--muted);font-size:15px;line-height:1.7}
+
   .main{margin-top:-58px;position:relative;z-index:2}
-  .layout{max-width:1240px;margin:0 auto;padding:0 18px 46px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:24px;align-items:start}
-  .article,.sidebar-card,.gallery{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+  .layout{
+    max-width:1240px;margin:0 auto;padding:0 18px 46px;
+    display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:24px;align-items:start
+  }
+
+  .article,.sidebar-card,.gallery{
+    background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)
+  }
   .article-body,.sidebar-body,.gallery-body{padding:24px}
   .article h2{margin:0 0 12px;font-size:34px;line-height:1.15}
   .article p{margin:0 0 16px;color:#56677d;line-height:1.9;font-size:17px}
-  .quote{margin:22px 0;padding:20px 22px;border-left:5px solid var(--brand-2);background:#f6faf7;border-radius:18px;color:#24523a;font-weight:600;line-height:1.8}
+  .quote{
+    margin:22px 0;padding:20px 22px;border-left:5px solid var(--brand-2);
+    background:#f6faf7;border-radius:18px;color:#24523a;font-weight:600;line-height:1.8
+  }
+
   .timeline{display:grid;gap:14px;margin-top:24px}
   .timeline-item{display:grid;grid-template-columns:72px 1fr;gap:14px;align-items:start}
-  .timeline-badge{min-height:42px;border-radius:14px;background:#eff5fb;border:1px solid #dbe4ee;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent)}
+  .timeline-badge{
+    min-height:42px;border-radius:14px;background:#eff5fb;border:1px solid #dbe4ee;
+    display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--accent)
+  }
   .timeline-card{border:1px solid var(--line);background:#fff;border-radius:18px;padding:16px}
   .timeline-card h4{margin:0 0 6px;font-size:20px}
   .timeline-card p{margin:0;color:#5b6d82;line-height:1.75;font-size:15px}
+
   .sidebar-card{overflow:hidden}
   .sidebar-hero{height:240px;background:center/cover no-repeat;position:relative}
-  .sidebar-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))}
+  .sidebar-hero::after{
+    content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))
+  }
   .sidebar-title{position:absolute;left:18px;right:18px;bottom:18px;z-index:1;color:#fff}
   .sidebar-title .mini{font-size:13px;font-weight:700;color:#ffde7a;margin-bottom:8px}
   .sidebar-title h3{margin:0;font-size:28px;line-height:1.05}
   .stat{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:#56677d;font-size:15px}
-  .progress{height:16px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:12px 0}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#18a347 0%, #22c55e 100%)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:none;border-radius:16px;padding:0 18px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Kanit',sans-serif;width:100%}
+  .progress{height:16px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:12px 0}
+  .progress>div{height:100%;width:0;background:linear-gradient(90deg,#18a347 0%, #22c55e 100%)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:none;
+    border-radius:16px;padding:0 18px;font-size:16px;font-weight:700;cursor:pointer;
+    font-family:'Kanit',sans-serif;width:100%
+  }
   .btn-primary{background:linear-gradient(135deg,var(--brand-2),#20c44c);color:#fff;box-shadow:0 10px 18px rgba(25,168,74,.24)}
   .btn-secondary{margin-top:12px;background:#fff;color:var(--text);border:1px solid var(--line)}
+
   .gallery{margin-top:24px}
   .gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
   .gallery-item{border-radius:20px;overflow:hidden;background:#d7e4ef;height:170px}
   .gallery-item img{width:100%;height:100%;object-fit:cover}
+
   .footer{padding:0 18px 40px}
-  .footer-inner{max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px}
-  .footer-inner h3{margin:0 0 8px;font-size:28px}.footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
-  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.footer-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800}.footer-actions .yellow{background:#ffcc29;color:#1a1a1a}.footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
-  @media (max-width:1100px){.hero-inner,.layout,.footer-inner{grid-template-columns:1fr}.hero h1{font-size:44px}}
-  @media (max-width:760px){.topbar-inner{padding:12px}.topmeta{display:none}.hero-inner{padding:34px 18px 76px}.hero h1{font-size:32px}.hero p{font-size:16px}.hero-side-img,.sidebar-hero{height:210px}.article h2{font-size:28px}.article p{font-size:16px}.timeline-item{grid-template-columns:1fr}.gallery-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}}
+  .footer-inner{
+    max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;
+    display:grid;grid-template-columns:1fr auto;gap:20px
+  }
+  .footer-inner h3{margin:0 0 8px;font-size:28px}
+  .footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .footer-actions a{
+    display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800
+  }
+  .footer-actions .yellow{background:#ffcc29;color:#1a1a1a}
+  .footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+
+  @media (max-width:1100px){
+    .hero-inner,.layout,.footer-inner{grid-template-columns:1fr}
+    .hero h1{font-size:44px}
+  }
+  @media (max-width:760px){
+    .topbar-inner{padding:12px}
+    .topmeta{display:none}
+    .hero-inner{padding:34px 18px 76px}
+    .hero h1{font-size:32px}
+    .hero p{font-size:16px}
+    .hero-side-img,.sidebar-hero{height:210px}
+    .article h2{font-size:28px}
+    .article p{font-size:16px}
+    .timeline-item{grid-template-columns:1fr}
+    .gallery-grid{grid-template-columns:1fr}
+    .footer-inner{grid-template-columns:1fr}
+  }
 </style>
 </head>
 <body>
@@ -166,367 +253,1124 @@
   </footer>
 
 <script>
-const PROJECT_CONFIG = {
-      education: {
-        eyebrow: 'โครงการเพื่อการศึกษา',
-        title: 'เพื่อการศึกษา',
-        description: 'ร่วมเปิดโอกาสให้เด็กและเยาวชนที่ขาดแคลน ได้มีอุปกรณ์การเรียน ทุนการศึกษา และค่าใช้จ่ายพื้นฐานในการเดินทางไปโรงเรียน',
-        heroImage: 'images/Edu1.png',
-        heroCardTitle: 'โครงการการศึกษาที่กำลังเปิดรับ',
-        heroCardText: 'ทุกการสนับสนุนช่วยให้เด็กคนหนึ่งได้มีโอกาสเรียนต่ออย่างมั่นคงและมีศักดิ์ศรี',
-        chips: ['ทุนการศึกษา', 'อุปกรณ์การเรียน', 'ค่าเดินทาง'],
-        cases: [
-          {
-            id: 'edu-001',
-            badge: 'ม.ปลาย',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ทุนเรียนต่อระดับมัธยม',
-            description: 'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
-            image: 'images/Edu1.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: 'ภายในเดือนนี้',
-            raised: 35000,
-            goal: 60000
-          },
-          {
-            id: 'edu-002',
-            badge: 'เปิดด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ค่าอุปกรณ์การเรียนเด็กกำพร้า',
-            description: 'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน',
-            image: 'images/project7.png',
-            location: 'ปัตตานี',
-            beneficiary: '3 เด็ก',
-            urgent: '7 วัน',
-            raised: 22000,
-            goal: 45000
-          },
-          {
-            id: 'edu-003',
-            badge: 'นราธิวาส',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'ทุนเดินทางและอาหารกลางวัน',
-            description: 'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
-            image: 'images/Edu1.png',
-            location: 'นราธิวาส',
-            beneficiary: '5 คน',
-            urgent: '15 วัน',
-            raised: 18000,
-            goal: 50000
-          }
+const PROJECTS = {
+  education: {
+    eyebrow:'โครงการเพื่อการศึกษา',
+    image:'images/Edu1.png',
+    sideTitle:'เรื่องราวของโอกาสทางการศึกษา',
+    sideText:'เรื่องราวเหล่านี้สะท้อนว่าโอกาสทางการศึกษาไม่ควรถูกตัดสินด้วยฐานะของครอบครัว',
+    cases:[
+      {
+        id:'edu-001',
+        title:'ทุนเรียนต่อระดับมัธยม',
+        description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
+        image:'images/Edu1.png',
+        raised:35000,
+        goal:60000,
+        story:[
+          'เด็กคนหนึ่งอาจไม่ได้ขาดความสามารถ แต่ขาดค่าใช้จ่ายที่จำเป็นเพียงไม่กี่รายการในการเดินหน้าต่อ ชีวิตของเขาจึงแขวนอยู่บนคำถามเล็ก ๆ ว่าจะได้ไปโรงเรียนต่อหรือไม่',
+          'เมื่อครอบครัวต้องเลือกระหว่างค่าใช้จ่ายประจำวันกับค่าเรียน เด็กมักเป็นฝ่ายที่ต้องหยุดความฝันก่อนเสมอ แม้ในใจยังอยากเรียนต่อมากเพียงใด',
+          'เคสนี้จึงไม่ใช่แค่เรื่องเงิน แต่คือการยืนยันว่าความตั้งใจเรียนของเด็กคนหนึ่งควรถูกมองเห็นและได้รับโอกาสอย่างเท่าเทียม',
+          'เมื่อมีคนช่วยคนละนิด ความต่อเนื่องทางการศึกษาจะไม่ใช่ภาระที่หนักเกินไปอีกต่อไป และอนาคตที่ดูไกลก็จะกลับมาใกล้ขึ้นอีกครั้ง'
+        ],
+        timeline:[
+          'ครอบครัวมีรายได้จำกัดจนไม่สามารถรับภาระค่าเรียนและค่าเดินทางต่อได้',
+          'หากไม่ได้รับการสนับสนุน เด็กมีแนวโน้มต้องหยุดเรียนกลางคันในช่วงหัวเลี้ยวหัวต่อสำคัญ',
+          'การสนับสนุนช่วยให้เด็กยังอยู่ในระบบการศึกษาและมองเห็นอนาคตของตัวเองชัดขึ้น'
         ]
       },
-
-      zakat: {
-        eyebrow: 'โครงการซากาต',
-        title: 'ซากาตเพื่อผู้ยากไร้',
-        description: 'ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย เพื่อช่วยผู้ยากไร้ ผู้สูงอายุ และครอบครัวเปราะบางให้ผ่านพ้นวิกฤต',
-        heroImage: 'images/project2.png',
-        heroCardTitle: 'เคสซากาตที่ต้องการการสนับสนุน',
-        heroCardText: 'ทุกยอดบริจาคช่วยต่อชีวิตให้ครอบครัวยากไร้มีอาหาร ของใช้จำเป็น และความหวังในการเริ่มต้นใหม่',
-        chips: ['ซากาต', 'อาหารยังชีพ', 'ผู้เปราะบาง'],
-        cases: [
-          {
-            id: 'zakat-001',
-            badge: 'สงขลา',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'มอบซากาตช่วยครอบครัวยากไร้',
-            description: 'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต',
-            image: 'images/project2.png',
-            location: 'สงขลา',
-            beneficiary: '2 ครอบครัว',
-            urgent: '10 วัน',
-            raised: 42000,
-            goal: 100000
-          },
-          {
-            id: 'zakat-002',
-            badge: 'เปิดด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ช่วยเหลือผู้สูงอายุและแม่หม้าย',
-            description: 'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน',
-            image: 'images/project2.png',
-            location: 'ปัตตานี',
-            beneficiary: '8 ราย',
-            urgent: '5 วัน',
-            raised: 30000,
-            goal: 80000
-          },
-          {
-            id: 'zakat-003',
-            badge: 'นราธิวาส',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'กองทุนยังชีพตามหลักซากาต',
-            description: 'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต',
-            image: 'images/project2.png',
-            location: 'นราธิวาส',
-            beneficiary: '12 ราย',
-            urgent: '20 วัน',
-            raised: 15000,
-            goal: 70000
-          }
+      {
+        id:'edu-002',
+        title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า',
+        description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน',
+        image:'images/Z3.png',
+        raised:22000,
+        goal:45000,
+        story:[
+          'สำหรับเด็กกำพร้า อุปกรณ์การเรียนคือประตูบานแรกของการเริ่มต้นปีการศึกษาอย่างมีศักดิ์ศรี สิ่งเล็ก ๆ เหล่านี้มีผลต่อความมั่นใจอย่างมาก',
+          'สิ่งที่ดูเหมือนเล็กน้อยอย่างกระเป๋า รองเท้า หรือชุดนักเรียน อาจเป็นกำแพงใหญ่สำหรับผู้ดูแลที่มีรายได้จำกัดและแบกรับภาระมากกว่าหนึ่งชีวิต',
+          'การสนับสนุนนี้จึงช่วยมากกว่าการซื้อของ แต่คือการช่วยให้เด็กไม่รู้สึกว่าตนเองด้อยกว่าผู้อื่น และกล้าเดินเข้าสู่ห้องเรียน',
+          'เมื่อเด็กมีความพร้อมพื้นฐาน เขาจะมีสมาธิและความมั่นใจในการเรียนรู้มากขึ้น และเห็นคุณค่าของตัวเองชัดเจนกว่าเดิม'
+        ],
+        timeline:[
+          'ครอบครัวผู้ดูแลไม่สามารถจัดหาอุปกรณ์พื้นฐานให้เด็กได้ครบก่อนเปิดเทอม',
+          'หากขาดอุปกรณ์ เด็กอาจขาดความมั่นใจและได้รับผลกระทบต่อการเรียน',
+          'การสนับสนุนช่วยให้เด็กเริ่มต้นปีการศึกษาได้อย่างเท่าเทียมกับเพื่อน ๆ'
         ]
       },
-
-      transport: {
-        eyebrow: 'โครงการส่งกลับบ้าน',
-        title: 'อาสาพาน้องกลับบ้าน',
-        description: 'ร่วมช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนา เพื่อให้การเดินทางกลับบ้านของผู้เดือดร้อนเป็นไปอย่างปลอดภัยและสมศักดิ์ศรี',
-        heroImage: 'images/project3.png',
-        heroCardTitle: 'เคสขนย้ายร่างกลับภูมิลำเนา',
-        heroCardText: 'ทุกการช่วยเหลือทำให้ครอบครัวลดภาระหนักในวันที่เจ็บปวดที่สุด และได้ส่งผู้เสียชีวิตกลับบ้านอย่างเหมาะสม',
-        chips: ['ค่าขนส่ง', 'ส่งกลับบ้าน', 'ช่วยเร่งด่วน'],
-        cases: [
-          {
-            id: 'transport-001',
-            badge: 'เร่งด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ค่าขนย้ายร่างกลับภูมิลำเนา',
-            description: 'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งร่างผู้เสียชีวิตกลับบ้านเกิด',
-            image: 'images/project3.png',
-            location: 'กรุงเทพฯ → ปัตตานี',
-            beneficiary: '1 ครอบครัว',
-            urgent: 'ภายใน 48 ชม.',
-            raised: 28000,
-            goal: 45000
-          },
-          {
-            id: 'transport-002',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต',
-            description: 'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน',
-            image: 'images/project3.png',
-            location: 'ชลบุรี → นราธิวาส',
-            beneficiary: '1 ครอบครัว',
-            urgent: '3 วัน',
-            raised: 18000,
-            goal: 50000
-          }
+      {
+        id:'edu-003',
+        title:'ทุนเดินทางและอาหารกลางวัน',
+        description:'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
+        image:'images/Edu1.png',
+        raised:18000,
+        goal:50000,
+        story:[
+          'การได้ไปโรงเรียนทุกวันไม่ใช่เรื่องง่ายสำหรับเด็กบางคน เพราะระยะทางและค่าใช้จ่ายรายวันคือกำแพงที่มองไม่เห็นแต่หนักหนามาก',
+          'เด็กบางคนต้องเลือกระหว่างอดมื้อกลางวันกับเก็บเงินไว้เป็นค่าเดินทาง สิ่งนี้สะท้อนว่าความยากจนกำลังกัดกินโอกาสทางการศึกษาอย่างเงียบ ๆ',
+          'เคสนี้จึงเน้นช่วยในจุดเล็ก ๆ ที่มีผลใหญ่ นั่นคือค่าเดินทางและอาหารกลางวันซึ่งเป็นเงื่อนไขของการมาเรียนอย่างต่อเนื่อง',
+          'เมื่อเด็กไม่ต้องกังวลว่าพรุ่งนี้จะไปโรงเรียนได้ไหม เขาจะทุ่มพลังทั้งหมดให้กับการเรียนรู้ได้เต็มที่'
+        ],
+        timeline:[
+          'เด็กบางคนอยู่ไกลโรงเรียนและขาดค่าใช้จ่ายประจำวันในการเรียน',
+          'ค่าเดินทางและอาหารกลางวันเป็นภาระสะสมที่ทำให้เสี่ยงหยุดเรียน',
+          'การสนับสนุนช่วยให้เด็กมาโรงเรียนสม่ำเสมอและเรียนได้เต็มศักยภาพ'
         ]
       },
-
-      relief: {
-        eyebrow: 'โครงการบรรเทาธารณภัย',
-        title: 'เพื่อการบรรเทาธารณภัย',
-        description: 'ช่วยเหลือผู้ประสบเหตุฉุกเฉิน น้ำท่วม ไฟไหม้ และความสูญเสียเฉียบพลัน ด้วยความช่วยเหลือที่ไปถึงอย่างรวดเร็ว',
-        heroImage: 'images/project4.png',
-        heroCardTitle: 'เคสฉุกเฉินที่กำลังเปิดรับ',
-        heroCardText: 'ออกแบบให้ติดตามง่าย เห็นยอดชัด และพร้อมร่วมช่วยได้ทันทีเมื่อเกิดเหตุ',
-        chips: ['ภัยพิบัติ', 'ช่วยเร่งด่วน', 'ถุงยังชีพ'],
-        cases: [
-          {
-            id: 'relief-001',
-            badge: 'ไฟไหม้',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง',
-            description: 'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด',
-            image: 'images/project6.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: '7 วัน',
-            raised: 67000,
-            goal: 120000
-          },
-          {
-            id: 'relief-002',
-            badge: 'อุทกภัย',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม',
-            description: 'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน',
-            image: 'images/project4.png',
-            location: 'นราธิวาส',
-            beneficiary: '25 ครัวเรือน',
-            urgent: '10 วัน',
-            raised: 54000,
-            goal: 150000
-          }
+      {
+        id:'edu-004',
+        title:'ทุนค่าชุดนักเรียนและรองเท้า',
+        description:'สนับสนุนค่าชุดนักเรียน รองเท้า และของใช้จำเป็นให้เด็กจากครอบครัวยากไร้ก่อนเปิดภาคเรียน',
+        image:'images/Edu1.png',
+        raised:21000,
+        goal:48000,
+        story:[
+          'ก่อนเปิดเทอม เด็กหลายคนกลับไม่ได้ตื่นเต้นกับการเรียน แต่กังวลว่าจะมีชุดนักเรียนใส่หรือไม่ ความกังวลนี้ไม่ควรเป็นภาระของเด็ก',
+          'เสื้อผ้าและรองเท้าที่เหมาะสมอาจดูเป็นของธรรมดา แต่สำหรับครอบครัวที่ต้องเลือกใช้จ่ายอย่างระมัดระวัง มันคือค่าใช้จ่ายก้อนใหญ่',
+          'การสนับสนุนนี้จึงช่วยสร้างความพร้อมเบื้องต้นที่ทำให้เด็กกล้าไปโรงเรียนอย่างมั่นใจ ไม่รู้สึกแปลกแยกจากเพื่อน',
+          'เมื่อเริ่มต้นได้อย่างดี เด็กจะพร้อมเปิดรับการเรียนรู้และเติบโตในสภาพแวดล้อมที่เท่าเทียมขึ้น'
+        ],
+        timeline:[
+          'เด็กยังไม่มีชุดและรองเท้าที่เหมาะสมสำหรับเปิดเทอม',
+          'ความไม่พร้อมด้านเครื่องแต่งกายส่งผลต่อความมั่นใจและการเข้าเรียน',
+          'การสนับสนุนช่วยให้เด็กเริ่มต้นการเรียนได้อย่างมั่นใจและมีศักดิ์ศรี'
         ]
       },
-
-      housing: {
-        eyebrow: 'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้',
-        title: 'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
-        description: 'ซ่อมแซมบ้านที่ทรุดโทรมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย เพื่อคืนศักดิ์ศรีและคุณภาพชีวิตให้ครอบครัวเปราะบาง',
-        heroImage: 'images/project5.png',
-        heroCardTitle: 'เคสซ่อมแซมและสร้างบ้าน',
-        heroCardText: 'บ้านที่ปลอดภัยคือจุดเริ่มต้นของการมีชีวิตที่มั่นคงขึ้นสำหรับทั้งครอบครัว',
-        chips: ['ซ่อมบ้าน', 'ที่อยู่อาศัย', 'ความปลอดภัย'],
-        cases: [
-          {
-            id: 'housing-001',
-            badge: 'บ้านพัง',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ',
-            description: 'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย',
-            image: 'images/project5.png',
-            location: 'สงขลา',
-            beneficiary: '1 หลัง',
-            urgent: '14 วัน',
-            raised: 76000,
-            goal: 180000
-          },
-          {
-            id: 'housing-002',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'สร้างบ้านใหม่ให้ครอบครัวยากไร้',
-            description: 'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน',
-            image: 'images/project5.png',
-            location: 'ปัตตานี',
-            beneficiary: '1 ครอบครัว',
-            urgent: '30 วัน',
-            raised: 92000,
-            goal: 250000
-          }
+      {
+        id:'edu-005',
+        title:'กองทุนหนังสือและอุปกรณ์การเรียน',
+        description:'ช่วยจัดหาหนังสือ สมุด และอุปกรณ์การเรียนให้เด็กที่กำลังจะเปิดเทอมแต่ยังขาดความพร้อม',
+        image:'images/Edu1.png',
+        raised:16000,
+        goal:40000,
+        story:[
+          'ห้องเรียนอาจเริ่มต้นจากสมุดหนึ่งเล่ม ดินสอหนึ่งแท่ง และหนังสือหนึ่งชุด แต่สำหรับเด็กบางคน สิ่งเหล่านี้ยังห่างไกลเกินเอื้อม',
+          'เมื่อไม่มีอุปกรณ์พื้นฐาน เด็กจะเริ่มต้นปีการศึกษาด้วยความเสียเปรียบ ทั้งในแง่ความพร้อมและความมั่นใจ',
+          'เคสนี้จึงเป็นการช่วยเติมเต็มความพร้อมเบื้องต้นที่จำเป็นต่อการเรียนอย่างแท้จริง',
+          'เมื่อเครื่องมือของการเรียนรู้อยู่ในมือ เด็กจะไม่ถูกทิ้งไว้ข้างหลังตั้งแต่วันแรกของการเปิดเทอม'
+        ],
+        timeline:[
+          'หลายครอบครัวยังไม่สามารถจัดหาหนังสือและอุปกรณ์ก่อนเปิดเทอมได้ทัน',
+          'หากไม่มีอุปกรณ์พื้นฐาน เด็กจะเริ่มต้นปีการศึกษาได้อย่างยากลำบาก',
+          'การสนับสนุนช่วยให้เด็กพร้อมเรียนรู้ตั้งแต่วันแรกของภาคเรียน'
         ]
       },
-
-      disaster: {
-        eyebrow: 'โครงการช่วยเหลือผู้ประสบภัย',
-        title: 'ช่วยเหลือผู้ประสบภัย',
-        description: 'ฟื้นฟูชีวิตผู้ประสบภัยจากเหตุฉุกเฉินและความเสียหายฉับพลัน ให้มีทั้งความช่วยเหลือระยะสั้นและการเริ่มต้นใหม่ในระยะยาว',
-        heroImage: 'images/project6.png',
-        heroCardTitle: 'เคสฟื้นฟูหลังเหตุการณ์',
-        heroCardText: 'ทั้งความช่วยเหลือเร่งด่วนและการฟื้นฟูหลังเหตุการณ์ถูกรวมไว้ในมุมมองเดียว เข้าใจง่ายและลงมือช่วยได้จริง',
-        chips: ['ฟื้นฟู', 'ฉุกเฉิน', 'ครอบครัวเดือดร้อน'],
-        cases: [
-          {
-            id: 'disaster-001',
-            badge: 'เร่งฟื้นฟู',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้',
-            description: 'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง',
-            image: 'images/project6.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: '20 วัน',
-            raised: 48000,
-            goal: 130000
-          }
-        ]
-      },
-
-      orphan: {
-        eyebrow: 'โครงการเด็กกำพร้า',
-        title: 'ช่วยเหลือเด็กกำพร้า',
-        description: 'ส่งต่อโอกาสแก่เด็กกำพร้าให้มีอาหาร การศึกษา สิ่งจำเป็น และการดูแลที่เหมาะสม เพื่อเติบโตอย่างมีคุณภาพและความหวัง',
-        heroImage: 'images/project7.png',
-        heroCardTitle: 'เคสเด็กกำพร้าที่เปิดรับบริจาค',
-        heroCardText: 'มอบโอกาสให้เด็กได้เติบโตอย่างปลอดภัย มีอาหาร อุปกรณ์การเรียน และคุณภาพชีวิตที่ดีขึ้น',
-        chips: ['เด็กกำพร้า', 'อาหาร', 'การศึกษา'],
-        cases: [
-          {
-            id: 'orphan-001',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ทุนดูแลเด็กกำพร้ารายเดือน',
-            description: 'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น',
-            image: 'images/project7.png',
-            location: 'นราธิวาส',
-            beneficiary: '6 เด็ก',
-            urgent: 'เดือนนี้',
-            raised: 26000,
-            goal: 70000
-          },
-          {
-            id: 'orphan-002',
-            badge: 'การศึกษา',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'อุปกรณ์การเรียนเด็กกำพร้า',
-            description: 'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน',
-            image: 'images/project7.png',
-            location: 'ปัตตานี',
-            beneficiary: '10 เด็ก',
-            urgent: '12 วัน',
-            raised: 14000,
-            goal: 42000
-          }
+      {
+        id:'edu-006',
+        title:'ทุนช่วยนักเรียนกลุ่มเสี่ยงหลุดจากระบบ',
+        description:'ระดมทุนเพื่อช่วยค่าใช้จ่ายจำเป็นให้เด็กที่เสี่ยงต้องหยุดเรียนกลางคันได้เรียนต่อ',
+        image:'images/Edu1.png',
+        raised:24000,
+        goal:55000,
+        story:[
+          'เด็กบางคนไม่ได้อยากลาออกจากโรงเรียน แต่สถานการณ์ชีวิตกำลังบังคับให้เขาต้องเลือกทางนั้น',
+          'เมื่อรายได้ของครอบครัวไม่พอ เด็กมักถูกผลักให้กลายเป็นแรงงานก่อนวัย ทั้งที่ยังควรอยู่ในห้องเรียน',
+          'การช่วยเหลือเคสนี้คือการช่วยยืดเวลาแห่งโอกาส และต่อสู้กับความเสี่ยงที่เด็กจะหลุดจากระบบการศึกษา',
+          'ทุกยอดสนับสนุนจึงมีความหมายเท่ากับการบอกกับเด็กว่า เขายังมีสิทธิ์ฝันต่อและเรียนต่อได้จริง'
+        ],
+        timeline:[
+          'นักเรียนบางคนอยู่ในจุดเสี่ยงต้องออกจากระบบการศึกษาเพราะภาระครอบครัว',
+          'ค่าใช้จ่ายสะสมระยะยาวทำให้เด็กต้องเลือกระหว่างเรียนกับทำงาน',
+          'การสนับสนุนช่วยลดความเสี่ยงหลุดจากระบบและเพิ่มโอกาสทางอนาคต'
         ]
       }
-    };
+    ]
+  },
 
-function ensureSixCases(cfg, slug) {
-  if (!cfg || !Array.isArray(cfg.cases)) return cfg;
+  zakat: {
+    eyebrow:'โครงการซากาต',
+    image:'images/Z1.png',
+    sideTitle:'เรื่องราวการแบ่งปันตามหลักซากาต',
+    sideText:'ทุกเคสสะท้อนความหมายของการให้ที่ไม่เพียงประคองชีวิต แต่ช่วยคืนศักดิ์ศรีและความมั่นคงขั้นพื้นฐาน',
+    cases:[
+      {
+        id:'zakat-001',
+        title:'มอบซากาตช่วยครอบครัวยากไร้',
+        description:'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต',
+        image:'images/Z1.png',
+        raised:42000,
+        goal:100000,
+        story:[
+          'บางครอบครัวไม่ได้ต้องการมากไปกว่าการมีอาหารพอสำหรับลูก มีของใช้จำเป็น และมีลมหายใจที่ไม่เต็มไปด้วยความกังวลทุกวัน',
+          'ซากาตในเคสนี้จึงไม่ใช่เพียงตัวเลข แต่เป็นสะพานที่เชื่อมจากภาวะขาดแคลนไปสู่ความมั่นคงพื้นฐานของชีวิต',
+          'เมื่อครอบครัวได้รับความช่วยเหลืออย่างเหมาะสม พวกเขาจะมีพื้นที่ทางใจในการตั้งหลักและมองหาทางออกระยะยาว',
+          'ทุกการสนับสนุนจึงเป็นการบอกกับเจ้าของเคสว่า เขาไม่ได้ถูกทิ้งให้อยู่ลำพังในวันที่ชีวิตหนักที่สุด'
+        ],
+        timeline:[
+          'ครอบครัวมีรายได้ไม่พอสำหรับค่าอาหารและของใช้จำเป็นประจำวัน',
+          'เมื่อรายได้ไม่แน่นอน ครอบครัวต้องเผชิญความเสี่ยงด้านปากท้องและคุณภาพชีวิต',
+          'การสนับสนุนช่วยให้ครอบครัวมีความมั่นคงพื้นฐานมากขึ้นและลดภาวะวิกฤตเฉียบพลัน'
+        ]
+      },
+      {
+        id:'zakat-002',
+        title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย',
+        description:'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน',
+        image:'images/Z1.png',
+        raised:30000,
+        goal:80000,
+        story:[
+          'ในชุมชนยังมีผู้สูงอายุและแม่หม้ายจำนวนไม่น้อยที่ใช้ชีวิตอย่างเงียบงัน พร้อมความกังวลเรื่องค่าอาหารและค่ายาในแต่ละวัน',
+          'ความเปราะบางของพวกเขาไม่ใช่แค่เรื่องรายได้ แต่คือการไม่มีแรงรองรับเมื่อชีวิตเผชิญปัญหา',
+          'เคสนี้จึงมุ่งช่วยในสิ่งที่จำเป็นที่สุดต่อการดำรงชีวิต ทั้งอาหาร ยารักษา และของใช้พื้นฐาน',
+          'เมื่อพวกเขาได้รับการดูแลอย่างเหมาะสม ชีวิตที่เคยเปราะบางจะกลับมามีความหวังและความมั่นคงขึ้นอีกครั้ง'
+        ],
+        timeline:[
+          'ผู้สูงอายุและแม่หม้ายจำนวนหนึ่งขาดรายได้และผู้ดูแลอย่างเพียงพอ',
+          'กลุ่มเปราะบางเหล่านี้มักได้รับผลกระทบก่อนเมื่อค่าใช้จ่ายพื้นฐานเพิ่มสูงขึ้น',
+          'การสนับสนุนช่วยลดความเปราะบางและทำให้ดำรงชีวิตประจำวันได้อย่างปลอดภัยขึ้น'
+        ]
+      },
+      {
+        id:'zakat-003',
+        title:'กองทุนยังชีพตามหลักซากาต',
+        description:'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต',
+        image:'images/Z1.png',
+        raised:15000,
+        goal:70000,
+        story:[
+          'ในหลายบ้าน ความขาดแคลนไม่ได้มาเป็นครั้งคราว แต่มาในรูปของภาระรายวันที่สะสมเงียบ ๆ จนแทบไม่มีทางหายใจ',
+          'กองทุนนี้ถูกออกแบบเพื่อให้ซากาตเข้าถึงผู้มีสิทธิรับอย่างเหมาะสม เป็นระบบ และตอบโจทย์ความจำเป็นจริง',
+          'เมื่อความช่วยเหลือไปถึงอย่างถูกจุด ผู้รับจะสามารถประคองชีวิตผ่านช่วงยากลำบากโดยไม่สูญเสียศักดิ์ศรี',
+          'ซากาตจึงไม่ใช่แค่การบรรเทาทุกข์ แต่คือการสร้างความเป็นธรรมและความมั่นคงในระดับชีวิตประจำวัน'
+        ],
+        timeline:[
+          'หลายครอบครัวอยู่ในภาวะรายได้ไม่แน่นอนและขาดแหล่งพยุงชีวิต',
+          'ค่าใช้จ่ายพื้นฐานเป็นภาระต่อเนื่องที่ทำให้ความเดือดร้อนสะสม',
+          'กองทุนช่วยให้ผู้รับความช่วยเหลือมีต้นทุนดำรงชีวิตที่มั่นคงขึ้นในระยะสั้นและกลาง'
+        ]
+      },
+      {
+        id:'zakat-004',
+        title:'ซากาตเพื่อค่าอาหารรายเดือน',
+        description:'ช่วยค่าอาหารและของใช้จำเป็นรายเดือนแก่ครอบครัวยากไร้ในพื้นที่ห่างไกล',
+        image:'images/Z1.png',
+        raised:28000,
+        goal:65000,
+        story:[
+          'ค่าอาหารรายเดือนคือเรื่องพื้นฐานที่สุดของชีวิต แต่สำหรับหลายครอบครัวในพื้นที่ห่างไกล มันกลับเป็นภาระที่หนักเกินแบก',
+          'ความห่างไกลทำให้ต้นทุนทุกอย่างสูงขึ้น ทั้งค่าเดินทางและราคาสินค้าที่จำเป็นต่อการดำรงชีวิต',
+          'การสนับสนุนเคสนี้จึงเป็นการเติมเต็มในสิ่งที่ทุกครอบครัวควรมี นั่นคืออาหารและของใช้พื้นฐานอย่างเพียงพอ',
+          'เมื่อปากท้องไม่เป็นเรื่องน่ากังวลทุกวัน ครอบครัวจะมีโอกาสหันไปจัดการปัญหาอื่นในชีวิตได้ดีขึ้น'
+        ],
+        timeline:[
+          'ครอบครัวห่างไกลมีรายได้ไม่พอครอบคลุมค่าอาหารรายเดือน',
+          'ต้นทุนการเดินทางและราคาสินค้าทำให้ค่าใช้จ่ายสูงกว่าศักยภาพของครัวเรือน',
+          'การสนับสนุนช่วยให้ครอบครัวไม่ต้องเผชิญภาวะขาดแคลนอาหาร'
+        ]
+      },
+      {
+        id:'zakat-005',
+        title:'ซากาตช่วยค่ายาและค่ารักษา',
+        description:'ช่วยค่ารักษาพยาบาลและค่ายาจำเป็นให้ผู้ป่วยยากไร้และผู้สูงอายุไร้รายได้',
+        image:'images/Z1.png',
+        raised:26000,
+        goal:60000,
+        story:[
+          'สุขภาพคือสิ่งที่ไม่ควรถูกกำหนดด้วยกำลังทรัพย์ แต่ผู้ป่วยยากไร้จำนวนมากกลับต้องเลือกระหว่างรักษาต่อกับหยุดยา',
+          'ภาระค่ารักษาและค่ายาทำให้ชีวิตที่เปราะบางอยู่แล้ว เสี่ยงหนักขึ้นในทุกวัน',
+          'เคสนี้จึงเป็นการช่วยให้การรักษาที่จำเป็นไม่ถูกสะดุดเพียงเพราะความยากจน',
+          'เมื่อการรักษาต่อเนื่องได้ สุขภาพและคุณภาพชีวิตของผู้ป่วยจะมีโอกาสฟื้นกลับมาอย่างมีความหวัง'
+        ],
+        timeline:[
+          'ผู้ป่วยบางรายต้องหยุดยาหรือเลื่อนการรักษาเพราะไม่มีค่าใช้จ่าย',
+          'การขาดการรักษาต่อเนื่องกระทบสุขภาพและเพิ่มความเสี่ยงต่อชีวิต',
+          'การสนับสนุนช่วยให้ผู้ป่วยเข้าถึงการรักษาได้ต่อเนื่องและปลอดภัยขึ้น'
+        ]
+      },
+      {
+        id:'zakat-006',
+        title:'ซากาตเพื่อเริ่มต้นชีวิตใหม่',
+        description:'ช่วยครอบครัวที่เผชิญวิกฤตให้มีทุนประคองชีวิตเบื้องต้นและตั้งหลักได้อีกครั้ง',
+        image:'images/Z1.png',
+        raised:22000,
+        goal:58000,
+        story:[
+          'หลังวิกฤตผ่านไป ชีวิตไม่ได้กลับสู่ปกติทันที หลายครอบครัวยังต้องเผชิญกับความว่างเปล่าทั้งด้านรายได้และความมั่นคง',
+          'การมีทุนเล็ก ๆ สำหรับตั้งต้นใหม่อาจเป็นความแตกต่างระหว่างการลุกขึ้นได้ กับการจมอยู่ในปัญหาเดิมซ้ำ ๆ',
+          'เคสนี้จึงมุ่งช่วยให้ครอบครัวมีแรงพอจะก้าวต่อ ไม่ใช่แค่ผ่านวันนี้ แต่เพื่อมองเห็นวันพรุ่งนี้',
+          'การช่วยเหลือจึงกลายเป็นต้นทุนของความหวัง และความหวังก็คือพลังที่พาครอบครัวกลับมายืนได้อีกครั้ง'
+        ],
+        timeline:[
+          'ครอบครัวบางส่วนเพิ่งผ่านวิกฤตและยังไม่มีทุนพอสำหรับเริ่มต้นใหม่',
+          'หลังวิกฤต ครอบครัวต้องการต้นทุนพื้นฐานเพื่อกลับมายืนได้อีกครั้ง',
+          'การสนับสนุนช่วยให้ครอบครัวกลับมาตั้งหลักและลดการพึ่งพาในระยะยาว'
+        ]
+      }
+    ]
+  },
 
-  const sourceCases = cfg.cases.map(item => ({ ...item }));
-  const expanded = [...sourceCases];
-  const titleSuffixes = [
-    'กรณีเร่งด่วน',
-    'ระยะต่อเนื่อง',
-    'ระยะฟื้นฟู',
-    'เคสสนับสนุนเพิ่มเติม',
-    'เคสขยายโอกาส',
-    'เคสช่วยเหลือเฉพาะหน้า'
-  ];
-  const locationSuffixes = ['ยะลา','ปัตตานี','นราธิวาส','สงขลา','สตูล','กรุงเทพฯ'];
+  transport: {
+    eyebrow:'โครงการส่งกลับบ้าน',
+    image:'images/Z2.png',
+    sideTitle:'เรื่องราวเบื้องหลังการเดินทางกลับบ้าน',
+    sideText:'ทุกเคสสะท้อนภาระหนักในวันที่ครอบครัวเปราะบางที่สุด และความหมายของการช่วยเหลือที่ทำให้ทุกอย่างเกิดขึ้นอย่างเหมาะสม',
+    cases:[
+      {
+        id:'transport-001',
+        title:'ค่าขนย้ายกลับภูมิลำเนา',
+        description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งกลับบ้านเกิด',
+        image:'images/Z2.png',
+        raised:28000,
+        goal:45000,
+        story:[
+          'ในวันที่ครอบครัวสูญเสีย สิ่งที่หนักไม่ใช่แค่ความเศร้า แต่คือภาระค่าใช้จ่ายที่ถาโถมเข้ามาพร้อมกันโดยไม่ทันตั้งตัว',
+          'การส่งกลับบ้านเกิดจึงกลายเป็นเรื่องใหญ่สำหรับครอบครัวที่แทบไม่มีเงินสำรองเหลืออยู่',
+          'เคสนี้มุ่งช่วยให้การเดินทางกลับบ้านเกิดเกิดขึ้นอย่างเหมาะสม สมศักดิ์ศรี และไม่เพิ่มหนี้ให้กับคนข้างหลัง',
+          'เมื่อภาระบางส่วนถูกแบ่งเบา ครอบครัวจะมีพื้นที่สำหรับจัดการความสูญเสียด้วยหัวใจที่ไม่แบกหนักเกินไป'
+        ],
+        timeline:[
+          'ครอบครัวไม่มีศักยภาพในการรับภาระค่าขนส่งกลับภูมิลำเนา',
+          'การเคลื่อนย้ายต้องทำในเวลาจำกัดและมีค่าใช้จ่ายสูงกว่ากำลังของครอบครัว',
+          'การสนับสนุนช่วยให้ครอบครัวสามารถจัดการส่งกลับได้อย่างเหมาะสมและสมศักดิ์ศรี'
+        ]
+      },
+      {
+        id:'transport-002',
+        title:'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต',
+        description:'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน',
+        image:'images/Z2.png',
+        raised:18000,
+        goal:50000,
+        story:[
+          'ความสูญเสียไม่เคยมาเพียงลำพัง มันมักมาพร้อมภาระค่าใช้จ่ายที่คนธรรมดาไม่สามารถเตรียมรับได้ทัน',
+          'กองทุนนี้จึงเกิดขึ้นเพื่อรองรับครอบครัวที่กำลังอยู่ในภาวะเปราะบางที่สุด และต้องตัดสินใจเรื่องใหญ่ภายในเวลาสั้น',
+          'การช่วยเหลือไม่ได้ลดเพียงตัวเลขค่าใช้จ่าย แต่ลดความกดดันทางใจที่ถาโถมใส่ครอบครัวในช่วงเวลานั้น',
+          'ทุกการสนับสนุนทำให้ครอบครัวรู้ว่า ยังมีคนยื่นมือเข้ามาในวันที่พวกเขาแทบยืนไม่ไหว'
+        ],
+        timeline:[
+          'ครอบครัวต้องเผชิญทั้งความสูญเสียและภาระค่าใช้จ่ายแบบกะทันหัน',
+          'ค่าใช้จ่ายด้านขนส่งและพิธีการพื้นฐานเกินกำลังของครอบครัว',
+          'กองทุนช่วยลดภาระทางการเงินในช่วงเวลาที่บอบช้ำที่สุด'
+        ]
+      },
+      {
+        id:'transport-003',
+        title:'ค่ารถส่งกลับจากภาคกลางสู่ชายแดนใต้',
+        description:'ช่วยค่าเดินทางระยะไกลและค่าดำเนินการพื้นฐานในการส่งกลับบ้านอย่างเหมาะสม',
+        image:'images/Z2.png',
+        raised:25000,
+        goal:52000,
+        story:[
+          'ระยะทางไกลทำให้ความสูญเสียยิ่งหนักขึ้น เพราะทุกกิโลเมตรหมายถึงค่าใช้จ่ายที่เพิ่มขึ้นเรื่อย ๆ',
+          'ครอบครัวจำนวนมากไม่อาจแบกรับต้นทุนนี้ได้เอง ทั้งที่ในใจมีเพียงความตั้งใจจะพากลับบ้านให้สมเกียรติ',
+          'เคสนี้จึงช่วยเปลี่ยนภาระหนักให้เบาลง และทำให้สิ่งสำคัญที่สุดเกิดขึ้นได้จริง',
+          'การเดินทางกลับบ้านในท้ายที่สุดจึงไม่ใช่แค่เรื่องของระยะทาง แต่เป็นเรื่องของศักดิ์ศรีและความรักของครอบครัว'
+        ],
+        timeline:[
+          'ระยะทางไกลทำให้ต้นทุนการขนส่งสูงและมีข้อจำกัดด้านเวลา',
+          'หากไม่ได้รับการสนับสนุน ครอบครัวจะเผชิญภาระหนี้สินเพิ่มเติม',
+          'การสนับสนุนช่วยให้ครอบครัวผ่านขั้นตอนสำคัญได้โดยไม่แบกรับภาระเกินกำลัง'
+        ]
+      },
+      {
+        id:'transport-004',
+        title:'ช่วยค่ารถและเอกสารประกอบการส่งกลับ',
+        description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าเอกสารที่จำเป็นในการเคลื่อนย้ายกลับภูมิลำเนา',
+        image:'images/Z2.png',
+        raised:20000,
+        goal:43000,
+        story:[
+          'นอกจากค่ารถและค่าเดินทางแล้ว ยังมีภาระเรื่องเอกสารและขั้นตอนที่หลายครอบครัวไม่เคยต้องเผชิญมาก่อน',
+          'ในช่วงเวลาที่ควรได้โศกเศร้าอย่างสงบ พวกเขากลับต้องวิ่งตามเรื่องค่าใช้จ่ายและพิธีการที่เร่งด่วน',
+          'การช่วยเหลือในเคสนี้จึงครอบคลุมทั้งภาระที่มองเห็นและภาระที่ซ่อนอยู่ในทุกขั้นตอน',
+          'เมื่อสิ่งเหล่านี้ได้รับการแบ่งเบา ครอบครัวจะไม่ต้องรับน้ำหนักทั้งหมดไว้เพียงลำพัง'
+        ],
+        timeline:[
+          'มีภาระด้านเอกสารและค่าเดินทางที่ต้องจัดการภายในเวลาจำกัด',
+          'การขาดงบประมาณทำให้ทุกขั้นตอนล่าช้าและยิ่งเพิ่มความกดดันแก่ครอบครัว',
+          'การสนับสนุนช่วยให้กระบวนการส่งกลับดำเนินไปได้อย่างรวดเร็วและเหมาะสม'
+        ]
+      },
+      {
+        id:'transport-005',
+        title:'กองทุนช่วยเหลือการเดินทางกลับบ้าน',
+        description:'ระดมทุนสำหรับครอบครัวยากไร้ที่ต้องรับภาระค่าเดินทางและการส่งกลับบ้านเกิด',
+        image:'images/Z2.png',
+        raised:17000,
+        goal:47000,
+        story:[
+          'ในความเป็นจริง มีหลายครอบครัวที่ต้องเผชิญสถานการณ์คล้ายกัน แต่ไม่มีทุนสำรองรองรับเหตุฉุกเฉินเช่นนี้เลย',
+          'กองทุนนี้จึงถูกออกแบบเพื่อให้ความช่วยเหลือเกิดขึ้นได้เร็ว และไม่ต้องเริ่มต้นใหม่ทุกครั้งเมื่อมีเคสเข้ามา',
+          'ยิ่งมีความพร้อมมากเท่าไร ก็ยิ่งช่วยครอบครัวได้ตรงเวลาและลดความเสียหายทางใจมากขึ้นเท่านั้น',
+          'การสนับสนุนกองทุนจึงเป็นการสร้างระบบแห่งการช่วยเหลือที่พร้อมทำงานในช่วงเวลาวิกฤต'
+        ],
+        timeline:[
+          'มีหลายครอบครัวในภาวะคล้ายกันที่ต้องการความช่วยเหลือด้านค่าเดินทาง',
+          'การมีทุนกลางช่วยให้ตอบสนองความจำเป็นได้รวดเร็วขึ้น',
+          'กองทุนช่วยเพิ่มความพร้อมในการช่วยเหลือกรณีเร่งด่วนที่เกิดขึ้นต่อเนื่อง'
+        ]
+      },
+      {
+        id:'transport-006',
+        title:'ช่วยค่าขนส่งและพิธีการพื้นฐาน',
+        description:'ร่วมช่วยลดภาระครอบครัวที่ต้องการส่งกลับบ้านอย่างสมเกียรติในวันที่เปราะบางที่สุด',
+        image:'images/Z2.png',
+        raised:23000,
+        goal:49000,
+        story:[
+          'ความสมเกียรติในวันสุดท้ายเป็นสิ่งที่ครอบครัวอยากมอบให้ แต่หลายครั้งภาระค่าใช้จ่ายกลับทำให้สิ่งนั้นดูไกลเกินเอื้อม',
+          'เคสนี้เกิดขึ้นเพื่อช่วยประคองครอบครัวให้ผ่านภาระเรื่องขนส่งและพิธีการพื้นฐานอย่างเหมาะสม',
+          'การช่วยเหลือไม่ได้เปลี่ยนความสูญเสียให้หายไป แต่ช่วยให้กระบวนการทั้งหมดเกิดขึ้นอย่างอ่อนโยนขึ้น',
+          'และในช่วงเวลาเปราะบางนั้น ความอ่อนโยนจากการช่วยเหลือของผู้คนก็มีความหมายอย่างมหาศาล'
+        ],
+        timeline:[
+          'ครอบครัวยังขาดงบประมาณสำหรับขนส่งและการจัดการขั้นพื้นฐาน',
+          'ความสูญเสียกะทันหันมักมาพร้อมภาระค่าใช้จ่ายที่ไม่ได้เตรียมตัว',
+          'การสนับสนุนช่วยลดความกังวลของครอบครัวและทำให้ทุกอย่างดำเนินไปอย่างเหมาะสม'
+        ]
+      }
+    ]
+  },
 
-  let i = 0;
-  while (expanded.length < 6 && sourceCases.length > 0) {
-    const base = sourceCases[i % sourceCases.length];
-    const cloneIndex = expanded.length + 1;
-    const raised = Number(base.raised || 0) + (cloneIndex * 2500);
-    const goal = Number(base.goal || 0) + (cloneIndex * 5000);
+  relief: {
+    eyebrow:'โครงการบรรเทาธารณภัย',
+    image:'images/Z4.png',
+    sideTitle:'เรื่องราวของการช่วยเหลือในภาวะฉุกเฉิน',
+    sideText:'ทุกเคสสะท้อนให้เห็นว่าความช่วยเหลือที่ตรงเวลา สามารถเปลี่ยนความสิ้นหวังให้กลับมาเป็นพลังในการตั้งต้นใหม่ได้',
+    cases:[
+      {
+        id:'relief-001',
+        title:'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง',
+        description:'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด',
+        image:'images/Z4.png',
+        raised:67000,
+        goal:120000,
+        story:[
+          'ไฟไหม้เพียงครั้งเดียวสามารถเผาทั้งบ้าน ทรัพย์สิน และความมั่นคงในชีวิตของครอบครัวให้หายไปในชั่วข้ามคืน',
+          'หลังเหตุการณ์ผ่านไป ความเงียบที่เหลืออยู่เต็มไปด้วยคำถามว่า พรุ่งนี้จะเริ่มต้นจากตรงไหน',
+          'เคสนี้จึงไม่ใช่แค่การช่วยของใช้จำเป็น แต่คือการช่วยให้ครอบครัวมีแรงพอจะลุกขึ้นจากกองเถ้าถ่านของชีวิต',
+          'ทุกการสนับสนุนจึงเป็นเหมือนมือที่ดึงพวกเขาออกจากความสิ้นหวังและพาไปสู่การตั้งต้นใหม่'
+        ],
+        timeline:[
+          'ครอบครัวสูญเสียที่อยู่อาศัยและของใช้จำเป็นเกือบทั้งหมดจากเหตุเพลิงไหม้',
+          'หลังเหตุไฟไหม้ ครอบครัวต้องการทุนเร่งด่วนเพื่อประคองชีวิตในทันที',
+          'การสนับสนุนช่วยให้ครอบครัวมีโอกาสกลับมาตั้งหลักได้เร็วขึ้น'
+        ]
+      },
+      {
+        id:'relief-002',
+        title:'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม',
+        description:'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน',
+        image:'images/Z4.png',
+        raised:54000,
+        goal:150000,
+        story:[
+          'น้ำท่วมไม่ได้พัดพาแค่ข้าวของ แต่มันพัดเอาความปกติของชีวิตไปพร้อมกัน หลายครอบครัวต้องรอความช่วยเหลือท่ามกลางความไม่แน่นอน',
+          'ในช่วงแรกของภัยพิบัติ อาหาร น้ำ และของใช้พื้นฐานคือสิ่งที่มีค่ามากที่สุด',
+          'การสนับสนุนเคสนี้จึงช่วยให้ถุงยังชีพเดินทางไปถึงผู้คนในเวลาที่พวกเขาต้องการมากที่สุด',
+          'บางครั้งความหวังอาจเริ่มต้นจากถุงยังชีพใบหนึ่ง ที่ทำให้คนรู้ว่าเขายังไม่ถูกลืม'
+        ],
+        timeline:[
+          'หลายชุมชนประสบปัญหาน้ำท่วมและขาดแคลนอาหารน้ำดื่มอย่างต่อเนื่อง',
+          'การช่วยเหลือเร่งด่วนมีความสำคัญมากในช่วงที่การเข้าถึงพื้นที่ทำได้ยาก',
+          'การสนับสนุนช่วยให้ผู้ประสบภัยได้รับสิ่งจำเป็นและลดภาวะขาดแคลนระยะสั้น'
+        ]
+      },
+      {
+        id:'relief-003',
+        title:'ฟื้นฟูหลังคาบ้านหลังพายุถล่ม',
+        description:'ช่วยซ่อมแซมหลังคาบ้านและของใช้จำเป็นแก่ครอบครัวที่ได้รับผลกระทบจากพายุรุนแรง',
+        image:'images/Z4.png',
+        raised:32000,
+        goal:90000,
+        story:[
+          'หลังพายุผ่านไป สิ่งที่หลงเหลือคือบ้านที่เปิดรับทั้งฝน ลม และความไม่ปลอดภัยในทุกคืน',
+          'แม้เหตุการณ์รุนแรงจะจบลงแล้ว แต่ผลกระทบต่อชีวิตประจำวันยังคงอยู่ทุกครั้งที่ท้องฟ้ามืดลง',
+          'การช่วยเหลือเคสนี้จึงเป็นการปิดรอยแผลของบ้าน และคืนความมั่นคงให้แก่คนที่อาศัยอยู่ภายใน',
+          'เมื่อบ้านกลับมาปกป้องชีวิตได้อีกครั้ง ความกลัวก็จะค่อย ๆ ถูกแทนที่ด้วยความอุ่นใจ'
+        ],
+        timeline:[
+          'พายุรุนแรงทำให้บ้านหลายหลังเสียหายและไม่สามารถอยู่อาศัยได้ตามปกติ',
+          'หากไม่ซ่อมเร่งด่วน ความเสียหายจะยิ่งลุกลามและกระทบสุขภาพของครอบครัว',
+          'การสนับสนุนช่วยให้ครอบครัวกลับเข้าอยู่อาศัยได้อย่างปลอดภัยขึ้น'
+        ]
+      },
+      {
+        id:'relief-004',
+        title:'กองทุนอาหารและน้ำดื่มฉุกเฉิน',
+        description:'จัดซื้ออาหารพร้อมทาน น้ำดื่ม และเวชภัณฑ์เบื้องต้นให้ผู้ประสบภัยในจุดวิกฤต',
+        image:'images/Z4.png',
+        raised:28000,
+        goal:85000,
+        story:[
+          'ในภาวะฉุกเฉิน สิ่งที่ดูธรรมดาอย่างน้ำดื่มหรืออาหารพร้อมทาน กลับกลายเป็นสิ่งที่มีค่ามากที่สุด',
+          'ผู้ประสบภัยจำนวนมากต้องใช้เวลาหลายวันก่อนที่ระบบปกติจะกลับมา และช่วงเวลานั้นคือจุดเปราะบางที่สุด',
+          'กองทุนนี้จึงมีความหมายในฐานะเครื่องมือช่วยชีวิตและประคองผู้คนให้ผ่านวิกฤตแรกไปให้ได้',
+          'การช่วยเหลือที่ตรงเวลาเพียงหนึ่งครั้ง อาจสร้างผลลัพธ์ที่สำคัญกว่าที่เราคิดมาก'
+        ],
+        timeline:[
+          'จุดวิกฤตมีผู้ได้รับผลกระทบจำนวนมากและต้องการของยังชีพทันที',
+          'ช่วงแรกของภัยพิบัติคือเวลาที่ผู้ประสบภัยต้องการอาหาร น้ำ และเวชภัณฑ์มากที่สุด',
+          'การสนับสนุนช่วยประคองชีวิตและลดความเสี่ยงด้านสุขภาพของผู้ประสบภัย'
+        ]
+      },
+      {
+        id:'relief-005',
+        title:'ช่วยเหลือเครื่องนอนและของใช้หลังน้ำลด',
+        description:'ระดมทุนจัดซื้อที่นอน ผ้าห่ม และของใช้ในครัวเรือนเพื่อฟื้นฟูหลังน้ำท่วม',
+        image:'images/Z4.png',
+        raised:24000,
+        goal:70000,
+        story:[
+          'เมื่อระดับน้ำลดลง ไม่ได้แปลว่าปัญหาจะจบลง ครอบครัวยังต้องกลับมาเจอกับบ้านที่ไม่พร้อมสำหรับการใช้ชีวิต',
+          'เครื่องนอนและของใช้พื้นฐานในบ้านคือสิ่งที่ต้องสร้างขึ้นใหม่เกือบทั้งหมด',
+          'การช่วยเหลือจึงไม่ใช่แค่เรื่องของสิ่งของ แต่คือการคืนความเป็นบ้านให้แก่ผู้ที่เพิ่งผ่านเหตุการณ์หนักหนา',
+          'เมื่อบ้านกลับมามีที่นอน มีของใช้ และมีความอบอุ่น ชีวิตก็เริ่มกลับมาเดินต่อได้อีกครั้ง'
+        ],
+        timeline:[
+          'หลังน้ำลด ครอบครัวจำนวนมากยังขาดของใช้พื้นฐานสำหรับกลับมาใช้ชีวิต',
+          'การฟื้นฟูหลังภัยพิบัติต้องใช้ทั้งสิ่งของและเวลาในการเริ่มต้นใหม่',
+          'การสนับสนุนช่วยให้ครอบครัวกลับมาอยู่อาศัยและดำเนินชีวิตได้ไวขึ้น'
+        ]
+      },
+      {
+        id:'relief-006',
+        title:'ฟื้นฟูครอบครัวหลังภัยพิบัติ',
+        description:'ช่วยตั้งต้นชีวิตใหม่ให้ครอบครัวที่สูญเสียทรัพย์สินจากเหตุภัยพิบัติรุนแรง',
+        image:'images/Z4.png',
+        raised:36000,
+        goal:110000,
+        story:[
+          'ความเสียหายจากภัยพิบัติไม่ได้จบลงเมื่อข่าวจบลง เพราะสำหรับครอบครัวผู้ประสบภัย นั่นคือจุดเริ่มของภาระอีกมากมาย',
+          'การสูญเสียทรัพย์สินหมายถึงการสูญเสียความมั่นคงที่เคยมีอยู่ แม้จะเพียงเล็กน้อยก็ตาม',
+          'เคสนี้จึงมุ่งช่วยให้ครอบครัวมีต้นทุนพอจะเริ่มต้นใหม่ ไม่ต้องจมอยู่กับผลกระทบระยะยาวเพียงลำพัง',
+          'ทุกการช่วยเหลือคือการเติมแรงให้คนที่ล้มลง ได้กลับมายืนขึ้นอย่างมีหวังอีกครั้ง'
+        ],
+        timeline:[
+          'ครอบครัวต้องเผชิญผลกระทบระยะยาวจากการสูญเสียทรัพย์สินและรายได้',
+          'การฟื้นฟูต้องอาศัยต้นทุนระยะกลาง ไม่ใช่เพียงการช่วยฉุกเฉิน',
+          'การสนับสนุนช่วยให้ครอบครัวเริ่มต้นชีวิตใหม่และฟื้นความมั่นคงได้เร็วขึ้น'
+        ]
+      }
+    ]
+  },
 
-    expanded.push({
-      ...base,
-      id: `${slug}-auto-${cloneIndex}`,
-      title: `${base.title} · ${titleSuffixes[i % titleSuffixes.length]}`,
-      location: locationSuffixes[i % locationSuffixes.length],
-      raised,
-      goal: goal > raised ? goal : raised + 10000,
-      urgent: `${7 + (i * 3)} วัน`
-    });
-    i += 1;
+  housing: {
+    eyebrow:'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้',
+    image:'images/Z5.png',
+    sideTitle:'เรื่องราวของบ้านที่ควรปลอดภัย',
+    sideText:'เมื่อบ้านกลับมาปลอดภัย ชีวิตของทั้งครอบครัวก็จะมีพื้นที่สำหรับความหวังและการเริ่มต้นใหม่',
+    cases:[
+      {
+        id:'housing-001',
+        title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ',
+        description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย',
+        image:'images/Z5.png',
+        raised:76000,
+        goal:180000,
+        story:[
+          'บ้านที่ทรุดโทรมไม่ใช่เพียงภาพของความยากจน แต่คือพื้นที่ที่เต็มไปด้วยความเสี่ยงในทุกลมหายใจของผู้สูงอายุ',
+          'ผนังที่ผุ พื้นที่ยวบ และหลังคาที่รั่วทำให้ชีวิตประจำวันกลายเป็นเรื่องที่ต้องระวังอยู่ตลอดเวลา',
+          'การซ่อมแซมบ้านหลังนี้จึงไม่ใช่เพียงการปรับปรุงโครงสร้าง แต่คือการคืนความปลอดภัยและความมั่นคงทางใจ',
+          'ทุกการสนับสนุนช่วยเปลี่ยนสภาพแวดล้อมที่เปราะบางให้กลับมาเป็นบ้านที่อุ่นใจได้อีกครั้ง'
+        ],
+        timeline:[
+          'บ้านไม้ทรุดโทรมมีความเสี่ยงต่อการอยู่อาศัยของผู้สูงอายุในทุกวัน',
+          'ความเสียหายของโครงสร้างทำให้เกิดความเสี่ยงอุบัติเหตุและกระทบสุขภาพ',
+          'การสนับสนุนช่วยให้ผู้สูงอายุมีคุณภาพชีวิตที่ดีขึ้นและอยู่อาศัยได้อย่างอุ่นใจ'
+        ]
+      },
+      {
+        id:'housing-002',
+        title:'สร้างบ้านใหม่ให้ครอบครัวยากไร้',
+        description:'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน',
+        image:'images/Z5.png',
+        raised:92000,
+        goal:250000,
+        story:[
+          'การมีบ้านหนึ่งหลังอาจดูเป็นเรื่องธรรมดา แต่สำหรับบางครอบครัว มันคือความฝันที่ยังไม่เคยเป็นจริง',
+          'การอยู่ในที่พักชั่วคราวหรือบ้านที่ไม่ปลอดภัย ทำให้ทุกวันเต็มไปด้วยความไม่แน่นอน',
+          'เคสนี้จึงเป็นการช่วยสร้างรากฐานชีวิตที่มั่นคง ไม่ใช่เพียงการก่อสร้างทางกายภาพ',
+          'เมื่อมีบ้านที่ปลอดภัย ครอบครัวจะมีพื้นที่สำหรับพักผ่อน เติบโต และเริ่มต้นอนาคตได้อย่างมั่นคงกว่าเดิม'
+        ],
+        timeline:[
+          'ครอบครัวไม่มีที่อยู่อาศัยที่มั่นคงและอยู่ในสภาพบ้านชั่วคราวที่ไม่ปลอดภัย',
+          'ที่อยู่อาศัยที่ไม่มั่นคงทำให้คุณภาพชีวิตและอนาคตของทั้งครอบครัวเปราะบาง',
+          'การสนับสนุนช่วยให้ครอบครัวมีรากฐานชีวิตที่มั่นคงมากขึ้น'
+        ]
+      },
+      {
+        id:'housing-003',
+        title:'ซ่อมห้องน้ำและพื้นบ้านให้ผู้ป่วยติดเตียง',
+        description:'ช่วยปรับปรุงพื้นบ้านและห้องน้ำเพื่อให้ผู้ป่วยติดเตียงใช้ชีวิตได้ปลอดภัยขึ้น',
+        image:'images/Z5.png',
+        raised:41000,
+        goal:98000,
+        story:[
+          'สำหรับครอบครัวที่มีผู้ป่วยติดเตียง บ้านทุกตารางเมตรมีผลต่อความปลอดภัยและคุณภาพการดูแลโดยตรง',
+          'ห้องน้ำและพื้นบ้านที่ไม่เหมาะสมทำให้ทั้งผู้ป่วยและผู้ดูแลใช้ชีวิตยากลำบากกว่าที่ควร',
+          'การช่วยเหลือนี้จึงเป็นมากกว่าการซ่อมบ้าน แต่คือการทำให้การดูแลกันในครอบครัวเป็นไปอย่างปลอดภัยและมีศักดิ์ศรี',
+          'เมื่อบ้านถูกปรับให้เหมาะกับชีวิตจริง ผู้ป่วยจะได้รับการดูแลที่ดีขึ้น และผู้ดูแลก็มีภาระเบาลง'
+        ],
+        timeline:[
+          'พื้นบ้านและห้องน้ำไม่เอื้อต่อการดูแลผู้ป่วยติดเตียงอย่างปลอดภัย',
+          'ผู้ดูแลต้องเผชิญความยากลำบากและเสี่ยงอุบัติเหตุทุกวัน',
+          'การสนับสนุนช่วยลดอุบัติเหตุและเพิ่มคุณภาพการดูแลในครอบครัว'
+        ]
+      },
+      {
+        id:'housing-004',
+        title:'ต่อเติมบ้านกันฝนให้แม่ลูกอ่อน',
+        description:'ช่วยต่อเติมหลังคา ผนัง และพื้นที่อยู่อาศัยให้ครอบครัวแม่ลูกอ่อนที่บ้านทรุดโทรม',
+        image:'images/Z5.png',
+        raised:38000,
+        goal:105000,
+        story:[
+          'สำหรับแม่ลูกอ่อน บ้านไม่ใช่แค่ที่พัก แต่เป็นที่พึ่งหลักของชีวิตในทุกวัน',
+          'เมื่อบ้านรั่ว บ้านชื้น หรือไม่ปลอดภัย เด็กเล็กจะเป็นคนแรกที่ได้รับผลกระทบทั้งด้านสุขภาพและความเป็นอยู่',
+          'เคสนี้จึงเป็นการปกป้องชีวิตเปราะบางสองชีวิตไปพร้อมกัน ทั้งแม่และลูก',
+          'ทุกการช่วยเหลือช่วยให้บ้านหลังเดิมกลับมาเป็นพื้นที่อบอุ่นที่ปกป้องพวกเขาได้จริง'
+        ],
+        timeline:[
+          'บ้านมีปัญหาน้ำรั่วและสภาพไม่เหมาะกับการอยู่อาศัยของแม่และเด็กเล็ก',
+          'ที่อยู่อาศัยที่ไม่ปลอดภัยกระทบทั้งสุขภาพและความเป็นอยู่ของเด็ก',
+          'การสนับสนุนช่วยให้ครอบครัวอยู่ได้อย่างปลอดภัยและมีสภาพแวดล้อมเหมาะสมกับเด็กเล็ก'
+        ]
+      },
+      {
+        id:'housing-005',
+        title:'ซ่อมบ้านหลังน้ำท่วมเสียหาย',
+        description:'ช่วยซ่อมผนัง พื้น และอุปกรณ์บ้านเรือนที่เสียหายจากน้ำท่วมให้กลับมาอยู่อาศัยได้',
+        image:'images/Z5.png',
+        raised:35000,
+        goal:90000,
+        story:[
+          'หลังน้ำลด หลายบ้านยังไม่สามารถเรียกว่าบ้านได้เต็มปาก เพราะความเสียหายยังคงอยู่รอบตัว',
+          'ผนังที่ชื้น พื้นที่พัง และของใช้ที่เสียหายทำให้การกลับมาใช้ชีวิตปกติเป็นเรื่องยาก',
+          'การช่วยเหลือนี้คือการฟื้นบ้านให้กลับมาเป็นพื้นที่ปลอดภัยสำหรับการเริ่มต้นใหม่',
+          'เมื่อบ้านพร้อม คนในบ้านก็พร้อมจะฟื้นตัวทั้งกายและใจตามไปด้วย'
+        ],
+        timeline:[
+          'หลังน้ำท่วม บ้านหลายหลังยังมีความเสียหายสะสมและไม่พร้อมกลับเข้าอยู่',
+          'การฟื้นฟูบ้านต้องใช้ทุนและแรงงานที่เกินกำลังของเจ้าของบ้าน',
+          'การสนับสนุนช่วยให้ครอบครัวกลับสู่สภาพชีวิตปกติได้เร็วขึ้น'
+        ]
+      },
+      {
+        id:'housing-006',
+        title:'ปรับปรุงบ้านเสี่ยงพังถล่ม',
+        description:'ระดมทุนเพื่อเสริมโครงสร้างบ้านและแก้จุดเสี่ยงอันตรายให้ครอบครัวผู้ยากไร้',
+        image:'images/Z5.png',
+        raised:47000,
+        goal:120000,
+        story:[
+          'การอาศัยอยู่ในบ้านที่เสี่ยงพังถล่มคือการใช้ชีวิตท่ามกลางความกลัวที่ไม่มีวันพัก',
+          'ทุกลมแรง ทุกฝนตก อาจหมายถึงอันตรายที่กำลังใกล้เข้ามาอีกก้าวหนึ่ง',
+          'เคสนี้จึงเป็นการช่วยป้องกันไม่ให้ความเสี่ยงนั้นกลายเป็นโศกนาฏกรรมจริง',
+          'เมื่อโครงสร้างบ้านมั่นคงขึ้น ชีวิตของคนในบ้านก็จะมั่นคงขึ้นตามไปด้วย'
+        ],
+        timeline:[
+          'โครงสร้างบ้านบางส่วนเสื่อมสภาพจนเสี่ยงพังถล่ม',
+          'หากไม่เร่งแก้ไข ความเสียหายอาจกระทบต่อชีวิตและทรัพย์สินในครอบครัว',
+          'การสนับสนุนช่วยให้บ้านมีความมั่นคงและความปลอดภัยเพิ่มขึ้นอย่างชัดเจน'
+        ]
+      }
+    ]
+  },
+
+  disaster: {
+    eyebrow:'โครงการช่วยเหลือผู้ประสบภัย',
+    image:'images/Z4.png',
+    sideTitle:'เรื่องราวของการฟื้นตัวหลังวิกฤต',
+    sideText:'ทุกเรื่องราวในโครงการนี้สะท้อนว่าการช่วยเหลือที่ดีไม่ใช่แค่ช่วยตอนเกิดเหตุ แต่ช่วยให้คนกลับมายืนได้อีกครั้ง',
+    cases:[
+      {
+        id:'disaster-001',
+        title:'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้',
+        description:'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง',
+        image:'images/Z4.png',
+        raised:48000,
+        goal:130000,
+        story:[
+          'หลังไฟไหม้ผ่านไป สิ่งที่เหลืออยู่ไม่ใช่เพียงซากของทรัพย์สิน แต่คือภาระของการเริ่มต้นใหม่โดยแทบไม่เหลืออะไรในมือ',
+          'ครอบครัวจำนวนมากต้องค่อย ๆ ประกอบชีวิตกลับขึ้นมาทีละชิ้น จากของใช้พื้นฐานที่สุดไปจนถึงความมั่นคงทางใจ',
+          'เคสนี้จึงเป็นการช่วยฟื้นฟูสิ่งจำเป็นที่ทำให้ชีวิตเดินต่อได้ ไม่ใช่แค่การทดแทนสิ่งของที่สูญเสีย',
+          'ทุกการสนับสนุนคือพลังที่ช่วยให้ครอบครัวกลับมามองเห็นความเป็นไปได้ของวันข้างหน้าอีกครั้ง'
+        ],
+        timeline:[
+          'หลังเหตุเพลิงไหม้ ครอบครัวยังขาดของใช้จำเป็นและทุนฟื้นตัว',
+          'ผลกระทบหลังวิกฤตยืดเยื้อและกระทบคุณภาพชีวิตทุกด้าน',
+          'การสนับสนุนช่วยให้ครอบครัวเริ่มต้นชีวิตใหม่ได้เร็วขึ้น'
+        ]
+      },
+      {
+        id:'disaster-002',
+        title:'กองทุนตั้งต้นชีวิตใหม่หลังสูญเสียบ้าน',
+        description:'ช่วยครอบครัวที่สูญเสียที่อยู่อาศัยและทรัพย์สินจากเหตุภัยพิบัติให้มีเงินตั้งต้นชีวิตใหม่',
+        image:'images/Z4.png',
+        raised:26000,
+        goal:88000,
+        story:[
+          'การสูญเสียบ้านไม่ใช่แค่การเสียสถานที่พักพิง แต่คือการเสียรากฐานของความมั่นคงในชีวิตไปพร้อมกัน',
+          'หลังจากนั้น ทุกอย่างต้องเริ่มต้นใหม่ตั้งแต่ศูนย์ ทั้งของใช้ รายได้ และความรู้สึกปลอดภัย',
+          'กองทุนนี้จึงเป็นต้นทุนของการลุกขึ้นยืนอีกครั้งในวันที่ครอบครัวแทบไม่เหลือแรง',
+          'เมื่อมีคนช่วยวางก้อนแรกของการเริ่มต้นใหม่ ครอบครัวจะมีโอกาสเดินหน้าต่อได้อย่างไม่โดดเดี่ยว'
+        ],
+        timeline:[
+          'ครอบครัวต้องเผชิญผลกระทบจากการสูญเสียบ้านและทรัพย์สินพร้อมกัน',
+          'การเริ่มต้นใหม่ต้องอาศัยต้นทุนที่ครอบครัวไม่มีอยู่เดิม',
+          'การสนับสนุนช่วยลดภาระและเปิดทางให้ครอบครัวฟื้นตัวได้จริง'
+        ]
+      },
+      {
+        id:'disaster-003',
+        title:'ช่วยผู้ประสบเหตุเฉียบพลันไร้ที่พัก',
+        description:'จัดหาที่พักชั่วคราว อาหาร และของใช้เบื้องต้นให้ครอบครัวที่เพิ่งประสบเหตุร้ายแรง',
+        image:'images/Z4.png',
+        raised:31000,
+        goal:76000,
+        story:[
+          'ในช่วงแรกหลังเกิดเหตุ สิ่งที่ผู้ประสบภัยต้องการอาจไม่ซับซ้อนเลย แค่ที่พักที่ปลอดภัย อาหาร และความมั่นใจว่าจะไม่ถูกทิ้งไว้ลำพัง',
+          'แต่นั่นกลับเป็นสิ่งที่พวกเขาเข้าถึงได้ยากที่สุดในช่วงเวลาที่วุ่นวายและสับสน',
+          'การช่วยเหลือเคสนี้จึงเป็นการดูแลจุดเปราะบางที่สุดของชีวิตในภาวะฉุกเฉิน',
+          'เพียงได้พักในที่ปลอดภัยและมีของจำเป็นเบื้องต้น ก็อาจเป็นจุดเริ่มต้นของการฟื้นใจที่สำคัญมากแล้ว'
+        ],
+        timeline:[
+          'ครอบครัวเพิ่งประสบเหตุและไม่มีที่พักปลอดภัยในระยะสั้น',
+          'ความต้องการพื้นฐานต้องได้รับการตอบสนองอย่างเร่งด่วนก่อนเริ่มฟื้นฟูระยะต่อไป',
+          'การสนับสนุนช่วยลดความเสี่ยงในช่วงวิกฤตแรกและช่วยประคองชีวิตทันที'
+        ]
+      },
+      {
+        id:'disaster-004',
+        title:'ฟื้นฟูบ้านและอุปกรณ์จำเป็นหลังวิกฤต',
+        description:'ช่วยค่าใช้จ่ายด้านของใช้จำเป็น เฟอร์นิเจอร์ และเครื่องนอนให้กลับมาใช้ชีวิตได้ปกติ',
+        image:'images/Z4.png',
+        raised:34000,
+        goal:96000,
+        story:[
+          'เมื่อเหตุร้ายผ่านไป สิ่งที่คนจำนวนมากต้องเผชิญต่อคือบ้านที่ยังไม่พร้อมให้ใช้ชีวิต และความว่างเปล่าจากของใช้ที่หายไป',
+          'การนอนอย่างอบอุ่น การมีของใช้จำเป็น หรือเฟอร์นิเจอร์พื้นฐาน คือสิ่งธรรมดาที่กลับกลายเป็นความฝันหลังวิกฤต',
+          'เคสนี้จึงเป็นการช่วยให้ชีวิตกลับมามีความเป็นบ้านและความปกติอีกครั้ง',
+          'เมื่อความปกติค่อย ๆ กลับมา ความหวังของคนในบ้านก็จะกลับมาตามไปด้วย'
+        ],
+        timeline:[
+          'ครอบครัวยังขาดของใช้จำเป็นที่ส่งผลต่อการกลับมาใช้ชีวิตประจำวัน',
+          'หลังวิกฤต การฟื้นตัวต้องมีทั้งพื้นที่อยู่อาศัยและอุปกรณ์พื้นฐาน',
+          'การสนับสนุนช่วยให้ครอบครัวปรับตัวและฟื้นฟูได้รวดเร็วขึ้น'
+        ]
+      },
+      {
+        id:'disaster-005',
+        title:'กองทุนช่วยเหลือครอบครัวสูญเสียรายได้',
+        description:'ระดมทุนช่วยครอบครัวที่เสียรายได้หลักจากเหตุฉุกเฉินและยังไม่มีทางตั้งหลักในระยะสั้น',
+        image:'images/Z4.png',
+        raised:29000,
+        goal:84000,
+        story:[
+          'เมื่อวิกฤตพรากรายได้หลักของครอบครัวไป ปัญหาไม่ได้หยุดอยู่ที่เหตุการณ์วันนั้น แต่ลามไปถึงค่าใช้จ่ายทุกวันหลังจากนั้น',
+          'หลายบ้านจึงไม่ได้ขาดแค่เงิน แต่ขาดความแน่นอนในชีวิตทั้งหมด',
+          'กองทุนนี้มีไว้เพื่อช่วยประคองไม่ให้ครอบครัวล้มซ้ำจากผลกระทบทางเศรษฐกิจที่ตามมา',
+          'และในช่วงเวลาที่ทุกอย่างสั่นคลอน การได้รับแรงหนุนเพียงเล็กน้อย ก็อาจเพียงพอให้ครอบครัวตั้งหลักได้อีกครั้ง'
+        ],
+        timeline:[
+          'หัวหน้าครอบครัวบางรายสูญเสียโอกาสทำงานหรือรายได้หลักหลังเกิดเหตุ',
+          'หากไม่มีทุนประคองรายได้ ครอบครัวจะยิ่งเปราะบางในทุกด้าน',
+          'การสนับสนุนช่วยลดแรงกดดันทางเศรษฐกิจและเปิดทางให้กลับมาตั้งหลักได้'
+        ]
+      },
+      {
+        id:'disaster-006',
+        title:'ฟื้นฟูคุณภาพชีวิตผู้ประสบภัยระยะยาว',
+        description:'ช่วยเหลือระยะต่อเนื่องเพื่อให้ครอบครัวกลับมาดำเนินชีวิต เรียน ทำงาน และอยู่ร่วมกันได้มั่นคงขึ้น',
+        image:'images/Z4.png',
+        raised:37000,
+        goal:102000,
+        story:[
+          'การฟื้นตัวที่แท้จริงต้องใช้เวลามากกว่าช่วงข่าวหน้าหนึ่ง และมากกว่าความช่วยเหลือฉุกเฉินเพียงครั้งเดียว',
+          'ครอบครัวจำนวนมากยังต้องใช้เวลาเยียวยาทั้งเรื่องที่อยู่อาศัย รายได้ และสภาพจิตใจ',
+          'เคสนี้จึงออกแบบมาเพื่อช่วยฟื้นคุณภาพชีวิตระยะยาว ให้ผู้ประสบภัยไม่ถูกทิ้งไว้กลางทางหลังความสนใจของสังคมลดลง',
+          'ทุกการสนับสนุนจึงมีความหมายในฐานะคำยืนยันว่า การฟื้นตัวของเขายังสำคัญเสมอ'
+        ],
+        timeline:[
+          'แม้ผ่านระยะฉุกเฉินแล้ว แต่หลายครอบครัวยังไม่สามารถกลับสู่ความมั่นคงได้',
+          'การฟื้นตัวระยะยาวต้องใช้เวลาและทรัพยากรที่มากกว่าการช่วยเหลือเฉพาะหน้า',
+          'การสนับสนุนช่วยเพิ่มโอกาสให้ครอบครัวกลับมาดำเนินชีวิตอย่างมั่นคงในระยะยาว'
+        ]
+      }
+    ]
+  },
+
+  orphan: {
+    eyebrow:'โครงการเด็กกำพร้า',
+    image:'images/Z3.png',
+    sideTitle:'เรื่องราวของเด็กที่ยังควรได้รับโอกาส',
+    sideText:'ทุกเคสสะท้อนว่าการเติบโตอย่างปลอดภัยและมีคุณภาพไม่ควรเป็นเรื่องไกลเกินเอื้อมสำหรับเด็กกำพร้า',
+    cases:[
+      {
+        id:'orphan-001',
+        title:'ทุนดูแลเด็กกำพร้ารายเดือน',
+        description:'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น',
+        image:'images/Z3.png',
+        raised:26000,
+        goal:70000,
+        story:[
+          'เด็กกำพร้าหลายคนไม่ได้ขาดแค่คนดูแลหลัก แต่ขาดความมั่นคงพื้นฐานในชีวิตประจำวันด้วย',
+          'ค่าอาหาร ของใช้ และค่าใช้จ่ายเล็ก ๆ ที่ผู้ใหญ่ส่วนใหญ่อาจมองข้าม กลับเป็นภาระที่หนักมากสำหรับบ้านที่ต้องดูแลเด็กหลายคน',
+          'การสนับสนุนเคสนี้จึงช่วยค้ำจุนชีวิตประจำวันให้เด็กมีสภาพแวดล้อมที่มั่นคงขึ้น',
+          'เมื่อพื้นฐานชีวิตได้รับการดูแล เด็กก็จะมีพื้นที่ในการเติบโต เรียนรู้ และฝันต่อเหมือนเด็กคนอื่น ๆ'
+        ],
+        timeline:[
+          'เด็กกำพร้าหลายคนอยู่ในการดูแลของผู้สูงอายุที่มีรายได้จำกัด',
+          'ค่าอาหารและของใช้จำเป็นคือภาระพื้นฐานที่ส่งผลต่อคุณภาพชีวิตโดยตรง',
+          'การสนับสนุนช่วยให้เด็กมีชีวิตประจำวันที่มั่นคงและได้รับการดูแลต่อเนื่อง'
+        ]
+      },
+      {
+        id:'orphan-002',
+        title:'อุปกรณ์การเรียนเด็กกำพร้า',
+        description:'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน',
+        image:'images/Z3.png',
+        raised:14000,
+        goal:42000,
+        story:[
+          'การไปโรงเรียนพร้อมอุปกรณ์ครบคือจุดเริ่มต้นเล็ก ๆ ที่สร้างความมั่นใจอย่างมากให้เด็กกำพร้า',
+          'เมื่อไม่มีชุด หนังสือ หรือกระเป๋า เด็กอาจรู้สึกว่าตัวเองด้อยกว่าเพื่อนตั้งแต่ก่อนเริ่มเรียน',
+          'การช่วยเหลือนี้จึงไม่ใช่แค่การซื้อของ แต่เป็นการมอบศักดิ์ศรีและความพร้อมในการเรียนรู้',
+          'เมื่อเด็กพร้อม เขาจะกล้าเรียน กล้าฝัน และกล้าเติบโตขึ้นอย่างมั่นใจ'
+        ],
+        timeline:[
+          'เด็กกำพร้าหลายคนยังขาดอุปกรณ์การเรียนที่จำเป็นก่อนเปิดเทอม',
+          'การขาดอุปกรณ์พื้นฐานทำให้โอกาสทางการศึกษาลดลงอย่างมีนัยสำคัญ',
+          'การสนับสนุนช่วยให้เด็กพร้อมเรียนและมีความมั่นใจมากขึ้น'
+        ]
+      },
+      {
+        id:'orphan-003',
+        title:'กองทุนอาหารและนมสำหรับเด็กกำพร้า',
+        description:'ช่วยค่าอาหาร นม และของใช้ประจำวันให้เด็กกำพร้าที่อยู่ในความดูแลของผู้สูงอายุ',
+        image:'images/Z3.png',
+        raised:18000,
+        goal:50000,
+        story:[
+          'โภชนาการคือรากฐานของการเติบโต แต่สำหรับเด็กกำพร้าบางคน มันยังเป็นสิ่งที่ขาดอย่างเงียบ ๆ ทุกวัน',
+          'ผู้ดูแลที่เป็นผู้สูงอายุอาจมีหัวใจที่พร้อมให้ แต่กำลังทรัพย์กลับไม่พอสำหรับค่าอาหารและนมที่เด็กควรได้รับ',
+          'เคสนี้จึงช่วยในสิ่งพื้นฐานที่สุด ที่มีผลโดยตรงต่อพัฒนาการและสุขภาพของเด็ก',
+          'เมื่อเด็กได้รับอาหารที่ดี เขาจะมีพลังสำหรับการเรียนรู้ การเล่น และการเติบโตอย่างสมวัย'
+        ],
+        timeline:[
+          'เด็กบางคนขาดสารอาหารและไม่ได้รับการดูแลด้านโภชนาการอย่างเพียงพอ',
+          'ค่าอาหารและนมเป็นภาระสำคัญต่อครัวเรือนผู้ดูแลที่มีรายได้จำกัด',
+          'การสนับสนุนช่วยให้เด็กได้รับโภชนาการที่ดีและมีพัฒนาการเหมาะสมยิ่งขึ้น'
+        ]
+      },
+      {
+        id:'orphan-004',
+        title:'ค่ารักษาและค่ายาเด็กกำพร้าป่วยเรื้อรัง',
+        description:'ระดมทุนเพื่อช่วยค่ารักษา ค่ายา และค่าเดินทางไปโรงพยาบาลของเด็กกำพร้าที่ป่วยต่อเนื่อง',
+        image:'images/Z3.png',
+        raised:22000,
+        goal:47000,
+        story:[
+          'เด็กที่ป่วยเรื้อรังต้องการการรักษาต่อเนื่อง แต่สำหรับครอบครัวผู้ดูแลที่มีรายได้น้อย นั่นคือภาระที่หนักมาก',
+          'เมื่อค่าใช้จ่ายในการรักษาสูงขึ้น เด็กอาจเสี่ยงถูกเลื่อนการรักษาหรือหยุดยาโดยไม่ตั้งใจ',
+          'การช่วยเหลือเคสนี้จึงช่วยให้สุขภาพของเด็กไม่ต้องสะดุดเพียงเพราะฐานะทางการเงิน',
+          'ทุกการสนับสนุนคือการรักษาโอกาสให้เด็กได้เติบโตต่ออย่างปลอดภัย'
+        ],
+        timeline:[
+          'เด็กกำพร้าบางรายมีภาวะป่วยเรื้อรังและต้องรักษาต่อเนื่อง',
+          'การขาดงบประมาณในการรักษาอาจกระทบต่อชีวิตและพัฒนาการของเด็ก',
+          'การสนับสนุนช่วยให้เด็กเข้าถึงการรักษาได้ต่อเนื่องและปลอดภัยขึ้น'
+        ]
+      },
+      {
+        id:'orphan-005',
+        title:'ทุนช่วยค่าเดินทางไปโรงเรียนเด็กกำพร้า',
+        description:'ช่วยค่าเดินทางและค่าใช้จ่ายพื้นฐานในการเรียนให้เด็กกำพร้าที่อยู่ไกลโรงเรียน',
+        image:'images/Z3.png',
+        raised:17000,
+        goal:46000,
+        story:[
+          'แม้เด็กจะอยากไปโรงเรียน แต่เส้นทางที่ไกลและค่าเดินทางที่สะสมทุกวันอาจกลายเป็นอุปสรรคใหญ่เกินรับไหว',
+          'ความห่างไกลทำให้การเรียนไม่ใช่แค่เรื่องความตั้งใจ แต่เป็นเรื่องต้นทุนที่ครอบครัวต้องแบกทุกวัน',
+          'เคสนี้จึงช่วยเติมเต็มในส่วนที่เล็กแต่สำคัญมาก นั่นคือค่าเดินทางเพื่อไม่ให้เด็กหลุดจากโอกาสทางการศึกษา',
+          'เมื่อการเดินทางไม่ใช่ภาระ เด็กก็จะมีโอกาสไปโรงเรียนได้สม่ำเสมอและเรียนได้เต็มที่'
+        ],
+        timeline:[
+          'ระยะทางไกลทำให้เด็กบางคนเสี่ยงขาดเรียนอย่างต่อเนื่อง',
+          'ค่าเดินทางสะสมเป็นอุปสรรคต่อโอกาสทางการศึกษาของเด็ก',
+          'การสนับสนุนช่วยให้เด็กสามารถไปโรงเรียนได้สม่ำเสมอมากขึ้น'
+        ]
+      },
+      {
+        id:'orphan-006',
+        title:'ทุนเครื่องใช้จำเป็นสำหรับเด็กกำพร้า',
+        description:'สนับสนุนเสื้อผ้า ชุดนักเรียน รองเท้า และของใช้ส่วนตัวเพื่อคุณภาพชีวิตที่ดีขึ้น',
+        image:'images/Z3.png',
+        raised:19000,
+        goal:52000,
+        story:[
+          'ของใช้พื้นฐานอย่างเสื้อผ้า รองเท้า หรือของใช้ส่วนตัว อาจเป็นสิ่งธรรมดาสำหรับหลายคน แต่ไม่ใช่สำหรับเด็กกำพร้าทุกคน',
+          'สิ่งของเหล่านี้คือสิ่งที่ช่วยให้เด็กใช้ชีวิตประจำวันได้อย่างมั่นใจและมีศักดิ์ศรี',
+          'เคสนี้จึงเน้นเติมเต็มในจุดเล็ก ๆ ที่มีผลต่อความรู้สึกและการเติบโตของเด็กอย่างมาก',
+          'เมื่อเด็กไม่ต้องกังวลกับสิ่งพื้นฐาน เขาจะมีพลังไปโฟกัสกับการเรียนรู้และการเติบโตมากขึ้น'
+        ],
+        timeline:[
+          'เด็กจำนวนหนึ่งยังขาดเสื้อผ้าและของใช้ส่วนตัวที่จำเป็นต่อชีวิตประจำวัน',
+          'เครื่องใช้พื้นฐานคือส่วนสำคัญของคุณภาพชีวิตและศักดิ์ศรีของเด็ก',
+          'การสนับสนุนช่วยให้เด็กมีชีวิตประจำวันที่ดีขึ้นและมีความมั่นใจมากขึ้น'
+        ]
+      }
+    ]
+  },
+
+  livelihood: {
+    eyebrow:'โครงการสร้างงานสร้างอาชีพ',
+    image:'images/Z6.png',
+    sideTitle:'เรื่องราวของการลุกขึ้นสร้างรายได้',
+    sideText:'ทุกเคสในโครงการนี้มุ่งเปลี่ยนความช่วยเหลือระยะสั้นให้กลายเป็นรายได้ระยะยาวและศักดิ์ศรีในการพึ่งพาตนเอง',
+    cases:[
+      {
+        id:'livelihood-001',
+        title:'ทุนตั้งต้นร้านน้ำชาชุมชน',
+        description:'ช่วยทุนเริ่มต้นสำหรับอุปกรณ์และวัตถุดิบ เพื่อให้ผู้ดูแลครอบครัวได้เริ่มต้นขายน้ำชาและของว่างในชุมชน',
+        image:'images/Z6.png',
+        raised:22000,
+        goal:55000,
+        story:[
+          'เจ้าของเคสมีแรง มีความตั้งใจ และมีทักษะเบื้องต้นอยู่แล้ว สิ่งที่ยังขาดคือทุนก้อนแรกสำหรับเริ่มต้นชีวิตใหม่ด้วยอาชีพสุจริต',
+          'ร้านน้ำชาเล็ก ๆ ในชุมชนอาจดูเป็นธุรกิจธรรมดา แต่สำหรับครอบครัวหนึ่ง มันอาจหมายถึงรายได้หลักที่ช่วยให้ลูกได้กินอิ่มและเรียนต่อ',
+          'การสนับสนุนเคสนี้จึงไม่ใช่แค่การซื้ออุปกรณ์ แต่คือการเปิดประตูสู่รายได้ที่เกิดจากสองมือของเจ้าของเคสเอง',
+          'เมื่อร้านเริ่มเปิด รายได้เริ่มมา ความช่วยเหลือครั้งนี้จะค่อย ๆ เปลี่ยนจากการประคองชีวิต เป็นพลังในการยืนด้วยตัวเอง'
+        ],
+        timeline:[
+          'เจ้าของเคสมีทักษะและความตั้งใจ แต่ยังขาดทุนเริ่มต้นสำหรับเปิดร้านเล็ก ๆ ในชุมชน',
+          'การมีรายได้ประจำช่วยให้ครอบครัวพ้นจากการพึ่งพาความช่วยเหลือระยะสั้น',
+          'การสนับสนุนช่วยให้ครอบครัวมีรายได้ต่อเนื่องและพึ่งพาตนเองได้มากขึ้น'
+        ]
+      },
+      {
+        id:'livelihood-002',
+        title:'อุปกรณ์รถเข็นขายอาหาร',
+        description:'สนับสนุนรถเข็น เตาแก๊ส และอุปกรณ์ขายอาหารให้แม่เลี้ยงเดี่ยวที่ต้องการสร้างรายได้เลี้ยงลูก',
+        image:'images/Z6.png',
+        raised:30000,
+        goal:68000,
+        story:[
+          'แม่เลี้ยงเดี่ยวหลายคนไม่ได้ขาดความขยัน แต่ขาดเพียงเครื่องมือที่จะเปลี่ยนความขยันนั้นให้กลายเป็นรายได้จริง',
+          'รถเข็นขายอาหารคือโอกาสที่จับต้องได้สำหรับการเริ่มต้นงานที่สามารถควบคุมเวลาและดูแลลูกไปพร้อมกัน',
+          'การช่วยเหลือเคสนี้จึงมีความหมายมากกว่าการให้ทรัพย์สิน แต่คือการมอบอิสระในการทำมาหากินอย่างมีศักดิ์ศรี',
+          'เมื่อเธอมีอุปกรณ์ครบมือ วันข้างหน้าของลูกก็จะไม่ต้องฝากไว้กับความไม่แน่นอนเพียงอย่างเดียว'
+        ],
+        timeline:[
+          'แม่เลี้ยงเดี่ยวมีแรงทำงานแต่ขาดอุปกรณ์พื้นฐานสำหรับเริ่มขายอาหาร',
+          'การสร้างรายได้ด้วยตนเองจะช่วยลดภาระครอบครัวและเปิดทางสู่ความมั่นคง',
+          'การสนับสนุนช่วยให้ผู้ดูแลสามารถเริ่มต้นอาชีพและสร้างรายได้ประจำได้เร็วขึ้น'
+        ]
+      },
+      {
+        id:'livelihood-003',
+        title:'เครื่องมือทำขนมพื้นบ้านขาย',
+        description:'ช่วยซื้ออุปกรณ์ทำขนม เตาอบ และภาชนะสำหรับครอบครัวที่ต้องการสร้างรายได้จากการขายขนมพื้นบ้าน',
+        image:'images/Z6.png',
+        raised:18000,
+        goal:50000,
+        story:[
+          'ทักษะของคนในบ้านมีอยู่แล้ว แต่สิ่งที่ขาดคือเครื่องมือที่จะเปลี่ยนทักษะนั้นให้กลายเป็นรายได้จริง',
+          'การทำขนมพื้นบ้านเป็นทั้งภูมิปัญญาและโอกาสทางเศรษฐกิจ หากมีอุปกรณ์ครบก็สามารถต่อยอดได้อย่างมั่นคง',
+          'เคสนี้จึงช่วยเชื่อมระหว่างความสามารถเดิมของครอบครัวกับโอกาสใหม่ในการสร้างรายได้',
+          'เมื่อทักษะที่มีอยู่ได้เริ่มสร้างผลตอบแทน ครอบครัวจะค่อย ๆ ก้าวออกจากวงจรความขาดแคลนได้อย่างยั่งยืน'
+        ],
+        timeline:[
+          'ครอบครัวมีทักษะทำขนมแต่ขาดเครื่องมือที่เพียงพอสำหรับผลิตขาย',
+          'การแปลงทักษะเดิมให้กลายเป็นรายได้คือทางออกที่ยั่งยืนในระยะยาว',
+          'การสนับสนุนช่วยให้เกิดรายได้จริงจากงานฝีมือที่ถนัด'
+        ]
+      },
+      {
+        id:'livelihood-004',
+        title:'ทุนอุปกรณ์ปลูกผักเลี้ยงชีพ',
+        description:'ระดมทุนสำหรับเมล็ดพันธุ์ ปุ๋ย และอุปกรณ์พื้นฐาน เพื่อเริ่มต้นปลูกผักขายและลดรายจ่ายในครัวเรือน',
+        image:'images/Z6.png',
+        raised:16000,
+        goal:45000,
+        story:[
+          'บางครอบครัวมีที่ดินเล็ก ๆ และแรงงานในบ้าน แต่ไม่มีทุนตั้งต้นแม้แต่จะซื้อเมล็ดพันธุ์หรืออุปกรณ์พื้นฐาน',
+          'การปลูกผักจึงไม่ใช่แค่เรื่องเกษตร แต่คือการสร้างอาหารให้บ้าน และสร้างรายได้จากสิ่งที่ปลูกได้ด้วยตัวเอง',
+          'เคสนี้จึงมุ่งให้โอกาสครอบครัวได้เริ่มต้นอาชีพที่ค่อย ๆ งอกงามไปพร้อมกับพืชที่ปลูก',
+          'เมื่อเมล็ดพันธุ์เติบโต รายได้และความหวังของครอบครัวก็จะค่อย ๆ เติบโตตามไปด้วย'
+        ],
+        timeline:[
+          'ครอบครัวมีพื้นที่และแรงงาน แต่ขาดทุนเริ่มต้นสำหรับการเพาะปลูก',
+          'การปลูกผักช่วยทั้งลดรายจ่ายและสร้างรายได้เพิ่มในเวลาเดียวกัน',
+          'การสนับสนุนช่วยให้ครอบครัวมีทั้งอาหารบริโภคและโอกาสสร้างรายได้จากผลผลิต'
+        ]
+      },
+      {
+        id:'livelihood-005',
+        title:'จักรเย็บผ้าสร้างอาชีพ',
+        description:'ช่วยจัดซื้อจักรเย็บผ้าและอุปกรณ์ตัดเย็บสำหรับหญิงหม้ายที่ต้องการรับงานเย็บผ้าเพื่อหารายได้ประจำ',
+        image:'images/Z6.png',
+        raised:24000,
+        goal:60000,
+        story:[
+          'หญิงหม้ายจำนวนมากมีทักษะในมือ แต่ไม่มีเครื่องมือที่ทำให้ทักษะนั้นกลายเป็นรายได้อย่างมั่นคง',
+          'จักรเย็บผ้าหนึ่งเครื่องอาจดูเป็นของใช้ธรรมดา แต่สำหรับเจ้าของเคส มันคือประตูสู่อาชีพที่ทำได้จากบ้านและสอดคล้องกับชีวิตจริง',
+          'การสนับสนุนเคสนี้จึงเป็นการลงทุนในความสามารถที่มีอยู่แล้ว ไม่ใช่เริ่มจากศูนย์',
+          'เมื่อเธอมีงาน มีรายได้ และมีอำนาจในการดูแลชีวิตตนเอง ศักดิ์ศรีและความมั่นคงก็จะค่อย ๆ กลับคืนมา'
+        ],
+        timeline:[
+          'เจ้าของเคสมีทักษะตัดเย็บแต่ไม่มีอุปกรณ์เพียงพอสำหรับรับงานอย่างจริงจัง',
+          'การมีอุปกรณ์ครบช่วยเปลี่ยนทักษะให้เป็นรายได้ที่มั่นคงขึ้น',
+          'การสนับสนุนช่วยสร้างอาชีพที่ทำจากบ้านได้และเหมาะกับบริบทชีวิตของผู้หญิงหม้าย'
+        ]
+      },
+      {
+        id:'livelihood-006',
+        title:'ชุดอุปกรณ์ล้างรถเคลื่อนที่',
+        description:'สนับสนุนอุปกรณ์ล้างรถแบบเคลื่อนที่เพื่อให้หัวหน้าครอบครัวที่ตกงานสามารถเริ่มสร้างรายได้ได้ทันที',
+        image:'images/Z6.png',
+        raised:28000,
+        goal:65000,
+        story:[
+          'หลังจากตกงาน ความหวังของหัวหน้าครอบครัวหลายคนไม่ได้หายไป แต่โอกาสที่จะเริ่มต้นใหม่กลับหายากขึ้นทุกวัน',
+          'อุปกรณ์ล้างรถแบบเคลื่อนที่เป็นตัวอย่างของอาชีพที่ลงทุนไม่สูง เริ่มได้เร็ว และสร้างรายได้ได้จริง',
+          'เคสนี้จึงเป็นการช่วยเปลี่ยนช่วงเวลาว่างงานให้กลายเป็นช่วงเริ่มต้นของรายได้ใหม่',
+          'เมื่อเขามีเครื่องมือในมือ ความรู้สึกไร้ทางออกจะค่อย ๆ ถูกแทนที่ด้วยความมั่นใจว่า ยังมีทางไปต่อเสมอ'
+        ],
+        timeline:[
+          'หัวหน้าครอบครัวตกงานและต้องการเริ่มอาชีพที่ลงทุนไม่สูงแต่เริ่มได้เร็ว',
+          'การมีเครื่องมือพร้อมใช้งานช่วยให้สร้างรายได้ได้ทันทีโดยไม่ต้องรอโอกาสจากภายนอก',
+          'การสนับสนุนช่วยให้เจ้าของเคสเริ่มต้นงานบริการและสร้างรายได้เลี้ยงครอบครัวได้จริง'
+        ]
+      }
+    ]
+  },
+
+  rewire: {
+    eyebrow:'โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้',
+    image:'images/Z7.png',
+    sideTitle:'เรื่องราวของบ้านที่ควรปลอดภัยจากไฟฟ้า',
+    sideText:'ทุกเคสในโครงการนี้มุ่งลดความเสี่ยงไฟฟ้าลัดวงจรและอัคคีภัย เพื่อให้บ้านของผู้ยากไร้กลับมาน่าอยู่และปลอดภัยอย่างแท้จริง',
+    cases:[
+      {
+        id:'rewire-001',
+        title:'เปลี่ยนสายไฟบ้านไม้เก่าผู้สูงอายุ',
+        description:'ช่วยเปลี่ยนสายไฟเก่าและตู้ควบคุมไฟในบ้านไม้ที่เสื่อมสภาพและเสี่ยงไฟฟ้าลัดวงจร',
+        image:'images/Z7.png',
+        raised:26000,
+        goal:62000,
+        story:[
+          'บ้านไม้เก่าหลายหลังยังใช้สายไฟเดิมมานานกว่าที่ควร จนความเสี่ยงไฟฟ้าลัดวงจรกลายเป็นภัยเงียบที่ซ่อนอยู่ทุกวัน',
+          'สำหรับผู้สูงอายุที่อาศัยอยู่เพียงลำพัง การอยู่กับระบบไฟที่ไม่ปลอดภัยคือความกังวลที่ไม่มีวันพัก',
+          'การช่วยเหลือเคสนี้จึงไม่ใช่แค่การเปลี่ยนสายไฟ แต่คือการคืนความอุ่นใจให้เจ้าของบ้านได้กลับมาใช้ชีวิตโดยไม่หวาดกลัวทุกครั้งที่เปิดสวิตช์',
+          'เมื่อระบบไฟปลอดภัยขึ้น บ้านทั้งหลังจะกลับมาเป็นพื้นที่พักพิง ไม่ใช่พื้นที่เสี่ยงภัย'
+        ],
+        timeline:[
+          'บ้านไม้เก่ามีระบบไฟฟ้าที่เสื่อมสภาพและเสี่ยงเกิดอัคคีภัยได้ทุกเมื่อ',
+          'ผู้สูงอายุในบ้านไม่สามารถรับภาระค่าซ่อมแซมระบบไฟที่มีความเสี่ยงสูงได้',
+          'การสนับสนุนช่วยลดความเสี่ยงไฟไหม้และเพิ่มความปลอดภัยในการอยู่อาศัยทันที'
+        ]
+      },
+      {
+        id:'rewire-002',
+        title:'เปลี่ยนระบบไฟบ้านแม่ลูกอ่อน',
+        description:'สนับสนุนค่าวัสดุและค่าแรงสำหรับปรับปรุงระบบไฟบ้านที่มีสายไฟชำรุดและจุดเสียบไม่ปลอดภัย',
+        image:'images/Z7.png',
+        raised:18000,
+        goal:54000,
+        story:[
+          'บ้านที่มีเด็กเล็กควรเป็นพื้นที่ปลอดภัยที่สุด แต่ในบางบ้าน กลับมีสายไฟชำรุดและจุดเสียบที่พร้อมก่ออันตรายได้ทุกเวลา',
+          'แม่คนหนึ่งอาจเผชิญความกลัวทุกวันเมื่อเห็นลูกเติบโตท่ามกลางบ้านที่มีความเสี่ยงซ่อนอยู่',
+          'การช่วยเหลือเคสนี้จึงช่วยเปลี่ยนความกังวลรายวันให้กลายเป็นความมั่นใจว่าลูกจะปลอดภัยในบ้านของตัวเอง',
+          'เมื่อบ้านปลอดภัยขึ้น ชีวิตของแม่และลูกก็จะมีพื้นที่สำหรับการเติบโตอย่างสบายใจมากขึ้น'
+        ],
+        timeline:[
+          'บ้านมีจุดเสียบและสายไฟชำรุดหลายจุดซึ่งกระทบต่อความปลอดภัยของเด็กเล็ก',
+          'ครอบครัวมีเด็กเล็กที่อยู่ในสภาพแวดล้อมเสี่ยงจากระบบไฟไม่ปลอดภัย',
+          'การสนับสนุนช่วยให้ครอบครัวโดยเฉพาะเด็กเล็กมีสภาพแวดล้อมที่ปลอดภัยขึ้น'
+        ]
+      },
+      {
+        id:'rewire-003',
+        title:'แก้ไฟรั่วบ้านผู้ป่วยติดเตียง',
+        description:'ช่วยเปลี่ยนสายไฟและอุปกรณ์ไฟฟ้าจุดเสี่ยงในบ้านผู้ป่วยติดเตียงเพื่อป้องกันอุบัติเหตุร้ายแรง',
+        image:'images/Z7.png',
+        raised:32000,
+        goal:70000,
+        story:[
+          'เมื่อในบ้านมีผู้ป่วยติดเตียง ความปลอดภัยของระบบไฟยิ่งมีความสำคัญมากกว่าปกติ เพราะอุบัติเหตุเพียงครั้งเดียวอาจสร้างผลร้ายแรงเกินกว่าที่จะแก้ไขได้',
+          'ไฟรั่วหรือสายไฟชำรุดทำให้ทั้งผู้ป่วยและผู้ดูแลต้องอยู่กับความเสี่ยงในทุกกิจกรรมประจำวัน',
+          'การช่วยเหลือนี้จึงเป็นการลดความเสี่ยงที่มองไม่เห็น แต่มีผลโดยตรงต่อชีวิตของคนทั้งบ้าน',
+          'เมื่อบ้านปลอดภัยขึ้น การดูแลผู้ป่วยก็จะเกิดขึ้นได้อย่างมั่นใจและอ่อนโยนมากกว่าเดิม'
+        ],
+        timeline:[
+          'บ้านของผู้ป่วยติดเตียงมีปัญหาไฟรั่วและความเสี่ยงไฟฟ้าช็อต',
+          'ภาวะของผู้ป่วยทำให้การเกิดอุบัติเหตุทางไฟฟ้ามีความรุนแรงกว่าปกติ',
+          'การสนับสนุนช่วยลดความเสี่ยงอันตรายต่อผู้ป่วยและผู้ดูแลอย่างมีนัยสำคัญ'
+        ]
+      },
+      {
+        id:'rewire-004',
+        title:'เปลี่ยนสายเมนไฟบ้านชำรุด',
+        description:'ระดมทุนเปลี่ยนสายเมนไฟ สวิตช์ และเบรกเกอร์ในบ้านที่ใช้งานมานานและมีสภาพเสื่อมโทรม',
+        image:'images/Z7.png',
+        raised:21000,
+        goal:58000,
+        story:[
+          'หลายบ้านใช้ระบบไฟฟ้าเดิมมานานหลายปีโดยไม่เคยมีโอกาสซ่อมแซมหรือเปลี่ยนใหม่ ทำให้ความเสี่ยงสะสมโดยไม่รู้ตัว',
+          'สายเมน สวิตช์ และเบรกเกอร์อาจเป็นเพียงอุปกรณ์เล็ก ๆ แต่เมื่อเสื่อมสภาพ มันสามารถนำไปสู่อันตรายครั้งใหญ่ได้',
+          'เคสนี้จึงเป็นการแก้ปัญหาที่ต้นเหตุ ไม่รอให้เกิดเหตุร้ายก่อนแล้วค่อยตามแก้',
+          'เมื่อระบบไฟฟ้าหลักกลับมาทำงานได้อย่างปลอดภัย ชีวิตประจำวันของคนในบ้านก็จะมั่นคงขึ้นอย่างชัดเจน'
+        ],
+        timeline:[
+          'ระบบไฟหลักของบ้านอยู่ในสภาพเสื่อมโทรมและมีการใช้งานต่อเนื่องมาเป็นเวลานาน',
+          'หากไม่เปลี่ยนสายเมนและอุปกรณ์ป้องกัน ความเสี่ยงไฟลัดวงจรจะเพิ่มขึ้นทุกวัน',
+          'การสนับสนุนช่วยให้บ้านมีระบบไฟฟ้าที่ปลอดภัยและได้มาตรฐานมากขึ้น'
+        ]
+      },
+      {
+        id:'rewire-005',
+        title:'ปรับปรุงไฟส่องสว่างในบ้านผู้ยากไร้',
+        description:'ช่วยติดตั้งไฟส่องสว่างและเดินสายไฟใหม่ภายในบ้านเพื่อให้ผู้สูงอายุและเด็กอยู่อาศัยได้ปลอดภัยขึ้น',
+        image:'images/Z7.png',
+        raised:17000,
+        goal:50000,
+        story:[
+          'บ้านที่มืดและสายไฟเดินอย่างไม่เหมาะสมไม่เพียงไม่น่าอยู่ แต่ยังเต็มไปด้วยความเสี่ยงต่อการหกล้มและอุบัติเหตุ',
+          'สำหรับบ้านที่มีผู้สูงอายุหรือเด็กเล็ก ความสว่างและความปลอดภัยของระบบไฟคือเรื่องจำเป็น ไม่ใช่ความฟุ่มเฟือย',
+          'เคสนี้จึงช่วยเติมเต็มสิ่งเล็ก ๆ ที่มีผลใหญ่ต่อคุณภาพชีวิตและความปลอดภัยในทุกวัน',
+          'เมื่อบ้านสว่างและปลอดภัยขึ้น การใช้ชีวิตประจำวันก็จะง่ายขึ้น อบอุ่นขึ้น และมั่นใจขึ้น'
+        ],
+        timeline:[
+          'ภายในบ้านมืดและมีสายไฟเดินไม่เหมาะสม ส่งผลต่อความปลอดภัยของผู้พักอาศัย',
+          'การส่องสว่างไม่เพียงพอเพิ่มความเสี่ยงหกล้มและอุบัติเหตุในบ้าน',
+          'การสนับสนุนช่วยให้บ้านสว่าง ปลอดภัย และเหมาะกับผู้สูงอายุและเด็กมากขึ้น'
+        ]
+      },
+      {
+        id:'rewire-006',
+        title:'เปลี่ยนสายไฟทั้งหลังบ้านเสี่ยงอันตราย',
+        description:'ช่วยเปลี่ยนสายไฟทั้งหลังในบ้านที่มีการต่อพ่วงไม่ปลอดภัยและมีความเสี่ยงเกิดอัคคีภัยได้ทุกเวลา',
+        image:'images/Z7.png',
+        raised:34000,
+        goal:78000,
+        story:[
+          'ในบางบ้าน ระบบไฟไม่ใช่แค่เสื่อม แต่เต็มไปด้วยการต่อพ่วงชั่วคราวที่สะสมจนกลายเป็นความเสี่ยงทั้งหลัง',
+          'เจ้าของบ้านอาจอยู่กับความกลัวแบบเงียบ ๆ ทุกครั้งที่ใช้ไฟ เพราะรู้ดีว่าบ้านของตนไม่ปลอดภัย',
+          'การช่วยเหลือเคสนี้จึงเป็นการป้องกันหายนะก่อนจะเกิดขึ้นจริง และคืนความมั่นคงพื้นฐานให้ครอบครัว',
+          'เมื่อสายไฟทั้งหลังได้รับการเปลี่ยนใหม่ ความกลัวที่ฝังอยู่ในชีวิตประจำวันก็จะค่อย ๆ คลี่คลายลง'
+        ],
+        timeline:[
+          'บ้านมีการต่อพ่วงไฟหลายจุดและสายไฟชำรุดสะสมเป็นเวลานาน',
+          'ระบบไฟไม่ปลอดภัยทั้งหลังทำให้เกิดความเสี่ยงไฟไหม้รุนแรงได้ตลอดเวลา',
+          'การสนับสนุนช่วยคืนความปลอดภัยพื้นฐานให้บ้านและลดโอกาสเกิดอัคคีภัยอย่างชัดเจน'
+        ]
+      }
+    ]
   }
-
-  return { ...cfg, cases: expanded.slice(0, 6) };
-}
+};
 
 function fmt(n){return '฿ ' + Number(n || 0).toLocaleString('th-TH');}
 function percent(raised, goal){return Math.max(0, Math.min(100, Math.round((raised / Math.max(goal,1)) * 100)));}
-function buildNarrative(item, project) {
-  const location = item.location || 'พื้นที่โครงการ';
-  const beneficiary = item.beneficiary || 'กลุ่มเป้าหมายของโครงการ';
-  const badge = item.badge || project.title;
-  return {
-    story: [
-      `${item.description} เคสนี้สะท้อนความจำเป็นที่เกิดขึ้นจริงใน${location} และต้องการแรงสนับสนุนจากผู้ให้เพื่อขับเคลื่อนต่อ`,
-      `ผู้รับประโยชน์หลักคือ ${beneficiary} ซึ่งยังต้องการทั้งทรัพยากรพื้นฐาน เวลา และการติดตามอย่างต่อเนื่องจากทีมภาคสนาม`,
-      `ทุกยอดสนับสนุนที่ส่งเข้ามาจะช่วยให้แผนช่วยเหลือในเคส “${item.title}” เดินหน้าได้ไวขึ้นและลดความกดดันของครอบครัว`,
-      `เมื่อการช่วยเหลือเกิดขึ้นทันเวลา เคสกลุ่ม “${badge}” นี้จะเปลี่ยนจากสถานการณ์เฉพาะหน้า ไปสู่การฟื้นตัวที่มั่นคงมากขึ้น`
-    ],
-    timeline: [
-      `ปัญหาหลักเริ่มต้นจากข้อจำกัดด้านทรัพยากรและความจำเป็นเร่งด่วนในพื้นที่${location}`,
-      `ขณะนี้ทีมกำลังเร่งประสานการช่วยเหลือให้ทันช่วงเวลา${item.urgent || 'ที่กำหนด'} เพื่อไม่ให้ผลกระทบขยายตัว`,
-      `การสนับสนุนครั้งนี้จะช่วยให้ผู้รับประโยชน์ ${beneficiary} ได้รับความช่วยเหลืออย่างเป็นรูปธรรมและต่อเนื่อง`
-    ]
-  };
-}
 
 const params = new URLSearchParams(location.search);
 const projectSlug = params.get('project') || 'education';
 const caseId = params.get('case') || '';
-const project = ensureSixCases(PROJECT_CONFIG[projectSlug] || PROJECT_CONFIG.education, projectSlug);
+const project = PROJECTS[projectSlug] || PROJECTS.education;
 const currentCase = project.cases.find(c => c.id === caseId) || project.cases[0];
 const pct = percent(currentCase.raised, currentCase.goal);
-const narrative = buildNarrative(currentCase, project);
 
 document.title = `${currentCase.title} | อ่านเรื่องราวเคส`;
 document.getElementById('backToDetail').href = `Donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
@@ -537,20 +1381,23 @@ document.getElementById('goDonateBtn').onclick = () => location.href = `donate-f
 document.getElementById('hero').style.backgroundImage = `url("${currentCase.image}")`;
 document.getElementById('heroSideImg').style.backgroundImage = `url("${currentCase.image}")`;
 document.getElementById('sidebarHero').style.backgroundImage = `url("${currentCase.image}")`;
+
 document.getElementById('heroEyebrow').textContent = project.eyebrow;
 document.getElementById('heroTitle').textContent = currentCase.title;
 document.getElementById('heroDesc').textContent = currentCase.description;
-document.getElementById('heroSideTitle').textContent = 'เรื่องราวจากภาคสนาม';
-document.getElementById('heroSideText').textContent = 'หน้านี้ใช้เล่าเรื่องราวเคสให้ลึกขึ้น เพื่อให้ผู้สนับสนุนเห็นที่มา ความจำเป็น และผลกระทบของการให้';
+document.getElementById('heroSideTitle').textContent = project.sideTitle || 'เรื่องราวจากภาคสนาม';
+document.getElementById('heroSideText').textContent = project.sideText || 'หน้านี้ใช้เล่าเรื่องราวเคสให้ลึกขึ้น เพื่อให้ผู้สนับสนุนเห็นที่มา ความจำเป็น และผลกระทบของการให้';
+
 document.getElementById('articleTitle').textContent = currentCase.title;
-document.getElementById('articleP1').textContent = narrative.story[0] || '-';
-document.getElementById('articleP2').textContent = narrative.story[1] || '-';
+document.getElementById('articleP1').textContent = currentCase.story?.[0] || '-';
+document.getElementById('articleP2').textContent = currentCase.story?.[1] || '-';
 document.getElementById('articleQuote').textContent = 'ทุกการช่วยเหลือไม่ใช่แค่การแก้ปัญหาเฉพาะหน้า แต่คือการคืนศักดิ์ศรีและโอกาสในการเริ่มต้นใหม่';
-document.getElementById('articleP3').textContent = narrative.story[2] || '-';
-document.getElementById('articleP4').textContent = narrative.story[3] || currentCase.description;
-document.getElementById('timeline1').textContent = narrative.timeline[0] || '-';
-document.getElementById('timeline2').textContent = narrative.timeline[1] || '-';
-document.getElementById('timeline3').textContent = narrative.timeline[2] || '-';
+document.getElementById('articleP3').textContent = currentCase.story?.[2] || '-';
+document.getElementById('articleP4').textContent = currentCase.story?.[3] || currentCase.description;
+document.getElementById('timeline1').textContent = currentCase.timeline?.[0] || '-';
+document.getElementById('timeline2').textContent = currentCase.timeline?.[1] || '-';
+document.getElementById('timeline3').textContent = currentCase.timeline?.[2] || '-';
+
 document.getElementById('sidebarMini').textContent = project.eyebrow;
 document.getElementById('sidebarTitle').textContent = currentCase.title;
 document.getElementById('raisedText').textContent = fmt(currentCase.raised);
@@ -558,7 +1405,7 @@ document.getElementById('targetText').textContent = fmt(currentCase.goal);
 document.getElementById('percentText').textContent = pct + '%';
 document.getElementById('progressBar').style.width = pct + '%';
 
-document.getElementById('galleryGrid').innerHTML = [currentCase.image, project.heroImage, currentCase.image].map(src => `
+document.getElementById('galleryGrid').innerHTML = [currentCase.image, project.image, currentCase.image].map(src => `
   <div class="gallery-item"><img src="${src}" alt="${currentCase.title}"></div>
 `).join('');
 </script>

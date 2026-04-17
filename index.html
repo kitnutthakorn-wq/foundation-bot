@@ -74,6 +74,18 @@
       line-height:1;
     }
 
+    .lang-btn {
+      border:none;
+      cursor:pointer;
+      opacity:.72;
+      transition:transform .2s ease, opacity .2s ease, box-shadow .2s ease;
+    }
+    .lang-btn.active {
+      opacity:1;
+      transform:translateY(-1px);
+      box-shadow:0 8px 18px rgba(17,185,129,.22);
+    }
+
     .mainnav {
       background:#fff;
       position:sticky;
@@ -1072,8 +1084,8 @@
           <a href="#" aria-label="Facebook">f</a>
           <a href="#" aria-label="YouTube">▶</a>
           <a href="#" aria-label="Search">⌕</a>
-          <span class="lang-chip">TH</span>
-          <span class="lang-chip" style="background:#11b981;">EN</span>
+          <button type="button" class="lang-chip lang-btn active" data-lang="th">TH</button>
+          <button type="button" class="lang-chip lang-btn" data-lang="en">EN</button>
         </div>
       </div>
     </div>
@@ -1096,13 +1108,13 @@
 
         <nav aria-label="Primary Navigation" class="nav-shell">
           <ul class="menu" id="site-menu">
-            <li><a class="active" href="#"><strong>หน้าหลัก</strong><span>Home</span></a></li>
-            <li><a href="#"><strong>เกี่ยวกับเรา</strong><span>About Us</span></a></li>
-            <li><a href="#"><strong>ภารกิจของเรา</strong><span>Our Programs</span></a></li>
-            <li><a href="#request-help"><strong>ขอความช่วยเหลือ</strong><span>Request Help</span></a></li>
-            <li><a href="#track-case"><strong>ติดตามเคส</strong><span>Track a Case</span></a></li>
-            <li><a href="#donate"><strong>ร่วมสนับสนุน</strong><span>Donate</span></a></li>
-            <li><a href="#news-impact"><strong>ข่าวสารและผลงาน</strong><span>News &amp; Impact</span></a></li>
+            <li><a class="active" href="#" id="menu-home"><strong>หน้าหลัก</strong><span>Home</span></a></li>
+            <li><a href="#" id="menu-about"><strong>เกี่ยวกับเรา</strong><span>About Us</span></a></li>
+            <li><a href="#" id="menu-programs"><strong>ภารกิจของเรา</strong><span>Our Programs</span></a></li>
+            <li><a href="#request-help" id="menu-request"><strong>ขอความช่วยเหลือ</strong><span>Request Help</span></a></li>
+            <li><a href="#track-case" id="menu-track"><strong>ติดตามเคส</strong><span>Track a Case</span></a></li>
+            <li><a href="#donate" id="menu-donate"><strong>ร่วมสนับสนุน</strong><span>Donate</span></a></li>
+            <li><a href="#news-impact" id="menu-news"><strong>ข่าวสารและผลงาน</strong><span>News &amp; Impact</span></a></li>
           </ul>
         </nav>
       </div>
@@ -1125,27 +1137,27 @@
       <div class="container hero-content">
         <div class="hero-grid">
           <div class="hero-copy">
-            <div class="eyebrow">หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
-            <h2 class="hero-title">
+            <div class="eyebrow" id="i18n-eyebrow">หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+            <h2 class="hero-title" id="i18n-hero-title">
               เพราะทุกชีวิต มีคุณค่า
               <span class="accent">Every Life Matters</span>
             </h2>
 
-            <p class="hero-desc-th">
+            <p class="hero-desc-th" id="i18n-hero-desc-th">
               มูลนิธิคนช่วยฅน ทำงานเพื่อช่วยเหลือผู้ยากไร้ ผู้ประสบภัย และครอบครัว
               ที่ต้องการโอกาส ผ่านการลงมือช่วยเหลือจริงในทุกพื้นที่ที่เข้าถึงของประเทศไทย
             </p>
-            <p class="hero-desc-en">
+            <p class="hero-desc-en" id="i18n-hero-desc-en">
               We provide timely support, create opportunities,<br />
               and restore hope where it’s needed most.
             </p>
 
             <div class="hero-actions">
-              <a class="btn btn-primary" href="#donate">
+              <a class="btn btn-primary" href="#donate" id="btn-donate-main">
                 ร่วมบริจาค
                 <span class="circle">➜</span>
               </a>
-              <a class="btn btn-outline" href="#request-help">
+              <a class="btn btn-outline" href="#request-help" id="btn-request-main">
                 ขอความช่วยเหลือ
                 <span class="circle">➜</span>
               </a>
@@ -1159,32 +1171,32 @@
             <div class="stat-icon">🗂</div>
             <div>
               <div class="stat-number">1,250+</div>
-              <div class="stat-label-th">เคสที่ช่วยเหลือแล้ว</div>
-              <div class="stat-label-en">Cases Supported</div>
+              <div class="stat-label-th" id="stat1-th">เคสที่ช่วยเหลือแล้ว</div>
+              <div class="stat-label-en" id="stat1-en">Cases Supported</div>
             </div>
           </div>
           <div class="stat">
             <div class="stat-icon">📍</div>
             <div>
               <div class="stat-number">45</div>
-              <div class="stat-label-th">จังหวัดที่ให้ความช่วยเหลือ</div>
-              <div class="stat-label-en">Provinces Reached</div>
+              <div class="stat-label-th" id="stat2-th">จังหวัดที่ให้ความช่วยเหลือ</div>
+              <div class="stat-label-en" id="stat2-en">Provinces Reached</div>
             </div>
           </div>
           <div class="stat">
             <div class="stat-icon">👥</div>
             <div>
               <div class="stat-number">3,800+</div>
-              <div class="stat-label-th">ครอบครัวที่ได้รับความช่วยเหลือ</div>
-              <div class="stat-label-en">Families Helped</div>
+              <div class="stat-label-th" id="stat3-th">ครอบครัวที่ได้รับความช่วยเหลือ</div>
+              <div class="stat-label-en" id="stat3-en">Families Helped</div>
             </div>
           </div>
           <div class="stat">
             <div class="stat-icon">♡</div>
             <div>
               <div class="stat-number">200+</div>
-              <div class="stat-label-th">อาสาสมัครและเครือข่าย</div>
-              <div class="stat-label-en">Volunteers &amp; Partners</div>
+              <div class="stat-label-th" id="stat4-th">อาสาสมัครและเครือข่าย</div>
+              <div class="stat-label-en" id="stat4-en">Volunteers &amp; Partners</div>
             </div>
           </div>
         </div>
@@ -1238,8 +1250,8 @@
       <div class="container">
         <div class="section-header">
           <div>
-            <div class="section-label">ภารกิจของเรา</div>
-            <h2 class="section-title">Our Programs</h2>
+            <div class="section-label" id="section-programs-label">ภารกิจของเรา</div>
+            <h2 class="section-title" id="section-programs-title">Our Programs</h2>
           </div>
           <a class="section-link" href="#">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
         </div>
@@ -1249,8 +1261,8 @@
     <img src="./images/Q1.jpg" alt="Education Support" />
     <div class="program-body">
       <div class="program-badge">📖</div>
-      <h3 class="program-name-th">การศึกษา</h3>
-      <p class="program-name-en">Education Support</p>
+      <h3 class="program-name-th" id="prog1-th">การศึกษา</h3>
+      <p class="program-name-en" id="prog1-en">Education Support</p>
     </div>
   </article>
 
@@ -1258,8 +1270,8 @@
     <img src="./images/Q2.jpg" alt="Housing Assistance" />
     <div class="program-body">
       <div class="program-badge">🏠</div>
-      <h3 class="program-name-th">ที่อยู่อาศัย</h3>
-      <p class="program-name-en">Housing Assistance</p>
+      <h3 class="program-name-th" id="prog2-th">ที่อยู่อาศัย</h3>
+      <p class="program-name-en" id="prog2-en">Housing Assistance</p>
     </div>
   </article>
 
@@ -1267,8 +1279,8 @@
     <img src="./images/Q3.jpg" alt="Livelihood Support" />
     <div class="program-body">
       <div class="program-badge">🌿</div>
-      <h3 class="program-name-th">สร้างอาชีพ</h3>
-      <p class="program-name-en">Livelihood Support</p>
+      <h3 class="program-name-th" id="prog3-th">สร้างอาชีพ</h3>
+      <p class="program-name-en" id="prog3-en">Livelihood Support</p>
     </div>
   </article>
 
@@ -1276,8 +1288,8 @@
     <img src="./images/Q4.jpg" alt="Orphan Care" />
     <div class="program-body">
       <div class="program-badge">👨‍👩‍👧</div>
-      <h3 class="program-name-th">เด็กกำพร้า</h3>
-      <p class="program-name-en">Orphan Care</p>
+      <h3 class="program-name-th" id="prog4-th">เด็กกำพร้า</h3>
+      <p class="program-name-en" id="prog4-en">Orphan Care</p>
     </div>
   </article>
 
@@ -1285,8 +1297,8 @@
     <img src="./images/Q5.jpg" alt="Disaster Relief" />
     <div class="program-body">
       <div class="program-badge">⛑</div>
-      <h3 class="program-name-th">ภัยพิบัติ</h3>
-      <p class="program-name-en">Disaster Relief</p>
+      <h3 class="program-name-th" id="prog5-th">ภัยพิบัติ</h3>
+      <p class="program-name-en" id="prog5-en">Disaster Relief</p>
     </div>
   </article>
 
@@ -1294,8 +1306,8 @@
     <img src="./images/Q6.jpg" alt="Emergency Response" />
     <div class="program-body">
       <div class="program-badge">🚨</div>
-      <h3 class="program-name-th">เคสเร่งด่วน</h3>
-      <p class="program-name-en">Emergency Response</p>
+      <h3 class="program-name-th" id="prog6-th">เคสเร่งด่วน</h3>
+      <p class="program-name-en" id="prog6-en">Emergency Response</p>
     </div>
   </article>
 </div>      </div>
@@ -1307,24 +1319,24 @@
           <img src="./images/M1.jpg" alt="Featured Story" />
           <div class="story-content">
             <div>
-              <div class="story-kicker">เรื่องราวที่สร้างการเปลี่ยนแปลง</div>
-              <div class="story-kicker-en">Featured Story</div>
-              <h3 class="story-title">จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง</h3>
+              <div class="story-kicker" id="story-kicker">เรื่องราวที่สร้างการเปลี่ยนแปลง</div>
+              <div class="story-kicker-en" id="story-kicker-en">Featured Story</div>
+              <h3 class="story-title" id="story-title">จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง</h3>
               <p class="story-desc">
                 ครอบครัว 5 ชีวิตได้บ้านใหม่
                 หลังบ้านเดิมได้รับความช่วยเหลือ
                 ของมูลนิธิฯ
               </p>
             </div>
-            <a href="#" class="story-btn">อ่านเรื่องราว <span style="font-size:24px;">➜</span></a>
+            <a href="#" class="story-btn" id="story-btn">อ่านเรื่องราว <span style="font-size:24px;">➜</span></a>
           </div>
         </article>
 
         <aside class="news-column">
           <div class="news-head">
             <div>
-              <div class="news-kicker">ข่าวสารและผลงาน</div>
-              <h3 class="news-title">Latest News</h3>
+              <div class="news-kicker" id="section-news-label">ข่าวสารและผลงาน</div>
+              <h3 class="news-title" id="section-news-title">Latest News</h3>
             </div>
             <a class="news-link" href="#">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
           </div>
@@ -1357,7 +1369,7 @@
         </div>
 
         <div class="cta-copy">
-          <h3>
+          <h3 id="cta-title">
             ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง
             <span>Be Part of the Change</span>
           </h3>
@@ -1365,8 +1377,8 @@
             ทุกการให้ของคุณ คือโอกาสใหม่ของผู้ที่กำลังรอความช่วยเหลือ
           </p>
           <div class="cta-actions">
-            <a class="btn btn-yellow" href="#">บริจาคตอนนี้ <span class="circle" style="background:rgba(0,0,0,.12)">➜</span></a>
-            <a class="btn btn-outline" href="#">ดูวิธีการบริจาค <span class="circle">➜</span></a>
+            <a class="btn btn-yellow" href="#" id="cta-donate-btn">บริจาคตอนนี้ <span class="circle" style="background:rgba(0,0,0,.12)">➜</span></a>
+            <a class="btn btn-outline" href="#" id="cta-how-btn">ดูวิธีการบริจาค <span class="circle">➜</span></a>
           </div>
         </div>
 
@@ -1530,6 +1542,127 @@
           showSlide(current);
         }, intervalTime);
       }
+    })();
+  </script>
+
+
+  <script>
+    (function () {
+      const dictionary = {
+        th: {
+          "menu-home": ["หน้าหลัก", "Home"],
+          "menu-about": ["เกี่ยวกับเรา", "About Us"],
+          "menu-programs": ["ภารกิจของเรา", "Our Programs"],
+          "menu-request": ["ขอความช่วยเหลือ", "Request Help"],
+          "menu-track": ["ติดตามเคส", "Track a Case"],
+          "menu-donate": ["ร่วมสนับสนุน", "Donate"],
+          "menu-news": ["ข่าวสารและผลงาน", "News & Impact"],
+
+          "i18n-eyebrow": "หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้",
+          "i18n-hero-title": "เพราะทุกชีวิต มีคุณค่า<span class=\"accent\">Every Life Matters</span>",
+          "i18n-hero-desc-th": "มูลนิธิคนช่วยฅน ทำงานเพื่อช่วยเหลือผู้ยากไร้ ผู้ประสบภัย และครอบครัว ที่ต้องการโอกาส ผ่านการลงมือช่วยเหลือจริงในทุกพื้นที่ที่เข้าถึงของประเทศไทย",
+          "i18n-hero-desc-en": "We provide timely support, create opportunities,<br>and restore hope where it’s needed most.",
+          "btn-donate-main": "ร่วมบริจาค <span class=\"circle\">➜</span>",
+          "btn-request-main": "ขอความช่วยเหลือ <span class=\"circle\">➜</span>",
+
+          "section-programs-label": "ภารกิจของเรา",
+          "section-programs-title": "Our Programs",
+          "section-news-label": "ข่าวสารและผลงาน",
+          "section-news-title": "Latest News",
+
+          "prog1-th": "การศึกษา", "prog1-en": "Education Support",
+          "prog2-th": "ที่อยู่อาศัย", "prog2-en": "Housing Assistance",
+          "prog3-th": "สร้างอาชีพ", "prog3-en": "Livelihood Support",
+          "prog4-th": "เด็กกำพร้า", "prog4-en": "Orphan Care",
+          "prog5-th": "ภัยพิบัติ", "prog5-en": "Disaster Relief",
+          "prog6-th": "เคสเร่งด่วน", "prog6-en": "Emergency Response",
+
+          "stat1-th": "เคสที่ช่วยเหลือแล้ว", "stat1-en": "Cases Supported",
+          "stat2-th": "จังหวัดที่ให้ความช่วยเหลือ", "stat2-en": "Provinces Reached",
+          "stat3-th": "ครอบครัวที่ได้รับความช่วยเหลือ", "stat3-en": "Families Helped",
+          "stat4-th": "อาสาสมัครและเครือข่าย", "stat4-en": "Volunteers &amp; Partners",
+
+          "story-kicker": "เรื่องราวที่สร้างการเปลี่ยนแปลง",
+          "story-kicker-en": "Featured Story",
+          "story-title": "จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง",
+          "story-btn": "อ่านเรื่องราว <span style=\"font-size:24px;\">➜</span>",
+
+          "cta-title": "ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง<span>Be Part of the Change</span>",
+          "cta-donate-btn": "บริจาคตอนนี้ <span class=\"circle\" style=\"background:rgba(0,0,0,.12)\">➜</span>",
+          "cta-how-btn": "ดูวิธีการบริจาค <span class=\"circle\">➜</span>"
+        },
+        en: {
+          "menu-home": ["Home", "Home"],
+          "menu-about": ["About Us", "About Us"],
+          "menu-programs": ["Our Programs", "Our Programs"],
+          "menu-request": ["Request Help", "Request Help"],
+          "menu-track": ["Track a Case", "Track a Case"],
+          "menu-donate": ["Donate", "Donate"],
+          "menu-news": ["News & Impact", "News & Impact"],
+
+          "i18n-eyebrow": "Give Hope. Share Care. Create Opportunity.",
+          "i18n-hero-title": "Every Life Matters<span class=\"accent\">Together We Can Help</span>",
+          "i18n-hero-desc-th": "Khon Chuay Khon Foundation supports vulnerable people, disaster victims, and families who need a real chance in life through practical help across Thailand.",
+          "i18n-hero-desc-en": "We provide timely support, create opportunities,<br>and restore hope where it’s needed most.",
+          "btn-donate-main": "Donate Now <span class=\"circle\">➜</span>",
+          "btn-request-main": "Request Help <span class=\"circle\">➜</span>",
+
+          "section-programs-label": "Our Mission",
+          "section-programs-title": "Our Programs",
+          "section-news-label": "News & Impact",
+          "section-news-title": "Latest News",
+
+          "prog1-th": "Education", "prog1-en": "Education Support",
+          "prog2-th": "Housing", "prog2-en": "Housing Assistance",
+          "prog3-th": "Livelihood", "prog3-en": "Livelihood Support",
+          "prog4-th": "Orphans", "prog4-en": "Orphan Care",
+          "prog5-th": "Disasters", "prog5-en": "Disaster Relief",
+          "prog6-th": "Urgent Cases", "prog6-en": "Emergency Response",
+
+          "stat1-th": "Cases Supported", "stat1-en": "Cases Supported",
+          "stat2-th": "Provinces Reached", "stat2-en": "Provinces Reached",
+          "stat3-th": "Families Helped", "stat3-en": "Families Helped",
+          "stat4-th": "Volunteers & Partners", "stat4-en": "Volunteers &amp; Partners",
+
+          "story-kicker": "Stories of Change",
+          "story-kicker-en": "Featured Story",
+          "story-title": "From Collapse to a Home of Hope",
+          "story-btn": "Read Story <span style=\"font-size:24px;\">➜</span>",
+
+          "cta-title": "Be Part of the Change<span>Your support creates new hope</span>",
+          "cta-donate-btn": "Donate Now <span class=\"circle\" style=\"background:rgba(0,0,0,.12)\">➜</span>",
+          "cta-how-btn": "Ways to Give <span class=\"circle\">➜</span>"
+        }
+      };
+
+      function applyLanguage(lang) {
+        // buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        Object.entries(dictionary[lang]).forEach(([id, value]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+
+          if (Array.isArray(value)) {
+            const strong = el.querySelector('strong');
+            const span = el.querySelector('span');
+            if (strong) strong.textContent = value[0];
+            if (span) span.textContent = value[1];
+          } else {
+            el.innerHTML = value;
+          }
+        });
+
+        localStorage.setItem('siteLang', lang);
+      }
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+      });
+
+      applyLanguage(localStorage.getItem('siteLang') || 'th');
     })();
   </script>
 

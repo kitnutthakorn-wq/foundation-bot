@@ -1240,7 +1240,324 @@
     }
   }
 
-  </style>
+  
+  .section-divider-title{
+    margin:0 0 14px;
+    font-size:34px;
+    font-weight:900;
+    color:#111;
+    letter-spacing:-.4px;
+  }
+
+  .line-heading{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:18px;
+    padding-bottom:10px;
+    border-bottom:3px solid #ef4444;
+  }
+
+  .line-heading h2{
+    margin:0;
+    font-size:28px;
+    font-weight:900;
+    color:#111;
+  }
+
+  .line-heading .mini-link{
+    color:#ef4444;
+    font-size:12px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
+
+  .mission-main,
+  .mission-urgent,
+  .mission-ongoing{
+    background:#f2f2f2;
+    padding:26px 0 10px;
+  }
+
+  .mission-panel{
+    width:min(calc(100% - 48px), 1360px);
+    margin:0 auto;
+  }
+
+  .mission-strip{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:8px;
+  }
+
+  .mission-mini{
+    background:#fff;
+    border:1px solid #e7e7e7;
+    overflow:hidden;
+  }
+
+  .mission-mini img{
+    width:100%;
+    aspect-ratio:1.18 / 1;
+    object-fit:cover;
+    display:block;
+  }
+
+  .mission-mini-body{
+    padding:8px 8px 10px;
+    position:relative;
+  }
+
+  .mission-mini-icon{
+    width:26px;
+    height:26px;
+    border-radius:999px;
+    background:#fff;
+    box-shadow:0 6px 14px rgba(0,0,0,.08);
+    display:grid;
+    place-items:center;
+    font-size:14px;
+    position:absolute;
+    left:10px;
+    top:-13px;
+  }
+
+  .mission-mini-th{
+    margin:14px 0 2px;
+    font-size:12px;
+    line-height:1.25;
+    font-weight:900;
+    color:#111;
+  }
+
+  .mission-mini-en{
+    margin:0;
+    font-size:9px;
+    color:#6b7280;
+  }
+
+  .urgent-layout{
+    display:grid;
+    grid-template-columns:1.03fr 1.15fr;
+    gap:16px;
+  }
+
+  .urgent-feature{
+    position:relative;
+    min-height:424px;
+    overflow:hidden;
+    background:#111;
+  }
+
+  .urgent-feature img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .urgent-feature::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.18) 32%, rgba(0,0,0,.72) 100%);
+    z-index:1;
+  }
+
+  .urgent-ribbon{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:3;
+    background:#ff4a3d;
+    color:#fff;
+    font-size:13px;
+    font-style:italic;
+    font-weight:700;
+    padding:6px 12px;
+  }
+
+  .urgent-feature-content{
+    position:absolute;
+    left:16px;
+    right:16px;
+    bottom:14px;
+    z-index:3;
+    color:#fff;
+  }
+
+  .urgent-tag{
+    display:inline-block;
+    background:#ff3a2f;
+    color:#fff;
+    font-size:10px;
+    font-weight:900;
+    padding:3px 6px;
+    margin-bottom:8px;
+  }
+
+  .urgent-feature-title{
+    margin:0 0 8px;
+    font-size:26px;
+    line-height:1.05;
+    font-weight:900;
+    color:#fff;
+  }
+
+  .urgent-feature-desc{
+    margin:0;
+    max-width:92%;
+    font-size:12px;
+    line-height:1.45;
+    color:rgba(255,255,255,.92);
+  }
+
+  .urgent-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .urgent-card{
+    background:#fff;
+  }
+
+  .urgent-card img{
+    width:100%;
+    aspect-ratio:1.55 / 1;
+    object-fit:cover;
+    display:block;
+  }
+
+  .urgent-card-body{
+    padding:8px 0 0;
+  }
+
+  .urgent-cat{
+    font-size:10px;
+    font-weight:900;
+    color:#111;
+    text-transform:uppercase;
+    margin-bottom:5px;
+  }
+
+  .urgent-inline-tag{
+    display:inline-block;
+    background:#ff3a2f;
+    color:#fff;
+    font-size:9px;
+    font-weight:900;
+    padding:2px 5px;
+    margin-right:6px;
+    line-height:1;
+    vertical-align:middle;
+  }
+
+  .urgent-card-title{
+    margin:0;
+    font-size:12px;
+    line-height:1.28;
+    font-weight:900;
+    color:#111;
+    font-family:"Georgia","Times New Roman",serif;
+  }
+
+  .ongoing-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:12px;
+  }
+
+  .ongoing-card{
+    background:#fff;
+    border:1px solid #e8e8e8;
+    overflow:hidden;
+  }
+
+  .ongoing-card img{
+    width:100%;
+    aspect-ratio:1.42 / 1;
+    object-fit:cover;
+    display:block;
+  }
+
+  .ongoing-body{
+    padding:10px;
+  }
+
+  .ongoing-title{
+    margin:0 0 6px;
+    font-size:13px;
+    line-height:1.28;
+    font-weight:800;
+    color:#111827;
+  }
+
+  .ongoing-meta{
+    margin:0;
+    font-size:10px;
+    color:#6b7280;
+  }
+
+  .ongoing-mini-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .ongoing-mini{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    background:#fff;
+    padding:6px;
+    border:1px solid #ececec;
+  }
+
+  .ongoing-mini img{
+    width:72px;
+    height:54px;
+    object-fit:cover;
+    flex:0 0 auto;
+  }
+
+  .ongoing-mini-title{
+    margin:0;
+    font-size:10px;
+    line-height:1.25;
+    font-weight:800;
+    color:#111827;
+  }
+
+  .ongoing-mini-meta{
+    margin:4px 0 0;
+    font-size:8px;
+    color:#6b7280;
+  }
+
+  @media (max-width: 1200px){
+    .mission-strip{ grid-template-columns:repeat(3, 1fr); }
+    .urgent-layout{ grid-template-columns:1fr; }
+    .ongoing-grid{ grid-template-columns:repeat(2, 1fr); }
+    .ongoing-mini-row{ grid-template-columns:repeat(2, 1fr); }
+  }
+
+  @media (max-width: 768px){
+    .mission-panel{ width:min(calc(100% - 24px), 1360px); }
+    .line-heading h2{ font-size:22px; }
+    .mission-strip{ grid-template-columns:repeat(2, 1fr); }
+    .urgent-grid{ grid-template-columns:1fr; }
+    .ongoing-grid,
+    .ongoing-mini-row{ grid-template-columns:1fr; }
+    .urgent-feature{ min-height:360px; }
+    .urgent-feature-title{ font-size:22px; }
+  }
+
+</style>
 </head>
 <body>
   <!--
@@ -1428,154 +1745,209 @@
       </div>
     </div>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <div>
-            <div class="section-label">ภารกิจของเรา</div>
-            <h2 class="section-title">Our Programs</h2>
-          </div>
-          <a class="section-link" href="#">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
+    
+    <section class="mission-main">
+      <div class="mission-panel">
+        <div class="line-heading">
+          <h2>ภารกิจหลัก</h2>
         </div>
 
-       <div class="program-grid">
-  <article class="program-card">
-    <img src="./images/Q1.jpg" alt="Education Support" />
-    <div class="program-body">
-      <div class="program-badge">📖</div>
-      <h3 class="program-name-th">การศึกษา</h3>
-      <p class="program-name-en">Education Support</p>
-    </div>
-  </article>
+        <div class="mission-strip">
+          <article class="mission-mini">
+            <img src="./images/Q1.jpg" alt="Education Support" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">📖</div>
+              <h3 class="mission-mini-th">การศึกษา</h3>
+              <p class="mission-mini-en">Education Support</p>
+            </div>
+          </article>
 
-  <article class="program-card">
-    <img src="./images/Q2.jpg" alt="Housing Assistance" />
-    <div class="program-body">
-      <div class="program-badge">🏠</div>
-      <h3 class="program-name-th">ที่อยู่อาศัย</h3>
-      <p class="program-name-en">Housing Assistance</p>
-    </div>
-  </article>
+          <article class="mission-mini">
+            <img src="./images/Q2.jpg" alt="Housing Assistance" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">🏠</div>
+              <h3 class="mission-mini-th">ที่อยู่อาศัย</h3>
+              <p class="mission-mini-en">Housing Assistance</p>
+            </div>
+          </article>
 
-  <article class="program-card">
-    <img src="./images/Q3.jpg" alt="Livelihood Support" />
-    <div class="program-body">
-      <div class="program-badge">🌿</div>
-      <h3 class="program-name-th">สร้างอาชีพ</h3>
-      <p class="program-name-en">Livelihood Support</p>
-    </div>
-  </article>
+          <article class="mission-mini">
+            <img src="./images/Q3.jpg" alt="Livelihood Support" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">🌿</div>
+              <h3 class="mission-mini-th">สร้างอาชีพ</h3>
+              <p class="mission-mini-en">Livelihood Support</p>
+            </div>
+          </article>
 
-  <article class="program-card">
-    <img src="./images/Q4.jpg" alt="Orphan Care" />
-    <div class="program-body">
-      <div class="program-badge">👨‍👩‍👧</div>
-      <h3 class="program-name-th">เด็กกำพร้า</h3>
-      <p class="program-name-en">Orphan Care</p>
-    </div>
-  </article>
+          <article class="mission-mini">
+            <img src="./images/Q4.jpg" alt="Orphan Care" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">👨‍👩‍👧</div>
+              <h3 class="mission-mini-th">เด็กกำพร้า</h3>
+              <p class="mission-mini-en">Orphan Care</p>
+            </div>
+          </article>
 
-  <article class="program-card">
-    <img src="./images/Q5.jpg" alt="Disaster Relief" />
-    <div class="program-body">
-      <div class="program-badge">⛑</div>
-      <h3 class="program-name-th">ภัยพิบัติ</h3>
-      <p class="program-name-en">Disaster Relief</p>
-    </div>
-  </article>
+          <article class="mission-mini">
+            <img src="./images/Q5.jpg" alt="Disaster Relief" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">⛑</div>
+              <h3 class="mission-mini-th">ภัยพิบัติ</h3>
+              <p class="mission-mini-en">Disaster Relief</p>
+            </div>
+          </article>
 
-  <article class="program-card">
-    <img src="./images/Q6.jpg" alt="Emergency Response" />
-    <div class="program-body">
-      <div class="program-badge">🚨</div>
-      <h3 class="program-name-th">เคสเร่งด่วน</h3>
-      <p class="program-name-en">Emergency Response</p>
-    </div>
-  </article>
-</div>      </div>
+          <article class="mission-mini">
+            <img src="./images/Q6.jpg" alt="Emergency Response" />
+            <div class="mission-mini-body">
+              <div class="mission-mini-icon">🚨</div>
+              <h3 class="mission-mini-th">ภารกิจเร่งด่วน</h3>
+              <p class="mission-mini-en">Emergency Response</p>
+            </div>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <section class="news-magazine-wrap" id="news-impact">
-      <div class="news-magazine">
-        <div class="news-magazine-grid">
+    <section class="mission-urgent" id="news-impact">
+      <div class="mission-panel">
+        <div class="line-heading">
+          <h2>ภารกิจเร่งด่วน</h2>
+        </div>
 
-          <article class="mag-feature">
-            <div class="mag-ribbon">Exclusive content</div>
+        <div class="urgent-layout">
+          <article class="urgent-feature">
+            <div class="urgent-ribbon">Exclusive content</div>
             <img src="./images/M1.jpg" alt="Featured Story" />
-
-            <div class="mag-feature-content">
-              <div class="mag-label">EXCLUSIVE</div>
-              <h2 class="mag-feature-title">
+            <div class="urgent-feature-content">
+              <div class="urgent-tag">EXCLUSIVE</div>
+              <h2 class="urgent-feature-title">
                 10 Outfits Inspired<br />
                 by Famous Art are Sold<br />
                 in London
               </h2>
-              <p class="mag-feature-desc">
+              <p class="urgent-feature-desc">
                 Find people with high expectations and a low tolerance for excuses.
-                They’ll have higher expectations for you than you have for yourself.
-                Don’t flatter yourself...
+                They’ll have higher expectations and a low tolerance for excuses. Don’t flatter yourself...
               </p>
             </div>
           </article>
 
-          <div class="mag-side-grid">
-
-            <article class="mag-card">
-              <a href="#" class="mag-card-thumb">
-                <img src="./images/Z1.png" alt="Marketing News" />
-              </a>
-              <div class="mag-card-body">
-                <div class="mag-category">MARKETING</div>
-                <h3 class="mag-card-title">
-                  <span class="mag-inline-tag">EXCLUSIVE</span>
-                  Customer Engagement: New Strategy for the Economy
-                </h3>
+          <div class="urgent-grid">
+            <article class="urgent-card">
+              <img src="./images/Z1.png" alt="Marketing News" />
+              <div class="urgent-card-body">
+                <div class="urgent-cat">MARKETING</div>
+                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>Customer Engagement: New Strategy for the Economy</h3>
               </div>
             </article>
 
-            <article class="mag-card">
-              <a href="#" class="mag-card-thumb">
-                <img src="./images/Edu2.png" alt="Finance News" />
-              </a>
-              <div class="mag-card-body">
-                <div class="mag-category">FINANCE</div>
-                <h3 class="mag-card-title">
-                  <span class="mag-inline-tag">EXCLUSIVE</span>
-                  Things to Look For in a Financial Trading Platform Environment
-                </h3>
+            <article class="urgent-card">
+              <img src="./images/Edu2.png" alt="Finance News" />
+              <div class="urgent-card-body">
+                <div class="urgent-cat">FINANCE</div>
+                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>Things to Look For in a Financial Trading Platform</h3>
               </div>
             </article>
 
-            <article class="mag-card">
-              <a href="#" class="mag-card-thumb">
-                <img src="./images/Q1.jpg" alt="Politics News" />
-              </a>
-              <div class="mag-card-body">
-                <div class="mag-category">POLITICS</div>
-                <h3 class="mag-card-title">
-                  <span class="mag-inline-tag">EXCLUSIVE</span>
-                  New Harvard Student Candidates Presented Minutes Before Results
-                </h3>
+            <article class="urgent-card">
+              <img src="./images/Q1.jpg" alt="Politics News" />
+              <div class="urgent-card-body">
+                <div class="urgent-cat">POLITICS</div>
+                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>New Harvard Student Candidates Presented Minutes Before Results</h3>
               </div>
             </article>
 
-            <article class="mag-card">
-              <a href="#" class="mag-card-thumb">
-                <img src="./images/Q2.jpg" alt="Tech News" />
-              </a>
-              <div class="mag-card-body">
-                <div class="mag-category">TECH</div>
-                <h3 class="mag-card-title">
-                  <span class="mag-inline-tag">EXCLUSIVE</span>
-                  New Soundboard from Bose Review: Pricing is Not Always the Only Criteria
-                </h3>
+            <article class="urgent-card">
+              <img src="./images/Q2.jpg" alt="Tech News" />
+              <div class="urgent-card-body">
+                <div class="urgent-cat">TECH</div>
+                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>New Soundboard from Bose Review: Pricing is Not Always the Only Criteria</h3>
               </div>
             </article>
-
           </div>
         </div>
       </div>
     </section>
+
+    <section class="mission-ongoing">
+      <div class="mission-panel">
+        <div class="line-heading">
+          <h2>ภารกิจกำลังดำเนินการ</h2>
+          <a href="#" class="mini-link">VIEW ALL →</a>
+        </div>
+
+        <div class="ongoing-grid">
+          <article class="ongoing-card">
+            <img src="./images/O1.jpg" alt="Ongoing 1" />
+            <div class="ongoing-body">
+              <h3 class="ongoing-title">Easy Food Survey: Salad Voted As One of the Most Satisfying Meals</h3>
+              <p class="ongoing-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-card">
+            <img src="./images/O2.jpg" alt="Ongoing 2" />
+            <div class="ongoing-body">
+              <h3 class="ongoing-title">This Week in Houston Food Blogs: High-Protein Recipes and Low Fat Steak</h3>
+              <p class="ongoing-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-card">
+            <img src="./images/O3.jpg" alt="Ongoing 3" />
+            <div class="ongoing-body">
+              <h3 class="ongoing-title">Moroccan Salmon with Garlic Mayonnaise is Common in Southern Spain</h3>
+              <p class="ongoing-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-card">
+            <img src="./images/O4.jpg" alt="Ongoing 4" />
+            <div class="ongoing-body">
+              <h3 class="ongoing-title">Best Places to Get Your Mexican Food Fix When You Visit Mexico City</h3>
+              <p class="ongoing-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="ongoing-mini-row">
+          <article class="ongoing-mini">
+            <img src="./images/O5.jpg" alt="Mini 1" />
+            <div>
+              <p class="ongoing-mini-title">The Best Pork Kebabs With Grilled Plums and Couscous is Found in Finland</p>
+              <p class="ongoing-mini-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-mini">
+            <img src="./images/O6.jpg" alt="Mini 2" />
+            <div>
+              <p class="ongoing-mini-title">Ultimate Guide to Vienna’s Coffee Renaissance Packed in One Weekend</p>
+              <p class="ongoing-mini-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-mini">
+            <img src="./images/O7.jpg" alt="Mini 3" />
+            <div>
+              <p class="ongoing-mini-title">10 Things You Should Know Before You Visit South America’s Jungles</p>
+              <p class="ongoing-mini-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+
+          <article class="ongoing-mini">
+            <img src="./images/O8.jpg" alt="Mini 4" />
+            <div>
+              <p class="ongoing-mini-title">Visiting Pocket List: The Top 10 Tips of a Lifetime You Should Take</p>
+              <p class="ongoing-mini-meta">Dan Bush · September 23, 2021</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
 
 
     <section class="cta" id="donate">

@@ -1,784 +1,202 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>บริจาคเคส | Khon Chuay Khon ProMAX</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      --bg:#eef3f7;
-      --surface:#ffffff;
-      --surface-2:#f7fafc;
-      --text:#16324f;
-      --muted:#6b7280;
-      --line:#d9e2ec;
-      --brand:#0b7c86;
-      --brand-2:#19a84a;
-      --accent:#2457d6;
-      --yellow:#ffcc29;
-      --danger:#c2410c;
-      --shadow:0 16px 40px rgba(18,36,58,.10);
-      --shadow-soft:0 10px 24px rgba(18,36,58,.07);
-      --container:1240px;
-    }
-
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      font-family:'Kanit',sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(36,87,214,.08), transparent 18%),
-        linear-gradient(180deg, #eef3f7 0%, #eaf0f4 100%);
-    }
-
-    a{text-decoration:none;color:inherit}
-    img{display:block;max-width:100%}
-    button,input,select,textarea{font-family:'Kanit',sans-serif}
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter:blur(14px);
-      background:rgba(238,243,247,.84);
-      border-bottom:1px solid rgba(255,255,255,.66);
-    }
-
-    .topbar-inner{
-      max-width:var(--container);
-      margin:0 auto;
-      padding:14px 18px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .back-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      min-height:46px;
-      border:none;
-      border-radius:15px;
-      background:linear-gradient(135deg,#3d72f4,#2457d6);
-      color:#fff;
-      padding:0 16px;
-      font-size:16px;
-      font-weight:700;
-      box-shadow:0 12px 22px rgba(36,87,214,.25);
-    }
-
-    .topmeta{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color:var(--muted);
-      font-size:14px;
-      font-weight:500;
-    }
-
-    .dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:var(--brand-2);
-      box-shadow:0 0 0 5px rgba(25,168,74,.12);
-    }
-
-    .hero{
-      position:relative;
-      overflow:hidden;
-      min-height:520px;
-      color:#fff;
-      background:#16324f center/cover no-repeat;
-      box-shadow:0 24px 60px rgba(18,36,58,.16);
-    }
-
-    .hero::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(90deg,rgba(7,25,40,.86) 0%, rgba(7,25,40,.72) 40%, rgba(7,25,40,.30) 100%);
-      pointer-events:none;
-    }
-
-    .hero-inner{
-      position:relative;
-      z-index:2;
-      max-width:var(--container);
-      margin:0 auto;
-      padding:58px 18px 84px;
-      display:grid;
-      grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);
-      gap:26px;
-      align-items:end;
-      min-height:520px;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.18);
-      font-size:14px;
-      font-weight:700;
-      margin-bottom:18px;
-      backdrop-filter:blur(8px);
-    }
-
-    .hero h1{
-      margin:0 0 14px;
-      font-size:56px;
-      line-height:1.03;
-      font-weight:800;
-      letter-spacing:-.02em;
-      text-shadow:0 2px 12px rgba(0,0,0,.22);
-    }
-
-    .hero p{
-      margin:0;
-      font-size:18px;
-      line-height:1.8;
-      max-width:760px;
-      color:rgba(255,255,255,.92);
-    }
-
-    .hero-badges{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:22px;
-    }
-
-    .hero-badge{
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.22);
-      border-radius:999px;
-      padding:10px 14px;
-      font-size:14px;
-      font-weight:700;
-    }
-
-    .hero-side{
-      background:rgba(255,255,255,.92);
-      border:1px solid rgba(255,255,255,.44);
-      border-radius:30px;
-      overflow:hidden;
-      box-shadow:0 24px 50px rgba(0,0,0,.18);
-      color:var(--text);
-    }
-
-    .hero-side-image{
-      height:250px;
-      background:center/cover no-repeat;
-    }
-
-    .hero-side-body{
-      padding:20px;
-    }
-
-    .hero-side-mini{
-      font-size:13px;
-      font-weight:700;
-      color:var(--brand);
-      margin-bottom:8px;
-    }
-
-    .hero-side-body h3{
-      margin:0 0 8px;
-      font-size:28px;
-      line-height:1.1;
-      letter-spacing:-.02em;
-    }
-
-    .hero-side-body p{
-      margin:0;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.7;
-    }
-
-    .main{
-      margin-top:-54px;
-      position:relative;
-      z-index:3;
-    }
-
-    .layout{
-      max-width:var(--container);
-      margin:0 auto;
-      padding:0 18px 48px;
-      display:grid;
-      grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);
-      gap:24px;
-      align-items:start;
-    }
-
-    .section-card,
-    .summary-card{
-      background:var(--surface);
-      border:1px solid rgba(255,255,255,.8);
-      border-radius:30px;
-      box-shadow:var(--shadow);
-      overflow:hidden;
-    }
-
-    .section-body,
-    .summary-body{
-      padding:24px;
-    }
-
-    .section-head{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-bottom:18px;
-    }
-
-    .section-head h2{
-      margin:0;
-      font-size:34px;
-      line-height:1.1;
-      letter-spacing:-.02em;
-    }
-
-    .section-head p{
-      margin:8px 0 0;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.75;
-    }
-
-    .status-chip{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:38px;
-      padding:0 14px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:800;
-      background:#eef5ff;
-      color:#2457d6;
-      border:1px solid #dbe7ff;
-      white-space:nowrap;
-    }
-
-    .status-chip.urgent{
-      background:#fff2ec;
-      color:var(--danger);
-      border-color:#ffd8c7;
-    }
-
-    .status-chip.open{
-      background:#eefbf1;
-      color:#13803c;
-      border-color:#d5f4dc;
-    }
-
-    .status-chip.progress{
-      background:#eef5ff;
-      color:#2457d6;
-      border-color:#dbe7ff;
-    }
-
-    .summary-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      margin-bottom:22px;
-    }
-
-    .summary-item{
-      border-radius:20px;
-      background:var(--surface-2);
-      border:1px solid var(--line);
-      padding:14px;
-    }
-
-    .summary-label{
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:5px;
-    }
-
-    .summary-value{
-      font-size:18px;
-      font-weight:800;
-      line-height:1.25;
-    }
-
-    .donation-options{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:12px;
-      margin-bottom:18px;
-    }
-
-    .amount-btn{
-      min-height:56px;
-      border:none;
-      border-radius:18px;
-      background:#fff;
-      border:1px solid var(--line);
-      font-size:18px;
-      font-weight:800;
-      color:var(--text);
-      cursor:pointer;
-      transition:.18s ease;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .amount-btn:hover{
-      transform:translateY(-1px);
-    }
-
-    .amount-btn.active{
-      background:linear-gradient(135deg,var(--brand-2),#20c44c);
-      color:#fff;
-      border-color:transparent;
-      box-shadow:0 10px 18px rgba(25,168,74,.24);
-    }
-
-    .form-grid{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-    }
-
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .field.full{
-      grid-column:1 / -1;
-    }
-
-    .label{
-      font-size:14px;
-      font-weight:700;
-      color:var(--text);
-    }
-
-    .input,
-    .select,
-    .textarea{
-      width:100%;
-      min-height:54px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      padding:0 16px;
-      font-size:16px;
-      color:var(--text);
-      outline:none;
-      transition:border-color .18s ease, box-shadow .18s ease;
-    }
-
-    .textarea{
-      min-height:120px;
-      padding:14px 16px;
-      resize:vertical;
-    }
-
-    .input:focus,
-    .select:focus,
-    .textarea:focus{
-      border-color:#8cb3ff;
-      box-shadow:0 0 0 4px rgba(36,87,214,.10);
-    }
-
-    .note{
-      margin-top:14px;
-      padding:16px 18px;
-      border-radius:18px;
-      background:#f6faf7;
-      border:1px solid #d6eddc;
-      color:#24523a;
-      line-height:1.75;
-      font-size:14px;
-    }
-
-    .form-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:22px;
-    }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:52px;
-      border:none;
-      border-radius:16px;
-      padding:0 18px;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
-      text-decoration:none;
-    }
-
-    .btn:hover{transform:translateY(-1px)}
-
-    .btn-primary{
-      background:linear-gradient(135deg,var(--brand-2),#20c44c);
-      color:#fff;
-      box-shadow:0 10px 18px rgba(25,168,74,.24);
-      flex:1 1 240px;
-    }
-
-    .btn-secondary{
-      background:#fff;
-      color:var(--text);
-      border:1px solid var(--line);
-      flex:1 1 180px;
-    }
-
-    .summary-hero{
-      height:240px;
-      position:relative;
-      background:center/cover no-repeat;
-    }
-
-    .summary-hero::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.56));
-    }
-
-    .summary-title{
-      position:absolute;
-      left:18px;
-      right:18px;
-      bottom:18px;
-      z-index:1;
-      color:#fff;
-    }
-
-    .summary-title .mini{
-      font-size:13px;
-      font-weight:700;
-      color:#ffde7a;
-      margin-bottom:8px;
-    }
-
-    .summary-title h3{
-      margin:0;
-      font-size:28px;
-      line-height:1.05;
-      letter-spacing:-.02em;
-    }
-
-    .stat-row{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:8px;
-      color:#56677d;
-      font-size:15px;
-      align-items:center;
-    }
-
-    .stat-row strong{
-      color:var(--text);
-      font-size:16px;
-    }
-
-    .progress{
-      height:16px;
-      border-radius:999px;
-      background:#e8edf3;
-      overflow:hidden;
-      margin:12px 0;
-    }
-
-    .progress > div{
-      height:100%;
-      width:0;
-      background:linear-gradient(90deg,#18a347 0%, #22c55e 100%);
-    }
-
-    .case-text{
-      margin-top:16px;
-      padding:16px;
-      border-radius:18px;
-      background:var(--surface-2);
-      border:1px solid var(--line);
-      color:#55677d;
-      line-height:1.75;
-      font-size:14px;
-    }
-
-    .cta-group{
-      display:grid;
-      gap:12px;
-      margin-top:18px;
-    }
-
-    .footer{
-      padding:0 18px 40px;
-    }
-
-    .footer-inner{
-      max-width:var(--container);
-      margin:0 auto;
-      background:#0f2840;
-      color:#fff;
-      border-radius:28px;
-      padding:28px;
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:20px;
-    }
-
-    .footer-inner h3{
-      margin:0 0 8px;
-      font-size:28px;
-    }
-
-    .footer-inner p{
-      margin:0;
-      color:rgba(255,255,255,.82);
-      line-height:1.7;
-    }
-
-    .footer-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .footer-actions a{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      min-height:46px;
-      padding:0 18px;
-      border-radius:14px;
-      font-weight:800;
-    }
-
-    .footer-actions .yellow{
-      background:#ffcc29;
-      color:#1a1a1a;
-    }
-
-    .footer-actions .white{
-      background:rgba(255,255,255,.12);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.18);
-    }
-
-    .success-box{
-      display:none;
-      margin-top:18px;
-      padding:18px;
-      border-radius:18px;
-      background:#eefbf1;
-      border:1px solid #d5f4dc;
-      color:#0f6b33;
-      line-height:1.75;
-      font-size:15px;
-      font-weight:600;
-    }
-
-    @media (max-width:1100px){
-      .hero-inner,
-      .layout,
-      .footer-inner{
-        grid-template-columns:1fr;
-      }
-      .hero h1{font-size:44px}
-      .summary-grid{grid-template-columns:1fr 1fr}
-      .donation-options{grid-template-columns:1fr 1fr}
-    }
-
-    @media (max-width:760px){
-      .topbar-inner{padding:12px}
-      .topmeta{display:none}
-      .hero-inner{padding:34px 18px 76px}
-      .hero h1{font-size:32px}
-      .hero p{font-size:16px}
-      .hero-side-image,
-      .summary-hero{height:210px}
-      .main{margin-top:-42px}
-      .layout{padding:0 12px 34px}
-      .section-body,.summary-body{padding:16px}
-      .section-head h2{font-size:26px}
-      .summary-grid{grid-template-columns:1fr}
-      .donation-options{grid-template-columns:1fr 1fr}
-      .form-grid{grid-template-columns:1fr}
-      .footer-inner{grid-template-columns:1fr}
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ร่วมสนับสนุนโครงการ | ProMAX Donation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef3f7;
+    --card:#ffffff;
+    --line:#d9e2ec;
+    --text:#16324f;
+    --muted:#6b7280;
+    --brand:#0b7c86;
+    --brand-2:#19a84a;
+    --yellow:#ffcc29;
+    --shadow:0 18px 40px rgba(18,36,58,.12);
+    --shadow-soft:0 10px 24px rgba(18,36,58,.07);
+    --hero-overlay:linear-gradient(90deg,rgba(7,25,40,.86) 0%, rgba(7,25,40,.72) 36%, rgba(7,25,40,.36) 68%, rgba(7,25,40,.18) 100%);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
+  a{text-decoration:none;color:inherit}
+  .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(238,243,247,.84);border-bottom:1px solid rgba(255,255,255,.7)}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .back-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)}
+  .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:500}
+  .dot{width:8px;height:8px;border-radius:999px;background:var(--brand-2);box-shadow:0 0 0 5px rgba(25,168,74,.12)}
+  .hero{position:relative;min-height:560px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:var(--hero-overlay)}
+  .hero-inner{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:70px 18px 86px;display:grid;grid-template-columns:minmax(0,680px) 1fr;gap:26px;align-items:end}
+  .eyebrow{display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px}
+  .hero h1{margin:0 0 14px;font-size:58px;line-height:1.03;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+  .hero p{margin:0 0 22px;font-size:20px;line-height:1.75;max-width:760px;color:rgba(255,255,255,.95)}
+  .hero-badges{display:flex;flex-wrap:wrap;gap:12px}
+  .hero-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:10px 14px;font-weight:700;font-size:15px}
+  .main{margin-top:-58px;position:relative;z-index:2}
+  .layout{max-width:1240px;margin:0 auto;padding:0 18px 46px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:24px;align-items:start}
+  .panel,.summary-card{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+  .panel-head{padding:24px 26px 0}
+  .panel-body{padding:26px}
+  .section-title{margin:0 0 8px;font-size:34px;line-height:1.15;letter-spacing:-.02em}
+  .section-lead{margin:0;color:var(--muted);font-size:17px;line-height:1.7}
+  .project-strip{margin-top:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .project-chip{background:#f3f7fb;border:1px solid #dde6ef;border-radius:18px;padding:14px}
+  .project-chip .label{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .project-chip .value{font-size:18px;font-weight:700;line-height:1.2}
+  .nav-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .nav-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:700;color:var(--text)}
+  .amount-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+  .amount-btn{border:none;border-radius:18px;min-height:64px;background:#eef3f8;color:#17324f;font-size:22px;font-weight:800;cursor:pointer;transition:.18s ease all;box-shadow:inset 0 0 0 1px #dbe4ee;font-family:'Kanit',sans-serif}
+  .amount-btn.active{background:linear-gradient(135deg,var(--brand),#1e97a1);color:#fff;box-shadow:none}
+  .field{margin-top:16px}
+  .field label{display:block;margin-bottom:8px;font-size:15px;font-weight:700;color:#32465d}
+  .field input,.field textarea{width:100%;border:1px solid #d7e1ea;border-radius:16px;min-height:54px;padding:0 16px;font-size:16px;background:#fff;color:var(--text);font-family:'Kanit',sans-serif}
+  .field textarea{min-height:120px;padding:14px 16px;resize:vertical}
+  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .checkbox{display:flex;gap:10px;align-items:flex-start;margin-top:16px;color:#53657b;font-size:15px;line-height:1.6}
+  .checkbox input{margin-top:4px}
+  .bank-card{background:linear-gradient(135deg,#0d7f88,#1d5fa5);color:#fff;border-radius:24px;padding:24px;margin-top:18px}
+  .bank-card h3{margin:0 0 12px;font-size:28px}
+  .bank-card p{margin:0 0 10px;font-size:17px;line-height:1.7}
+  .bank-inline{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:14px 16px;margin-top:12px}
+  .sticky{position:sticky;top:18px}
+  .summary-card{overflow:hidden}
+  .summary-hero{position:relative;height:280px;background:#d7e4ef center/cover no-repeat}
+  .summary-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))}
+  .summary-title{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;color:#fff}
+  .summary-title .mini{font-size:14px;font-weight:700;color:#ffde7a;margin-bottom:8px}
+  .summary-title h3{margin:0;font-size:34px;line-height:1.04}
+  .summary-body{padding:22px}
+  .progress{height:18px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:12px 0}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,#ffcc29,#19a84a)}
+  .stat-row{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:15px;color:#56677d}
+  .big-amount{font-size:36px;font-weight:800;color:#17324f}
+  .cta{width:100%;border:none;min-height:56px;border-radius:18px;cursor:pointer;font-size:20px;font-weight:800;margin-top:16px;background:linear-gradient(135deg,#ffcc29,#f7b500);color:#1a1a1a;font-family:'Kanit',sans-serif}
+  .safe-box{margin-top:16px;background:#f8fbfd;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .safe-box h4{margin:0 0 10px;font-size:20px}
+  .safe-box p{margin:0 0 6px;color:#596b81;line-height:1.7}
+  .note{margin-top:14px;padding:14px 16px;border-radius:16px;background:#edf7ef;color:#1d6b38;display:none}
+  .story{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px}
+  .story h3{margin:0 0 10px;font-size:28px}
+  .story p{margin:0 0 12px;color:#56677d;line-height:1.8}
+  footer{padding:0 18px 40px}
+  .footer-inner{max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px}
+  .footer-inner h3{margin:0 0 8px;font-size:28px}
+  .footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .footer-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800}
+  .footer-actions .yellow{background:#ffcc29;color:#1a1a1a}
+  .footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  @media (max-width:1100px){.hero-inner,.layout,.footer-inner{grid-template-columns:1fr}.sticky{position:static}.hero h1{font-size:46px}}
+  @media (max-width:760px){.topbar-inner{padding:12px}.topmeta{display:none}.hero h1{font-size:38px}.hero p{font-size:17px}.amount-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2,.project-strip{grid-template-columns:1fr}.section-title{font-size:28px}.summary-title h3{font-size:28px}.summary-hero{height:240px}.nav-links{flex-direction:column}}
+</style>
 </head>
 <body>
-
   <div class="topbar">
     <div class="topbar-inner">
-      <a class="back-btn" id="backToDetail" href="#">← กลับหน้ารายละเอียดเคส</a>
-      <div class="topmeta">
-        <span class="dot"></span>
-        <span>แบบฟอร์มบริจาค · ProMAX</span>
-      </div>
+      <a class="back-btn" id="backToDetail" href="#">← กลับหน้ารายละเอียดและบริจาค</a>
+      <div class="topmeta"><span class="dot"></span><span>ProMAX Donation · แยกตามโครงการและเชื่อมครบทั้งระบบ</span></div>
     </div>
   </div>
 
-  <section class="hero" id="hero" style="background-image:url('images/Edu1.png')">
+  <section class="hero" id="hero">
     <div class="hero-inner">
       <div>
-        <div class="eyebrow" id="heroEyebrow">ร่วมสนับสนุนเคส</div>
-        <h1 id="heroTitle">แบบฟอร์มบริจาค</h1>
-        <p id="heroDesc">ทุกการให้ของคุณจะช่วยผลักดันให้เคสนี้ไปถึงเป้าหมายได้เร็วขึ้น พร้อมส่งต่อความช่วยเหลืออย่างมีความหมาย</p>
-        <div class="hero-badges">
-          <div class="hero-badge" id="heroBadge1">โปร่งใส</div>
-          <div class="hero-badge" id="heroBadge2">ติดตามได้</div>
-          <div class="hero-badge" id="heroBadge3">ธีมเดียวทั้งระบบ</div>
-        </div>
-      </div>
-
-      <div class="hero-side">
-        <div class="hero-side-image" id="heroSideImage" style="background-image:url('images/Edu1.png')"></div>
-        <div class="hero-side-body">
-          <div class="hero-side-mini" id="heroSideMini">Donation Form</div>
-          <h3 id="heroSideTitle">ร่วมสร้างการเปลี่ยนแปลง</h3>
-          <p id="heroSideText">ฟอร์มนี้ออกแบบเพื่อให้บริจาคได้ง่าย เห็นข้อมูลเคสชัดเจน และเชื่อมกลับไปยังหน้ารายละเอียดและเรื่องราวเคสได้ครบ</p>
-        </div>
+        <div class="eyebrow" id="heroEyebrow">ร่วมหยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+        <h1 id="heroTitle">กำลังโหลดโครงการ</h1>
+        <p id="heroDesc">กำลังเตรียมรายละเอียดโครงการ</p>
+        <div class="hero-badges" id="heroBadges"></div>
       </div>
     </div>
   </section>
 
   <main class="main">
     <div class="layout">
-      <section>
-        <article class="section-card">
-          <div class="section-body">
-            <div class="section-head">
-              <div>
-                <h2>กรอกข้อมูลการสนับสนุน</h2>
-                <p>เลือกจำนวนเงินที่ต้องการ หรือกำหนดเอง จากนั้นกรอกข้อมูลพื้นฐานเพื่อส่งต่อการบริจาคในเคสนี้</p>
-              </div>
-              <div class="status-chip open" id="statusChip">เปิดรับบริจาค</div>
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="section-title">ร่วมสนับสนุนโครงการนี้</h2>
+          <p class="section-lead">หน้านี้แยกตามโครงการและเชื่อมกลับไปยังหน้ารายละเอียดเคสและหน้าเรื่องราวเคสได้ทันที เพื่อให้ flow ใช้งานต่อเนื่องทั้งระบบ</p>
+
+          <div class="project-strip">
+            <div class="project-chip">
+              <div class="label">ชื่อโครงการ</div>
+              <div class="value" id="chipProjectTitle">-</div>
             </div>
-
-            <div class="summary-grid">
-              <div class="summary-item">
-                <div class="summary-label">โครงการ</div>
-                <div class="summary-value" id="summaryProject">-</div>
-              </div>
-              <div class="summary-item">
-                <div class="summary-label">เคสที่กำลังสนับสนุน</div>
-                <div class="summary-value" id="summaryCase">-</div>
-              </div>
-              <div class="summary-item">
-                <div class="summary-label">พื้นที่ช่วยเหลือ</div>
-                <div class="summary-value" id="summaryLocation">-</div>
-              </div>
+            <div class="project-chip">
+              <div class="label">ยอดที่ช่วยแล้ว</div>
+              <div class="value" id="chipRaised">-</div>
             </div>
-
-            <div class="donation-options" id="donationOptions">
-              <button class="amount-btn" type="button" data-amount="300">300</button>
-              <button class="amount-btn" type="button" data-amount="500">500</button>
-              <button class="amount-btn" type="button" data-amount="1000">1,000</button>
-              <button class="amount-btn" type="button" data-amount="2000">2,000</button>
-            </div>
-
-            <div class="form-grid">
-              <div class="field full">
-                <label class="label" for="amount">จำนวนเงินบริจาค (บาท)</label>
-                <input class="input" id="amount" type="number" min="1" placeholder="ระบุจำนวนเงินที่ต้องการบริจาค">
-              </div>
-
-              <div class="field">
-                <label class="label" for="donorName">ชื่อผู้บริจาค</label>
-                <input class="input" id="donorName" type="text" placeholder="ชื่อ - นามสกุล">
-              </div>
-
-              <div class="field">
-                <label class="label" for="donorPhone">เบอร์โทรศัพท์</label>
-                <input class="input" id="donorPhone" type="tel" placeholder="08xxxxxxxx">
-              </div>
-
-              <div class="field">
-                <label class="label" for="donorEmail">อีเมล</label>
-                <input class="input" id="donorEmail" type="email" placeholder="example@email.com">
-              </div>
-
-              <div class="field">
-                <label class="label" for="paymentMethod">ช่องทางที่ต้องการบริจาค</label>
-                <select class="select" id="paymentMethod">
-                  <option value="">เลือกช่องทาง</option>
-                  <option value="bank">โอนผ่านบัญชีธนาคาร</option>
-                  <option value="promptpay">พร้อมเพย์</option>
-                  <option value="cash">ติดต่อทีมงาน</option>
-                </select>
-              </div>
-
-              <div class="field full">
-                <label class="label" for="donorNote">ข้อความถึงเคส / หมายเหตุ</label>
-                <textarea class="textarea" id="donorNote" placeholder="เขียนข้อความสั้น ๆ เพื่อส่งกำลังใจ หรือบอกหมายเหตุเพิ่มเติม"></textarea>
-              </div>
-            </div>
-
-            <div class="note" id="formNote">
-              ระบบตัวอย่างนี้ออกแบบให้เชื่อมหน้าได้ครบทั้งหน้าโครงการ → หน้าเคส → หน้ารายละเอียด → หน้าเรื่องราว → หน้าบริจาค
-            </div>
-
-            <div class="form-actions">
-              <button class="btn btn-primary" id="submitBtn" type="button">ยืนยันการบริจาค</button>
-              <a class="btn btn-secondary" id="goStoryBtn" href="#">อ่านเรื่องราวเคส</a>
-              <a class="btn btn-secondary" id="goCasesBtn" href="#">กลับหน้าเคส</a>
-            </div>
-
-            <div class="success-box" id="successBox">
-              ขอบคุณสำหรับความตั้งใจในการสนับสนุนเคสนี้ ระบบตัวอย่างได้รับข้อมูลเรียบร้อยแล้ว และสามารถเชื่อมกลับไปยังหน้าต่าง ๆ ได้ครบตามเส้นทางของเคส
+            <div class="project-chip">
+              <div class="label">เป้าหมายโครงการ</div>
+              <div class="value" id="chipTarget">-</div>
             </div>
           </div>
-        </article>
+
+          <div class="nav-links">
+            <a class="nav-link" id="goCaseDetail" href="#">ดูรายละเอียดและบริจาค</a>
+            <a class="nav-link" id="goCaseStory" href="#">อ่านเรื่องราวเคส</a>
+            <a class="nav-link" id="goBackCases" href="#">กลับหน้าเคสทั้งหมด</a>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <div class="amount-grid" id="amountGrid"></div>
+
+          <div class="field">
+            <label for="amountCustom">หรือระบุจำนวนเงินด้วยตนเอง</label>
+            <input id="amountCustom" type="number" min="1" placeholder="ระบุจำนวนเงิน เช่น 1000" />
+          </div>
+
+          <div class="grid-2">
+            <div class="field"><label for="firstName">ชื่อ</label><input id="firstName" type="text" placeholder="ชื่อผู้บริจาค" /></div>
+            <div class="field"><label for="lastName">นามสกุล</label><input id="lastName" type="text" placeholder="นามสกุลผู้บริจาค" /></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field"><label for="email">อีเมล</label><input id="email" type="email" placeholder="example@email.com" /></div>
+            <div class="field"><label for="phone">เบอร์โทรศัพท์</label><input id="phone" type="tel" placeholder="08x-xxx-xxxx" /></div>
+          </div>
+
+          <div class="field"><label for="note">ข้อความถึงโครงการ</label><textarea id="note" placeholder="เขียนข้อความเพื่อส่งกำลังใจหรือระบุวัตถุประสงค์เพิ่มเติม"></textarea></div>
+
+          <label class="checkbox"><input id="anonymous" type="checkbox" /><span>ไม่ประสงค์ออกนามในการแสดงรายชื่อผู้สนับสนุน</span></label>
+          <label class="checkbox"><input id="news" type="checkbox" checked /><span>ยินดีรับข้อมูลข่าวสาร รายงานความคืบหน้า และการทำงานของมูลนิธิผ่านช่องทางต่าง ๆ</span></label>
+
+          <div class="bank-card">
+            <h3>รายละเอียดบัญชีสำหรับสนับสนุน</h3>
+            <p id="bankDesc">ข้อมูลบัญชีของโครงการ</p>
+            <div class="bank-inline"><strong>ธนาคาร:</strong> <span id="bankName">-</span><br><strong>เลขบัญชี:</strong> <span id="bankNumber">-</span><br><strong>ชื่อบัญชี:</strong> <span id="bankAccount">-</span></div>
+            <div class="bank-inline"><strong>สอบถามเพิ่มเติม:</strong> <span id="contactLine">-</span></div>
+          </div>
+
+          <div class="story"><h3>เหตุผลที่โครงการนี้สำคัญ</h3><p id="story1">-</p><p id="story2">-</p></div>
+        </div>
       </section>
 
-      <aside>
+      <aside class="sticky">
         <div class="summary-card">
-          <div class="summary-hero" id="sidebarHero" style="background-image:url('images/Edu1.png')">
-            <div class="summary-title">
-              <div class="mini" id="sidebarMini">Case Donation</div>
-              <h3 id="sidebarTitle">ชื่อเคส</h3>
-            </div>
-          </div>
-
+          <div class="summary-hero" id="summaryHero"><div class="summary-title"><div class="mini" id="summaryMini">Project Summary</div><h3 id="summaryTitle">กำลังโหลดโครงการ</h3></div></div>
           <div class="summary-body">
-            <div class="stat-row"><span>ยอดที่ช่วยแล้ว</span><strong id="raisedText">฿ 0</strong></div>
+            <div class="big-amount" id="summaryAmount">฿ 1,000</div>
+            <div class="stat-row"><span>ยอดสนับสนุนปัจจุบัน</span><strong id="raisedText">฿ 0</strong></div>
             <div class="progress"><div id="progressBar"></div></div>
-            <div class="stat-row"><span>เป้าหมายรวม</span><strong id="goalText">฿ 0</strong></div>
+            <div class="stat-row"><span>เป้าหมายโครงการ</span><strong id="targetText">฿ 0</strong></div>
             <div class="stat-row"><span>ความคืบหน้า</span><strong id="percentText">0%</strong></div>
-
-            <div class="case-text" id="caseText">
-              รายละเอียดสั้นของเคสจะแสดงตรงนี้ เพื่อช่วยให้ผู้บริจาคตัดสินใจได้ง่ายขึ้น
-            </div>
-
-            <div class="cta-group">
-              <a class="btn btn-secondary" id="goDetailBtn" href="#">กลับหน้ารายละเอียดเคส</a>
-              <a class="btn btn-secondary" id="goStoryBtnSide" href="#">อ่านเรื่องราวเคส</a>
+            <button class="cta" id="submitBtn">ยืนยันการสนับสนุน</button>
+            <div class="note" id="successNote">รับข้อมูลการสนับสนุนเรียบร้อยในโหมด Demo แล้ว</div>
+            <div class="safe-box">
+              <h4>สรุปข้อมูลการบริจาค</h4>
+              <p><strong>โครงการ:</strong> <span id="sumProject">-</span></p>
+              <p><strong>เคส:</strong> <span id="sumCase">-</span></p>
+              <p><strong>จำนวนเงิน:</strong> <span id="sumAmount">฿ 1,000</span></p>
+              <p><strong>รูปแบบ:</strong> บริจาคครั้งเดียว</p>
+              <p><strong>สถานะ:</strong> หน้า HTML จำลองสำหรับพรีเซ็น</p>
             </div>
           </div>
         </div>
@@ -786,240 +204,262 @@
     </div>
   </main>
 
-  <footer class="footer">
+  <footer>
     <div class="footer-inner">
-      <div>
-        <h3>มูลนิธิคนช่วยฅน</h3>
-        <p>ทุกแบบฟอร์มบริจาคถูกออกแบบให้เชื่อมโยงกับข้อมูลเคสอย่างชัดเจน เพื่อให้ผู้สนับสนุนเข้าใจที่มา เป้าหมาย และผลลัพธ์ของการช่วยเหลือในหน้าเดียวกัน</p>
-      </div>
-      <div class="footer-actions">
-        <a class="yellow" href="#hero">กลับขึ้นด้านบน</a>
-        <a class="white" id="footerBackDetail" href="#">กลับหน้ารายละเอียด</a>
-      </div>
+      <div><h3>มูลนิธิคนช่วยฅน</h3><p>หน้าบริจาคนี้เชื่อมต่อครบกับหน้ารายละเอียดเคส หน้าเรื่องราวเคส และหน้ารวมเคสของแต่ละโครงการ โดยใช้ธีมเดียวกันทั้งระบบ</p></div>
+      <div class="footer-actions"><a class="yellow" href="#hero">กลับขึ้นด้านบน</a><a class="white" id="footerBackCases" href="#">กลับหน้าเคส</a></div>
     </div>
   </footer>
+<script>
+const PROJECTS = {
+  housing: {
+    title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
+    eyebrow:"โครงการที่อยู่อาศัยเพื่อผู้ยากไร้",
+    description:"น้ำลด แต่ใจไม่ลด ทุกการให้ของท่าน คือแรงสนับสนุนในการซ่อมแซมและสร้างที่อยู่อาศัยให้ครอบครัวที่ยังรอความหวังกลับคืนมา",
+    image:"images/Z5.png",
+    raised:120000,
+    target:250000,
+    presets:[500,1000,3000,5000],
+    badges:["ที่อยู่อาศัย","ช่วยฟื้นฟูชีวิต","ProMAX Donation"],
+    bankDesc:"ร่วมสนับสนุนโครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้ ผ่านบัญชีเฉพาะกิจของมูลนิธิ",
+    bankName:"ธนาคารอิสลามแห่งประเทศไทย",
+    bankNumber:"061-1-10422-9",
+    bankAccount:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้ มูลนิธิคนช่วยฅน",
+    contact:"081-9597060 · 084-398-4213",
+    story1:"ไม่มีใครควรถูกทิ้งไว้ข้างหลัง เมื่อบ้านพังลง ชีวิตทั้งครอบครัวก็สั่นคลอน เด็ก ผู้สูงอายุ และผู้ป่วยยิ่งต้องการพื้นที่ปลอดภัยในการเริ่มต้นใหม่",
+    story2:"ทุกยอดสนับสนุนจะช่วยซ่อมแซม สร้างที่พักชั่วคราว และฟื้นคืนศักดิ์ศรีของผู้ยากไร้ให้กลับมายืนได้อีกครั้ง"
+  },
 
-  <script>
-    function fmt(n){ return '฿ ' + Number(n || 0).toLocaleString('th-TH'); }
-    function percent(raised, goal){
-      return Math.max(0, Math.min(100, Math.round((Number(raised || 0) / Math.max(Number(goal || 0), 1)) * 100)));
-    }
+  education: {
+    title:"เพื่อการศึกษา",
+    eyebrow:"โครงการเพื่อการศึกษา",
+    description:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน เพราะมนุษย์ทุกคนมีคุณค่าและสมควรได้รับโอกาสอย่างเท่าเทียมกัน",
+    image:"images/Edu1.png",
+    raised:35000,
+    target:60000,
+    presets:[300,650,1000,3000],
+    badges:["การศึกษา","ทุนเรียน","อนาคตของเด็ก"],
+    bankDesc:"ร่วมเติมอนาคตให้เด็ก ๆ ผ่านทุนการศึกษาและอุปกรณ์การเรียน",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"กองทุนเพื่อการศึกษา มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"เด็กบางคนเกิดและเติบโตท่ามกลางพื้นที่ห่างไกลจากโอกาส แต่พวกเขาไม่ควรถูกตัดขาดจากความฝันและการเรียนรู้",
+    story2:"การสนับสนุนของท่านจะช่วยเรื่องค่าเดินทาง อุปกรณ์การเรียน และค่าใช้จ่ายพื้นฐานเพื่อให้เด็กได้เดินหน้าต่อ"
+  },
 
-    const PROJECTS = {
-      education: {
-        title:'เพื่อการศึกษา',
-        eyebrow:'โครงการเพื่อการศึกษา',
-        image:'images/Edu1.png',
-        cases:[
-          { id:'edu-001', title:'ทุนเรียนต่อระดับมัธยม', description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน', image:'images/Edu1.png', location:'ยะลา', raised:35000, goal:60000, status:'open', statusText:'เปิดรับบริจาค', badge:'ม.ปลาย' },
-          { id:'edu-002', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน', image:'images/Z3.png', location:'ปัตตานี', raised:22000, goal:45000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เปิดด่วน' },
-          { id:'edu-003', title:'ทุนเดินทางและอาหารกลางวัน', description:'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย', image:'images/Edu1.png', location:'นราธิวาส', raised:18000, goal:50000, status:'progress', statusText:'กำลังระดมทุน', badge:'นราธิวาส' },
-          { id:'edu-004', title:'ทุนค่าชุดนักเรียนและรองเท้า', description:'สนับสนุนค่าชุดนักเรียน รองเท้า และของใช้จำเป็นให้เด็กจากครอบครัวยากไร้ก่อนเปิดภาคเรียน', image:'images/Edu1.png', location:'สงขลา', raised:21000, goal:48000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'edu-005', title:'กองทุนหนังสือและอุปกรณ์การเรียน', description:'ช่วยจัดหาหนังสือ สมุด และอุปกรณ์การเรียนให้เด็กที่กำลังจะเปิดเทอมแต่ยังขาดความพร้อม', image:'images/Edu1.png', location:'ยะลา', raised:16000, goal:40000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' },
-          { id:'edu-006', title:'ทุนช่วยนักเรียนกลุ่มเสี่ยงหลุดจากระบบ', description:'ระดมทุนเพื่อช่วยค่าใช้จ่ายจำเป็นให้เด็กที่เสี่ยงต้องหยุดเรียนกลางคันได้เรียนต่อ', image:'images/Edu1.png', location:'ปัตตานี', raised:24000, goal:55000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' }
-        ]
-      },
+  zakat: {
+    title:"ซากาตเพื่อผู้ยากไร้",
+    eyebrow:"โครงการซากาต",
+    description:"ส่งต่อซากาตเพื่อช่วยเหลือผู้ยากไร้ตามหลักศาสนา ให้ผู้สูงอายุ แม่หม้าย และครอบครัวเปราะบางได้เข้าถึงปัจจัยพื้นฐาน",
+    image:"images/Z1.png",
+    raised:42000,
+    target:100000,
+    presets:[500,1000,2500,5000],
+    badges:["ซากาต","ผู้เปราะบาง","ช่วยต่อชีวิต"],
+    bankDesc:"กองทุนซากาตมูลนิธิคนช่วยฅน เพื่อช่วยเหลือผู้มีสิทธิได้รับซากาตอย่างเหมาะสม",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"กองทุนซากาตมูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"ซากาตคือการแบ่งปันที่เปลี่ยนชีวิต ผู้ที่เดือดร้อนจำนวนมากยังรอการเข้าถึงอาหาร ยา และค่าใช้จ่ายจำเป็น",
+    story2:"ทุกยอดที่ส่งต่อจะเป็นพลังให้กองทุนสามารถดูแลผู้ยากไร้ได้ต่อเนื่องและเป็นธรรม"
+  },
 
-      zakat: {
-        title:'ซากาตเพื่อผู้ยากไร้',
-        eyebrow:'โครงการซากาต',
-        image:'images/Z1.png',
-        cases:[
-          { id:'zakat-001', title:'มอบซากาตช่วยครอบครัวยากไร้', description:'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต', image:'images/Z1.png', location:'สงขลา', raised:42000, goal:100000, status:'open', statusText:'เปิดรับบริจาค', badge:'สงขลา' },
-          { id:'zakat-002', title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย', description:'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน', image:'images/Z1.png', location:'ปัตตานี', raised:30000, goal:80000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เปิดด่วน' },
-          { id:'zakat-003', title:'กองทุนยังชีพตามหลักซากาต', description:'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต', image:'images/Z1.png', location:'นราธิวาส', raised:15000, goal:70000, status:'progress', statusText:'กำลังระดมทุน', badge:'นราธิวาส' },
-          { id:'zakat-004', title:'ซากาตเพื่อค่าอาหารรายเดือน', description:'ช่วยค่าอาหารและของใช้จำเป็นรายเดือนแก่ครอบครัวยากไร้ในพื้นที่ห่างไกล', image:'images/Z1.png', location:'ยะลา', raised:28000, goal:65000, status:'open', statusText:'เปิดรับบริจาค', badge:'ยังชีพ' },
-          { id:'zakat-005', title:'ซากาตช่วยค่ายาและค่ารักษา', description:'ช่วยค่ารักษาพยาบาลและค่ายาจำเป็นให้ผู้ป่วยยากไร้และผู้สูงอายุไร้รายได้', image:'images/Z1.png', location:'สงขลา', raised:26000, goal:60000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ยารักษา' },
-          { id:'zakat-006', title:'ซากาตเพื่อเริ่มต้นชีวิตใหม่', description:'ช่วยครอบครัวที่เผชิญวิกฤตให้มีทุนประคองชีวิตเบื้องต้นและตั้งหลักได้อีกครั้ง', image:'images/Z1.png', location:'ปัตตานี', raised:22000, goal:58000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' }
-        ]
-      },
+  transport: {
+    title:"อาสาพามัยยิดกลับบ้าน",
+    eyebrow:"โครงการส่งกลับบ้าน",
+    description:"ช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนา เพื่อให้การเดินทางกลับบ้านของผู้เดือดร้อนเป็นไปอย่างปลอดภัยและสมศักดิ์ศรี",
+    image:"images/Z2.png",
+    raised:25000,
+    target:60000,
+    presets:[300,500,1000,3000],
+    badges:["เดินทางกลับบ้าน","ช่วยเร่งด่วน","ส่งต่ออย่างปลอดภัย"],
+    bankDesc:"ร่วมสนับสนุนภารกิจอาสาพามัยยิดกลับบ้าน และค่าใช้จ่ายในการเดินทาง",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"อาสาพามัยยิดกลับบ้าน มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"หลายเคสไม่ได้ต้องการเพียงเงิน แต่ต้องการโอกาสกลับไปหาครอบครัว ไปหาบ้าน และไปเริ่มต้นชีวิตใหม่",
+    story2:"การสนับสนุนของท่านช่วยค่าเดินทาง ค่าน้ำมัน และการประสานส่งต่ออย่างปลอดภัย"
+  },
 
-      transport: {
-        title:'อาสาพามัยยิดกลับบ้าน',
-        eyebrow:'โครงการส่งกลับบ้าน',
-        image:'images/Z2.png',
-        cases:[
-          { id:'transport-001', title:'ค่าขนย้ายกลับภูมิลำเนา', description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งกลับบ้านเกิด', image:'images/Z2.png', location:'กรุงเทพฯ → ปัตตานี', raised:28000, goal:45000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' },
-          { id:'transport-002', title:'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต', description:'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน', image:'images/Z2.png', location:'ชลบุรี → นราธิวาส', raised:18000, goal:50000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'transport-003', title:'ค่ารถส่งกลับจากภาคกลางสู่ชายแดนใต้', description:'ช่วยค่าเดินทางระยะไกลและค่าดำเนินการพื้นฐานในการส่งกลับบ้านอย่างเหมาะสม', image:'images/Z2.png', location:'สมุทรปราการ → ยะลา', raised:25000, goal:52000, status:'progress', statusText:'กำลังระดมทุน', badge:'เดินทางไกล' },
-          { id:'transport-004', title:'ช่วยค่ารถและเอกสารประกอบการส่งกลับ', description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าเอกสารที่จำเป็นในการเคลื่อนย้ายกลับภูมิลำเนา', image:'images/Z2.png', location:'กรุงเทพฯ → สงขลา', raised:20000, goal:43000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ฉุกเฉิน' },
-          { id:'transport-005', title:'กองทุนช่วยเหลือการเดินทางกลับบ้าน', description:'ระดมทุนสำหรับครอบครัวยากไร้ที่ต้องรับภาระค่าเดินทางและการส่งกลับบ้านเกิด', image:'images/Z2.png', location:'ภูเก็ต → ปัตตานี', raised:17000, goal:47000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'transport-006', title:'ช่วยค่าขนส่งและพิธีการพื้นฐาน', description:'ร่วมช่วยลดภาระครอบครัวที่ต้องการส่งกลับบ้านอย่างสมเกียรติในวันที่เปราะบางที่สุด', image:'images/Z2.png', location:'ระยอง → นราธิวาส', raised:23000, goal:49000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' }
-        ]
-      },
+  relief: {
+    title:"เพื่อการบรรเทาธารณภัย",
+    eyebrow:"โครงการบรรเทาธารณภัย",
+    description:"ช่วยเหลือผู้ประสบภัยเร่งด่วนทั่วประเทศ ทั้งถุงยังชีพ อุปกรณ์กู้ภัย และการลงพื้นที่ช่วยเหลือภาคสนาม",
+    image:"images/Z4.png",
+    raised:50000,
+    target:120000,
+    presets:[500,1000,3000,5000],
+    badges:["ถุงยังชีพ","ภัยพิบัติ","ภาคสนาม"],
+    bankDesc:"ร่วมสนับสนุนโครงการช่วยเหลือผู้ประสบภัยและการลงพื้นที่เร่งด่วน",
+    bankName:"ธนาคารอิสลามแห่งประเทศไทย",
+    bankNumber:"061-1-10425-3",
+    bankAccount:"ช่วยเหลือผู้ประสบภัย มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"เมื่อภัยมาเยือน ผู้ประสบเหตุไม่อาจรอได้ ความช่วยเหลือที่ทันเวลาหมายถึงโอกาสรอดและการตั้งหลักอีกครั้ง",
+    story2:"ทุกยอดสนับสนุนช่วยให้ทีมสามารถเตรียมถุงยังชีพ อุปกรณ์กู้ภัย และลงพื้นที่ช่วยเหลือได้เร็วขึ้น"
+  },
 
-      relief: {
-        title:'เพื่อการบรรเทาธารณภัย',
-        eyebrow:'โครงการบรรเทาธารณภัย',
-        image:'images/Z4.png',
-        cases:[
-          { id:'relief-001', title:'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง', description:'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด', image:'images/Z4.png', location:'ยะลา', raised:67000, goal:120000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ไฟไหม้' },
-          { id:'relief-002', title:'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม', description:'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน', image:'images/Z4.png', location:'นราธิวาส', raised:54000, goal:150000, status:'open', statusText:'เปิดรับบริจาค', badge:'อุทกภัย' },
-          { id:'relief-003', title:'ฟื้นฟูหลังคาบ้านหลังพายุถล่ม', description:'ช่วยซ่อมแซมหลังคาบ้านและของใช้จำเป็นแก่ครอบครัวที่ได้รับผลกระทบจากพายุรุนแรง', image:'images/Z4.png', location:'ปัตตานี', raised:32000, goal:90000, status:'progress', statusText:'กำลังระดมทุน', badge:'ลมพายุ' },
-          { id:'relief-004', title:'กองทุนอาหารและน้ำดื่มฉุกเฉิน', description:'จัดซื้ออาหารพร้อมทาน น้ำดื่ม และเวชภัณฑ์เบื้องต้นให้ผู้ประสบภัยในจุดวิกฤต', image:'images/Z4.png', location:'สงขลา', raised:28000, goal:85000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ฉุกเฉิน' },
-          { id:'relief-005', title:'ช่วยเหลือเครื่องนอนและของใช้หลังน้ำลด', description:'ระดมทุนจัดซื้อที่นอน ผ้าห่ม และของใช้ในครัวเรือนเพื่อฟื้นฟูหลังน้ำท่วม', image:'images/Z4.png', location:'ยะลา', raised:24000, goal:70000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'relief-006', title:'ฟื้นฟูครอบครัวหลังภัยพิบัติ', description:'ช่วยตั้งต้นชีวิตใหม่ให้ครอบครัวที่สูญเสียทรัพย์สินจากเหตุภัยพิบัติรุนแรง', image:'images/Z4.png', location:'นราธิวาส', raised:36000, goal:110000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' }
-        ]
-      },
+  disaster: {
+    title:"ช่วยเหลือผู้ประสบภัย",
+    eyebrow:"โครงการช่วยเหลือผู้ประสบภัย",
+    description:"ช่วยเหลือผู้ประสบอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ เพื่อให้ครอบครัวที่เดือดร้อนมีแรงตั้งต้นใหม่อีกครั้ง",
+    image:"images/Z4.png",
+    raised:70000,
+    target:160000,
+    presets:[500,1000,3000,5000],
+    badges:["ฟื้นฟูหลังวิกฤต","ฉุกเฉิน","ช่วยต่อชีวิต"],
+    bankDesc:"ร่วมช่วยเหลือผู้ประสบภัยและสนับสนุนการฟื้นฟูหลังเหตุการณ์",
+    bankName:"ธนาคารอิสลามแห่งประเทศไทย",
+    bankNumber:"061-1-10425-3",
+    bankAccount:"ช่วยเหลือผู้ประสบภัย มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"อุทกภัยและภัยพิบัติทำให้หลายครอบครัวสูญเสียทั้งบ้านและความมั่นคงทางใจ ทุกวินาทีของความช่วยเหลือมีความหมาย",
+    story2:"ยอดสนับสนุนของท่านจะช่วยเรื่องอาหาร น้ำดื่ม ของใช้จำเป็น และการฟื้นฟูชีวิตหลังวิกฤต"
+  },
 
-      housing: {
-        title:'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
-        eyebrow:'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้',
-        image:'images/Z5.png',
-        cases:[
-          { id:'housing-001', title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ', description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย', image:'images/Z5.png', location:'สงขลา', raised:76000, goal:180000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'บ้านพัง' },
-          { id:'housing-002', title:'สร้างบ้านใหม่ให้ครอบครัวยากไร้', description:'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน', image:'images/Z5.png', location:'ปัตตานี', raised:92000, goal:250000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'housing-003', title:'ซ่อมห้องน้ำและพื้นบ้านให้ผู้ป่วยติดเตียง', description:'ช่วยปรับปรุงพื้นบ้านและห้องน้ำเพื่อให้ผู้ป่วยติดเตียงใช้ชีวิตได้ปลอดภัยขึ้น', image:'images/Z5.png', location:'ยะลา', raised:41000, goal:98000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ซ่อมด่วน' },
-          { id:'housing-004', title:'ต่อเติมบ้านกันฝนให้แม่ลูกอ่อน', description:'ช่วยต่อเติมหลังคา ผนัง และพื้นที่อยู่อาศัยให้ครอบครัวแม่ลูกอ่อนที่บ้านทรุดโทรม', image:'images/Z5.png', location:'นราธิวาส', raised:38000, goal:105000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเติม' },
-          { id:'housing-005', title:'ซ่อมบ้านหลังน้ำท่วมเสียหาย', description:'ช่วยซ่อมผนัง พื้น และอุปกรณ์บ้านเรือนที่เสียหายจากน้ำท่วมให้กลับมาอยู่อาศัยได้', image:'images/Z5.png', location:'ปัตตานี', raised:35000, goal:90000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'housing-006', title:'ปรับปรุงบ้านเสี่ยงพังถล่ม', description:'ระดมทุนเพื่อเสริมโครงสร้างบ้านและแก้จุดเสี่ยงอันตรายให้ครอบครัวผู้ยากไร้', image:'images/Z5.png', location:'สงขลา', raised:47000, goal:120000, status:'progress', statusText:'กำลังระดมทุน', badge:'ความปลอดภัย' }
-        ]
-      },
+  orphan: {
+    title:"ช่วยเหลือเด็กกำพร้า",
+    eyebrow:"โครงการเด็กกำพร้า",
+    description:"ดูแลและสนับสนุนเด็กกำพร้าให้มีคุณภาพชีวิตที่ดีขึ้น ทั้งด้านความเป็นอยู่ การศึกษา และการเติบโตอย่างปลอดภัย",
+    image:"images/Z3.png",
+    raised:26000,
+    target:70000,
+    presets:[300,500,1000,3000],
+    badges:["เด็กกำพร้า","คุณภาพชีวิต","การศึกษา"],
+    bankDesc:"ร่วมดูแลเด็กกำพร้าและค่าใช้จ่ายพื้นฐานในการดำรงชีวิต",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"กองทุนช่วยเหลือเด็กกำพร้า มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"เด็กกำพร้าหลายคนยังต้องการโอกาสในการเติบโตอย่างปลอดภัย มีอาหาร มีการศึกษา และมีคนคอยประคับประคอง",
+    story2:"ทุกการให้ของท่านคือการเติมความมั่นคงและศักดิ์ศรีให้ชีวิตเล็ก ๆ ได้เดินต่อ"
+  },
 
-      disaster: {
-        title:'ช่วยเหลือผู้ประสบภัย',
-        eyebrow:'โครงการช่วยเหลือผู้ประสบภัย',
-        image:'images/Z4.png',
-        cases:[
-          { id:'disaster-001', title:'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้', description:'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง', image:'images/Z4.png', location:'ยะลา', raised:48000, goal:130000, status:'progress', statusText:'กำลังระดมทุน', badge:'เร่งฟื้นฟู' },
-          { id:'disaster-002', title:'กองทุนตั้งต้นชีวิตใหม่หลังสูญเสียบ้าน', description:'ช่วยครอบครัวที่สูญเสียที่อยู่อาศัยและทรัพย์สินจากเหตุภัยพิบัติให้มีเงินตั้งต้นชีวิตใหม่', image:'images/Z4.png', location:'ปัตตานี', raised:26000, goal:88000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'disaster-003', title:'ช่วยผู้ประสบเหตุเฉียบพลันไร้ที่พัก', description:'จัดหาที่พักชั่วคราว อาหาร และของใช้เบื้องต้นให้ครอบครัวที่เพิ่งประสบเหตุร้ายแรง', image:'images/Z4.png', location:'นราธิวาส', raised:31000, goal:76000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ฉุกเฉิน' },
-          { id:'disaster-004', title:'ฟื้นฟูบ้านและอุปกรณ์จำเป็นหลังวิกฤต', description:'ช่วยค่าใช้จ่ายด้านของใช้จำเป็น เฟอร์นิเจอร์ และเครื่องนอนให้กลับมาใช้ชีวิตได้ปกติ', image:'images/Z4.png', location:'สงขลา', raised:34000, goal:96000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' },
-          { id:'disaster-005', title:'กองทุนช่วยเหลือครอบครัวสูญเสียรายได้', description:'ระดมทุนช่วยครอบครัวที่เสียรายได้หลักจากเหตุฉุกเฉินและยังไม่มีทางตั้งหลักในระยะสั้น', image:'images/Z4.png', location:'ยะลา', raised:29000, goal:84000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' },
-          { id:'disaster-006', title:'ฟื้นฟูคุณภาพชีวิตผู้ประสบภัยระยะยาว', description:'ช่วยเหลือระยะต่อเนื่องเพื่อให้ครอบครัวกลับมาดำเนินชีวิต เรียน ทำงาน และอยู่ร่วมกันได้มั่นคงขึ้น', image:'images/Z4.png', location:'ปัตตานี', raised:37000, goal:102000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' }
-        ]
-      },
+  livelihood: {
+    title:"โครงการสร้างงานสร้างอาชีพ",
+    eyebrow:"โครงการสร้างงานสร้างอาชีพ",
+    description:"สนับสนุนทุนตั้งต้น อุปกรณ์ทำมาหากิน และโอกาสในการประกอบอาชีพ เพื่อให้ครอบครัวยากไร้มีรายได้อย่างยั่งยืนและพึ่งพาตนเองได้",
+    image:"images/Z6.png",
+    raised:138000,
+    target:320000,
+    presets:[500,1000,3000,5000],
+    badges:["สร้างอาชีพ","ทุนตั้งต้น","รายได้ยั่งยืน"],
+    bankDesc:"ร่วมสนับสนุนทุนตั้งต้นและอุปกรณ์ประกอบอาชีพ เพื่อให้ครอบครัวยากไร้มีรายได้อย่างต่อเนื่อง",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"โครงการสร้างงานสร้างอาชีพ มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"การช่วยเหลือที่ดีที่สุดไม่ใช่แค่การประคองชีวิตในวันนี้ แต่คือการเปิดโอกาสให้เจ้าของเคสมีงาน มีรายได้ และพึ่งพาตนเองได้ในวันข้างหน้า",
+    story2:"ทุกยอดสนับสนุนจะเปลี่ยนอุปกรณ์เล็ก ๆ ให้กลายเป็นจุดเริ่มต้นของอาชีพ รายได้ และศักดิ์ศรีของทั้งครอบครัว"
+  },
 
-      orphan: {
-        title:'ช่วยเหลือเด็กกำพร้า',
-        eyebrow:'โครงการเด็กกำพร้า',
-        image:'images/Z3.png',
-        cases:[
-          { id:'orphan-001', title:'ทุนดูแลเด็กกำพร้ารายเดือน', description:'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น', image:'images/Z3.png', location:'นราธิวาส', raised:26000, goal:70000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'orphan-002', title:'อุปกรณ์การเรียนเด็กกำพร้า', description:'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน', image:'images/Z3.png', location:'ปัตตานี', raised:14000, goal:42000, status:'progress', statusText:'กำลังระดมทุน', badge:'การศึกษา' },
-          { id:'orphan-003', title:'กองทุนอาหารและนมสำหรับเด็กกำพร้า', description:'ช่วยค่าอาหาร นม และของใช้ประจำวันให้เด็กกำพร้าที่อยู่ในความดูแลของผู้สูงอายุ', image:'images/Z3.png', location:'ยะลา', raised:18000, goal:50000, status:'open', statusText:'เปิดรับบริจาค', badge:'อาหาร' },
-          { id:'orphan-004', title:'ค่ารักษาและค่ายาเด็กกำพร้าป่วยเรื้อรัง', description:'ระดมทุนเพื่อช่วยค่ารักษา ค่ายา และค่าเดินทางไปโรงพยาบาลของเด็กกำพร้าที่ป่วยต่อเนื่อง', image:'images/Z3.png', location:'สงขลา', raised:22000, goal:47000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' },
-          { id:'orphan-005', title:'ทุนช่วยค่าเดินทางไปโรงเรียนเด็กกำพร้า', description:'ช่วยค่าเดินทางและค่าใช้จ่ายพื้นฐานในการเรียนให้เด็กกำพร้าที่อยู่ไกลโรงเรียน', image:'images/Z3.png', location:'ปัตตานี', raised:17000, goal:46000, status:'progress', statusText:'กำลังระดมทุน', badge:'ต่อเนื่อง' },
-          { id:'orphan-006', title:'ทุนเครื่องใช้จำเป็นสำหรับเด็กกำพร้า', description:'สนับสนุนเสื้อผ้า ชุดนักเรียน รองเท้า และของใช้ส่วนตัวเพื่อคุณภาพชีวิตที่ดีขึ้น', image:'images/Z3.png', location:'นราธิวาส', raised:19000, goal:52000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' }
-        ]
-      },
+  rewire: {
+    title:"โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้",
+    eyebrow:"โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้",
+    description:"ช่วยเปลี่ยนสายไฟ อุปกรณ์ไฟฟ้า และจุดเสี่ยงอันตรายในบ้านของผู้ยากไร้ เพื่อให้บ้านปลอดภัย ลดความเสี่ยงไฟไหม้ และอยู่อาศัยได้อย่างสบายใจขึ้น",
+    image:"images/Z7.png",
+    raised:148000,
+    target:360000,
+    presets:[500,1000,3000,5000],
+    badges:["เปลี่ยนสายไฟ","ลดเสี่ยงไฟไหม้","ความปลอดภัยในบ้าน"],
+    bankDesc:"ร่วมสนับสนุนการเปลี่ยนสายไฟและปรับปรุงระบบไฟฟ้าในบ้านผู้ยากไร้ เพื่อป้องกันอัคคีภัยและอุบัติเหตุ",
+    bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",
+    bankNumber:"-",
+    bankAccount:"โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้ มูลนิธิคนช่วยฅน",
+    contact:"081-9597060",
+    story1:"บ้านที่มีสายไฟเก่า ไฟรั่ว หรือระบบไฟไม่ปลอดภัย คือความเสี่ยงเงียบที่อาจกลายเป็นโศกนาฏกรรมได้ทุกเมื่อ โดยเฉพาะในบ้านของผู้สูงอายุ เด็ก และผู้ป่วยติดเตียง",
+    story2:"ทุกการสนับสนุนจะช่วยเปลี่ยนความเสี่ยงให้กลายเป็นความปลอดภัย คืนความอุ่นใจให้บ้านของผู้ยากไร้ได้อยู่อาศัยอย่างมั่นคงขึ้น"
+  }
+};
 
-      livelihood: {
-        title:'โครงการสร้างงานสร้างอาชีพ',
-        eyebrow:'โครงการสร้างงานสร้างอาชีพ',
-        image:'images/Z6.png',
-        cases:[
-          { id:'livelihood-001', title:'ทุนตั้งต้นร้านน้ำชาชุมชน', description:'ช่วยทุนเริ่มต้นสำหรับอุปกรณ์และวัตถุดิบ เพื่อให้ผู้ดูแลครอบครัวได้เริ่มต้นขายน้ำชาและของว่างในชุมชน', image:'images/Z6.png', location:'ยะลา', raised:22000, goal:55000, status:'open', statusText:'เปิดรับบริจาค', badge:'ค้าขาย' },
-          { id:'livelihood-002', title:'อุปกรณ์รถเข็นขายอาหาร', description:'สนับสนุนรถเข็น เตาแก๊ส และอุปกรณ์ขายอาหารให้แม่เลี้ยงเดี่ยวที่ต้องการสร้างรายได้เลี้ยงลูก', image:'images/Z6.png', location:'ปัตตานี', raised:30000, goal:68000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' },
-          { id:'livelihood-003', title:'เครื่องมือทำขนมพื้นบ้านขาย', description:'ช่วยซื้ออุปกรณ์ทำขนม เตาอบ และภาชนะสำหรับครอบครัวที่ต้องการสร้างรายได้จากการขายขนมพื้นบ้าน', image:'images/Z6.png', location:'นราธิวาส', raised:18000, goal:50000, status:'progress', statusText:'กำลังระดมทุน', badge:'งานฝีมือ' },
-          { id:'livelihood-004', title:'ทุนอุปกรณ์ปลูกผักเลี้ยงชีพ', description:'ระดมทุนสำหรับเมล็ดพันธุ์ ปุ๋ย และอุปกรณ์พื้นฐาน เพื่อเริ่มต้นปลูกผักขายและลดรายจ่ายในครัวเรือน', image:'images/Z6.png', location:'สงขลา', raised:16000, goal:45000, status:'open', statusText:'เปิดรับบริจาค', badge:'เกษตร' },
-          { id:'livelihood-005', title:'จักรเย็บผ้าสร้างอาชีพ', description:'ช่วยจัดซื้อจักรเย็บผ้าและอุปกรณ์ตัดเย็บสำหรับหญิงหม้ายที่ต้องการรับงานเย็บผ้าเพื่อหารายได้ประจำ', image:'images/Z6.png', location:'ยะลา', raised:24000, goal:60000, status:'progress', statusText:'กำลังระดมทุน', badge:'เย็บผ้า' },
-          { id:'livelihood-006', title:'ชุดอุปกรณ์ล้างรถเคลื่อนที่', description:'สนับสนุนอุปกรณ์ล้างรถแบบเคลื่อนที่เพื่อให้หัวหน้าครอบครัวที่ตกงานสามารถเริ่มสร้างรายได้ได้ทันที', image:'images/Z6.png', location:'ปัตตานี', raised:28000, goal:65000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เปิดทางรายได้' }
-        ]
-      },
+const params = new URLSearchParams(location.search);
+const slug = params.get('project') || 'housing';
+const caseId = params.get('case') || '';
+const project = PROJECTS[slug] || PROJECTS.housing;
 
-      rewire: {
-        title:'โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้',
-        eyebrow:'โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้',
-        image:'images/Z7.png',
-        cases:[
-          { id:'rewire-001', title:'เปลี่ยนสายไฟบ้านไม้เก่าผู้สูงอายุ', description:'ช่วยเปลี่ยนสายไฟเก่าและตู้ควบคุมไฟในบ้านไม้ที่เสื่อมสภาพและเสี่ยงไฟฟ้าลัดวงจร', image:'images/Z7.png', location:'สงขลา', raised:26000, goal:62000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เสี่ยงไฟไหม้' },
-          { id:'rewire-002', title:'เปลี่ยนระบบไฟบ้านแม่ลูกอ่อน', description:'สนับสนุนค่าวัสดุและค่าแรงสำหรับปรับปรุงระบบไฟบ้านที่มีสายไฟชำรุดและจุดเสียบไม่ปลอดภัย', image:'images/Z7.png', location:'ยะลา', raised:18000, goal:54000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'rewire-003', title:'แก้ไฟรั่วบ้านผู้ป่วยติดเตียง', description:'ช่วยเปลี่ยนสายไฟและอุปกรณ์ไฟฟ้าจุดเสี่ยงในบ้านผู้ป่วยติดเตียงเพื่อป้องกันอุบัติเหตุร้ายแรง', image:'images/Z7.png', location:'ปัตตานี', raised:32000, goal:70000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'ฉุกเฉิน' },
-          { id:'rewire-004', title:'เปลี่ยนสายเมนไฟบ้านชำรุด', description:'ระดมทุนเปลี่ยนสายเมนไฟ สวิตช์ และเบรกเกอร์ในบ้านที่ใช้งานมานานและมีสภาพเสื่อมโทรม', image:'images/Z7.png', location:'นราธิวาส', raised:21000, goal:58000, status:'progress', statusText:'กำลังระดมทุน', badge:'ความปลอดภัย' },
-          { id:'rewire-005', title:'ปรับปรุงไฟส่องสว่างในบ้านผู้ยากไร้', description:'ช่วยติดตั้งไฟส่องสว่างและเดินสายไฟใหม่ภายในบ้านเพื่อให้ผู้สูงอายุและเด็กอยู่อาศัยได้ปลอดภัยขึ้น', image:'images/Z7.png', location:'สงขลา', raised:17000, goal:50000, status:'open', statusText:'เปิดรับบริจาค', badge:'เปิดรับ' },
-          { id:'rewire-006', title:'เปลี่ยนสายไฟทั้งหลังบ้านเสี่ยงอันตราย', description:'ช่วยเปลี่ยนสายไฟทั้งหลังในบ้านที่มีการต่อพ่วงไม่ปลอดภัยและมีความเสี่ยงเกิดอัคคีภัยได้ทุกเวลา', image:'images/Z7.png', location:'ยะลา', raised:34000, goal:78000, status:'urgent', statusText:'ต้องการเร่งด่วน', badge:'เร่งด่วน' }
-        ]
-      }
-    };
+const DEFAULT_CASE_IDS = {
+  housing: 'housing-001',
+  education: 'edu-001',
+  zakat: 'zakat-001',
+  transport: 'transport-001',
+  relief: 'relief-001',
+  disaster: 'disaster-001',
+  orphan: 'orphan-001',
+  livelihood: 'livelihood-001',
+  rewire: 'rewire-001'
+};
 
-    const params = new URLSearchParams(location.search);
-    const projectSlug = params.get('project') || 'education';
-    const caseId = params.get('case') || '';
+const normalizedCaseId = caseId || DEFAULT_CASE_IDS[slug] || '';
+let selectedAmount = project.presets[1] || 1000;
+const byId = (id) => document.getElementById(id);
+const fmt = (n) => '฿ ' + Number(n || 0).toLocaleString('th-TH');
+const progressPercent = Math.max(0, Math.min(100, Math.round((project.raised / Math.max(project.target,1)) * 100)));
 
-    const project = PROJECTS[projectSlug] || PROJECTS.education;
-    const currentCase = project.cases.find(c => c.id === caseId) || project.cases[0];
-    const pct = percent(currentCase.raised, currentCase.goal);
+byId('hero').style.backgroundImage = `url("${project.image}")`;
+byId('summaryHero').style.backgroundImage = `url("${project.image}")`;
+byId('heroTitle').textContent = project.title;
+byId('heroDesc').textContent = project.description;
+byId('heroEyebrow').textContent = project.eyebrow;
+byId('summaryTitle').textContent = project.title;
+byId('summaryMini').textContent = project.eyebrow;
+byId('sumProject').textContent = project.title;
+byId('sumCase').textContent = normalizedCaseId || '-';
+byId('chipProjectTitle').textContent = project.title;
+byId('bankDesc').textContent = project.bankDesc;
+byId('bankName').textContent = project.bankName;
+byId('bankNumber').textContent = project.bankNumber;
+byId('bankAccount').textContent = project.bankAccount;
+byId('contactLine').textContent = project.contact;
+byId('story1').textContent = project.story1;
+byId('story2').textContent = project.story2;
+byId('raisedText').textContent = fmt(project.raised);
+byId('targetText').textContent = fmt(project.target);
+byId('chipRaised').textContent = fmt(project.raised);
+byId('chipTarget').textContent = fmt(project.target);
+byId('progressBar').style.width = progressPercent + '%';
+byId('percentText').textContent = progressPercent + '%';
+byId('heroBadges').innerHTML = (project.badges || []).map(text => `<div class="hero-badge">${text}</div>`).join('');
 
-    function setStatusChip(status, text){
-      const el = document.getElementById('statusChip');
-      el.textContent = text || 'เปิดรับบริจาค';
-      el.className = 'status-chip ' + (status === 'urgent' ? 'urgent' : status === 'progress' ? 'progress' : 'open');
-    }
+const detailHref = `Donate-case-detail-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(normalizedCaseId)}`;
+const storyHref = `Donate-case-story-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(normalizedCaseId)}`;
+const casesHref = `donate-cases.html?project=${encodeURIComponent(slug)}`;
 
-    document.title = `${currentCase.title} | ฟอร์มบริจาค`;
-    document.getElementById('backToDetail').href = `Donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
-    document.getElementById('goDetailBtn').href = `Donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
-    document.getElementById('goStoryBtn').href = `Donate-case-story-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
-    document.getElementById('goStoryBtnSide').href = `Donate-case-story-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
-    document.getElementById('goCasesBtn').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
-    document.getElementById('footerBackDetail').href = `Donate-case-detail-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+byId('backToDetail').href = detailHref;
+byId('goCaseDetail').href = detailHref;
+byId('goCaseStory').href = storyHref;
+byId('goBackCases').href = casesHref;
+byId('footerBackCases').href = casesHref;
 
-    document.getElementById('hero').style.backgroundImage = `url("${currentCase.image}")`;
-    document.getElementById('heroSideImage').style.backgroundImage = `url("${currentCase.image}")`;
-    document.getElementById('sidebarHero').style.backgroundImage = `url("${currentCase.image}")`;
+function renderAmounts(){
+  byId('amountGrid').innerHTML = project.presets.map(v => `<button class="amount-btn ${v===selectedAmount?'active':''}" data-amount="${v}">${fmt(v)}</button>`).join('');
+  [...document.querySelectorAll('.amount-btn')].forEach(btn => btn.addEventListener('click', ()=>{
+    selectedAmount = Number(btn.dataset.amount);
+    byId('amountCustom').value = selectedAmount;
+    renderAmounts();
+    syncSummary();
+  }));
+}
+function syncSummary(){
+  const custom = Number(byId('amountCustom').value || selectedAmount || 0);
+  if (custom > 0) selectedAmount = custom;
+  byId('summaryAmount').textContent = fmt(selectedAmount);
+  byId('sumAmount').textContent = fmt(selectedAmount);
+}
+byId('amountCustom').value = selectedAmount;
+byId('amountCustom').addEventListener('input', syncSummary);
+renderAmounts();
+syncSummary();
 
-    document.getElementById('heroEyebrow').textContent = project.eyebrow;
-    document.getElementById('heroTitle').textContent = `ร่วมบริจาคเคส: ${currentCase.title}`;
-    document.getElementById('heroDesc').textContent = currentCase.description;
-    document.getElementById('heroBadge1').textContent = project.title;
-    document.getElementById('heroBadge2').textContent = currentCase.statusText || 'เปิดรับบริจาค';
-    document.getElementById('heroBadge3').textContent = currentCase.badge || 'พร้อมสนับสนุน';
-
-    document.getElementById('heroSideMini').textContent = 'Donation Form';
-    document.getElementById('heroSideTitle').textContent = 'ร่วมสร้างการเปลี่ยนแปลง';
-    document.getElementById('heroSideText').textContent = 'ทุกการให้ในเคสนี้จะช่วยผลักดันให้เป้าหมายของการช่วยเหลือเกิดขึ้นได้เร็วขึ้นและมีผลลัพธ์ชัดเจนขึ้น';
-
-    document.getElementById('summaryProject').textContent = project.title;
-    document.getElementById('summaryCase').textContent = currentCase.title;
-    document.getElementById('summaryLocation').textContent = currentCase.location || '-';
-
-    document.getElementById('sidebarMini').textContent = project.eyebrow;
-    document.getElementById('sidebarTitle').textContent = currentCase.title;
-    document.getElementById('raisedText').textContent = fmt(currentCase.raised);
-    document.getElementById('goalText').textContent = fmt(currentCase.goal);
-    document.getElementById('percentText').textContent = pct + '%';
-    document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('caseText').textContent = currentCase.description;
-
-    setStatusChip(currentCase.status, currentCase.statusText);
-
-    const amountInput = document.getElementById('amount');
-    const amountButtons = Array.from(document.querySelectorAll('.amount-btn'));
-    amountButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        amountButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        amountInput.value = btn.dataset.amount;
-      });
-    });
-
-    document.getElementById('submitBtn').addEventListener('click', () => {
-      const donorName = document.getElementById('donorName').value.trim();
-      const amount = document.getElementById('amount').value.trim();
-      const paymentMethod = document.getElementById('paymentMethod').value;
-
-      if (!amount || Number(amount) <= 0) {
-        alert('กรุณาระบุจำนวนเงินบริจาค');
-        amountInput.focus();
-        return;
-      }
-
-      if (!donorName) {
-        alert('กรุณากรอกชื่อผู้บริจาค');
-        document.getElementById('donorName').focus();
-        return;
-      }
-
-      if (!paymentMethod) {
-        alert('กรุณาเลือกช่องทางที่ต้องการบริจาค');
-        document.getElementById('paymentMethod').focus();
-        return;
-      }
-
-      document.getElementById('successBox').style.display = 'block';
-      document.getElementById('successBox').scrollIntoView({ behavior:'smooth', block:'nearest' });
-    });
-  </script>
+byId('submitBtn').addEventListener('click', ()=>{
+  syncSummary();
+  const n = byId('successNote');
+  n.style.display='block';
+  n.textContent = `รับข้อมูลการสนับสนุนโครงการ "${project.title}" จำนวน ${fmt(selectedAmount)} เรียบร้อยในโหมด Demo`;
+  window.scrollTo({top:n.getBoundingClientRect().top + window.scrollY - 120, behavior:'smooth'});
+});
+</script>
 </body>
 </html>

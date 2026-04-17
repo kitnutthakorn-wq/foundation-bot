@@ -1,73 +1,290 @@
-<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>donate-form-promax</title>
-  <style>
-    :root{
-      --brand:#0b7c86;--brand-dark:#163c72;--accent:#1f8f4d;--bg:#edf2f5;--card:#ffffff;
-      --text:#183042;--muted:#6b7b88;--line:#d9e3ea;--danger:#c0392b;--warning:#d97706;
-      --shadow:0 18px 40px rgba(18,52,77,.10);--radius:24px;--max:1180px;
-    }
-    *{box-sizing:border-box} html{scroll-behavior:smooth}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;background:linear-gradient(180deg,#f6fafb 0%, var(--bg) 100%);color:var(--text)}
-    a{text-decoration:none;color:inherit} img{max-width:100%;display:block}
-    .container{width:min(var(--max),calc(100% - 32px));margin:0 auto}
-    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(11,124,134,.10)}
-    .nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;align-items:center;gap:14px;font-weight:800}
-    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));box-shadow:0 10px 25px rgba(11,124,134,.25)}
-    .navlinks{display:flex;gap:10px;flex-wrap:wrap}
-    .navlinks a,.ghost-btn,.primary-btn{border-radius:999px;padding:11px 16px;font-weight:700;font-size:14px;transition:.2s ease}
-    .navlinks a,.ghost-btn{background:#fff;border:1px solid var(--line)}
-    .primary-btn{background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;border:none;box-shadow:0 12px 24px rgba(11,124,134,.25)}
-    .hero{padding:34px 0 18px}
-    .hero-card{background:radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 30%),linear-gradient(135deg,var(--brand) 0%, var(--brand-dark) 100%);border-radius:32px;padding:34px;color:#fff;box-shadow:0 24px 50px rgba(22,60,114,.18);overflow:hidden}
-    .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700}
-    h1{margin:14px 0 10px;font-size:clamp(30px,5vw,52px);line-height:1.08}
-    .lead{font-size:16px;line-height:1.8;color:rgba(255,255,255,.92);max-width:700px}
-    .hero-stat-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
-    .hero-stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:16px}
-    .hero-stat .num{font-size:24px;font-weight:800}
-    .visual{min-height:320px;border-radius:28px;background:linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.04)), url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1200&q=80') center/cover;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.18)}
-    .visual-overlay{position:absolute;inset:auto 18px 18px 18px;background:rgba(255,255,255,.94);color:var(--text);border-radius:22px;padding:16px;box-shadow:var(--shadow)}
-    .section{padding:26px 0} .section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:18px}
-    .section-head h2{margin:0;font-size:30px} .muted{color:var(--muted)}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .story{display:grid;grid-template-columns:.95fr 1.05fr;gap:22px;align-items:start}
-    .form-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
-    .card{background:var(--card);border:1px solid rgba(9,50,74,.08);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
-    .card-body,.panel{padding:22px}
-    .thumb{height:220px;background:#dfe9ee center/cover no-repeat}
-    .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#f3f8fa;border:1px solid var(--line);font-size:12px;font-weight:800}
-    .badge.urgent{background:#fff3ef;color:var(--danger);border-color:#ffd5ca}
-    .badge.warning{background:#fff8e8;color:var(--warning);border-color:#f4dfad}
-    .badge.success{background:#eff9f1;color:var(--accent);border-color:#cfead6}
-    .title{font-size:22px;font-weight:800;line-height:1.3;margin:6px 0 8px}
-    .desc{color:var(--muted);line-height:1.75}
-    .meta{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0 0;color:var(--muted);font-size:14px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-    .price-box{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
-    .price{padding:16px;border-radius:18px;background:#f7fbfc;border:1px solid var(--line);text-align:center;font-weight:800}
-    .cover{border-radius:28px;min-height:460px;background:center/cover no-repeat;box-shadow:var(--shadow)}
-    .timeline{display:grid;gap:12px}
-    .step{padding:16px;border:1px solid var(--line);border-radius:18px;background:#fff}
-    .field{display:grid;gap:8px;margin-bottom:14px} label{font-weight:700}
-    input,select,textarea{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:#fff;font:inherit;color:inherit}
-    textarea{min-height:130px;resize:vertical}
-    .summary-list{display:grid;gap:12px}
-    .summary-item{display:flex;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
-    .footer{padding:28px 0 42px;color:var(--muted)}
-    .footer-card{padding:22px;border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
-    @media (max-width:980px){.hero-grid,.grid-3,.story,.form-grid,.hero-stat-wrap,.price-box{grid-template-columns:1fr}}
-    @media (max-width:720px){.container{width:min(var(--max),calc(100% - 20px))}.hero-card{padding:22px;border-radius:26px}.thumb{height:200px}.navlinks{display:none}.section-head h2{font-size:24px}.title{font-size:20px}}
-  </style>
-</head><body>
-<div class="topbar"><div class="container nav">
-<a class="brand" href="donate-cases.html"><div class="logo"></div><div><div>Khon Chuay Khon</div><div style="font-size:12px;color:#6b7b88;font-weight:700">Final Pack Theme</div></div></a>
-<div class="navlinks"><a href="donate-cases.html">หน้าเคส</a><a href="donate-detail.html">รายละเอียดและบริจาค</a><a href="case-story.html">อ่านเรื่องราวเคส</a><a href="donate-form-promax.html">ฟอร์มบริจาค</a></div>
-</div></div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ร่วมสนับสนุนโครงการ | ProMAX Donation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef3f7;
+    --card:#ffffff;
+    --line:#d9e2ec;
+    --text:#16324f;
+    --muted:#6b7280;
+    --brand:#0b7c86;
+    --brand-2:#19a84a;
+    --yellow:#ffcc29;
+    --shadow:0 18px 40px rgba(18,36,58,.12);
+    --shadow-soft:0 10px 24px rgba(18,36,58,.07);
+    --hero-overlay:linear-gradient(90deg,rgba(7,25,40,.86) 0%, rgba(7,25,40,.72) 36%, rgba(7,25,40,.36) 68%, rgba(7,25,40,.18) 100%);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text)}
+  a{text-decoration:none;color:inherit}
+  .topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(238,243,247,.84);border-bottom:1px solid rgba(255,255,255,.7)}
+  .topbar-inner{max-width:1240px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .back-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;border:none;border-radius:15px;background:linear-gradient(135deg,#3d72f4,#2457d6);color:#fff;padding:0 16px;font-size:16px;font-weight:700;box-shadow:0 12px 22px rgba(36,87,214,.25)}
+  .topmeta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;font-weight:500}
+  .dot{width:8px;height:8px;border-radius:999px;background:var(--brand-2);box-shadow:0 0 0 5px rgba(25,168,74,.12)}
+  .hero{position:relative;min-height:560px;color:#fff;overflow:hidden;background:#16324f center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:var(--hero-overlay)}
+  .hero-inner{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:70px 18px 86px;display:grid;grid-template-columns:minmax(0,680px) 1fr;gap:26px;align-items:end}
+  .eyebrow{display:inline-block;padding:10px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-weight:700;background:rgba(255,255,255,.08);margin-bottom:18px}
+  .hero h1{margin:0 0 14px;font-size:58px;line-height:1.03;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.22)}
+  .hero p{margin:0 0 22px;font-size:20px;line-height:1.75;max-width:760px;color:rgba(255,255,255,.95)}
+  .hero-badges{display:flex;flex-wrap:wrap;gap:12px}
+  .hero-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:10px 14px;font-weight:700;font-size:15px}
+  .main{margin-top:-58px;position:relative;z-index:2}
+  .layout{max-width:1240px;margin:0 auto;padding:0 18px 46px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:24px;align-items:start}
+  .panel,.summary-card{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+  .panel-head{padding:24px 26px 0}
+  .panel-body{padding:26px}
+  .section-title{margin:0 0 8px;font-size:34px;line-height:1.15;letter-spacing:-.02em}
+  .section-lead{margin:0;color:var(--muted);font-size:17px;line-height:1.7}
+  .project-strip{margin-top:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .project-chip{background:#f3f7fb;border:1px solid #dde6ef;border-radius:18px;padding:14px}
+  .project-chip .label{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .project-chip .value{font-size:18px;font-weight:700;line-height:1.2}
+  .nav-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .nav-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:#fff;font-weight:700;color:var(--text)}
+  .amount-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+  .amount-btn{border:none;border-radius:18px;min-height:64px;background:#eef3f8;color:#17324f;font-size:22px;font-weight:800;cursor:pointer;transition:.18s ease all;box-shadow:inset 0 0 0 1px #dbe4ee;font-family:'Kanit',sans-serif}
+  .amount-btn.active{background:linear-gradient(135deg,var(--brand),#1e97a1);color:#fff;box-shadow:none}
+  .field{margin-top:16px}
+  .field label{display:block;margin-bottom:8px;font-size:15px;font-weight:700;color:#32465d}
+  .field input,.field textarea{width:100%;border:1px solid #d7e1ea;border-radius:16px;min-height:54px;padding:0 16px;font-size:16px;background:#fff;color:var(--text);font-family:'Kanit',sans-serif}
+  .field textarea{min-height:120px;padding:14px 16px;resize:vertical}
+  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .checkbox{display:flex;gap:10px;align-items:flex-start;margin-top:16px;color:#53657b;font-size:15px;line-height:1.6}
+  .checkbox input{margin-top:4px}
+  .bank-card{background:linear-gradient(135deg,#0d7f88,#1d5fa5);color:#fff;border-radius:24px;padding:24px;margin-top:18px}
+  .bank-card h3{margin:0 0 12px;font-size:28px}
+  .bank-card p{margin:0 0 10px;font-size:17px;line-height:1.7}
+  .bank-inline{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:14px 16px;margin-top:12px}
+  .sticky{position:sticky;top:18px}
+  .summary-card{overflow:hidden}
+  .summary-hero{position:relative;height:280px;background:#d7e4ef center/cover no-repeat}
+  .summary-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,15,26,.08),rgba(4,15,26,.55))}
+  .summary-title{position:absolute;left:20px;right:20px;bottom:18px;z-index:1;color:#fff}
+  .summary-title .mini{font-size:14px;font-weight:700;color:#ffde7a;margin-bottom:8px}
+  .summary-title h3{margin:0;font-size:34px;line-height:1.04}
+  .summary-body{padding:22px}
+  .progress{height:18px;border-radius:999px;background:#e8edf3;overflow:hidden;margin:12px 0}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,#ffcc29,#19a84a)}
+  .stat-row{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:15px;color:#56677d}
+  .big-amount{font-size:36px;font-weight:800;color:#17324f}
+  .cta{width:100%;border:none;min-height:56px;border-radius:18px;cursor:pointer;font-size:20px;font-weight:800;margin-top:16px;background:linear-gradient(135deg,#ffcc29,#f7b500);color:#1a1a1a;font-family:'Kanit',sans-serif}
+  .safe-box{margin-top:16px;background:#f8fbfd;border:1px solid var(--line);border-radius:18px;padding:16px}
+  .safe-box h4{margin:0 0 10px;font-size:20px}
+  .safe-box p{margin:0 0 6px;color:#596b81;line-height:1.7}
+  .note{margin-top:14px;padding:14px 16px;border-radius:16px;background:#edf7ef;color:#1d6b38;display:none}
+  .story{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px}
+  .story h3{margin:0 0 10px;font-size:28px}
+  .story p{margin:0 0 12px;color:#56677d;line-height:1.8}
+  footer{padding:0 18px 40px}
+  .footer-inner{max-width:1240px;margin:0 auto;background:#0f2840;color:#fff;border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:20px}
+  .footer-inner h3{margin:0 0 8px;font-size:28px}
+  .footer-inner p{margin:0;color:rgba(255,255,255,.82);line-height:1.7}
+  .footer-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .footer-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:14px;font-weight:800}
+  .footer-actions .yellow{background:#ffcc29;color:#1a1a1a}
+  .footer-actions .white{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  @media (max-width:1100px){.hero-inner,.layout,.footer-inner{grid-template-columns:1fr}.sticky{position:static}.hero h1{font-size:46px}}
+  @media (max-width:760px){.topbar-inner{padding:12px}.topmeta{display:none}.hero h1{font-size:38px}.hero p{font-size:17px}.amount-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2,.project-strip{grid-template-columns:1fr}.section-title{font-size:28px}.summary-title h3{font-size:28px}.summary-hero{height:240px}.nav-links{flex-direction:column}}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="back-btn" id="backToDetail" href="#">← กลับหน้ารายละเอียดและบริจาค</a>
+      <div class="topmeta"><span class="dot"></span><span>ProMAX Donation · แยกตามโครงการและเชื่อมครบทั้งระบบ</span></div>
+    </div>
+  </div>
 
-<section class="hero"><div class="container"><div class="hero-card"><div class="hero-grid"><div><div class="eyebrow">หน้า Final: ฟอร์มบริจาค</div><h1>กรอกข้อมูลเพื่อร่วมสนับสนุน<br>และส่งต่อโอกาส</h1><div class="lead">ฟอร์มนี้เชื่อมกลับไปยังหน้าเคส รายละเอียด และเรื่องราวได้ครบ เหมาะสำหรับนำไปต่อ API หรือ payment gateway ภายหลัง</div></div><div class="visual" style="background-image:url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=80')"><div class="visual-overlay"><strong>รองรับการต่อยอดใช้งานจริง</strong><div class="muted" style="margin-top:6px">HTML พร้อม UI ธีมเดียวกันทั้ง 4 หน้า</div></div></div></div></div></div></section>
-<section class="section"><div class="container"><div class="form-grid"><div class="card panel"><div class="section-head" style="margin-bottom:8px"><div><h2 style="margin:0;font-size:28px">แบบฟอร์มบริจาค</h2><div class="muted">กรอกข้อมูลตัวอย่างเพื่อทดสอบ flow</div></div></div><form><div class="field"><label>ชื่อ - นามสกุล</label><input type="text" placeholder="กรอกชื่อผู้บริจาค"></div><div class="field"><label>อีเมล</label><input type="email" placeholder="name@example.com"></div><div class="field"><label>เบอร์โทรศัพท์</label><input type="tel" placeholder="08x-xxx-xxxx"></div><div class="field"><label>เลือกเคสที่ต้องการสนับสนุน</label><select><option>ซ่อมบ้านให้ครอบครัวยากไร้</option><option>ทุนการศึกษา</option><option>ช่วยค่าเดินทางและค่ารักษา</option></select></div><div class="field"><label>จำนวนเงิน (บาท)</label><input type="number" placeholder="500"></div><div class="field"><label>ข้อความถึงทีมงาน</label><textarea placeholder="พิมพ์ข้อความเพิ่มเติม"></textarea></div><div class="actions"><button type="button" class="primary-btn">ยืนยันการบริจาค</button><a class="ghost-btn" href="donate-detail.html">กลับหน้ารายละเอียด</a></div></form></div><div class="card panel"><div class="badge-row"><span class="badge success">สรุปการสนับสนุน</span></div><div class="title">เคสที่เลือก: ซ่อมบ้านให้ครอบครัวยากไร้</div><div class="summary-list"><div class="summary-item"><span class="muted">รหัสเคส</span><strong>KCK-2026-001</strong></div><div class="summary-item"><span class="muted">เป้าหมายรวม</span><strong>85,000 บาท</strong></div><div class="summary-item"><span class="muted">ยอดที่ได้รับ</span><strong>35,700 บาท</strong></div><div class="summary-item"><span class="muted">ยอดคงเหลือ</span><strong>49,300 บาท</strong></div></div><div class="actions" style="margin-top:20px"><a class="ghost-btn" href="donate-cases.html">กลับหน้าเคส</a><a class="ghost-btn" href="case-story.html">อ่านเรื่องราวเคส</a></div></div></div></div></section>
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="eyebrow" id="heroEyebrow">ร่วมหยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+        <h1 id="heroTitle">กำลังโหลดโครงการ</h1>
+        <p id="heroDesc">กำลังเตรียมรายละเอียดโครงการ</p>
+        <div class="hero-badges" id="heroBadges"></div>
+      </div>
+    </div>
+  </section>
 
-<div class="footer"><div class="container"><div class="footer-card"><strong>Khon Chuay Khon Foundation</strong><br>ธีมเดียวกันทุกหน้า • ลิงก์เชื่อมครบ • พร้อมนำไปต่อยอดข้อมูลจริง</div></div></div>
-</body></html>
+  <main class="main">
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="section-title">ร่วมสนับสนุนโครงการนี้</h2>
+          <p class="section-lead">หน้านี้แยกตามโครงการและเชื่อมกลับไปยังหน้ารายละเอียดเคสและหน้าเรื่องราวเคสได้ทันที เพื่อให้ flow ใช้งานต่อเนื่องทั้งระบบ</p>
+
+          <div class="project-strip">
+            <div class="project-chip">
+              <div class="label">ชื่อโครงการ</div>
+              <div class="value" id="chipProjectTitle">-</div>
+            </div>
+            <div class="project-chip">
+              <div class="label">ยอดที่ช่วยแล้ว</div>
+              <div class="value" id="chipRaised">-</div>
+            </div>
+            <div class="project-chip">
+              <div class="label">เป้าหมายโครงการ</div>
+              <div class="value" id="chipTarget">-</div>
+            </div>
+          </div>
+
+          <div class="nav-links">
+            <a class="nav-link" id="goCaseDetail" href="#">ดูรายละเอียดและบริจาค</a>
+            <a class="nav-link" id="goCaseStory" href="#">อ่านเรื่องราวเคส</a>
+            <a class="nav-link" id="goBackCases" href="#">กลับหน้าเคสทั้งหมด</a>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <div class="amount-grid" id="amountGrid"></div>
+
+          <div class="field">
+            <label for="amountCustom">หรือระบุจำนวนเงินด้วยตนเอง</label>
+            <input id="amountCustom" type="number" min="1" placeholder="ระบุจำนวนเงิน เช่น 1000" />
+          </div>
+
+          <div class="grid-2">
+            <div class="field"><label for="firstName">ชื่อ</label><input id="firstName" type="text" placeholder="ชื่อผู้บริจาค" /></div>
+            <div class="field"><label for="lastName">นามสกุล</label><input id="lastName" type="text" placeholder="นามสกุลผู้บริจาค" /></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field"><label for="email">อีเมล</label><input id="email" type="email" placeholder="example@email.com" /></div>
+            <div class="field"><label for="phone">เบอร์โทรศัพท์</label><input id="phone" type="tel" placeholder="08x-xxx-xxxx" /></div>
+          </div>
+
+          <div class="field"><label for="note">ข้อความถึงโครงการ</label><textarea id="note" placeholder="เขียนข้อความเพื่อส่งกำลังใจหรือระบุวัตถุประสงค์เพิ่มเติม"></textarea></div>
+
+          <label class="checkbox"><input id="anonymous" type="checkbox" /><span>ไม่ประสงค์ออกนามในการแสดงรายชื่อผู้สนับสนุน</span></label>
+          <label class="checkbox"><input id="news" type="checkbox" checked /><span>ยินดีรับข้อมูลข่าวสาร รายงานความคืบหน้า และการทำงานของมูลนิธิผ่านช่องทางต่าง ๆ</span></label>
+
+          <div class="bank-card">
+            <h3>รายละเอียดบัญชีสำหรับสนับสนุน</h3>
+            <p id="bankDesc">ข้อมูลบัญชีของโครงการ</p>
+            <div class="bank-inline"><strong>ธนาคาร:</strong> <span id="bankName">-</span><br><strong>เลขบัญชี:</strong> <span id="bankNumber">-</span><br><strong>ชื่อบัญชี:</strong> <span id="bankAccount">-</span></div>
+            <div class="bank-inline"><strong>สอบถามเพิ่มเติม:</strong> <span id="contactLine">-</span></div>
+          </div>
+
+          <div class="story"><h3>เหตุผลที่โครงการนี้สำคัญ</h3><p id="story1">-</p><p id="story2">-</p></div>
+        </div>
+      </section>
+
+      <aside class="sticky">
+        <div class="summary-card">
+          <div class="summary-hero" id="summaryHero"><div class="summary-title"><div class="mini" id="summaryMini">Project Summary</div><h3 id="summaryTitle">กำลังโหลดโครงการ</h3></div></div>
+          <div class="summary-body">
+            <div class="big-amount" id="summaryAmount">฿ 1,000</div>
+            <div class="stat-row"><span>ยอดสนับสนุนปัจจุบัน</span><strong id="raisedText">฿ 0</strong></div>
+            <div class="progress"><div id="progressBar"></div></div>
+            <div class="stat-row"><span>เป้าหมายโครงการ</span><strong id="targetText">฿ 0</strong></div>
+            <div class="stat-row"><span>ความคืบหน้า</span><strong id="percentText">0%</strong></div>
+            <button class="cta" id="submitBtn">ยืนยันการสนับสนุน</button>
+            <div class="note" id="successNote">รับข้อมูลการสนับสนุนเรียบร้อยในโหมด Demo แล้ว</div>
+            <div class="safe-box">
+              <h4>สรุปข้อมูลการบริจาค</h4>
+              <p><strong>โครงการ:</strong> <span id="sumProject">-</span></p>
+              <p><strong>เคส:</strong> <span id="sumCase">-</span></p>
+              <p><strong>จำนวนเงิน:</strong> <span id="sumAmount">฿ 1,000</span></p>
+              <p><strong>รูปแบบ:</strong> บริจาคครั้งเดียว</p>
+              <p><strong>สถานะ:</strong> หน้า HTML จำลองสำหรับพรีเซ็น</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div><h3>มูลนิธิคนช่วยฅน</h3><p>หน้าบริจาคนี้เชื่อมต่อครบกับหน้ารายละเอียดเคส หน้าเรื่องราวเคส และหน้ารวมเคสของแต่ละโครงการ โดยใช้ธีมเดียวกันทั้งระบบ</p></div>
+      <div class="footer-actions"><a class="yellow" href="#hero">กลับขึ้นด้านบน</a><a class="white" id="footerBackCases" href="#">กลับหน้าเคส</a></div>
+    </div>
+  </footer>
+<script>
+const PROJECTS = {
+  housing: {title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",eyebrow:"โครงการที่อยู่อาศัยเพื่อผู้ยากไร้",description:"น้ำลด แต่ใจไม่ลด ทุกการให้ของท่าน คือแรงสนับสนุนในการซ่อมแซมและสร้างที่อยู่อาศัยให้ครอบครัวที่ยังรอความหวังกลับคืนมา",image:"images/project5.png",raised:120000,target:250000,presets:[500,1000,3000,5000],badges:["ที่อยู่อาศัย","ช่วยฟื้นฟูชีวิต","ProMAX Donation"],bankDesc:"ร่วมสนับสนุนโครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้ ผ่านบัญชีเฉพาะกิจของมูลนิธิ",bankName:"ธนาคารอิสลามแห่งประเทศไทย",bankNumber:"061-1-10422-9",bankAccount:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้ มูลนิธิคนช่วยฅน",contact:"081-9597060 · 084-398-4213",story1:"ไม่มีใครควรถูกทิ้งไว้ข้างหลัง เมื่อบ้านพังลง ชีวิตทั้งครอบครัวก็สั่นคลอน เด็ก ผู้สูงอายุ และผู้ป่วยยิ่งต้องการพื้นที่ปลอดภัยในการเริ่มต้นใหม่",story2:"ทุกยอดสนับสนุนจะช่วยซ่อมแซม สร้างที่พักชั่วคราว และฟื้นคืนศักดิ์ศรีของผู้ยากไร้ให้กลับมายืนได้อีกครั้ง"},
+  education: {title:"เพื่อการศึกษา",eyebrow:"โครงการเพื่อการศึกษา",description:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน เพราะมนุษย์ทุกคนมีคุณค่าและสมควรได้รับโอกาสอย่างเท่าเทียมกัน",image:"images/Edu1.png",raised:35000,target:60000,presets:[300,650,1000,3000],badges:["การศึกษา","ทุนเรียน","อนาคตของเด็ก"],bankDesc:"ร่วมเติมอนาคตให้เด็ก ๆ ผ่านทุนการศึกษาและอุปกรณ์การเรียน",bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",bankNumber:"-",bankAccount:"กองทุนเพื่อการศึกษา มูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"เด็กบางคนเกิดและเติบโตท่ามกลางพื้นที่ห่างไกลจากโอกาส แต่พวกเขาไม่ควรถูกตัดขาดจากความฝันและการเรียนรู้",story2:"การสนับสนุนของท่านจะช่วยเรื่องค่าเดินทาง อุปกรณ์การเรียน และค่าใช้จ่ายพื้นฐานเพื่อให้เด็กได้เดินหน้าต่อ"},
+  zakat: {title:"ซากาตเพื่อผู้ยากไร้",eyebrow:"โครงการซากาต",description:"ส่งต่อซากาตเพื่อช่วยเหลือผู้ยากไร้ตามหลักศาสนา ให้ผู้สูงอายุ แม่หม้าย และครอบครัวเปราะบางได้เข้าถึงปัจจัยพื้นฐาน",image:"images/project2.png",raised:42000,target:100000,presets:[500,1000,2500,5000],badges:["ซากาต","ผู้เปราะบาง","ช่วยต่อชีวิต"],bankDesc:"กองทุนซากาตมูลนิธิคนช่วยฅน เพื่อช่วยเหลือผู้มีสิทธิได้รับซากาตอย่างเหมาะสม",bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",bankNumber:"-",bankAccount:"กองทุนซากาตมูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"ซากาตคือการแบ่งปันที่เปลี่ยนชีวิต ผู้ที่เดือดร้อนจำนวนมากยังรอการเข้าถึงอาหาร ยา และค่าใช้จ่ายจำเป็น",story2:"ทุกยอดที่ส่งต่อจะเป็นพลังให้กองทุนสามารถดูแลผู้ยากไร้ได้ต่อเนื่องและเป็นธรรม"},
+  transport: {title:"อาสาพาน้องกลับบ้าน",eyebrow:"โครงการส่งกลับบ้าน",description:"ช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนา เพื่อให้การเดินทางกลับบ้านของผู้เดือดร้อนเป็นไปอย่างปลอดภัยและสมศักดิ์ศรี",image:"images/project3.png",raised:25000,target:60000,presets:[300,500,1000,3000],badges:["เดินทางกลับบ้าน","ช่วยเร่งด่วน","ส่งต่ออย่างปลอดภัย"],bankDesc:"ร่วมสนับสนุนภารกิจอาสาพาน้องกลับบ้าน และค่าใช้จ่ายในการเดินทาง",bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",bankNumber:"-",bankAccount:"อาสาพาน้องกลับบ้าน มูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"หลายเคสไม่ได้ต้องการเพียงเงิน แต่ต้องการโอกาสกลับไปหาครอบครัว ไปหาบ้าน และไปเริ่มต้นชีวิตใหม่",story2:"การสนับสนุนของท่านช่วยค่าเดินทาง ค่าน้ำมัน และการประสานส่งต่ออย่างปลอดภัย"},
+  relief: {title:"เพื่อการบรรเทาธารณภัย",eyebrow:"โครงการบรรเทาธารณภัย",description:"ช่วยเหลือผู้ประสบภัยเร่งด่วนทั่วประเทศ ทั้งถุงยังชีพ อุปกรณ์กู้ภัย และการลงพื้นที่ช่วยเหลือภาคสนาม",image:"images/project4.png",raised:50000,target:120000,presets:[500,1000,3000,5000],badges:["ถุงยังชีพ","ภัยพิบัติ","ภาคสนาม"],bankDesc:"ร่วมสนับสนุนโครงการช่วยเหลือผู้ประสบภัยและการลงพื้นที่เร่งด่วน",bankName:"ธนาคารอิสลามแห่งประเทศไทย",bankNumber:"061-1-10425-3",bankAccount:"ช่วยเหลือผู้ประสบภัย มูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"เมื่อภัยมาเยือน ผู้ประสบเหตุไม่อาจรอได้ ความช่วยเหลือที่ทันเวลาหมายถึงโอกาสรอดและการตั้งหลักอีกครั้ง",story2:"ทุกยอดสนับสนุนช่วยให้ทีมสามารถเตรียมถุงยังชีพ อุปกรณ์กู้ภัย และลงพื้นที่ช่วยเหลือได้เร็วขึ้น"},
+  disaster: {title:"ช่วยเหลือผู้ประสบภัย",eyebrow:"โครงการช่วยเหลือผู้ประสบภัย",description:"ช่วยเหลือผู้ประสบอุทกภัย ไฟไหม้ และภัยพิบัติต่าง ๆ เพื่อให้ครอบครัวที่เดือดร้อนมีแรงตั้งต้นใหม่อีกครั้ง",image:"images/project6.png",raised:70000,target:160000,presets:[500,1000,3000,5000],badges:["ฟื้นฟูหลังวิกฤต","ฉุกเฉิน","ช่วยต่อชีวิต"],bankDesc:"ร่วมช่วยเหลือผู้ประสบภัยและสนับสนุนการฟื้นฟูหลังเหตุการณ์",bankName:"ธนาคารอิสลามแห่งประเทศไทย",bankNumber:"061-1-10425-3",bankAccount:"ช่วยเหลือผู้ประสบภัย มูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"อุทกภัยและภัยพิบัติทำให้หลายครอบครัวสูญเสียทั้งบ้านและความมั่นคงทางใจ ทุกวินาทีของความช่วยเหลือมีความหมาย",story2:"ยอดสนับสนุนของท่านจะช่วยเรื่องอาหาร น้ำดื่ม ของใช้จำเป็น และการฟื้นฟูชีวิตหลังวิกฤต"},
+  orphan: {title:"ช่วยเหลือเด็กกำพร้า",eyebrow:"โครงการเด็กกำพร้า",description:"ดูแลและสนับสนุนเด็กกำพร้าให้มีคุณภาพชีวิตที่ดีขึ้น ทั้งด้านความเป็นอยู่ การศึกษา และการเติบโตอย่างปลอดภัย",image:"images/project7.png",raised:26000,target:70000,presets:[300,500,1000,3000],badges:["เด็กกำพร้า","คุณภาพชีวิต","การศึกษา"],bankDesc:"ร่วมดูแลเด็กกำพร้าและค่าใช้จ่ายพื้นฐานในการดำรงชีวิต",bankName:"ติดต่อมูลนิธิเพื่อยืนยันเลขบัญชีล่าสุด",bankNumber:"-",bankAccount:"กองทุนช่วยเหลือเด็กกำพร้า มูลนิธิคนช่วยฅน",contact:"081-9597060",story1:"เด็กกำพร้าหลายคนยังต้องการโอกาสในการเติบโตอย่างปลอดภัย มีอาหาร มีการศึกษา และมีคนคอยประคับประคอง",story2:"ทุกการให้ของท่านคือการเติมความมั่นคงและศักดิ์ศรีให้ชีวิตเล็ก ๆ ได้เดินต่อ"}
+};
+const params = new URLSearchParams(location.search);
+const slug = params.get('project') || 'housing';
+const caseId = params.get('case') || '';
+const project = PROJECTS[slug] || PROJECTS.housing;
+let selectedAmount = project.presets[1] || 1000;
+const byId = (id) => document.getElementById(id);
+const fmt = (n) => '฿ ' + Number(n || 0).toLocaleString('th-TH');
+const progressPercent = Math.max(0, Math.min(100, Math.round((project.raised / Math.max(project.target,1)) * 100)));
+
+byId('hero').style.backgroundImage = `url("${project.image}")`;
+byId('summaryHero').style.backgroundImage = `url("${project.image}")`;
+byId('heroTitle').textContent = project.title;
+byId('heroDesc').textContent = project.description;
+byId('heroEyebrow').textContent = project.eyebrow;
+byId('summaryTitle').textContent = project.title;
+byId('summaryMini').textContent = project.eyebrow;
+byId('sumProject').textContent = project.title;
+byId('sumCase').textContent = caseId || '-';
+byId('chipProjectTitle').textContent = project.title;
+byId('bankDesc').textContent = project.bankDesc;
+byId('bankName').textContent = project.bankName;
+byId('bankNumber').textContent = project.bankNumber;
+byId('bankAccount').textContent = project.bankAccount;
+byId('contactLine').textContent = project.contact;
+byId('story1').textContent = project.story1;
+byId('story2').textContent = project.story2;
+byId('raisedText').textContent = fmt(project.raised);
+byId('targetText').textContent = fmt(project.target);
+byId('chipRaised').textContent = fmt(project.raised);
+byId('chipTarget').textContent = fmt(project.target);
+byId('progressBar').style.width = progressPercent + '%';
+byId('percentText').textContent = progressPercent + '%';
+byId('heroBadges').innerHTML = (project.badges || []).map(text => `<div class="hero-badge">${text}</div>`).join('');
+
+const detailHref = `donate-case-detail-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(caseId)}`;
+const storyHref = `donate-case-story-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(caseId)}`;
+const casesHref = `donate-cases.html?project=${encodeURIComponent(slug)}`;
+
+byId('backToDetail').href = detailHref;
+byId('goCaseDetail').href = detailHref;
+byId('goCaseStory').href = storyHref;
+byId('goBackCases').href = casesHref;
+byId('footerBackCases').href = casesHref;
+
+function renderAmounts(){
+  byId('amountGrid').innerHTML = project.presets.map(v => `<button class="amount-btn ${v===selectedAmount?'active':''}" data-amount="${v}">${fmt(v)}</button>`).join('');
+  [...document.querySelectorAll('.amount-btn')].forEach(btn => btn.addEventListener('click', ()=>{selectedAmount = Number(btn.dataset.amount);byId('amountCustom').value = selectedAmount;renderAmounts();syncSummary();}));
+}
+function syncSummary(){
+  const custom = Number(byId('amountCustom').value || selectedAmount || 0);
+  if (custom > 0) selectedAmount = custom;
+  byId('summaryAmount').textContent = fmt(selectedAmount);
+  byId('sumAmount').textContent = fmt(selectedAmount);
+}
+byId('amountCustom').value = selectedAmount;
+byId('amountCustom').addEventListener('input', syncSummary);
+renderAmounts();
+syncSummary();
+byId('submitBtn').addEventListener('click', ()=>{
+  syncSummary();
+  const n = byId('successNote');
+  n.style.display='block';
+  n.textContent = `รับข้อมูลการสนับสนุนโครงการ "${project.title}" จำนวน ${fmt(selectedAmount)} เรียบร้อยในโหมด Demo`;
+  window.scrollTo({top:n.getBoundingClientRect().top + window.scrollY - 120, behavior:'smooth'});
+});
+</script>
+</body>
+</html>

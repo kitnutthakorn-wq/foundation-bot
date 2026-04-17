@@ -164,27 +164,42 @@
       min-height:660px;
       overflow:hidden;
     }
-    .hero-bg,
+    .hero-slider,
+    .hero-slide,
     .hero-overlay,
     .hero-gradient {
       position:absolute;
       inset:0;
     }
-    .hero-bg img {
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      filter:saturate(.96) contrast(1.02);
+    .hero-slider {
+      overflow:hidden;
+      z-index:0;
+    }
+    .hero-slide {
+      background-size:cover;
+      background-position:center center;
+      background-repeat:no-repeat;
+      opacity:0;
+      transform:scale(1.04);
+      transition:opacity 1s ease, transform 6s ease;
+      will-change:opacity, transform;
+    }
+    .hero-slide.active {
+      opacity:1;
+      transform:scale(1);
+      z-index:1;
     }
     .hero-overlay {
+      z-index:2;
       background:linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.58) 36%, rgba(0,0,0,.26) 67%, rgba(0,0,0,.14) 100%);
     }
     .hero-gradient {
+      z-index:3;
       background:linear-gradient(180deg, rgba(13,47,95,.04) 0%, rgba(13,47,95,0) 30%, rgba(13,47,95,.1) 100%);
     }
     .hero-content {
       position:relative;
-      z-index:2;
+      z-index:4;
       padding:58px 0 34px;
       color:#fff;
     }
@@ -1088,8 +1103,12 @@
 
   <main>
     <section class="hero">
-      <div class="hero-bg">
-        <img src="data:image/jpeg;base64,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" alt="Foundation rescue mission" />
+      <div class="hero-slider" aria-label="Hero Slider">
+        <div class="hero-slide active" style="background-image:url('S1.jpg');"></div>
+        <div class="hero-slide" style="background-image:url('S2.jpg');"></div>
+        <div class="hero-slide" style="background-image:url('S3.jpg');"></div>
+        <div class="hero-slide" style="background-image:url('S4.jpg');"></div>
+        <div class="hero-slide" style="background-image:url('S5.jpg');"></div>
       </div>
       <div class="hero-overlay"></div>
       <div class="hero-gradient"></div>
@@ -1126,7 +1145,7 @@
           <div class="hero-spacer"></div>
         </div>
 
-        <div class="stats" id="statsGrid">
+        <div class="stats">
           <div class="stat">
             <div class="stat-icon">🗂</div>
             <div>
@@ -1216,7 +1235,7 @@
           <a class="section-link" href="#">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
         </div>
 
-        <div class="program-grid" id="programGrid">
+        <div class="program-grid">
           <article class="program-card">
             <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAigMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD8QAAIBAwMBBQgHBQAAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwBxQjQlJyM0NTYoKS8P/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEBAAICAQQDAAAAAAAAAAABAhEDIRIxBEFRIkFxgQUT/9oADAMBAAIRAxEAPwD5aiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Education Support" />
             <div class="program-body">
@@ -1271,7 +1290,7 @@
 
     <section class="section" style="padding-top:8px;" id="news-impact">
       <div class="container story-news">
-        <article class="story-card" id="featuredStoryCard">
+        <article class="story-card">
           <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAP8B7wMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAEIQAAIBAwIDBQQIBgMBAAAAAAECAwAEEQUSITFBEyJRYXGBBhQykaGxwfAH0SNSYnKCorLwFDNDU5Lh8f/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBBNBUSJhceH/2gAMAwEAAhEDEQA/APmS8RERAREQEREBERAREQEREBERAREQEREBERAH2X7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Featured Story" />
           <div class="story-content">
             <div>
@@ -1288,7 +1307,7 @@
           </div>
         </article>
 
-        <aside class="news-column" id="newsColumn">
+        <aside class="news-column">
           <div class="news-head">
             <div>
               <div class="news-kicker">ข่าวสารและผลงาน</div>
@@ -1466,169 +1485,40 @@
         });
       });
     }
-
-    /*
-      วิธีดึงข้อมูลจาก Facebook แบบใช้งานจริง
-      1) ตั้งค่า window.KCK_FACEBOOK_PROXY ให้เป็น endpoint ฝั่งเซิร์ฟเวอร์ของคุณ
-      2) endpoint นี้ควรเรียก Meta Graph API แล้วส่ง JSON กลับมาในรูปแบบเดียวกับ FALLBACK_DATA
-      3) ถ้ายังไม่มี proxy ระบบจะใช้ FALLBACK_DATA แทน เพื่อให้หน้าเว็บยังแสดงผลได้ทันที
-
-      ตัวอย่าง:
-      window.KCK_FACEBOOK_PROXY = 'https://your-domain.com/api/facebook/kck-home';
-    */
-    window.KCK_FACEBOOK_PROXY = window.KCK_FACEBOOK_PROXY || '';
-
-    const FALLBACK_DATA = {
-      stats: [
-        { icon: '🗂', value: '1,250+', th: 'เคสที่ช่วยเหลือแล้ว', en: 'Cases Supported' },
-        { icon: '📍', value: '45', th: 'จังหวัดที่ให้ความช่วยเหลือ', en: 'Provinces Reached' },
-        { icon: '👥', value: '3,800+', th: 'ครอบครัวที่ได้รับความช่วยเหลือ', en: 'Families Helped' },
-        { icon: '♡', value: '200+', th: 'อาสาสมัครและเครือข่าย', en: 'Volunteers & Partners' }
-      ],
-      programs: [
-        { icon: '📖', titleTh: 'การศึกษา', titleEn: 'Education Support', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80' },
-        { icon: '🏠', titleTh: 'ที่อยู่อาศัย', titleEn: 'Housing Assistance', image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=80' },
-        { icon: '🌱', titleTh: 'สร้างอาชีพ', titleEn: 'Livelihood Support', image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=900&q=80' },
-        { icon: '👨‍👩‍👧', titleTh: 'เด็กกำพร้า', titleEn: 'Orphan Care', image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80' },
-        { icon: '🌊', titleTh: 'ภัยพิบัติ', titleEn: 'Disaster Relief', image: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=900&q=80' },
-        { icon: '🚨', titleTh: 'เคสเร่งด่วน', titleEn: 'Emergency Response', image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=900&q=80' }
-      ],
-      featuredStory: {
-        kickerTh: 'เรื่องราวที่สร้างการเปลี่ยนแปลง',
-        kickerEn: 'Featured Story',
-        title: 'จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง',
-        description: 'ครอบครัว 5 ชีวิตได้บ้านใหม่ หลังได้รับความช่วยเหลือและการสนับสนุนจากเครือข่ายของมูลนิธิคนช่วยฅน',
-        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1400&q=80',
-        link: 'https://www.facebook.com/Khonchuaykhon'
-      },
-      news: [
-        {
-          date: '15 เม.ย. 2568',
-          title: 'ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย',
-          image: 'https://images.unsplash.com/photo-1618477462146-050d2767eac4?auto=format&fit=crop&w=1200&q=80',
-          link: 'https://www.facebook.com/Khonchuaykhon'
-        },
-        {
-          date: '8 ม.ค. 2568',
-          title: 'เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3',
-          image: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=80',
-          link: 'https://www.facebook.com/Khonchuaykhon'
-        }
-      ]
-    };
-
-    function escapeHtml(text = '') {
-      return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-
-    function renderStats(items = []) {
-      const statsGrid = document.getElementById('statsGrid');
-      if (!statsGrid || !Array.isArray(items) || !items.length) return;
-      statsGrid.innerHTML = items.map((item) => `
-        <div class="stat">
-          <div class="stat-icon">${escapeHtml(item.icon || '•')}</div>
-          <div>
-            <div class="stat-number">${escapeHtml(item.value || '')}</div>
-            <div class="stat-label-th">${escapeHtml(item.th || '')}</div>
-            <div class="stat-label-en">${escapeHtml(item.en || '')}</div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderPrograms(items = []) {
-      const programGrid = document.getElementById('programGrid');
-      if (!programGrid || !Array.isArray(items) || !items.length) return;
-      programGrid.innerHTML = items.map((item) => `
-        <article class="program-card">
-          <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.titleEn || item.titleTh || 'Program')}" loading="lazy" />
-          <div class="program-body">
-            <div class="program-badge">${escapeHtml(item.icon || '•')}</div>
-            <h3 class="program-name-th">${escapeHtml(item.titleTh || '')}</h3>
-            <p class="program-name-en">${escapeHtml(item.titleEn || '')}</p>
-          </div>
-        </article>
-      `).join('');
-    }
-
-    function renderFeaturedStory(item = {}) {
-      const card = document.getElementById('featuredStoryCard');
-      if (!card || !item || !item.title) return;
-      card.innerHTML = `
-        <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.title || 'Featured Story')}" loading="lazy" />
-        <div class="story-content">
-          <div>
-            <div class="story-kicker">${escapeHtml(item.kickerTh || '')}</div>
-            <div class="story-kicker-en">${escapeHtml(item.kickerEn || '')}</div>
-            <h3 class="story-title">${escapeHtml(item.title || '')}</h3>
-            <p class="story-desc">${escapeHtml(item.description || '')}</p>
-          </div>
-          <a href="${escapeHtml(item.link || '#')}" class="story-btn" target="_blank" rel="noopener">อ่านเรื่องราว <span style="font-size:24px;">➜</span></a>
-        </div>
-      `;
-    }
-
-    function renderNews(items = []) {
-      const newsColumn = document.getElementById('newsColumn');
-      if (!newsColumn || !Array.isArray(items) || !items.length) return;
-      newsColumn.innerHTML = `
-        <div class="news-head">
-          <div>
-            <div class="news-kicker">ข่าวสารและผลงาน</div>
-            <h3 class="news-title">Latest News</h3>
-          </div>
-          <a class="news-link" href="https://www.facebook.com/Khonchuaykhon" target="_blank" rel="noopener">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
-        </div>
-        ${items.slice(0, 2).map((item) => `
-          <article class="news-card">
-            <a href="${escapeHtml(item.link || 'https://www.facebook.com/Khonchuaykhon')}" target="_blank" rel="noopener">
-              <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.title || 'News')}" loading="lazy" />
-            </a>
-            <div class="news-body">
-              <div class="news-date">${escapeHtml(item.date || '')}</div>
-              <p class="news-text">${escapeHtml(item.title || '')}</p>
-            </div>
-          </article>
-        `).join('')}
-      `;
-    }
-
-    async function getFacebookContent() {
-      if (!window.KCK_FACEBOOK_PROXY) return FALLBACK_DATA;
-      try {
-        const response = await fetch(window.KCK_FACEBOOK_PROXY, {
-          headers: { 'Accept': 'application/json' }
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        return {
-          ...FALLBACK_DATA,
-          ...data,
-          stats: Array.isArray(data.stats) && data.stats.length ? data.stats : FALLBACK_DATA.stats,
-          programs: Array.isArray(data.programs) && data.programs.length ? data.programs : FALLBACK_DATA.programs,
-          news: Array.isArray(data.news) && data.news.length ? data.news : FALLBACK_DATA.news,
-          featuredStory: data.featuredStory?.title ? data.featuredStory : FALLBACK_DATA.featuredStory
-        };
-      } catch (error) {
-        console.warn('Facebook content fallback is being used:', error);
-        return FALLBACK_DATA;
-      }
-    }
-
-    async function initDynamicContent() {
-      const data = await getFacebookContent();
-      renderStats(data.stats);
-      renderPrograms(data.programs);
-      renderFeaturedStory(data.featuredStory);
-      renderNews(data.news);
-    }
-
-    initDynamicContent();
   </script>
+
+  <script>
+    (function () {
+      const toggle = document.querySelector('.menu-toggle');
+      const menu = document.getElementById('site-menu');
+
+      if (toggle && menu) {
+        toggle.addEventListener('click', () => {
+          const isOpen = menu.classList.toggle('is-open');
+          toggle.classList.toggle('is-open', isOpen);
+          toggle.setAttribute('aria-expanded', String(isOpen));
+        });
+      }
+
+      const slides = document.querySelectorAll('.hero-slide');
+      if (slides.length) {
+        let current = 0;
+        const intervalTime = 4000;
+
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+          });
+        }
+
+        showSlide(current);
+        setInterval(() => {
+          current = (current + 1) % slides.length;
+          showSlide(current);
+        }, intervalTime);
+      }
+    })();
+  </script>
+
 </body>
 </html>

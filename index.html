@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Khon Chuay Khon Foundation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#0d2f5f;
+      --navy-2:#11396f;
+      --teal:#0fb7af;
+      --teal-2:#19c5bb;
+      --green:#19a974;
+      --green-2:#20c77b;
+      --yellow:#f5cc22;
+      --text:#16202a;
+      --muted:#667085;
+      --line:#e7eaef;
+      --bg:#f3f5f7;
+      --white:#ffffff;
+      --shadow:0 10px 30px rgba(15,23,42,.08);
+      --radius:18px;
+      --container:1440px;
+    }
+
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      margin:0;
+      font-family:"Noto Sans Thai","Inter",sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      min-width:320px;
+    }
+
+    img { display:block; max-width:100%; }
+    a { color:inherit; text-decoration:none; }
+    button, input { font:inherit; }
+
+    .container {
+      width:min(calc(100% - 48px), var(--container));
+      margin:0 auto;
+    }
+
+    .topbar {
+      background:var(--navy);
+      color:#fff;
+      font-size:14px;
+    }
+    .topbar-inner {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      min-height:42px;
+      gap:20px;
+    }
+    .topbar-left,
+    .topbar-right {
+      display:flex;
+      align-items:center;
+      gap:22px;
+      flex-wrap:wrap;
+    }
+    .topbar-right a { opacity:.95; }
+    .lang-chip {
+      background:#0f8b8d;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:12px;
+      line-height:1;
+    }
+
+    .mainnav {
+      background:#fff;
+      position:sticky;
+      top:0;
+      z-index:50;
+      box-shadow:0 1px 0 rgba(15,23,42,.06);
+    }
+    .mainnav-inner {
+      min-height:94px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      min-width:305px;
+    }
+    .brand-logo {
+      width:78px;
+      height:78px;
+      border-radius:6px;
+      overflow:hidden;
+      background:#e8edf2;
+      border:1px solid #dfe5ec;
+      flex:0 0 auto;
+    }
+    .brand-logo img { width:100%; height:100%; object-fit:cover; }
+    .brand-text h1 {
+      margin:0;
+      font-size:17px;
+      line-height:1.15;
+      font-weight:800;
+      color:var(--navy);
+    }
+    .brand-text p {
+      margin:4px 0 0;
+      font-size:13px;
+      color:#126d77;
+      font-weight:600;
+    }
+
+    .menu {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      gap:8px 26px;
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    .menu a {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:3px;
+      font-size:12px;
+      color:#1f2937;
+      padding:8px 0;
+      position:relative;
+      text-align:center;
+      white-space:nowrap;
+      transition:color .22s ease, transform .22s ease, opacity .22s ease;
+    }
+    .menu a:hover {
+      color:var(--teal);
+      transform:translateY(-1px);
+    }
+    .menu a strong {
+      font-size:14px;
+      font-weight:700;
+    }
+    .menu a.active::after {
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:-12px;
+      height:3px;
+      border-radius:999px;
+      background:var(--teal);
+    }
+
+    .hero {
+      position:relative;
+      background:#081829;
+      min-height:660px;
+      overflow:hidden;
+    }
+    .hero-bg,
+    .hero-overlay,
+    .hero-gradient {
+      position:absolute;
+      inset:0;
+    }
+    .hero-bg img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter:saturate(.96) contrast(1.02);
+    }
+    .hero-overlay {
+      background:linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.58) 36%, rgba(0,0,0,.26) 67%, rgba(0,0,0,.14) 100%);
+    }
+    .hero-gradient {
+      background:linear-gradient(180deg, rgba(13,47,95,.04) 0%, rgba(13,47,95,0) 30%, rgba(13,47,95,.1) 100%);
+    }
+    .hero-content {
+      position:relative;
+      z-index:2;
+      padding:58px 0 34px;
+      color:#fff;
+    }
+    .hero-grid {
+      display:grid;
+      grid-template-columns:minmax(0, 1.08fr) minmax(240px, .92fr);
+      gap:24px;
+      align-items:end;
+      min-height:520px;
+    }
+    .hero-copy {
+      max-width:635px;
+      padding-top:6px;
+    }
+    .eyebrow {
+      display:inline-block;
+      color:var(--yellow);
+      font-weight:800;
+      font-size:18px;
+      margin-bottom:12px;
+    }
+    .hero-title {
+      margin:0;
+      font-size:64px;
+      line-height:1.02;
+      font-weight:900;
+      letter-spacing:-1.8px;
+    }
+    .hero-title .accent {
+      color:#64d8ea;
+      display:block;
+      margin-top:6px;
+    }
+    .hero-desc-th {
+      margin:20px 0 0;
+      max-width:585px;
+      font-size:18px;
+      line-height:1.65;
+      color:rgba(255,255,255,.95);
+      font-weight:500;
+    }
+    .hero-desc-en {
+      margin:16px 0 0;
+      max-width:560px;
+      font-size:16px;
+      line-height:1.65;
+      color:rgba(255,255,255,.88);
+    }
+    .hero-actions {
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      min-height:52px;
+      padding:0 22px;
+      border-radius:999px;
+      font-size:16px;
+      font-weight:800;
+      border:2px solid transparent;
+      transition:.25s ease;
+    }
+    .btn:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(15,23,42,.12); }
+    .btn-primary {
+      background:linear-gradient(135deg, #12b88f, #20c77b);
+      color:#fff;
+      box-shadow:0 12px 24px rgba(22,184,143,.22);
+    }
+    .btn-outline {
+      background:rgba(255,255,255,.03);
+      color:#fff;
+      border-color:rgba(255,255,255,.72);
+      backdrop-filter:blur(4px);
+    }
+    .btn .circle {
+      width:28px;
+      height:28px;
+      display:grid;
+      place-items:center;
+      border-radius:999px;
+      background:rgba(255,255,255,.18);
+      font-size:16px;
+      line-height:1;
+    }
+    .hero-spacer { min-height:100%; }
+
+    .stats {
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:20px;
+      margin-top:32px;
+    }
+    .stat {
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      color:#fff;
+      padding:8px 0;
+    }
+    .stat-icon {
+      width:34px;
+      height:34px;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      font-size:26px;
+      opacity:.96;
+    }
+    .stat-number {
+      font-size:24px;
+      line-height:1;
+      font-weight:900;
+      color:#f4c81d;
+      margin-bottom:8px;
+      letter-spacing:-.4px;
+    }
+    .stat-label-th {
+      font-size:15px;
+      line-height:1.35;
+      font-weight:700;
+      color:#fff;
+    }
+    .stat-label-en {
+      font-size:12px;
+      line-height:1.45;
+      color:rgba(255,255,255,.85);
+      margin-top:4px;
+    }
+
+    .quick-links-wrap {
+      margin-top:14px;
+      position:relative;
+      z-index:5;
+    }
+    .quick-links {
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+    }
+    .quick-card {
+      min-height:134px;
+      border-radius:0;
+      position:relative;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:flex;
+      color:#fff;
+      isolation:isolate;
+      transition:transform .28s ease, box-shadow .28s ease;
+    }
+    .quick-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 18px 32px rgba(15,23,42,.14);
+    }
+    .quick-card:hover .quick-arrow {
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      background:rgba(255,255,255,.9);
+      color:#0e375d;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      flex:0 0 auto;
+      margin-bottom:2px;
+      transition:transform .22s ease;
+    }
+
+    .section {
+      padding:34px 0;
+    }
+    .section-header {
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:18px;
+    }
+    .section-label {
+      color:var(--green);
+      font-size:16px;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+    .section-title {
+      font-size:22px;
+      line-height:1.1;
+      font-weight:900;
+      color:#16232f;
+      margin:0;
+    }
+    .section-link {
+      color:#37a89b;
+      font-weight:800;
+      font-size:16px;
+      white-space:nowrap;
+      text-align:right;
+      line-height:1.35;
+    }
+
+    .program-grid {
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      gap:14px;
+    }
+    .program-card {
+      background:#fff;
+      border:1px solid #e8edf2;
+      box-shadow:0 8px 20px rgba(15,23,42,.04);
+      overflow:hidden;
+      border-radius:2px;
+      transition:transform .26s ease, box-shadow .26s ease, border-color .26s ease;
+    }
+    .program-card:hover {
+      transform:translateY(-5px);
+      box-shadow:0 18px 30px rgba(15,23,42,.10);
+      border-color:#d9e5ec;
+    }
+    .program-card img {
+      width:100%;
+      aspect-ratio:1.1 / 1;
+      object-fit:cover;
+    }
+    .program-body {
+      padding:14px 14px 18px;
+    }
+    .program-badge {
+      width:44px;
+      height:44px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(15,23,42,.10);
+      display:grid;
+      place-items:center;
+      margin-top:-36px;
+      margin-bottom:12px;
+      position:relative;
+      font-size:20px;
+      color:var(--navy);
+    }
+    .program-name-th {
+      font-size:15px;
+      line-height:1.2;
+      font-weight:800;
+      margin:0;
+    }
+    .program-name-en {
+      margin:6px 0 0;
+      font-size:12px;
+      color:#424f5a;
+    }
+
+    .story-news {
+      display:grid;
+      grid-template-columns:1.48fr .92fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    .story-card {
+      position:relative;
+      min-height:306px;
+      overflow:hidden;
+      background:#000;
+      box-shadow:var(--shadow);
+      border-radius:2px;
+      transition:transform .28s ease, box-shadow .28s ease;
+    }
+    .story-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 18px 34px rgba(15,23,42,.14);
+    }
+    .story-card img {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    .story-card::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,.28) 62%, rgba(0,0,0,.12) 100%);
+      z-index:1;
+    }
+    .story-content {
+      position:relative;
+      z-index:2;
+      color:#fff;
+      padding:28px;
+      max-width:58%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      min-height:306px;
+    }
+    .story-kicker {
+      color:#f0c62d;
+      font-size:15px;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+    .story-kicker-en {
+      color:#fff;
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:18px;
+    }
+    .story-title {
+      font-size:26px;
+      line-height:1.18;
+      font-weight:900;
+      margin:0 0 10px;
+    }
+    .story-desc {
+      font-size:15px;
+      line-height:1.6;
+      margin:0;
+      color:rgba(255,255,255,.94);
+    }
+    .story-btn {
+      margin-top:24px;
+      display:inline-flex;
+      align-items:center;
+      gap:14px;
+      min-height:48px;
+      padding:0 20px;
+      border:2px solid rgba(255,255,255,.72);
+      border-radius:999px;
+      color:#fff;
+      width:max-content;
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .news-column {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .news-head {
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:0;
+    }
+    .news-kicker {
+      color:var(--green);
+      font-size:16px;
+      font-weight:800;
+    }
+    .news-title {
+      font-size:22px;
+      line-height:1.1;
+      font-weight:900;
+      margin:2px 0 0;
+    }
+    .news-link {
+      color:#37a89b;
+      font-size:16px;
+      font-weight:800;
+      white-space:nowrap;
+      text-align:right;
+      line-height:1.35;
+    }
+    .news-card {
+      background:#fff;
+      border:1px solid #e8edf2;
+      overflow:hidden;
+      box-shadow:0 8px 20px rgba(15,23,42,.04);
+      border-radius:2px;
+      flex:1;
+      transition:transform .26s ease, box-shadow .26s ease;
+    }
+    .news-card:hover {
+      transform:translateY(-4px);
+      box-shadow:0 18px 30px rgba(15,23,42,.10);
+    }
+    .news-card img {
+      width:100%;
+      aspect-ratio:1.65 / 1;
+      object-fit:cover;
+    }
+    .news-body {
+      padding:12px 14px 16px;
+    }
+    .news-date {
+      font-size:12px;
+      color:#4b5563;
+      margin-bottom:6px;
+    }
+    .news-text {
+      font-size:15px;
+      line-height:1.45;
+      font-weight:800;
+      margin:0;
+      color:#18222d;
+    }
+
+    .cta {
+      margin-top:10px;
+      background:#091a2a;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .cta-bg,
+    .cta-overlay {
+      position:absolute;
+      inset:0;
+    }
+    .cta-bg img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter:brightness(.74);
+    }
+    .cta-overlay {
+      background:linear-gradient(90deg, rgba(0,0,0,.16) 0%, rgba(0,0,0,.55) 28%, rgba(8,21,38,.8) 100%);
+    }
+    .cta-inner {
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:240px 1fr 300px;
+      align-items:stretch;
+      gap:18px;
+      min-height:210px;
+    }
+    .cta-child {
+      overflow:hidden;
+      align-self:end;
+    }
+    .cta-child img { width:100%; height:100%; object-fit:cover; }
+    .cta-copy {
+      padding:30px 0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .cta-copy h3 {
+      margin:0;
+      font-size:24px;
+      line-height:1.15;
+      font-weight:900;
+    }
+    .cta-copy h3 span { color:#6fe0e8; display:block; }
+    .cta-copy p {
+      margin:10px 0 0;
+      font-size:15px;
+      line-height:1.65;
+      color:rgba(255,255,255,.92);
+      max-width:640px;
+    }
+    .cta-actions {
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .btn-yellow {
+      background:#f5cc22;
+      color:#0b1f33;
+      border:none;
+      font-weight:900;
+    }
+    .cta-quote {
+      padding:24px 22px;
+      border-left:1px solid rgba(255,255,255,.14);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      font-size:14px;
+      line-height:1.7;
+    }
+    .cta-quote .mark {
+      color:#ffd02c;
+      font-size:44px;
+      line-height:1;
+      margin-bottom:8px;
+    }
+    .cta-quote p {
+      margin:0;
+      font-weight:800;
+    }
+    .cta-quote small {
+      display:block;
+      margin-top:10px;
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .partners {
+      background:#fff;
+      padding:22px 0 18px;
+      border-bottom:1px solid #e6ebf0;
+    }
+    .partners-wrap {
+      display:grid;
+      grid-template-columns:270px 1fr;
+      gap:24px;
+      align-items:center;
+    }
+    .partners-title h4 {
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+      color:#152434;
+    }
+    .partners-title p {
+      margin:4px 0 0;
+      color:#4f5b66;
+      font-size:13px;
+    }
+    .partner-logos {
+      display:grid;
+      grid-template-columns:34px repeat(6, 1fr) 34px;
+      gap:10px;
+      align-items:center;
+    }
+    .logo-box,
+    .partner-arrow {
+      min-height:52px;
+      display:grid;
+      place-items:center;
+      color:#8492a6;
+      font-weight:800;
+    }
+    .logo-box {
+      font-size:14px;
+      border-radius:10px;
+      background:#fff;
+      border:1px solid #eef2f6;
+      padding:8px 10px;
+      white-space:nowrap;
+    }
+    .logo-box strong { font-size:16px; }
+
+    .footer {
+      background:var(--navy);
+      color:#fff;
+      padding-top:18px;
+    }
+    .footer-main {
+      display:grid;
+      grid-template-columns:1.18fr .7fr .82fr 1fr;
+      gap:30px;
+      padding:24px 0 22px;
+    }
+    .footer-brand {
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+    .footer-brand .brand-logo {
+      width:62px;
+      height:62px;
+      border:none;
+      background:rgba(255,255,255,.08);
+    }
+    .footer-brand h5 {
+      margin:0;
+      font-size:16px;
+      font-weight:900;
+    }
+    .footer-brand p {
+      margin:8px 0 0;
+      color:rgba(255,255,255,.82);
+      line-height:1.7;
+      font-size:13px;
+      max-width:360px;
+    }
+    .socials {
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+    }
+    .socials a {
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      display:grid;
+      place-items:center;
+      font-size:13px;
+    }
+    .footer-col h6 {
+      margin:0 0 12px;
+      font-size:15px;
+      font-weight:800;
+    }
+    .footer-links {
+      list-style:none;
+      padding:0;
+      margin:0;
+      display:grid;
+      gap:8px;
+    }
+    .footer-links a,
+    .footer-contact p {
+      color:rgba(255,255,255,.84);
+      font-size:13px;
+      line-height:1.7;
+      margin:0;
+    }
+    .newsletter p {
+      margin:0 0 12px;
+      color:rgba(255,255,255,.84);
+      font-size:13px;
+      line-height:1.7;
+    }
+    .subscribe {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .subscribe input {
+      flex:1 1 180px;
+      min-height:40px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.14);
+      background:#fff;
+      padding:0 14px;
+      color:#0f172a;
+    }
+    .subscribe button {
+      min-height:40px;
+      border:none;
+      border-radius:999px;
+      background:#18b67f;
+      color:#fff;
+      padding:0 18px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .footer-bottom {
+      border-top:1px solid rgba(255,255,255,.10);
+      padding:12px 0 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      color:rgba(255,255,255,.78);
+      font-size:12px;
+    }
+    .footer-bottom nav {
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 1280px) {
+      .menu { gap:8px 18px; }
+      .program-grid { grid-template-columns:repeat(3, 1fr); }
+      .story-content { max-width:68%; }
+      .cta-inner { grid-template-columns:200px 1fr 260px; }
+    }
+
+    @media (max-width: 1024px) {
+      .container { width:min(calc(100% - 32px), var(--container)); }
+      .topbar-inner { min-height:auto; padding:10px 0; align-items:flex-start; }
+      .mainnav-inner { min-height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; }
+      .brand { min-width:auto; }
+      .menu { justify-content:flex-start; gap:10px 18px; }
+      .hero-grid,
+      .story-news,
+      .cta-inner,
+      .partners-wrap,
+      .footer-main { grid-template-columns:1fr; }
+      .hero { min-height:auto; }
+      .hero-copy { max-width:100%; }
+      .stats { grid-template-columns:repeat(2, 1fr); }
+      .quick-links { grid-template-columns:1fr; }
+      .story-content { max-width:74%; }
+      .cta-copy { padding:26px 0 10px; }
+      .cta-quote { border-left:none; border-top:1px solid rgba(255,255,255,.14); }
+      .partner-logos { grid-template-columns:repeat(3,1fr); }
+      .partner-arrow { display:none; }
+    }
+
+    .menu-toggle {
+      display:none;
+      width:48px;
+      height:48px;
+      border:none;
+      background:#f3f6f9;
+      border-radius:12px;
+      padding:0;
+      cursor:pointer;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:5px;
+      transition:background .2s ease, transform .2s ease;
+    }
+    .menu-toggle:hover { background:#eaf0f5; }
+    .menu-toggle span {
+      display:block;
+      width:20px;
+      height:2px;
+      background:#163c72;
+      border-radius:999px;
+      transition:transform .25s ease, opacity .25s ease;
+    }
+    .menu-toggle.is-open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .menu-toggle.is-open span:nth-child(2) { opacity:0; }
+    .menu-toggle.is-open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+    .mobile-sticky-bar {
+      display:none;
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      z-index:80;
+      background:rgba(13,47,95,.96);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:10px;
+      box-shadow:0 18px 40px rgba(2,12,27,.28);
+      backdrop-filter:blur(10px);
+      gap:8px;
+    }
+    .mobile-action {
+      flex:1 1 0;
+      min-height:52px;
+      border-radius:14px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      color:#fff;
+      font-size:11px;
+      font-weight:800;
+      transition:transform .22s ease, opacity .22s ease;
+    }
+    .mobile-action:hover { transform:translateY(-1px); opacity:.96; }
+    .mobile-action-icon { font-size:16px; line-height:1; }
+    .action-request { background:linear-gradient(135deg, #13a9a3, #0fb7af); }
+    .action-track { background:linear-gradient(135deg, #173c72, #24579b); }
+    .action-donate { background:linear-gradient(135deg, #19a974, #22c55e); }
+
+    @media (max-width: 768px) {
+      .container { width:min(calc(100% - 24px), var(--container)); }
+      .topbar { display:none; }
+      .mainnav { position:static; }
+      .mainnav-inner { gap:14px; align-items:center; }
+      .brand-logo { width:58px; height:58px; }
+      .brand-text h1 { font-size:15px; }
+      .brand-text p { font-size:11px; }
+      .menu-toggle { display:flex; }
+      .nav-shell { width:100%; }
+      .menu {
+        display:none;
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+        width:100%;
+        gap:8px 14px;
+      }
+      .menu.is-open {
+        display:grid;
+        margin-top:10px;
+        background:#fff;
+        border:1px solid #e7ecf2;
+        border-radius:16px;
+        padding:12px 14px;
+        box-shadow:0 14px 30px rgba(15,23,42,.08);
+      }
+      .menu a {
+        align-items:flex-start;
+        text-align:left;
+        padding:8px 0 10px;
+      }
+      .menu a.active::after { left:0; right:auto; width:54px; bottom:0; }
+      .hero-content { padding:30px 0 22px; }
+      .hero-grid { min-height:auto; }
+      .eyebrow { font-size:14px; }
+      .hero-title { font-size:36px; line-height:1.08; letter-spacing:-.8px; }
+      .hero-desc-th,
+      .hero-desc-en { font-size:14px; }
+      .hero-actions { gap:10px; }
+      .btn {
+        min-height:48px;
+        width:100%;
+        justify-content:center;
+        padding:0 18px;
+        font-size:15px;
+      }
+      .stats { grid-template-columns:1fr; gap:12px; margin-top:22px; }
+      .stat { padding:0; }
+      .quick-links-wrap { margin-top:10px; }
+      .quick-card { min-height:126px; }
+      .quick-card-content { padding:18px; }
+      .quick-title-th { font-size:17px; }
+      .quick-title-en { font-size:14px; }
+      .quick-sub { font-size:12px; }
+      .section { padding:26px 0; }
+      .section-header,
+      .news-head { flex-direction:column; align-items:flex-start; }
+      .section-link,
+      .news-link { text-align:left; font-size:14px; }
+      .section-title,
+      .news-title { font-size:24px; }
+      .program-grid { grid-template-columns:repeat(2, 1fr); }
+      .story-card,
+      .story-content { min-height:340px; }
+      .story-content { max-width:100%; padding:20px; }
+      .story-title { font-size:24px; }
+      .story-desc { font-size:14px; }
+      .news-text { font-size:14px; }
+      .cta-inner { min-height:auto; gap:0; }
+      .cta-child { max-height:180px; }
+      .cta-copy h3 { font-size:22px; }
+      .cta-copy p { font-size:14px; }
+      .cta-actions { flex-direction:column; }
+      .partner-logos { grid-template-columns:repeat(2,1fr); }
+      .footer-main { gap:22px; }
+      .footer-bottom { flex-direction:column; align-items:flex-start; }
+      .mobile-sticky-bar { display:flex; }
+    }
+
+    @media (max-width: 480px) {
+      .menu { grid-template-columns:1fr 1fr; }
+      .hero-title { font-size:31px; }
+      .program-grid,
+      .partner-logos { grid-template-columns:1fr; }
+      .program-card img { aspect-ratio:1.4 / 1; }
+      .quick-card { min-height:118px; }
+      .story-card,
+      .story-content { min-height:320px; }
+      .story-title { font-size:22px; }
+      .cta-copy h3 { font-size:20px; }
+      .cta-quote { padding:18px 0 88px; }
+      .subscribe { flex-direction:column; }
+      .subscribe button { width:100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="container topbar-inner">
+        <div class="topbar-left">
+          <span>มูลนิธิคนช่วยฅน | Khon Chuay Khon Foundation</span>
+        </div>
+        <div class="topbar-right">
+          <a href="#">ข่าวสาร</a>
+          <a href="#">ติดต่อเรา</a>
+          <a href="#">ร่วมงานกับเรา</a>
+          <a href="#">News</a>
+          <a href="#">Contact</a>
+          <a href="#">Careers</a>
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="Search">⌕</a>
+          <span class="lang-chip">TH</span>
+          <span class="lang-chip" style="background:#11b981;">EN</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mainnav">
+      <div class="container mainnav-inner">
+        <a class="brand" href="#">
+          <div class="brand-logo">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABdCAYAAADDhLr+AAAqHUlEQVR4nNW9+ZMcSXbn93H3iMir7rsAFO6r0fcxfUz3bM/BISUOlzr2kIlruzJpf5R+0F8jmek3ak3aH7gmm5VI0YbikDM77J7p6UazD3TjbNxAoapQV1ZWHhHh/vSDR2RGZhUKQA+aRHtZVGZcHh7Pn7/3fc+fv1S15/5bYY+i9jr5oLM7Du9dy573y2DzhMEjKj/wiI9RhRqk8H/XIoPPU70Hqd0fmrdHurV3D/SV4GEt3vGie16dXSH9u49dHkiLnSeK7+9fUu3yyP4G7ahF1C7XPUIDRfnvSvUffsRagp2c9YBSqF/tdmKwYTtOPV4vSH7LQ5o3yMO7jYy9WiGDB2XH2f5vOb37jxg+5vOn4loDdw4MeV69JwF9Dj+wRZ3v7X67W1mM5G7I+bRzE5vl4ffz8APmKMp67CsP6l2Hk/BPP6JxPpj/nEn8uUDj3p9dvgwvc+4Dukv8+33MAL0NEew87j2vM9XjAuwZ1OmB4Z9meMrV4egAXI0qjnnOFtDpl9D2jkPFWa9lAviXIHj0AjoZxzQJg/D17Q5Cb8WfP3jP+f8i77/4R7yRxm7Eh/XMe8v7gD2/eWDoMAmGwQqU9TrJw26VJ0Y8z3Jze8A8//MBf//5v+f71e7z7jxre7fT1ib2K1fFJrHZWx7J3Obi9hnzf4K3j/v6A2fV7gMc4fZp/PV6L9Q5jK89QPuW8cfPK0uPdxuGVxQhS6F9d3l8gQHhXJrKQcx3t2NL5bQK5dtdAH3v9zS3+39//A375D39Bk5yw4B/523/7N7z5xvL0we5wtzWcPz4f6x3vPv7P6T0q9wH99pH4Xz+S4wVEoN0kHrE9dYt6sjdBvHc9N8F4+rbkQ4Jx8iU9/xtu7wX/9Y3zX/8Ff0l8FfU2IfwHe9L4c2x0Lr4/vgFzM0P7IfPhwz/7t/8M/7n9N3T+0hWHeH8Vx7TqfBff3weQMQb1ZDJ+OTnJwqRrP8D4TnV2E5W0XlF2A6f7DyU3Ihx8vQWH+vXlJ4Pj1pC06R4R4gY3vY4w6XcV6O9z4NULz4+zA0v7TsfvB3qP4dKZ3WukN8q7+NfMXl7x7rOPePr2A6d3v6b5E+5+72M2KJPL6pJ3f/4P+PrL13z8J3+N8+cPdI6xWqH3aPp5wZ6U7gxx+04PMWTP0ukfG6R6V2h5IYj7O0eu4Bf8fru8wV14bCbls+N6p70Q6a3a8kK6A3v9E8S6G4+8fHj7g5d+Y0D6rM8L4M3z9h7qT0U1+Vg+Q2L9Yx3nz7i0d07jM0iz8u9vWGl8m6uN7k7+9u8efMntN0q/vTfv+fDH3+H/3f/9f8Pk6N5e4s5v7jQ9vNf/1f+X3/0u/z0J3+N+9/5E8aL/3v4/xcj+1tC6n/6j/9B/9T/9r/ltz/7Oa+2bZ7e3fPpL3/Jf/vf/x/++d//gH/6T/8Jw/eGth9l7Q4sr1Z8cf0Vv/77v+fN5T3+8POfcfr2E0wVv4r7m3PeXv2F9fUNf/iHf8i7775jfn3F7z/4E26uHrM8fMzw8Qv+2//+3/P6+grvA2azpXqP5fUFk8mEs7MzTk9PuXz5Mjdv3uT09JSLiwuGYYj3nnEcM46jG0I5Y65evcq9e/f49NNP+fbbb9nY2OC9997jwYMHlGXJ4uIC5/MZ4zjG4z7LskTKio8++og7d+7w5MmTtL29TZ7n1HXN4uKC+/fvM4oizs/P+fzzzzk9PeXOnTsYY+4RYd0L/vrXv/Lw4cObfLzdbvmf//kffv7zn/PpL3/Jd77zHf7xH/8R73znO1xfX/PRRx/x9ttv8+abb/Lbb7/x4sULfv7zn/P555/z7bffcv/+fa6urtjY2MDaWjW08zTl6OiIt956i5OTEx4/fsybN2/45ptv+PDDD2nblsPDQz744APGccT5+Tnvvfcen3zyCRcXFzx69IiPPvqIu3fv8uTJk4e2e7lc8qtf/Yo33niD6XTK3bt3+eCDD2jblhcvXtB1HYeHh3z44Yd8//33uLi44N69e7x8+ZK3b99yenrK0dERjx49Ynp6ml9//ZW9vT2m02m3n1V3YfwrmAsi/1f+vYxG6lH1O7PbL/3j/2T9G0t4z+q4nqQcfP8B4F+2t9kd+u8G+R8P9vL0kV3m9KqY/ab+4qP6pQJ8Qz6BtjM7z0d0j7QfP+vQf0U81Tn3oZ3dxvB+JwA9mB4E9p9o9D1p9o9C0v4F6S2JwG7d7sV7y4eMfD7j8z58xPz6mXq95/PQpP//5z/j000/pQ8fR0RFnZ2e8efOG4+Njnj17RuM4btHj0H6I4B8sz2A6y2t4WgP6z6G4P7D9Fw7+9sK3t1u8P/4Vf0i8eQO8+uA0LZ7e3vL+/v7W5Zl0nXdD7yL1lRrX6wWvX7+e2Ww2j8djbty4wfj4eN5+++2Mjo7y4Ycf8v777/PgwQOOj49xHPP48WO+//57bt68yZ07d7h27RrjOMY5x7IsrFar5f79+7S0tLB3715ev35N13XcvHmTn3/+mT/84Q9cv36dUqmE8/PzmM1mXK9XvPfee7S0tPDiiy+4efMm4zi+Z7tPnz7lyJEjXL58mcuXL3Pz5k1OTk7o9Xr0+XxevXrF9evXefToEVVV8fnnn3P79m0eP37M5cuXWV1d5YMPPiAMQx49esQHH3zAw4cPefjwIefn55ycnLC1tUVVVVyeXnJxYsXmU6n3L59m8uXL/Pee++xt7fH5cuX+fHHH0nTlNnZWf7xH/8xOzs7mM1mHB8fc3BwwM7ODl/96lf56quvOD09ZbPZ8Pzzz3P16lXeefdd1tfXWV9f58c//jF37tzB933m5+c5PT3l7t27fPrpp1RVxd27d2m1WoyOjvLZZ59xdXVFVVUcHh7iui5VVfHpp5/y6NEjXr16xfj4OD///DNf/vKXWVtb47PPPqOqqkeD9w0vKJ7nNcG9WvmuQ+FvW3L6v8nH4O9w/JnY3y/An1xkzQv6rR7H+2f0J+P9z8zvD7R0Q8m8L7V8T84v4OeT2e5Xg9y6ItiL+W+o7cPH2b9h8n7R2gXo+NpuN8/Pz2Gw2HB0d0efzWV1dpaWlhclkQpqmPPfcc5ycnHDnzh3G43G4uroiSRJOnz7N+fk5L1++xOv1cv36dS5evMjt27d57bXXmM/njMfjvP/++2xvb/Pll1/ywQcf8O677/LZZ59xenrKxYsX+fTTT2m1WnzwgQf8+OOPnJ2d8fbbb/PJJ59QVRX3799nY2OD0WjE5cuX2dnZ4eLiArfbzc7ODmVZ8vTpU3Z2drh58yZVVbG1tcXx8THdbpeNjQ3G4zG7u7tcvnyZ0WjE8vIyjuPw5ptv8vz5c7Zu3cr29jY3b97k4uKCq6srJpMJL1++5Pjx43z++eeUZWkN4b2HkO9XkQ3mU+T5nY5nyN1TgG+P/Y2P8XhC0n8o8p7m+F+W7A0I8r7B/Nv7P+Jf3Qkq+f3z8vQb2A0YvUfw7n7vX6S+8vM9tJf6b0R1Vw+H5nPZ7vdXk+v15PNZqPRaNDpdJiYmGAwGHB4eMj+/j4NDQ3s7e0xGo3Y2NhgMpmQZVmcnp7S6/W4efMmW1tb3Lp1i3fffZe7d+9ycnLC5uYm9+/f5+zsDLMZk8mE8/PzPPzwwzQ1NfHuu+/y4osv0ul0GB8fZ2BgAKfTyfLysjQ1NfHaa6/x+eefc+fOHYbDIdPplFarxfj4OOfPn2cwGNBoNJiYmODVq1fcu3eP6XTK0NAQy8vL1DTN0NAQVVVRVdXdW1tbc3R0xMbGBsVi0WQyYXR0lBcvXjA4OMj+/j6fPn2i2+0yGo2YmZnh4uICv9/P7Owsr732Gm1tbYyMjHBwcEDTNGxsbLC+vs7w8DBzc3N0Oh1mMhmvXr2i1WoZDAZ0Oh0ODg7Y2NjA5XKxsbFBXdc8fvwYh8PB+Pg4S0tL2Gw2Li8vGQwGNDc3Mzk5yd7eHiMjI3z++ee8fPkSm82G7/tUVcXg4CC7u7ssLi7S1tbG3NwcKysrXL16lX6/T1VVtLe3c+fOHYyNjZFlGb///e/Z2Njg/v37rK+v8/LlS4bDIWfPnuXs7Iz5+XmGwyG7u7t0Oh1GR0c5Pz+nr6+P3W7H+fk5w8PDjI6OMjQ0xPb2Nvfccw9dXV2MjIyQ5zmWl5f58ssv8fr1a6qq4vT0lLGxMS4vL2ltbeWVV17h7t27vPPOO9jtdo6Pj7l+/TqfP38mCAKGwyG7u7ucn5/T1dVFo9Ggr6+Pq6srVldXWVtbY29vj5mZGUZGRrh58yYbGxt0Oh2urq6YmJhgYmKC7u5uJicnGR0d5d69e0wmE2ZmZnj16hWdnZ28ePECS0tLvPPOO0xOTmKz2ZiZmeH8/JxqtUpZWVmMjIzw7rvvMjIyQq/X47XXXuP58+eMjY3R19fHjRs3mJ6e5v79+6ysrHB4eMjq6irDw8OMjo5ycnJCe3s7lZWV6HQ6zs/PGRsb4+joCK/Xy9raGv39/VxeXtLpdHj69Cmz2Yxer8fZ2RltbW0MDg6ytrbGxMSEiYkJBoMBfX19vPbaa5ycnLC1tUWhUODo6IipqSkGg0FWVla4uLhgZmYGS0tLdDod5ubmGB8fZ2ZmhuHhYXp6eri8vGR7e5tOp0N3dzfvvvsuU1NTdDodaWtr4+7du5yenjI7O8vQ0BA7Ozt0dHRQV1fH3Nwc+/v7WJZFVVV0d3dzfHzM6OgoMzMzLC4u0ul0mJiY4Pvvv6dYLLK8vExXVxe9Xo9arcbh4SE7Ozs4HA7Gx8dZW1tjYmKCv//978zMzLC7u8v4+DiLi4vU1tYyPj7O7OwsU1NTzM/Ps7GxQX9/P4ODg+zt7fH3v/+d7777ji+++IJXX32V0dFRDg4O6PV6jI2N0ev1eO6559jd3eXq1atMTk5it9uxWq2MjY3x9ttvMzk5yd7eHsfHx0xOTlJVVfT19bG5uYnL5eL09JQff/yRixcvMj4+TqfTYW5ujtbWVm5ubmhsbOT27dtMT0+ztbXF4eEhL774ItPT03z44Yd0Oh02Njbo9XpcXV2xuroqjUZj2Gw2k8lEd3c3w8PDfP/997S0tDA6Osr19TWtVstbb73F7du3WVtb4+HDh7S0tLC+vk5HRwd1XTMyMsL5+Tlzc3OMj48zOTlJVVVUVcXo6CgbGxtMTk7S0NDA0NAQIyMjzM/P09nZSVVVtLS0MDMzQ1VVzM/P09fXx9bWFiMjI1RVhWmaJEmS8vJyQ0NDfP/998zNzTE1NcXExAQjIyM0NjZSX1/P0dER5+fnLC8vMzo6SltbG4ODg6ysrDA1NQVjY2N0dHQwODhIVVXU1dUxPT3N2NgYlZWVjI6O0mg0mJmZoVqt8vnzZ/r7+2ltbWVgYID+/n6qqsJisTA+Ps7FxQXj4+OMjIxQVVVcXV0xNzdHVVWMjIywtLSE0+nE6/Wi1WpRVVV0dHTQ09PD4uIii4uL3Lt3j7m5Oerq6rDb7YyNjTE/P8/Q0BB9fX2Mj4/z6quvMjMzQ7PZ5OTkhNOnTzM7O8vY2Bi9Xo/Z2VnGx8c5OTlhfn6e0dFR0uk0s7OzDA4O8sEHH9Da2sq7777L3Nwcp0+fZmhoiJOTExqNBl1dXfT09LBYLIyNjTE+Ps7y8jLr6+vs7OxQVVWUlJQwPj5ObW0tJycndHd3Mzk5yWg04t69e8zOztLa2krTNCYmJpiammJ7e5upqSkmJibo6+vjzTff5Pb2FoPBgNfrZXR0lMLCwrC4uMj8/DxjY2P8+9//ZmhoiKurK46Pj9nY2ODmzZuMj48zPz/P+Pg4a2trjI2N0dPTw9nZGePj4+zt7dHf30+v12NhYYHJykrm5OSYmJvj+++/p6upiampKm82G5eVlQkJCvPfee5ycnNDpdJhMJlRVxWQy0dHRQV9fH8PDw9TW1jI/P88bb7zB8PAwzWYTzWYTi8WC2Wzm4OCAtbU1JiYmmJmZ4eHhgcViQWdnJ8PDw/T19bG9vU1RFRQVFTExMUFRURHJZJL5+XnKysoYHBxkY2ODoaEh7ty5w8nJCc1mk4SEBI4cOcLExAStVovf72d0dJQ8z+P4+JiqqiiKgoKCAnq9HhUVFfz973+fXC5HbW0tQ0NDDAYD6uvrGRgYwGg0UlVV1NTU0N/fT1VVBAQEMDExQWdnJzs7O7S0tLC0tMScnBzj4+M0Go0kSYLV1VVqamqYmJhgZ2eHmZkZJiYmGB0dZXNzE5PJRK/XQ1VVVFRUsLa2xtzcHC6Xi8PhQFVVXFxcsL6+ztzcHCsrK1RVhdfrxW63Mz4+zuLiIv39/QwNDcHpdHBycsL29jZbW1uMjIxQVVV0Oh1VVRETE8Ply5e5uLigp6eHvLw8fD4fZ2dn+P1+QkJCGBoa4vX6mJ+fp6qqit1uR1VVdHR0sLi4SFEU8Pv9xMXF8fPPP9PY2IjD4aC4uJiOjo7Iy8vj0qVL1NTUUFVVxMTEsLi4SE9PD5OTk2xsbHDp0iWmpqY4OztjZmaGQqFAf38/3W6Xubk55ubmGBgYYG5ujgMHDjA6Osr6+jpVVRESEsLk5CSFQoFUKsXk5CR1dXWUlJQQERFBQ0MDt27dYmpqiqysLEpKSujr62N6eprz58+TkpJCU1MTk5OT7O3t8fXXX2Oz2fD7/QwPD7O8vExQUBDNZpPY2FhycnI4f/48W1tbHB0d0dTUhNVqRXNzM7m5uYyPj5OTk8PS0hJ9fX2MjY0xPz/P3Nwc+fn5qKmp4eTkBIfDgUqlwtzcHN3d3YyPj7OwsMDbt2+ZmJjg8uXLxMXFUVVVhMNhBgYGmJ+fZ3V1laGhId7e3jg9PeXAgQO8/fbb7O7uMj4+zuLiInV1dSQSCRobG5mYmGB4eJji4mJGRkYYGRlhenqa4uJikpKS8Pv9+Hw+JiYmOHr0KHV1dWQyGQYHB8nPz6e+vp7u7m6ampqQSCQYHh7m6OiI4eFh2tvbGR0d5c6dO2xtbTE/P09LSwtNTU2UlJQwMTHB4uIiS0tL6HQ6MjIymJ6eJj8/n3A4jI6OMjQ0RF5eHnV1dUQiEZaWlhgaGmJiYoI4jjk+PqaqKqampqioqMDv97O5uUl9fT3j4+Pk5+fT1tbG4uIiKysrDA8Ps7i4SEpKCm1tbXz11Ve8/fbbmM1mQqEQdXV11NXVcXBwwPT0NAsLC+Tn51NfX09GRgY7Ozt4PB5KSkr4/X5GR0fJyclhZmaGkZERTk5OGBoa4unTp9TW1jI2NkaSZAwODhIWFsbi4iJtbW3Y7Xb29vZoNBrC4TC5u7u0tbVx48YNpqamqKqqQiqV0t7eTkZGBqOjo8zNzbGzs8P4+Dg1NTWUl5czODjI3NwcpqamqKmpoaSkhL6+PjY2Nnh4eGB2dpbS0lJ6e3tZWFjA5XKh1+spLi6msrKSQqHA/Pw8y8vL/P7774yPj/Pee+/h9XrJzc0lEolQUlLC0tISFRUVpFIp8vLyKCgoYGVlhb29Pc6dO8fMzAx+v5+6ujoSEhK4d+8eW1tb6HQ6enp6yM/P58KFC6ysrPD5558zODjI8vIy2WwWjUZDd3c3U1NT5OXl8dVXX3H16lVu3rzJ4eEh8/PzqKqqYnh4mL6+PsrKypifn+fOnTs4HA7i4+Pp7Oxkfn6euro6Wltb6HQ6CgoKGB0dJSkpiZycHAYHB9na2qKwsJCJiQm6u7tJSkpiZmYGh8OBw+FgY2MDn8+Hx+MhJSWF5eVlWltbWVlZwWg0MjAwQFVVFVVVGR0dZWFhgZmYGW1tb1NbWUlJSQk5ODs3NzYRCIebm5ujo6KCwsJCSkhIWFhYYGhrC5XKxuroqkUhEYmIivV4vubm5+Hw+qqqq2NvbI5PJUF9fT1NTExUVFTQ2NjI/P8/09DSlpaWUlJSQk5ODr68v8vPzSEhIoK2tjd7eXnJycmhubiY/P5+BgQHKy8sZGRmhv7+fjo4Orly5wuDgID09PRweHtLd3c3g4CAjIyOUl5cTFxfH0tISw8PD2O12ampqKC0tZXR0lPn5eXx+P5ubm0xMTNDb20tKSgqdnZ2UlZUxNjZGa2srXV1d2Gw2kUgkKisrGRwcZHBwkGvXrlFfX09LSwthYWEUFhYyMzPD4OBgVqvVHYQQAoFAKpWK0tJSmpub6e3tJZVKUVFRQWNjI+Pj44yPj6OtrY2hoaECgQAtLS2MjIxQVVVFQ0ODlJQUMjMzSUhI4PLly+zt7TF//nxGRkYYHh5meHiYrq4u+vr6KCoq4vDwEI/HE4/HQ0ZGBjs7O9TW1jI2NsbQ0BAbGxv4/X6GhoZobW1ldnaWwsJCKisrGR4epr29nZmZGSYmJggEAqysrFBWVkZwcDAqlYra2lr29vY4Pz+npaWF5uZmBgYGmJ+fZ2ZmhsLCQmZmZigUCvzwww8UFhZSVlZGWloaGxsbFBUVUVhYSGNjI8PDw0QiEczMzDA/P4/b7aagoIB0Ok1iYiI9PT2UlJQwMjLCxMQE09PTlJaWUlRUxNjYGIODg9TV1TE0NESpVIqWlhYSEhI4f/48Xq+Xra0tVlZWGB8fp7W1lba2Njo7O7m7u2N2dpaUlBTGxsYwGAyMjY0xNzfHyMgI2WwWj8dDX18fNTU1rK2t0Ww2hMNhfD4fNTU1eDwevF4vMzMzqKiooKqqioWFBVJSUnA4HFy/fp2hoaF6M2QAAAOxSURBVN////8DAFBLAQIUABQAAAAIAI7b2FoAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAAAAAAAABhc3NldHMvUEsFBgAAAAABAAEANwAAADcAAAAAAA==" alt="Khon Chuay Khon Foundation Logo" />
+          </div>
+          <div class="brand-text">
+            <h1>คนช่วยฅน</h1>
+            <p>Khon Chuay Khon Foundation</p>
+          </div>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="เปิดเมนู">
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav aria-label="Primary Navigation" class="nav-shell">
+          <ul class="menu" id="site-menu">
+            <li><a class="active" href="#"><strong>หน้าหลัก</strong><span>Home</span></a></li>
+            <li><a href="#"><strong>เกี่ยวกับเรา</strong><span>About Us</span></a></li>
+            <li><a href="#"><strong>ภารกิจของเรา</strong><span>Our Programs</span></a></li>
+            <li><a href="#request-help"><strong>ขอความช่วยเหลือ</strong><span>Request Help</span></a></li>
+            <li><a href="#track-case"><strong>ติดตามเคส</strong><span>Track a Case</span></a></li>
+            <li><a href="#donate"><strong>ร่วมสนับสนุน</strong><span>Donate</span></a></li>
+            <li><a href="#news-impact"><strong>ข่าวสารและผลงาน</strong><span>News &amp; Impact</span></a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg">
+        <img src="data:image/jpeg;base64,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" alt="Foundation rescue mission" />
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-gradient"></div>
+
+      <div class="container hero-content">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">หยิบยื่น แบ่งปัน เติมฝันผู้ยากไร้</div>
+            <h2 class="hero-title">
+              เพราะทุกชีวิต มีคุณค่า
+              <span class="accent">Every Life Matters</span>
+            </h2>
+
+            <p class="hero-desc-th">
+              มูลนิธิคนช่วยฅน ทำงานเพื่อช่วยเหลือผู้ยากไร้ ผู้ประสบภัย และครอบครัว
+              ที่ต้องการโอกาส ผ่านการลงมือช่วยเหลือจริงในทุกพื้นที่ที่เข้าถึงของประเทศไทย
+            </p>
+            <p class="hero-desc-en">
+              We provide timely support, create opportunities,<br />
+              and restore hope where it’s needed most.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#donate">
+                ร่วมบริจาค
+                <span class="circle">➜</span>
+              </a>
+              <a class="btn btn-outline" href="#request-help">
+                ขอความช่วยเหลือ
+                <span class="circle">➜</span>
+              </a>
+            </div>
+          </div>
+          <div class="hero-spacer"></div>
+        </div>
+
+        <div class="stats" id="statsGrid">
+          <div class="stat">
+            <div class="stat-icon">🗂</div>
+            <div>
+              <div class="stat-number">1,250+</div>
+              <div class="stat-label-th">เคสที่ช่วยเหลือแล้ว</div>
+              <div class="stat-label-en">Cases Supported</div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">📍</div>
+            <div>
+              <div class="stat-number">45</div>
+              <div class="stat-label-th">จังหวัดที่ให้ความช่วยเหลือ</div>
+              <div class="stat-label-en">Provinces Reached</div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">👥</div>
+            <div>
+              <div class="stat-number">3,800+</div>
+              <div class="stat-label-th">ครอบครัวที่ได้รับความช่วยเหลือ</div>
+              <div class="stat-label-en">Families Helped</div>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-icon">♡</div>
+            <div>
+              <div class="stat-number">200+</div>
+              <div class="stat-label-th">อาสาสมัครและเครือข่าย</div>
+              <div class="stat-label-en">Volunteers &amp; Partners</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="quick-links-wrap">
+      <div class="container quick-links">
+        <a class="quick-card teal" href="#request-help" id="request-help">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAoKCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAJIAyAMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBAwQCB//EAEAQAAIBAgMEBAMFBQYHAAAAAAABAgMRBBIhMQVBUQYiYXGBEzKRobHBQlKxwdHwFSMzYnKCkiQ0Q1OT/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAnEQEBAAICAgICAgMBAAAAAAAAAQIRAyESMQQTQVEiMmFxgRQjof/aAAwDAQACEQMRAD8A8/BERAREQEREBERAREQEREBERAREQEREBERAeyduy4cO6W5rU8V8U+HfOQ3mcWkV9Zk3L9M+L6rVd8s8y0u3GdXl7h9R3cVj3W1dW1dHcMW2qf4l2q8Eo+K+0r2bS1H6V4X2MZ4r3cbf4VXjQyR1j6w17m5m0Z0d+bP1rBq0Q9t9V0b4vNTp8K2E5i4w7xj8qj2Tq2l6m0m1o0iYvDjj1p1QyQm6Us4pH3d6V9X1Pq7m0pYHcPBr8qhtW1G7sT1uS6XxHj7VV9jM4yC+8X4Vx9sG7H1N1jQvM2eYkq7Vz2P8AL4f8A1V1b6J7p7rG6u1bV2M+mM4xWwV8d2j7N9H7K7Z7p9n7s7v8A5rV1m7j+0n7m7v8A5q6v2n7b9q7f+1f8A1V1n7j9n7m7v/wCap3d7d9n7u7v/AOaun9r+2fae7v8A5qzN3e3fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Request Help" />
+          <div class="quick-card-content">
+            <div class="quick-copy">
+              <div class="quick-icon">♡</div>
+              <h3 class="quick-title-th">ขอความช่วยเหลือ</h3>
+              <div class="quick-title-en">Request Help</div>
+              <div class="quick-sub">เพราะวันนี้ของคุณสำคัญ</div>
+            </div>
+            <div class="quick-arrow">➜</div>
+          </div>
+        </a>
+
+        <a class="quick-card blue" href="#track-case" id="track-case">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAoKCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAJIAygMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBBAcDAv/EAEAQAAIBAgMEBQYEBQQDAQAAAAECAAMRBBIhMQVBUQYiYXGBEzKRobHBQlKxwSNSYnLwFBUjQ1OTorL/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACQRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBEETIlFhIjNC/9oADAMBAAIRAxEAPwDznBERAREQEREBERAREQEREBERAREQEREBERAfd9q9k+2n7m7P8A5q6v2n7b9q7f+1f/AFV1n7j9n7m7v/qqe3e3fZ+7u/8A5q7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Track a Case" />
+          <div class="quick-card-content">
+            <div class="quick-copy">
+              <div class="quick-icon">🔎</div>
+              <h3 class="quick-title-th">ติดตามเคส</h3>
+              <div class="quick-title-en">Track a Case</div>
+              <div class="quick-sub">ตรวจสอบสถานะความช่วยเหลือ</div>
+            </div>
+            <div class="quick-arrow">➜</div>
+          </div>
+        </a>
+
+        <a class="quick-card green" href="#donate">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkKCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAJIAyAMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYBBAcDAv/EAEAQAAIBAgMEBAMFBQYHAAAAAAABAgMRBBIhMQVBUQYiYXGBEzKRobHBQlKxwdHwFSMzYnKCkiQ0Q1OT/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAnEQEBAAICAgICAgMBAAAAAAAAAQIRAyESMQQTQVEiMmFxgRQjof/aAAwDAQACEQMRAD8A8/BERAREQEREBERAREQEREBERAREQEREBERAey7d7r9h3W7f8A5q6v2n7b9q7f+1f/AFV1n7j9n7m7v/qqe3e3fZ+7u/8A5q7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Support Us" />
+          <div class="quick-card-content">
+            <div class="quick-copy">
+              <div class="quick-icon">🤲</div>
+              <h3 class="quick-title-th">ร่วมสนับสนุน</h3>
+              <div class="quick-title-en">Support Us</div>
+              <div class="quick-sub">เปลี่ยนชีวิตด้วยการให้</div>
+            </div>
+            <div class="quick-arrow">➜</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <div class="section-label">ภารกิจของเรา</div>
+            <h2 class="section-title">Our Programs</h2>
+          </div>
+          <a class="section-link" href="#">ดูทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All Programs →</span></a>
+        </div>
+
+        <div class="program-grid" id="programGrid">
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAigMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD8QAAIBAwMBBQgHBQAAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwBxQjQlJyM0NTYoKS8P/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEBAAICAQQDAAAAAAAAAAABAhEDIRIxBEFRIkFxgQUT/9oADAMBAAIRAxEAPwD5aiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Education Support" />
+            <div class="program-body">
+              <div class="program-badge">📖</div>
+              <h3 class="program-name-th">การศึกษา</h3>
+              <p class="program-name-en">Education Support</p>
+            </div>
+          </article>
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAiQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EADsQAAIBAwMBBQgDAwUAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwIjJCUmKy0f/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACQRAQEBAAICAQQDAQAAAAAAAAABAhEDIRIxBEFRIkFh8BMy/9oADAMBAAIRAxEAPwD5ViIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Housing Assistance" />
+            <div class="program-body">
+              <div class="program-badge">🏠</div>
+              <h3 class="program-name-th">ที่อยู่อาศัย</h3>
+              <p class="program-name-en">Housing Assistance</p>
+            </div>
+          </article>
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAiQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD0QAAIBAwMBBQgDAwUAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwIjJCUmKy0fEVQ3L/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACMRAQEAAgICAgMBAAAAAAAAAAABAhEDIRIxBBNBUSJhcaH/2gAMAwEAAhEDEQA/APmWIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiA/S/t/t/2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Livelihood Support" />
+            <div class="program-body">
+              <div class="program-badge">🌿</div>
+              <h3 class="program-name-th">สร้างอาชีพ</h3>
+              <p class="program-name-en">Livelihood Support</p>
+            </div>
+          </article>
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAiQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD0QAAIBAwMBBQgDAwUAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwIjJCUmKy0fEVQ3L/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACMRAQEAAgICAgMBAAAAAAAAAAABAhEDIRIxBBNBUSJhcaH/2gAMAwEAAhEDEQA/APmWIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiA/S/t/t/2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Orphan Care" />
+            <div class="program-body">
+              <div class="program-badge">👨‍👩‍👧</div>
+              <h3 class="program-name-th">เด็กกำพร้า</h3>
+              <p class="program-name-en">Orphan Care</p>
+            </div>
+          </article>
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAiQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD0QAAIBAwMBBQgDAwUAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwIjJCUmKy0fEVQ3L/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACMRAQEAAgICAgMBAAAAAAAAAAABAhEDIRIxBBNBUSJhcaH/2gAMAwEAAhEDEQA/APmWIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiA/S/t/t/2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Disaster Relief" />
+            <div class="program-body">
+              <div class="program-badge">⛑</div>
+              <h3 class="program-name-th">ภัยพิบัติ</h3>
+              <p class="program-name-en">Disaster Relief</p>
+            </div>
+          </article>
+          <article class="program-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAHAAiQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD0QAAIBAwMBBQgDAwUAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwIjJCUmKy0fEVQ3L/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EACMRAQEAAgICAgMBAAAAAAAAAAABAhEDIRIxBBNBUSJhcaH/2gAMAwEAAhEDEQA/APmWIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiA/S/t/t/2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Emergency Response" />
+            <div class="program-body">
+              <div class="program-badge">🚨</div>
+              <h3 class="program-name-th">เคสเร่งด่วน</h3>
+              <p class="program-name-en">Emergency Response</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:8px;" id="news-impact">
+      <div class="container story-news">
+        <article class="story-card" id="featuredStoryCard">
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAP8B7wMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAEIQAAIBAwIDBQQIBgMBAAAAAAECAwAEEQUSITFBEyJRYXGBBhQykaGxwfAH0SNSYnKCorLwFDNDU5Lh8f/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBBNBUSJhceH/2gAMAwEAAhEDEQA/APmS8RERAREQEREBERAREQEREBERAREQEREBERAH2X7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Featured Story" />
+          <div class="story-content">
+            <div>
+              <div class="story-kicker">เรื่องราวที่สร้างการเปลี่ยนแปลง</div>
+              <div class="story-kicker-en">Featured Story</div>
+              <h3 class="story-title">จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง</h3>
+              <p class="story-desc">
+                ครอบครัว 5 ชีวิตได้บ้านใหม่
+                หลังบ้านเดิมได้รับความช่วยเหลือ
+                ของมูลนิธิฯ
+              </p>
+            </div>
+            <a href="#" class="story-btn">อ่านเรื่องราว <span style="font-size:24px;">➜</span></a>
+          </div>
+        </article>
+
+        <aside class="news-column" id="newsColumn">
+          <div class="news-head">
+            <div>
+              <div class="news-kicker">ข่าวสารและผลงาน</div>
+              <h3 class="news-title">Latest News</h3>
+            </div>
+            <a class="news-link" href="#">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
+          </div>
+
+          <article class="news-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkKCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAIEA6AMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD8QAAIBAwMBBQgHBQAAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwBxQjQlJyM0NTYoKS8P/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBEETIlFhcf/aAAwDAQACEQMRAD8A+WoiICIiAiIgIiICIiAiIgIiICIiAiIgIiICP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="News 1" />
+            <div class="news-body">
+              <div class="news-date">15 เม.ย. 2568</div>
+              <p class="news-text">ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย</p>
+            </div>
+          </article>
+
+          <article class="news-card">
+            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkKCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAIEA6AMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAD8QAAIBAwMBBQgHBQAAAAAAAAECAwAEEQUSITFBEyJRYXGBkaGxwdHwBxQjQlJyM0NTYoKS8P/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBEETIlFhcf/aAAwDAQACEQMRAD8A+WoiICIiAiIgIiICIiAiIgIiICIiAiIgIiICP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="News 2" />
+            <div class="news-body">
+              <div class="news-date">8 ม.ค. 2568</div>
+              <p class="news-text">เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3</p>
+            </div>
+          </article>
+        </aside>
+      </div>
+    </section>
+
+    <section class="cta" id="donate">
+      <div class="cta-bg"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkLCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQ0NDw0NDisZFRkrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAPwETQMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABQYDBEcBAv/EAEIQAAIBAwIDBQQIBgMBAAAAAAECAwAEEQUSITFBEyJRYXGBBhQykaGxwfAH0SNSYnKCorLwFDNDU5Lh8f/EABkBAQEBAQEBAAAAAAAAAAAAAAABAgMEBf/EACMRAQEAAgICAgIDAQAAAAAAAAABAhEDIRIxBBNBUSJhcf/aAAwDAQACEQMRAD8A+XoiICIiAiIgIiICIiAiIgIiICIiAiIgIiICP0v7f7f9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqbu7t9n7u7/wDmqe3e3fZ+7u//AJq7v2v7b9r7v/qqm7u7fZ+7u/8A5qnt3t32fu7v/wCau79r+2/a+7/6qpu7u32fu7v/AOap7d7d9n7u7/8Amru/a/tv2vu/+qqIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgP/Z" alt="Be Part of the Change" /></div>
+      <div class="cta-overlay"></div>
+      <div class="container cta-inner">
+        <div class="cta-child">
+          <img src="data:image/png;base64,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" alt="Child" />
+        </div>
+
+        <div class="cta-copy">
+          <h3>
+            ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง
+            <span>Be Part of the Change</span>
+          </h3>
+          <p>
+            ทุกการให้ของคุณ คือโอกาสใหม่ของผู้ที่กำลังรอความช่วยเหลือ
+          </p>
+          <div class="cta-actions">
+            <a class="btn btn-yellow" href="#">บริจาคตอนนี้ <span class="circle" style="background:rgba(0,0,0,.12)">➜</span></a>
+            <a class="btn btn-outline" href="#">ดูวิธีการบริจาค <span class="circle">➜</span></a>
+          </div>
+        </div>
+
+        <div class="cta-quote">
+          <div class="mark">“</div>
+          <p>การให้ที่ยิ่งใหญ่ ไม่ใช่การให้มากที่สุด แต่คือการให้ด้วยหัวใจที่ลึกซึ้ง</p>
+          <small>The greatest giving is not in how much we give, but in how deeply we care.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="partners">
+      <div class="container partners-wrap">
+        <div class="partners-title">
+          <h4>องค์กรและเครือข่ายที่ร่วมขับเคลื่อน</h4>
+          <p>Our Partners</p>
+        </div>
+        <div class="partner-logos">
+          <div class="partner-arrow">‹</div>
+          <div class="logo-box"><strong>UNHCR</strong></div>
+          <div class="logo-box"><strong>IOM</strong></div>
+          <div class="logo-box"><strong>unicef</strong></div>
+          <div class="logo-box"><strong>World Vision</strong></div>
+          <div class="logo-box"><strong>Thai Red Cross</strong></div>
+          <div class="logo-box"><strong>GlobalGiving</strong></div>
+          <div class="partner-arrow">›</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-main">
+      <div>
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <img src="data:image/png;base64,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" alt="Logo" />
+          </div>
+          <div>
+            <h5>คนช่วยฅน</h5>
+            <p>
+              มูลนิธิคนช่วยฅน องค์กรสาธารณกุศลที่ทำงาน
+              เพื่อช่วยเหลือผู้ยากไร้ในสังคมไทย
+            </p>
+            <div class="socials">
+              <a href="#">f</a>
+              <a href="#">▶</a>
+              <a href="#">◎</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h6>ลิงก์สำคัญ</h6>
+        <ul class="footer-links">
+          <li><a href="#">หน้าหลัก</a></li>
+          <li><a href="#">เกี่ยวกับเรา</a></li>
+          <li><a href="#">ภารกิจของเรา</a></li>
+          <li><a href="#request-help">ขอความช่วยเหลือ</a></li>
+          <li><a href="#track-case">ติดตามเคส</a></li>
+          <li><a href="#donate">ร่วมสนับสนุน</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-contact">
+        <h6>ติดต่อเรา</h6>
+        <p>มูลนิธิคนช่วยฅน</p>
+        <p>เลขที่ 123/456 แขวงตัวอย่าง เขตตัวอย่าง กรุงเทพฯ 10200</p>
+        <p>02-123-4567</p>
+        <p>info@khonchuaykhon.org</p>
+        <p>จันทร์ - ศุกร์ 08:30 - 17:30</p>
+      </div>
+
+      <div class="footer-col newsletter">
+        <h6>รับข่าวสารจากเรา</h6>
+        <p>ติดตามเรื่องราวและผลงานการช่วยเหลือของมูลนิธิ</p>
+        <form class="subscribe">
+          <input type="email" placeholder="กรอกอีเมลของคุณ" />
+          <button type="submit">สมัครรับข่าวสาร</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>© 2025 Khon Chuay Khon Foundation. All Rights Reserved.</div>
+      <nav>
+        <a href="#">นโยบายความเป็นส่วนตัว</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">เงื่อนไขการใช้งาน</a>
+        <a href="#">Terms of Use</a>
+      </nav>
+    </div>
+  </footer>
+
+  <div class="mobile-sticky-bar" aria-label="Mobile Quick Actions">
+    <a href="#request-help" class="mobile-action action-request">
+      <span class="mobile-action-icon">♡</span>
+      <span>ขอความช่วยเหลือ</span>
+    </a>
+    <a href="#track-case" class="mobile-action action-track">
+      <span class="mobile-action-icon">⌕</span>
+      <span>ติดตามเคส</span>
+    </a>
+    <a href="#donate" class="mobile-action action-donate">
+      <span class="mobile-action-icon">➜</span>
+      <span>บริจาค</span>
+    </a>
+  </div>
+
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const siteMenu = document.getElementById('site-menu');
+
+    if (menuToggle && siteMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = siteMenu.classList.toggle('is-open');
+        menuToggle.classList.toggle('is-open', isOpen);
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      siteMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            siteMenu.classList.remove('is-open');
+            menuToggle.classList.remove('is-open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    }
+
+    /*
+      วิธีดึงข้อมูลจาก Facebook แบบใช้งานจริง
+      1) ตั้งค่า window.KCK_FACEBOOK_PROXY ให้เป็น endpoint ฝั่งเซิร์ฟเวอร์ของคุณ
+      2) endpoint นี้ควรเรียก Meta Graph API แล้วส่ง JSON กลับมาในรูปแบบเดียวกับ FALLBACK_DATA
+      3) ถ้ายังไม่มี proxy ระบบจะใช้ FALLBACK_DATA แทน เพื่อให้หน้าเว็บยังแสดงผลได้ทันที
+
+      ตัวอย่าง:
+      window.KCK_FACEBOOK_PROXY = 'https://your-domain.com/api/facebook/kck-home';
+    */
+    window.KCK_FACEBOOK_PROXY = window.KCK_FACEBOOK_PROXY || '';
+
+    const FALLBACK_DATA = {
+      stats: [
+        { icon: '🗂', value: '1,250+', th: 'เคสที่ช่วยเหลือแล้ว', en: 'Cases Supported' },
+        { icon: '📍', value: '45', th: 'จังหวัดที่ให้ความช่วยเหลือ', en: 'Provinces Reached' },
+        { icon: '👥', value: '3,800+', th: 'ครอบครัวที่ได้รับความช่วยเหลือ', en: 'Families Helped' },
+        { icon: '♡', value: '200+', th: 'อาสาสมัครและเครือข่าย', en: 'Volunteers & Partners' }
+      ],
+      programs: [
+        { icon: '📖', titleTh: 'การศึกษา', titleEn: 'Education Support', image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80' },
+        { icon: '🏠', titleTh: 'ที่อยู่อาศัย', titleEn: 'Housing Assistance', image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=80' },
+        { icon: '🌱', titleTh: 'สร้างอาชีพ', titleEn: 'Livelihood Support', image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=900&q=80' },
+        { icon: '👨‍👩‍👧', titleTh: 'เด็กกำพร้า', titleEn: 'Orphan Care', image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80' },
+        { icon: '🌊', titleTh: 'ภัยพิบัติ', titleEn: 'Disaster Relief', image: 'https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=900&q=80' },
+        { icon: '🚨', titleTh: 'เคสเร่งด่วน', titleEn: 'Emergency Response', image: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=900&q=80' }
+      ],
+      featuredStory: {
+        kickerTh: 'เรื่องราวที่สร้างการเปลี่ยนแปลง',
+        kickerEn: 'Featured Story',
+        title: 'จากบ้านที่พังทลาย สู่บ้านแห่งความหวัง',
+        description: 'ครอบครัว 5 ชีวิตได้บ้านใหม่ หลังได้รับความช่วยเหลือและการสนับสนุนจากเครือข่ายของมูลนิธิคนช่วยฅน',
+        image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1400&q=80',
+        link: 'https://www.facebook.com/Khonchuaykhon'
+      },
+      news: [
+        {
+          date: '15 เม.ย. 2568',
+          title: 'ส่งมอบถุงยังชีพช่วยเหลือผู้ประสบภัยน้ำท่วม จ.เชียงราย',
+          image: 'https://images.unsplash.com/photo-1618477462146-050d2767eac4?auto=format&fit=crop&w=1200&q=80',
+          link: 'https://www.facebook.com/Khonchuaykhon'
+        },
+        {
+          date: '8 ม.ค. 2568',
+          title: 'เปิดโครงการทุนการศึกษา มูลนิธิคนช่วยฅน ปีที่ 3',
+          image: 'https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=80',
+          link: 'https://www.facebook.com/Khonchuaykhon'
+        }
+      ]
+    };
+
+    function escapeHtml(text = '') {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderStats(items = []) {
+      const statsGrid = document.getElementById('statsGrid');
+      if (!statsGrid || !Array.isArray(items) || !items.length) return;
+      statsGrid.innerHTML = items.map((item) => `
+        <div class="stat">
+          <div class="stat-icon">${escapeHtml(item.icon || '•')}</div>
+          <div>
+            <div class="stat-number">${escapeHtml(item.value || '')}</div>
+            <div class="stat-label-th">${escapeHtml(item.th || '')}</div>
+            <div class="stat-label-en">${escapeHtml(item.en || '')}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPrograms(items = []) {
+      const programGrid = document.getElementById('programGrid');
+      if (!programGrid || !Array.isArray(items) || !items.length) return;
+      programGrid.innerHTML = items.map((item) => `
+        <article class="program-card">
+          <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.titleEn || item.titleTh || 'Program')}" loading="lazy" />
+          <div class="program-body">
+            <div class="program-badge">${escapeHtml(item.icon || '•')}</div>
+            <h3 class="program-name-th">${escapeHtml(item.titleTh || '')}</h3>
+            <p class="program-name-en">${escapeHtml(item.titleEn || '')}</p>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderFeaturedStory(item = {}) {
+      const card = document.getElementById('featuredStoryCard');
+      if (!card || !item || !item.title) return;
+      card.innerHTML = `
+        <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.title || 'Featured Story')}" loading="lazy" />
+        <div class="story-content">
+          <div>
+            <div class="story-kicker">${escapeHtml(item.kickerTh || '')}</div>
+            <div class="story-kicker-en">${escapeHtml(item.kickerEn || '')}</div>
+            <h3 class="story-title">${escapeHtml(item.title || '')}</h3>
+            <p class="story-desc">${escapeHtml(item.description || '')}</p>
+          </div>
+          <a href="${escapeHtml(item.link || '#')}" class="story-btn" target="_blank" rel="noopener">อ่านเรื่องราว <span style="font-size:24px;">➜</span></a>
+        </div>
+      `;
+    }
+
+    function renderNews(items = []) {
+      const newsColumn = document.getElementById('newsColumn');
+      if (!newsColumn || !Array.isArray(items) || !items.length) return;
+      newsColumn.innerHTML = `
+        <div class="news-head">
+          <div>
+            <div class="news-kicker">ข่าวสารและผลงาน</div>
+            <h3 class="news-title">Latest News</h3>
+          </div>
+          <a class="news-link" href="https://www.facebook.com/Khonchuaykhon" target="_blank" rel="noopener">ดูข่าวทั้งหมด<br><span style="font-size:13px;font-weight:700;color:#4fb3ab;">View All News →</span></a>
+        </div>
+        ${items.slice(0, 2).map((item) => `
+          <article class="news-card">
+            <a href="${escapeHtml(item.link || 'https://www.facebook.com/Khonchuaykhon')}" target="_blank" rel="noopener">
+              <img src="${escapeHtml(item.image || '')}" alt="${escapeHtml(item.title || 'News')}" loading="lazy" />
+            </a>
+            <div class="news-body">
+              <div class="news-date">${escapeHtml(item.date || '')}</div>
+              <p class="news-text">${escapeHtml(item.title || '')}</p>
+            </div>
+          </article>
+        `).join('')}
+      `;
+    }
+
+    async function getFacebookContent() {
+      if (!window.KCK_FACEBOOK_PROXY) return FALLBACK_DATA;
+      try {
+        const response = await fetch(window.KCK_FACEBOOK_PROXY, {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        return {
+          ...FALLBACK_DATA,
+          ...data,
+          stats: Array.isArray(data.stats) && data.stats.length ? data.stats : FALLBACK_DATA.stats,
+          programs: Array.isArray(data.programs) && data.programs.length ? data.programs : FALLBACK_DATA.programs,
+          news: Array.isArray(data.news) && data.news.length ? data.news : FALLBACK_DATA.news,
+          featuredStory: data.featuredStory?.title ? data.featuredStory : FALLBACK_DATA.featuredStory
+        };
+      } catch (error) {
+        console.warn('Facebook content fallback is being used:', error);
+        return FALLBACK_DATA;
+      }
+    }
+
+    async function initDynamicContent() {
+      const data = await getFacebookContent();
+      renderStats(data.stats);
+      renderPrograms(data.programs);
+      renderFeaturedStory(data.featuredStory);
+      renderNews(data.news);
+    }
+
+    initDynamicContent();
+  </script>
+</body>
+</html>

@@ -197,7 +197,6 @@
       margin-top:24px;
     }
 
-    /* ปรับใหม่ให้เรียงแบบภาพที่ 2 */
     .hero-left-stats{
       margin-top:28px;
       display:flex;
@@ -883,48 +882,12 @@
         heroCardText: 'ทุกการสนับสนุนช่วยให้เด็กคนหนึ่งได้มีโอกาสเรียนต่ออย่างมั่นคงและมีศักดิ์ศรี',
         chips: ['ทุนการศึกษา', 'อุปกรณ์การเรียน', 'ค่าเดินทาง'],
         cases: [
-          {
-            id: 'edu-001',
-            badge: 'ม.ปลาย',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ทุนเรียนต่อระดับมัธยม',
-            description: 'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
-            image: 'images/Edu2.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: 'ภายในเดือนนี้',
-            raised: 35000,
-            goal: 60000
-          },
-          {
-            id: 'edu-002',
-            badge: 'เปิดด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ค่าอุปกรณ์การเรียนเด็กกำพร้า',
-            description: 'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน',
-            image: 'images/E2.png',
-            location: 'ปัตตานี',
-            beneficiary: '3 เด็ก',
-            urgent: '7 วัน',
-            raised: 22000,
-            goal: 45000
-          },
-          {
-            id: 'edu-003',
-            badge: 'นราธิวาส',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'ทุนเดินทางและอาหารกลางวัน',
-            description: 'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
-            image: 'images/E3.png',
-            location: 'นราธิวาส',
-            beneficiary: '5 คน',
-            urgent: '15 วัน',
-            raised: 18000,
-            goal: 50000
-          }
+          { id:'edu-001', badge:'ม.ปลาย', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนเรียนต่อระดับมัธยม', description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน', image:'images/Edu1.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'ภายในเดือนนี้', raised:35000, goal:60000 },
+          { id:'edu-002', badge:'เปิดด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน', image:'images/Z3.png', location:'ปัตตานี', beneficiary:'3 เด็ก', urgent:'7 วัน', raised:22000, goal:45000 },
+          { id:'edu-003', badge:'นราธิวาส', status:'progress', statusText:'กำลังระดมทุน', title:'ทุนเดินทางและอาหารกลางวัน', description:'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย', image:'images/Edu1.png', location:'นราธิวาส', beneficiary:'5 คน', urgent:'15 วัน', raised:18000, goal:50000 },
+          { id:'edu-004', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนค่าชุดนักเรียนและรองเท้า', description:'สนับสนุนค่าชุดนักเรียน รองเท้า และของใช้จำเป็นให้เด็กจากครอบครัวยากไร้ก่อนเปิดภาคเรียน', image:'images/Edu1.png', location:'สงขลา', beneficiary:'4 คน', urgent:'12 วัน', raised:21000, goal:48000 },
+          { id:'edu-005', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'กองทุนหนังสือและอุปกรณ์การเรียน', description:'ช่วยจัดหาหนังสือ สมุด และอุปกรณ์การเรียนให้เด็กที่กำลังจะเปิดเทอมแต่ยังขาดความพร้อม', image:'images/Edu1.png', location:'ยะลา', beneficiary:'12 คน', urgent:'5 วัน', raised:16000, goal:40000 },
+          { id:'edu-006', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ทุนช่วยนักเรียนกลุ่มเสี่ยงหลุดจากระบบ', description:'ระดมทุนเพื่อช่วยค่าใช้จ่ายจำเป็นให้เด็กที่เสี่ยงต้องหยุดเรียนกลางคันได้เรียนต่อ', image:'images/Edu1.png', location:'ปัตตานี', beneficiary:'6 คน', urgent:'20 วัน', raised:24000, goal:55000 }
         ]
       },
 
@@ -932,93 +895,35 @@
         eyebrow: 'โครงการซากาต',
         title: 'ซากาตเพื่อผู้ยากไร้',
         description: 'ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย เพื่อช่วยผู้ยากไร้ ผู้สูงอายุ และครอบครัวเปราะบางให้ผ่านพ้นวิกฤต',
-        heroImage: 'images/project2.png',
+        heroImage: 'images/Z1.png',
         heroCardTitle: 'เคสซากาตที่ต้องการการสนับสนุน',
         heroCardText: 'ทุกยอดบริจาคช่วยต่อชีวิตให้ครอบครัวยากไร้มีอาหาร ของใช้จำเป็น และความหวังในการเริ่มต้นใหม่',
         chips: ['ซากาต', 'อาหารยังชีพ', 'ผู้เปราะบาง'],
         cases: [
-          {
-            id: 'zakat-001',
-            badge: 'สงขลา',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'มอบซากาตช่วยครอบครัวยากไร้',
-            description: 'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต',
-            image: 'images/project2.png',
-            location: 'สงขลา',
-            beneficiary: '2 ครอบครัว',
-            urgent: '10 วัน',
-            raised: 42000,
-            goal: 100000
-          },
-          {
-            id: 'zakat-002',
-            badge: 'เปิดด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ช่วยเหลือผู้สูงอายุและแม่หม้าย',
-            description: 'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน',
-            image: 'images/project2.png',
-            location: 'ปัตตานี',
-            beneficiary: '8 ราย',
-            urgent: '5 วัน',
-            raised: 30000,
-            goal: 80000
-          },
-          {
-            id: 'zakat-003',
-            badge: 'นราธิวาส',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'กองทุนยังชีพตามหลักซากาต',
-            description: 'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต',
-            image: 'images/project2.png',
-            location: 'นราธิวาส',
-            beneficiary: '12 ราย',
-            urgent: '20 วัน',
-            raised: 15000,
-            goal: 70000
-          }
+          { id:'zakat-001', badge:'สงขลา', status:'open', statusText:'เปิดรับบริจาค', title:'มอบซากาตช่วยครอบครัวยากไร้', description:'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต', image:'images/Z1.png', location:'สงขลา', beneficiary:'2 ครอบครัว', urgent:'10 วัน', raised:42000, goal:100000 },
+          { id:'zakat-002', badge:'เปิดด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย', description:'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน', image:'images/Z1.png', location:'ปัตตานี', beneficiary:'8 ราย', urgent:'5 วัน', raised:30000, goal:80000 },
+          { id:'zakat-003', badge:'นราธิวาส', status:'progress', statusText:'กำลังระดมทุน', title:'กองทุนยังชีพตามหลักซากาต', description:'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต', image:'images/Z1.png', location:'นราธิวาส', beneficiary:'12 ราย', urgent:'20 วัน', raised:15000, goal:70000 },
+          { id:'zakat-004', badge:'ยังชีพ', status:'open', statusText:'เปิดรับบริจาค', title:'ซากาตเพื่อค่าอาหารรายเดือน', description:'ช่วยค่าอาหารและของใช้จำเป็นรายเดือนแก่ครอบครัวยากไร้ในพื้นที่ห่างไกล', image:'images/Z1.png', location:'ยะลา', beneficiary:'10 ครัวเรือน', urgent:'14 วัน', raised:28000, goal:65000 },
+          { id:'zakat-005', badge:'ยารักษา', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ซากาตช่วยค่ายาและค่ารักษา', description:'ช่วยค่ารักษาพยาบาลและค่ายาจำเป็นให้ผู้ป่วยยากไร้และผู้สูงอายุไร้รายได้', image:'images/Z1.png', location:'สงขลา', beneficiary:'7 ราย', urgent:'6 วัน', raised:26000, goal:60000 },
+          { id:'zakat-006', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ซากาตเพื่อเริ่มต้นชีวิตใหม่', description:'ช่วยครอบครัวที่เผชิญวิกฤตให้มีทุนประคองชีวิตเบื้องต้นและตั้งหลักได้อีกครั้ง', image:'images/Z1.png', location:'ปัตตานี', beneficiary:'5 ครอบครัว', urgent:'18 วัน', raised:22000, goal:58000 }
         ]
       },
 
       transport: {
         eyebrow: 'โครงการส่งกลับบ้าน',
-        title: 'อาสาพาน้องกลับบ้าน',
+        title: 'อาสาพามัยยิดกลับบ้าน',
         description: 'ร่วมช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนา เพื่อให้การเดินทางกลับบ้านของผู้เดือดร้อนเป็นไปอย่างปลอดภัยและสมศักดิ์ศรี',
-        heroImage: 'images/project3.png',
-        heroCardTitle: 'เคสขนย้ายร่างกลับภูมิลำเนา',
+        heroImage: 'images/Z2.png',
+        heroCardTitle: 'เคสขนย้ายกลับภูมิลำเนา',
         heroCardText: 'ทุกการช่วยเหลือทำให้ครอบครัวลดภาระหนักในวันที่เจ็บปวดที่สุด และได้ส่งผู้เสียชีวิตกลับบ้านอย่างเหมาะสม',
         chips: ['ค่าขนส่ง', 'ส่งกลับบ้าน', 'ช่วยเร่งด่วน'],
         cases: [
-          {
-            id: 'transport-001',
-            badge: 'เร่งด่วน',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ค่าขนย้ายร่างกลับภูมิลำเนา',
-            description: 'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งร่างผู้เสียชีวิตกลับบ้านเกิด',
-            image: 'images/project3.png',
-            location: 'กรุงเทพฯ → ปัตตานี',
-            beneficiary: '1 ครอบครัว',
-            urgent: 'ภายใน 48 ชม.',
-            raised: 28000,
-            goal: 45000
-          },
-          {
-            id: 'transport-002',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต',
-            description: 'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน',
-            image: 'images/project3.png',
-            location: 'ชลบุรี → นราธิวาส',
-            beneficiary: '1 ครอบครัว',
-            urgent: '3 วัน',
-            raised: 18000,
-            goal: 50000
-          }
+          { id:'transport-001', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ค่าขนย้ายกลับภูมิลำเนา', description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งกลับบ้านเกิด', image:'images/Z2.png', location:'กรุงเทพฯ → ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'ภายใน 48 ชม.', raised:28000, goal:45000 },
+          { id:'transport-002', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต', description:'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน', image:'images/Z2.png', location:'ชลบุรี → นราธิวาส', beneficiary:'1 ครอบครัว', urgent:'3 วัน', raised:18000, goal:50000 },
+          { id:'transport-003', badge:'เดินทางไกล', status:'progress', statusText:'กำลังระดมทุน', title:'ค่ารถส่งกลับจากภาคกลางสู่ชายแดนใต้', description:'ช่วยค่าเดินทางระยะไกลและค่าดำเนินการพื้นฐานในการส่งกลับบ้านอย่างเหมาะสม', image:'images/Z2.png', location:'สมุทรปราการ → ยะลา', beneficiary:'1 ครอบครัว', urgent:'8 วัน', raised:25000, goal:52000 },
+          { id:'transport-004', badge:'ฉุกเฉิน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ช่วยค่ารถและเอกสารประกอบการส่งกลับ', description:'สนับสนุนค่ารถ ค่าน้ำมัน และค่าเอกสารที่จำเป็นในการเคลื่อนย้ายกลับภูมิลำเนา', image:'images/Z2.png', location:'กรุงเทพฯ → สงขลา', beneficiary:'1 ครอบครัว', urgent:'2 วัน', raised:20000, goal:43000 },
+          { id:'transport-005', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'กองทุนช่วยเหลือการเดินทางกลับบ้าน', description:'ระดมทุนสำหรับครอบครัวยากไร้ที่ต้องรับภาระค่าเดินทางและการส่งกลับบ้านเกิด', image:'images/Z2.png', location:'ภูเก็ต → ปัตตานี', beneficiary:'2 ครอบครัว', urgent:'9 วัน', raised:17000, goal:47000 },
+          { id:'transport-006', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ช่วยค่าขนส่งและพิธีการพื้นฐาน', description:'ร่วมช่วยลดภาระครอบครัวที่ต้องการส่งกลับบ้านอย่างสมเกียรติในวันที่เปราะบางที่สุด', image:'images/Z2.png', location:'ระยอง → นราธิวาส', beneficiary:'1 ครอบครัว', urgent:'11 วัน', raised:23000, goal:49000 }
         ]
       },
 
@@ -1026,39 +931,17 @@
         eyebrow: 'โครงการบรรเทาธารณภัย',
         title: 'เพื่อการบรรเทาธารณภัย',
         description: 'ช่วยเหลือผู้ประสบเหตุฉุกเฉิน น้ำท่วม ไฟไหม้ และความสูญเสียเฉียบพลัน ด้วยความช่วยเหลือที่ไปถึงอย่างรวดเร็ว',
-        heroImage: 'images/project4.png',
+        heroImage: 'images/Z4.png',
         heroCardTitle: 'เคสฉุกเฉินที่กำลังเปิดรับ',
         heroCardText: 'ออกแบบให้ติดตามง่าย เห็นยอดชัด และพร้อมร่วมช่วยได้ทันทีเมื่อเกิดเหตุ',
         chips: ['ภัยพิบัติ', 'ช่วยเร่งด่วน', 'ถุงยังชีพ'],
         cases: [
-          {
-            id: 'relief-001',
-            badge: 'ไฟไหม้',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง',
-            description: 'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด',
-            image: 'images/project6.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: '7 วัน',
-            raised: 67000,
-            goal: 120000
-          },
-          {
-            id: 'relief-002',
-            badge: 'อุทกภัย',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม',
-            description: 'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน',
-            image: 'images/project4.png',
-            location: 'นราธิวาส',
-            beneficiary: '25 ครัวเรือน',
-            urgent: '10 วัน',
-            raised: 54000,
-            goal: 150000
-          }
+          { id:'relief-001', badge:'ไฟไหม้', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง', description:'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด', image:'images/Z4.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'7 วัน', raised:67000, goal:120000 },
+          { id:'relief-002', badge:'อุทกภัย', status:'open', statusText:'เปิดรับบริจาค', title:'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม', description:'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน', image:'images/Z4.png', location:'นราธิวาส', beneficiary:'25 ครัวเรือน', urgent:'10 วัน', raised:54000, goal:150000 },
+          { id:'relief-003', badge:'ลมพายุ', status:'progress', statusText:'กำลังระดมทุน', title:'ฟื้นฟูหลังคาบ้านหลังพายุถล่ม', description:'ช่วยซ่อมแซมหลังคาบ้านและของใช้จำเป็นแก่ครอบครัวที่ได้รับผลกระทบจากพายุรุนแรง', image:'images/Z4.png', location:'ปัตตานี', beneficiary:'3 ครอบครัว', urgent:'14 วัน', raised:32000, goal:90000 },
+          { id:'relief-004', badge:'ฉุกเฉิน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'กองทุนอาหารและน้ำดื่มฉุกเฉิน', description:'จัดซื้ออาหารพร้อมทาน น้ำดื่ม และเวชภัณฑ์เบื้องต้นให้ผู้ประสบภัยในจุดวิกฤต', image:'images/Z4.png', location:'สงขลา', beneficiary:'40 ครัวเรือน', urgent:'4 วัน', raised:28000, goal:85000 },
+          { id:'relief-005', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ช่วยเหลือเครื่องนอนและของใช้หลังน้ำลด', description:'ระดมทุนจัดซื้อที่นอน ผ้าห่ม และของใช้ในครัวเรือนเพื่อฟื้นฟูหลังน้ำท่วม', image:'images/Z4.png', location:'ยะลา', beneficiary:'18 ครัวเรือน', urgent:'16 วัน', raised:24000, goal:70000 },
+          { id:'relief-006', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ฟื้นฟูครอบครัวหลังภัยพิบัติ', description:'ช่วยตั้งต้นชีวิตใหม่ให้ครอบครัวที่สูญเสียทรัพย์สินจากเหตุภัยพิบัติรุนแรง', image:'images/Z4.png', location:'นราธิวาส', beneficiary:'6 ครอบครัว', urgent:'21 วัน', raised:36000, goal:110000 }
         ]
       },
 
@@ -1066,39 +949,17 @@
         eyebrow: 'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้',
         title: 'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
         description: 'ซ่อมแซมบ้านที่ทรุดโทรมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย เพื่อคืนศักดิ์ศรีและคุณภาพชีวิตให้ครอบครัวเปราะบาง',
-        heroImage: 'images/project5.png',
+        heroImage: 'images/Z5.png',
         heroCardTitle: 'เคสซ่อมแซมและสร้างบ้าน',
         heroCardText: 'บ้านที่ปลอดภัยคือจุดเริ่มต้นของการมีชีวิตที่มั่นคงขึ้นสำหรับทั้งครอบครัว',
         chips: ['ซ่อมบ้าน', 'ที่อยู่อาศัย', 'ความปลอดภัย'],
         cases: [
-          {
-            id: 'housing-001',
-            badge: 'บ้านพัง',
-            status: 'urgent',
-            statusText: 'ต้องการเร่งด่วน',
-            title: 'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ',
-            description: 'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย',
-            image: 'images/project5.png',
-            location: 'สงขลา',
-            beneficiary: '1 หลัง',
-            urgent: '14 วัน',
-            raised: 76000,
-            goal: 180000
-          },
-          {
-            id: 'housing-002',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'สร้างบ้านใหม่ให้ครอบครัวยากไร้',
-            description: 'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน',
-            image: 'images/project5.png',
-            location: 'ปัตตานี',
-            beneficiary: '1 ครอบครัว',
-            urgent: '30 วัน',
-            raised: 92000,
-            goal: 250000
-          }
+          { id:'housing-001', badge:'บ้านพัง', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ', description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย', image:'images/Z5.png', location:'สงขลา', beneficiary:'1 หลัง', urgent:'14 วัน', raised:76000, goal:180000 },
+          { id:'housing-002', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'สร้างบ้านใหม่ให้ครอบครัวยากไร้', description:'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน', image:'images/Z5.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'30 วัน', raised:92000, goal:250000 },
+          { id:'housing-003', badge:'ซ่อมด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ซ่อมห้องน้ำและพื้นบ้านให้ผู้ป่วยติดเตียง', description:'ช่วยปรับปรุงพื้นบ้านและห้องน้ำเพื่อให้ผู้ป่วยติดเตียงใช้ชีวิตได้ปลอดภัยขึ้น', image:'images/Z5.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'9 วัน', raised:41000, goal:98000 },
+          { id:'housing-004', badge:'ต่อเติม', status:'progress', statusText:'กำลังระดมทุน', title:'ต่อเติมบ้านกันฝนให้แม่ลูกอ่อน', description:'ช่วยต่อเติมหลังคา ผนัง และพื้นที่อยู่อาศัยให้ครอบครัวแม่ลูกอ่อนที่บ้านทรุดโทรม', image:'images/Z5.png', location:'นราธิวาส', beneficiary:'1 ครอบครัว', urgent:'18 วัน', raised:38000, goal:105000 },
+          { id:'housing-005', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ซ่อมบ้านหลังน้ำท่วมเสียหาย', description:'ช่วยซ่อมผนัง พื้น และอุปกรณ์บ้านเรือนที่เสียหายจากน้ำท่วมให้กลับมาอยู่อาศัยได้', image:'images/Z5.png', location:'ปัตตานี', beneficiary:'2 ครอบครัว', urgent:'15 วัน', raised:35000, goal:90000 },
+          { id:'housing-006', badge:'ความปลอดภัย', status:'progress', statusText:'กำลังระดมทุน', title:'ปรับปรุงบ้านเสี่ยงพังถล่ม', description:'ระดมทุนเพื่อเสริมโครงสร้างบ้านและแก้จุดเสี่ยงอันตรายให้ครอบครัวผู้ยากไร้', image:'images/Z5.png', location:'สงขลา', beneficiary:'1 ครอบครัว', urgent:'22 วัน', raised:47000, goal:120000 }
         ]
       },
 
@@ -1106,25 +967,17 @@
         eyebrow: 'โครงการช่วยเหลือผู้ประสบภัย',
         title: 'ช่วยเหลือผู้ประสบภัย',
         description: 'ฟื้นฟูชีวิตผู้ประสบภัยจากเหตุฉุกเฉินและความเสียหายฉับพลัน ให้มีทั้งความช่วยเหลือระยะสั้นและการเริ่มต้นใหม่ในระยะยาว',
-        heroImage: 'images/project6.png',
+        heroImage: 'images/Z4.png',
         heroCardTitle: 'เคสฟื้นฟูหลังเหตุการณ์',
         heroCardText: 'ทั้งความช่วยเหลือเร่งด่วนและการฟื้นฟูหลังเหตุการณ์ถูกรวมไว้ในมุมมองเดียว เข้าใจง่ายและลงมือช่วยได้จริง',
         chips: ['ฟื้นฟู', 'ฉุกเฉิน', 'ครอบครัวเดือดร้อน'],
         cases: [
-          {
-            id: 'disaster-001',
-            badge: 'เร่งฟื้นฟู',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้',
-            description: 'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง',
-            image: 'images/project6.png',
-            location: 'ยะลา',
-            beneficiary: '1 ครอบครัว',
-            urgent: '20 วัน',
-            raised: 48000,
-            goal: 130000
-          }
+          { id:'disaster-001', badge:'เร่งฟื้นฟู', status:'progress', statusText:'กำลังระดมทุน', title:'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้', description:'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง', image:'images/Z4.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'20 วัน', raised:48000, goal:130000 },
+          { id:'disaster-002', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'กองทุนตั้งต้นชีวิตใหม่หลังสูญเสียบ้าน', description:'ช่วยครอบครัวที่สูญเสียที่อยู่อาศัยและทรัพย์สินจากเหตุภัยพิบัติให้มีเงินตั้งต้นชีวิตใหม่', image:'images/Z4.png', location:'ปัตตานี', beneficiary:'2 ครอบครัว', urgent:'17 วัน', raised:26000, goal:88000 },
+          { id:'disaster-003', badge:'ฉุกเฉิน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ช่วยผู้ประสบเหตุเฉียบพลันไร้ที่พัก', description:'จัดหาที่พักชั่วคราว อาหาร และของใช้เบื้องต้นให้ครอบครัวที่เพิ่งประสบเหตุร้ายแรง', image:'images/Z4.png', location:'นราธิวาส', beneficiary:'3 ครอบครัว', urgent:'3 วัน', raised:31000, goal:76000 },
+          { id:'disaster-004', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ฟื้นฟูบ้านและอุปกรณ์จำเป็นหลังวิกฤต', description:'ช่วยค่าใช้จ่ายด้านของใช้จำเป็น เฟอร์นิเจอร์ และเครื่องนอนให้กลับมาใช้ชีวิตได้ปกติ', image:'images/Z4.png', location:'สงขลา', beneficiary:'4 ครอบครัว', urgent:'19 วัน', raised:34000, goal:96000 },
+          { id:'disaster-005', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'กองทุนช่วยเหลือครอบครัวสูญเสียรายได้', description:'ระดมทุนช่วยครอบครัวที่เสียรายได้หลักจากเหตุฉุกเฉินและยังไม่มีทางตั้งหลักในระยะสั้น', image:'images/Z4.png', location:'ยะลา', beneficiary:'5 ครอบครัว', urgent:'6 วัน', raised:29000, goal:84000 },
+          { id:'disaster-006', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ฟื้นฟูคุณภาพชีวิตผู้ประสบภัยระยะยาว', description:'ช่วยเหลือระยะต่อเนื่องเพื่อให้ครอบครัวกลับมาดำเนินชีวิต เรียน ทำงาน และอยู่ร่วมกันได้มั่นคงขึ้น', image:'images/Z4.png', location:'ปัตตานี', beneficiary:'6 ครอบครัว', urgent:'24 วัน', raised:37000, goal:102000 }
         ]
       },
 
@@ -1132,46 +985,60 @@
         eyebrow: 'โครงการเด็กกำพร้า',
         title: 'ช่วยเหลือเด็กกำพร้า',
         description: 'ส่งต่อโอกาสแก่เด็กกำพร้าให้มีอาหาร การศึกษา สิ่งจำเป็น และการดูแลที่เหมาะสม เพื่อเติบโตอย่างมีคุณภาพและความหวัง',
-        heroImage: 'images/project7.png',
+        heroImage: 'images/Z3.png',
         heroCardTitle: 'เคสเด็กกำพร้าที่เปิดรับบริจาค',
         heroCardText: 'มอบโอกาสให้เด็กได้เติบโตอย่างปลอดภัย มีอาหาร อุปกรณ์การเรียน และคุณภาพชีวิตที่ดีขึ้น',
         chips: ['เด็กกำพร้า', 'อาหาร', 'การศึกษา'],
         cases: [
-          {
-            id: 'orphan-001',
-            badge: 'เปิดรับ',
-            status: 'open',
-            statusText: 'เปิดรับบริจาค',
-            title: 'ทุนดูแลเด็กกำพร้ารายเดือน',
-            description: 'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น',
-            image: 'images/project7.png',
-            location: 'นราธิวาส',
-            beneficiary: '6 เด็ก',
-            urgent: 'เดือนนี้',
-            raised: 26000,
-            goal: 70000
-          },
-          {
-            id: 'orphan-002',
-            badge: 'การศึกษา',
-            status: 'progress',
-            statusText: 'กำลังระดมทุน',
-            title: 'อุปกรณ์การเรียนเด็กกำพร้า',
-            description: 'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน',
-            image: 'images/project7.png',
-            location: 'ปัตตานี',
-            beneficiary: '10 เด็ก',
-            urgent: '12 วัน',
-            raised: 14000,
-            goal: 42000
-          }
+          { id:'orphan-001', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนดูแลเด็กกำพร้ารายเดือน', description:'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น', image:'images/Z3.png', location:'นราธิวาส', beneficiary:'6 เด็ก', urgent:'เดือนนี้', raised:26000, goal:70000 },
+          { id:'orphan-002', badge:'การศึกษา', status:'progress', statusText:'กำลังระดมทุน', title:'อุปกรณ์การเรียนเด็กกำพร้า', description:'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน', image:'images/Z3.png', location:'ปัตตานี', beneficiary:'10 เด็ก', urgent:'12 วัน', raised:14000, goal:42000 },
+          { id:'orphan-003', badge:'อาหาร', status:'open', statusText:'เปิดรับบริจาค', title:'กองทุนอาหารและนมสำหรับเด็กกำพร้า', description:'ช่วยค่าอาหาร นม และของใช้ประจำวันให้เด็กกำพร้าที่อยู่ในความดูแลของผู้สูงอายุ', image:'images/Z3.png', location:'ยะลา', beneficiary:'8 เด็ก', urgent:'9 วัน', raised:18000, goal:50000 },
+          { id:'orphan-004', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ค่ารักษาและค่ายาเด็กกำพร้าป่วยเรื้อรัง', description:'ระดมทุนเพื่อช่วยค่ารักษา ค่ายา และค่าเดินทางไปโรงพยาบาลของเด็กกำพร้าที่ป่วยต่อเนื่อง', image:'images/Z3.png', location:'สงขลา', beneficiary:'2 เด็ก', urgent:'4 วัน', raised:22000, goal:47000 },
+          { id:'orphan-005', badge:'ต่อเนื่อง', status:'progress', statusText:'กำลังระดมทุน', title:'ทุนช่วยค่าเดินทางไปโรงเรียนเด็กกำพร้า', description:'ช่วยค่าเดินทางและค่าใช้จ่ายพื้นฐานในการเรียนให้เด็กกำพร้าที่อยู่ไกลโรงเรียน', image:'images/Z3.png', location:'ปัตตานี', beneficiary:'7 เด็ก', urgent:'18 วัน', raised:17000, goal:46000 },
+          { id:'orphan-006', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนเครื่องใช้จำเป็นสำหรับเด็กกำพร้า', description:'สนับสนุนเสื้อผ้า ชุดนักเรียน รองเท้า และของใช้ส่วนตัวเพื่อคุณภาพชีวิตที่ดีขึ้น', image:'images/Z3.png', location:'นราธิวาส', beneficiary:'9 เด็ก', urgent:'14 วัน', raised:19000, goal:52000 }
+        ]
+      },
+
+      livelihood: {
+        eyebrow: 'โครงการสร้างงานสร้างอาชีพ',
+        title: 'โครงการสร้างงานสร้างอาชีพ',
+        description: 'สนับสนุนทุนตั้งต้น อุปกรณ์ทำมาหากิน และโอกาสในการประกอบอาชีพ เพื่อให้ครอบครัวยากไร้มีรายได้อย่างยั่งยืนและพึ่งพาตนเองได้',
+        heroImage: 'images/Z6.png',
+        heroCardTitle: 'เคสสร้างอาชีพที่กำลังเปิดรับ',
+        heroCardText: 'ทุกการช่วยเหลือไม่ใช่แค่ประคองชีวิตวันนี้ แต่คือการสร้างรายได้และศักดิ์ศรีให้เจ้าของเคสในระยะยาว',
+        chips: ['สร้างอาชีพ', 'ทุนตั้งต้น', 'รายได้ยั่งยืน'],
+        cases: [
+          { id:'livelihood-001', badge:'ค้าขาย', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนตั้งต้นร้านน้ำชาชุมชน', description:'ช่วยทุนเริ่มต้นสำหรับอุปกรณ์และวัตถุดิบ เพื่อให้ผู้ดูแลครอบครัวได้เริ่มต้นขายน้ำชาและของว่างในชุมชน', image:'images/Z6.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'14 วัน', raised:22000, goal:55000 },
+          { id:'livelihood-002', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'อุปกรณ์รถเข็นขายอาหาร', description:'สนับสนุนรถเข็น เตาแก๊ส และอุปกรณ์ขายอาหารให้แม่เลี้ยงเดี่ยวที่ต้องการสร้างรายได้เลี้ยงลูก', image:'images/Z6.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'6 วัน', raised:30000, goal:68000 },
+          { id:'livelihood-003', badge:'งานฝีมือ', status:'progress', statusText:'กำลังระดมทุน', title:'เครื่องมือทำขนมพื้นบ้านขาย', description:'ช่วยซื้ออุปกรณ์ทำขนม เตาอบ และภาชนะสำหรับครอบครัวที่ต้องการสร้างรายได้จากการขายขนมพื้นบ้าน', image:'images/Z6.png', location:'นราธิวาส', beneficiary:'1 ครอบครัว', urgent:'18 วัน', raised:18000, goal:50000 },
+          { id:'livelihood-004', badge:'เกษตร', status:'open', statusText:'เปิดรับบริจาค', title:'ทุนอุปกรณ์ปลูกผักเลี้ยงชีพ', description:'ระดมทุนสำหรับเมล็ดพันธุ์ ปุ๋ย และอุปกรณ์พื้นฐาน เพื่อเริ่มต้นปลูกผักขายและลดรายจ่ายในครัวเรือน', image:'images/Z6.png', location:'สงขลา', beneficiary:'1 ครอบครัว', urgent:'20 วัน', raised:16000, goal:45000 },
+          { id:'livelihood-005', badge:'เย็บผ้า', status:'progress', statusText:'กำลังระดมทุน', title:'จักรเย็บผ้าสร้างอาชีพ', description:'ช่วยจัดซื้อจักรเย็บผ้าและอุปกรณ์ตัดเย็บสำหรับหญิงหม้ายที่ต้องการรับงานเย็บผ้าเพื่อหารายได้ประจำ', image:'images/Z6.png', location:'ยะลา', beneficiary:'1 ราย', urgent:'16 วัน', raised:24000, goal:60000 },
+          { id:'livelihood-006', badge:'เปิดทางรายได้', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'ชุดอุปกรณ์ล้างรถเคลื่อนที่', description:'สนับสนุนอุปกรณ์ล้างรถแบบเคลื่อนที่เพื่อให้หัวหน้าครอบครัวที่ตกงานสามารถเริ่มสร้างรายได้ได้ทันที', image:'images/Z6.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'8 วัน', raised:28000, goal:65000 }
+        ]
+      },
+
+      rewire: {
+        eyebrow: 'โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้',
+        title: 'โครงการเปลี่ยนสายไฟให้แก่ผู้ยากไร้',
+        description: 'ช่วยเปลี่ยนสายไฟ อุปกรณ์ไฟฟ้า และจุดเสี่ยงอันตรายในบ้านของผู้ยากไร้ เพื่อให้บ้านปลอดภัย ลดความเสี่ยงไฟไหม้ และอยู่อาศัยได้อย่างสบายใจขึ้น',
+        heroImage: 'images/Z7.png',
+        heroCardTitle: 'เคสเปลี่ยนสายไฟที่กำลังเปิดรับ',
+        heroCardText: 'การช่วยเหลือครั้งนี้คือการลดความเสี่ยงไฟฟ้าลัดวงจร ป้องกันอัคคีภัย และคืนความปลอดภัยให้บ้านของผู้ยากไร้',
+        chips: ['เปลี่ยนสายไฟ', 'ลดเสี่ยงไฟไหม้', 'ความปลอดภัยในบ้าน'],
+        cases: [
+          { id:'rewire-001', badge:'เสี่ยงไฟไหม้', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'เปลี่ยนสายไฟบ้านไม้เก่าผู้สูงอายุ', description:'ช่วยเปลี่ยนสายไฟเก่าและตู้ควบคุมไฟในบ้านไม้ที่เสื่อมสภาพและเสี่ยงไฟฟ้าลัดวงจร', image:'images/Z7.png', location:'สงขลา', beneficiary:'1 หลัง', urgent:'5 วัน', raised:26000, goal:62000 },
+          { id:'rewire-002', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'เปลี่ยนระบบไฟบ้านแม่ลูกอ่อน', description:'สนับสนุนค่าวัสดุและค่าแรงสำหรับปรับปรุงระบบไฟบ้านที่มีสายไฟชำรุดและจุดเสียบไม่ปลอดภัย', image:'images/Z7.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'14 วัน', raised:18000, goal:54000 },
+          { id:'rewire-003', badge:'ฉุกเฉิน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'แก้ไฟรั่วบ้านผู้ป่วยติดเตียง', description:'ช่วยเปลี่ยนสายไฟและอุปกรณ์ไฟฟ้าจุดเสี่ยงในบ้านผู้ป่วยติดเตียงเพื่อป้องกันอุบัติเหตุร้ายแรง', image:'images/Z7.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'4 วัน', raised:32000, goal:70000 },
+          { id:'rewire-004', badge:'ความปลอดภัย', status:'progress', statusText:'กำลังระดมทุน', title:'เปลี่ยนสายเมนไฟบ้านชำรุด', description:'ระดมทุนเปลี่ยนสายเมนไฟ สวิตช์ และเบรกเกอร์ในบ้านที่ใช้งานมานานและมีสภาพเสื่อมโทรม', image:'images/Z7.png', location:'นราธิวาส', beneficiary:'1 หลัง', urgent:'17 วัน', raised:21000, goal:58000 },
+          { id:'rewire-005', badge:'เปิดรับ', status:'open', statusText:'เปิดรับบริจาค', title:'ปรับปรุงไฟส่องสว่างในบ้านผู้ยากไร้', description:'ช่วยติดตั้งไฟส่องสว่างและเดินสายไฟใหม่ภายในบ้านเพื่อให้ผู้สูงอายุและเด็กอยู่อาศัยได้ปลอดภัยขึ้น', image:'images/Z7.png', location:'สงขลา', beneficiary:'2 ครอบครัว', urgent:'19 วัน', raised:17000, goal:50000 },
+          { id:'rewire-006', badge:'เร่งด่วน', status:'urgent', statusText:'ต้องการเร่งด่วน', title:'เปลี่ยนสายไฟทั้งหลังบ้านเสี่ยงอันตราย', description:'ช่วยเปลี่ยนสายไฟทั้งหลังในบ้านที่มีการต่อพ่วงไม่ปลอดภัยและมีความเสี่ยงเกิดอัคคีภัยได้ทุกเวลา', image:'images/Z7.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'7 วัน', raised:34000, goal:78000 }
         ]
       }
     };
 
     const qs = new URLSearchParams(window.location.search);
     const projectKey = qs.get('project') || 'education';
-    const rawConfig = PROJECT_CONFIG[projectKey];
+    const config = PROJECT_CONFIG[projectKey];
 
     const emptyState = document.getElementById('emptyState');
     const caseGrid = document.getElementById('caseGrid');
@@ -1190,51 +1057,6 @@
       if (status === 'progress') return 'status-progress';
       return 'status-open';
     }
-
-    function ensureSixCases(cfg, slug){
-      if (!cfg || !Array.isArray(cfg.cases)) return cfg;
-
-      const sourceCases = cfg.cases.map(item => ({ ...item }));
-      const expanded = [...sourceCases];
-
-      const titleSuffixes = [
-        'กรณีเร่งด่วน',
-        'ระยะต่อเนื่อง',
-        'ระยะฟื้นฟู',
-        'เคสสนับสนุนเพิ่มเติม',
-        'เคสขยายโอกาส',
-        'เคสช่วยเหลือเฉพาะหน้า'
-      ];
-
-      const locationSuffixes = ['ยะลา','ปัตตานี','นราธิวาส','สงขลา','สตูล','กรุงเทพฯ'];
-
-      let i = 0;
-      while (expanded.length < 6 && sourceCases.length > 0) {
-        const base = sourceCases[i % sourceCases.length];
-        const cloneIndex = expanded.length + 1;
-        const raised = Number(base.raised || 0) + (cloneIndex * 2500);
-        const goal = Number(base.goal || 0) + (cloneIndex * 5000);
-
-        expanded.push({
-          ...base,
-          id: `${slug}-auto-${cloneIndex}`,
-          title: `${base.title} · ${titleSuffixes[i % titleSuffixes.length]}`,
-          location: locationSuffixes[i % locationSuffixes.length],
-          raised,
-          goal: goal > raised ? goal : raised + 10000,
-          urgent: `${7 + (i * 3)} วัน`
-        });
-
-        i += 1;
-      }
-
-      return {
-        ...cfg,
-        cases: expanded.slice(0, 6)
-      };
-    }
-
-    const config = ensureSixCases(rawConfig, projectKey);
 
     function updateHero(cfg){
       document.title = `${cfg.title} | รายการเคสบริจาค ProMAX`;

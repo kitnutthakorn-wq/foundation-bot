@@ -224,6 +224,17 @@ const params = new URLSearchParams(location.search);
 const slug = params.get('project') || 'housing';
 const caseId = params.get('case') || '';
 const project = PROJECTS[slug] || PROJECTS.housing;
+
+const DEFAULT_CASE_IDS = {
+  housing: 'housing-001',
+  education: 'edu-001',
+  zakat: 'zakat-001',
+  transport: 'transport-001',
+  relief: 'relief-001',
+  disaster: 'disaster-001',
+  orphan: 'orphan-001'
+};
+const normalizedCaseId = caseId || DEFAULT_CASE_IDS[slug] || '';
 let selectedAmount = project.presets[1] || 1000;
 const byId = (id) => document.getElementById(id);
 const fmt = (n) => '฿ ' + Number(n || 0).toLocaleString('th-TH');
@@ -237,7 +248,7 @@ byId('heroEyebrow').textContent = project.eyebrow;
 byId('summaryTitle').textContent = project.title;
 byId('summaryMini').textContent = project.eyebrow;
 byId('sumProject').textContent = project.title;
-byId('sumCase').textContent = caseId || '-';
+byId('sumCase').textContent = normalizedCaseId || '-';
 byId('chipProjectTitle').textContent = project.title;
 byId('bankDesc').textContent = project.bankDesc;
 byId('bankName').textContent = project.bankName;
@@ -254,8 +265,8 @@ byId('progressBar').style.width = progressPercent + '%';
 byId('percentText').textContent = progressPercent + '%';
 byId('heroBadges').innerHTML = (project.badges || []).map(text => `<div class="hero-badge">${text}</div>`).join('');
 
-const detailHref = `donate-case-detail-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(caseId)}`;
-const storyHref = `donate-case-story-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(caseId)}`;
+const detailHref = `Donate-case-detail-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(normalizedCaseId)}`;
+const storyHref = `Donate-case-story-promax.html?project=${encodeURIComponent(slug)}&case=${encodeURIComponent(normalizedCaseId)}`;
 const casesHref = `donate-cases.html?project=${encodeURIComponent(slug)}`;
 
 byId('backToDetail').href = detailHref;

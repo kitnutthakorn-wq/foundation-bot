@@ -1228,8 +1228,8 @@
     function renderCases(cfg){
       caseGrid.innerHTML = cfg.cases.map(item => {
         const percent = progressPercent(item.raised, item.goal);
-        const detailHref = `donate-case-detail-promax.html?project=${encodeURIComponent(projectKey)}&case=${encodeURIComponent(item.id)}`;
-        const storyHref = `donate-case-story-promax.html?project=${encodeURIComponent(projectKey)}&case=${encodeURIComponent(item.id)}`;
+        const detailHref = `Donate-case-detail-promax.html?project=${encodeURIComponent(projectKey)}&case=${encodeURIComponent(item.id)}`;
+        const storyHref = `Donate-case-story-promax.html?project=${encodeURIComponent(projectKey)}&case=${encodeURIComponent(item.id)}`;
 
         return `
           <article class="case-card">

@@ -201,53 +201,364 @@
   </footer>
 
 <script>
-const PROJECTS = {
-  education: {
-    title:"เพื่อการศึกษา", eyebrow:"โครงการเพื่อการศึกษา", description:"ร่วมส่งต่อโอกาสทางการศึกษาให้เด็กและเยาวชนที่ขาดแคลน", image:"images/project1.png",
-    cases:[
-      {id:'edu-001', title:'ทุนเรียนต่อระดับมัธยม', description:'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน', image:'images/project1.png', location:'ยะลา', beneficiary:'1 ครอบครัว', urgent:'ภายในเดือนนี้', raised:35000, goal:60000, badge:'ม.ปลาย', story:['นักเรียนหลายคนมีศักยภาพ แต่ต้องหยุดการเรียนเพราะภาระค่าใช้จ่ายพื้นฐานในครอบครัว','การสนับสนุนนี้ช่วยให้เด็กยังคงอยู่ในระบบการศึกษาและมีโอกาสต่อยอดอนาคต','ทุกยอดช่วยเหลือคือการต่ออายุความหวังและสร้างเส้นทางชีวิตที่มั่นคงขึ้น']},
-      {id:'edu-002', title:'ค่าอุปกรณ์การเรียนเด็กกำพร้า', description:'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน', image:'images/project7.png', location:'ปัตตานี', beneficiary:'3 เด็ก', urgent:'7 วัน', raised:22000, goal:45000, badge:'เปิดด่วน', story:['เด็กกำพร้าหลายคนยังขาดอุปกรณ์จำเป็นในการเริ่มต้นปีการศึกษาใหม่','การมีชุดนักเรียนและอุปกรณ์ครบถ้วนช่วยให้เด็กเข้าสังคมโรงเรียนได้อย่างมั่นใจ','การสนับสนุนนี้ช่วยลดภาระผู้ดูแลและเปิดโอกาสให้เด็กได้เรียนอย่างต่อเนื่อง']},
-      {id:'edu-003', title:'ทุนเดินทางและอาหารกลางวัน', description:'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกล', image:'images/project1.png', location:'นราธิวาส', beneficiary:'5 คน', urgent:'15 วัน', raised:18000, goal:50000, badge:'นราธิวาส', story:['เด็กในพื้นที่ห่างไกลต้องเสียค่าเดินทางสูงกว่าครอบครัวจะรับไหว','ค่าอาหารกลางวันและการเดินทางเป็นต้นทุนเล็ก ๆ ที่ตัดสินอนาคตการเรียนของเด็กได้','การให้ครั้งนี้คือการช่วยให้เด็กไปถึงโรงเรียนและเรียนได้อย่างมีพลัง']}
-    ]
-  },
-  zakat: {
-    title:"ซากาตเพื่อผู้ยากไร้", eyebrow:"โครงการซากาต", description:"ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย", image:"images/project2.png",
-    cases:[
-      {id:'zakat-001', title:'มอบซากาตช่วยครอบครัวยากไร้', description:'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้น', image:'images/project2.png', location:'สงขลา', beneficiary:'2 ครอบครัว', urgent:'10 วัน', raised:42000, goal:100000, badge:'สงขลา', story:['หลายครอบครัวต้องเผชิญภาวะขาดแคลนทั้งอาหารและค่าใช้จ่ายพื้นฐาน','ซากาตที่ถูกส่งต่ออย่างเหมาะสมจะช่วยประคองชีวิตให้ผ่านวิกฤตสำคัญได้','การสนับสนุนนี้ช่วยคืนโอกาสและศักดิ์ศรีให้กับผู้เปราะบางในชุมชน']},
-      {id:'zakat-002', title:'ช่วยเหลือผู้สูงอายุและแม่หม้าย', description:'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแล', image:'images/project2.png', location:'ปัตตานี', beneficiary:'8 ราย', urgent:'5 วัน', raised:30000, goal:80000, badge:'เปิดด่วน', story:['ผู้สูงอายุและแม่หม้ายจำนวนหนึ่งอยู่ลำพังโดยไม่มีรายได้เพียงพอ','ความช่วยเหลือเร่งด่วนช่วยให้เข้าถึงยา อาหาร และของใช้จำเป็นในแต่ละวัน','ซากาตคือสะพานเชื่อมความเมตตาไปสู่ผู้ที่ต้องการอย่างแท้จริง']}
-    ]
-  },
-  housing: {
-    title:"สร้างที่อยู่อาศัยเพื่อผู้ยากไร้", eyebrow:"โครงการที่อยู่อาศัยเพื่อผู้ยากไร้", description:"ซ่อมแซมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย", image:"images/project5.png",
-    cases:[
-      {id:'housing-001', title:'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ', description:'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย', image:'images/project5.png', location:'สงขลา', beneficiary:'1 หลัง', urgent:'14 วัน', raised:76000, goal:180000, badge:'บ้านพัง', story:['บ้านที่ทรุดโทรมทำให้ผู้สูงอายุใช้ชีวิตอย่างเสี่ยงอันตรายในทุกวัน','การซ่อมบ้านคือการคืนพื้นที่ปลอดภัยและศักดิ์ศรีของการมีบ้านที่มั่นคง','การสนับสนุนของคุณช่วยเปลี่ยนโครงสร้างบ้านให้กลายเป็นโครงสร้างชีวิตที่มั่นคงขึ้น']},
-      {id:'housing-002', title:'สร้างบ้านใหม่ให้ครอบครัวยากไร้', description:'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน', image:'images/project5.png', location:'ปัตตานี', beneficiary:'1 ครอบครัว', urgent:'30 วัน', raised:92000, goal:250000, badge:'เปิดรับ', story:['บางครอบครัวไม่มีบ้านที่มั่นคงพอจะอยู่อาศัยอย่างปลอดภัยได้','การสร้างบ้านใหม่คือการสร้างรากฐานชีวิตใหม่ให้ทั้งครอบครัว','ทุกยอดบริจาคช่วยให้ความฝันเรื่องบ้านที่ปลอดภัยใกล้ความจริงขึ้น']}
-    ]
-  }
-};
+const PROJECT_CONFIG = {
+      education: {
+        eyebrow: 'โครงการเพื่อการศึกษา',
+        title: 'เพื่อการศึกษา',
+        description: 'ร่วมเปิดโอกาสให้เด็กและเยาวชนที่ขาดแคลน ได้มีอุปกรณ์การเรียน ทุนการศึกษา และค่าใช้จ่ายพื้นฐานในการเดินทางไปโรงเรียน',
+        heroImage: 'images/Edu1.png',
+        heroCardTitle: 'โครงการการศึกษาที่กำลังเปิดรับ',
+        heroCardText: 'ทุกการสนับสนุนช่วยให้เด็กคนหนึ่งได้มีโอกาสเรียนต่ออย่างมั่นคงและมีศักดิ์ศรี',
+        chips: ['ทุนการศึกษา', 'อุปกรณ์การเรียน', 'ค่าเดินทาง'],
+        cases: [
+          {
+            id: 'edu-001',
+            badge: 'ม.ปลาย',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ทุนเรียนต่อระดับมัธยม',
+            description: 'ช่วยนักเรียนที่มีผลการเรียนดีแต่ขาดโอกาส ให้สามารถเรียนต่อได้โดยไม่ต้องหยุดกลางคัน',
+            image: 'images/Edu1.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: 'ภายในเดือนนี้',
+            raised: 35000,
+            goal: 60000
+          },
+          {
+            id: 'edu-002',
+            badge: 'เปิดด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ค่าอุปกรณ์การเรียนเด็กกำพร้า',
+            description: 'ระดมทุนเพื่อจัดซื้อชุดนักเรียน กระเป๋า รองเท้า และอุปกรณ์พื้นฐานก่อนเปิดภาคเรียน',
+            image: 'images/project7.png',
+            location: 'ปัตตานี',
+            beneficiary: '3 เด็ก',
+            urgent: '7 วัน',
+            raised: 22000,
+            goal: 45000
+          },
+          {
+            id: 'edu-003',
+            badge: 'นราธิวาส',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'ทุนเดินทางและอาหารกลางวัน',
+            description: 'ช่วยค่าเดินทางไปโรงเรียนและค่าอาหารกลางวันสำหรับเด็กที่อยู่ห่างไกลและครอบครัวมีรายได้น้อย',
+            image: 'images/Edu1.png',
+            location: 'นราธิวาส',
+            beneficiary: '5 คน',
+            urgent: '15 วัน',
+            raised: 18000,
+            goal: 50000
+          }
+        ]
+      },
 
-function ensureCases(project){
-  const base = project || PROJECTS.education;
-  return base;
+      zakat: {
+        eyebrow: 'โครงการซากาต',
+        title: 'ซากาตเพื่อผู้ยากไร้',
+        description: 'ส่งต่อซากาตอย่างเป็นระบบ โปร่งใส และตรงกลุ่มเป้าหมาย เพื่อช่วยผู้ยากไร้ ผู้สูงอายุ และครอบครัวเปราะบางให้ผ่านพ้นวิกฤต',
+        heroImage: 'images/project2.png',
+        heroCardTitle: 'เคสซากาตที่ต้องการการสนับสนุน',
+        heroCardText: 'ทุกยอดบริจาคช่วยต่อชีวิตให้ครอบครัวยากไร้มีอาหาร ของใช้จำเป็น และความหวังในการเริ่มต้นใหม่',
+        chips: ['ซากาต', 'อาหารยังชีพ', 'ผู้เปราะบาง'],
+        cases: [
+          {
+            id: 'zakat-001',
+            badge: 'สงขลา',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'มอบซากาตช่วยครอบครัวยากไร้',
+            description: 'ช่วยเหลือครอบครัวผู้มีรายได้น้อยให้เข้าถึงอาหาร ของใช้จำเป็น และเงินทุนตั้งต้นเพื่อประคองชีวิต',
+            image: 'images/project2.png',
+            location: 'สงขลา',
+            beneficiary: '2 ครอบครัว',
+            urgent: '10 วัน',
+            raised: 42000,
+            goal: 100000
+          },
+          {
+            id: 'zakat-002',
+            badge: 'เปิดด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ช่วยเหลือผู้สูงอายุและแม่หม้าย',
+            description: 'สนับสนุนค่าอาหาร ค่ายา และของใช้จำเป็นสำหรับผู้สูงอายุที่ขาดผู้ดูแลและแม่หม้ายในชุมชน',
+            image: 'images/project2.png',
+            location: 'ปัตตานี',
+            beneficiary: '8 ราย',
+            urgent: '5 วัน',
+            raised: 30000,
+            goal: 80000
+          },
+          {
+            id: 'zakat-003',
+            badge: 'นราธิวาส',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'กองทุนยังชีพตามหลักซากาต',
+            description: 'จัดสรรซากาตเพื่อบรรเทาความเดือดร้อนด้านอาหารและค่าใช้จ่ายพื้นฐานแก่ผู้มีสิทธิรับซากาต',
+            image: 'images/project2.png',
+            location: 'นราธิวาส',
+            beneficiary: '12 ราย',
+            urgent: '20 วัน',
+            raised: 15000,
+            goal: 70000
+          }
+        ]
+      },
+
+      transport: {
+        eyebrow: 'โครงการส่งกลับบ้าน',
+        title: 'อาสาพาน้องกลับบ้าน',
+        description: 'ร่วมช่วยเหลือค่าเดินทางและการส่งกลับภูมิลำเนา เพื่อให้การเดินทางกลับบ้านของผู้เดือดร้อนเป็นไปอย่างปลอดภัยและสมศักดิ์ศรี',
+        heroImage: 'images/project3.png',
+        heroCardTitle: 'เคสขนย้ายร่างกลับภูมิลำเนา',
+        heroCardText: 'ทุกการช่วยเหลือทำให้ครอบครัวลดภาระหนักในวันที่เจ็บปวดที่สุด และได้ส่งผู้เสียชีวิตกลับบ้านอย่างเหมาะสม',
+        chips: ['ค่าขนส่ง', 'ส่งกลับบ้าน', 'ช่วยเร่งด่วน'],
+        cases: [
+          {
+            id: 'transport-001',
+            badge: 'เร่งด่วน',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ค่าขนย้ายร่างกลับภูมิลำเนา',
+            description: 'สนับสนุนค่ารถ ค่าน้ำมัน และค่าใช้จ่ายเบื้องต้นในการส่งร่างผู้เสียชีวิตกลับบ้านเกิด',
+            image: 'images/project3.png',
+            location: 'กรุงเทพฯ → ปัตตานี',
+            beneficiary: '1 ครอบครัว',
+            urgent: 'ภายใน 48 ชม.',
+            raised: 28000,
+            goal: 45000
+          },
+          {
+            id: 'transport-002',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'กองทุนช่วยเหลือครอบครัวผู้เสียชีวิต',
+            description: 'ระดมทุนช่วยครอบครัวที่ไม่มีศักยภาพในการดำเนินการเรื่องขนส่งและพิธีการพื้นฐาน',
+            image: 'images/project3.png',
+            location: 'ชลบุรี → นราธิวาส',
+            beneficiary: '1 ครอบครัว',
+            urgent: '3 วัน',
+            raised: 18000,
+            goal: 50000
+          }
+        ]
+      },
+
+      relief: {
+        eyebrow: 'โครงการบรรเทาธารณภัย',
+        title: 'เพื่อการบรรเทาธารณภัย',
+        description: 'ช่วยเหลือผู้ประสบเหตุฉุกเฉิน น้ำท่วม ไฟไหม้ และความสูญเสียเฉียบพลัน ด้วยความช่วยเหลือที่ไปถึงอย่างรวดเร็ว',
+        heroImage: 'images/project4.png',
+        heroCardTitle: 'เคสฉุกเฉินที่กำลังเปิดรับ',
+        heroCardText: 'ออกแบบให้ติดตามง่าย เห็นยอดชัด และพร้อมร่วมช่วยได้ทันทีเมื่อเกิดเหตุ',
+        chips: ['ภัยพิบัติ', 'ช่วยเร่งด่วน', 'ถุงยังชีพ'],
+        cases: [
+          {
+            id: 'relief-001',
+            badge: 'ไฟไหม้',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ช่วยครอบครัวบ้านไฟไหม้ทั้งหลัง',
+            description: 'ช่วยค่าเสื้อผ้า ของใช้จำเป็น และเงินตั้งต้นเพื่อประคองชีวิตหลังบ้านถูกไฟไหม้เสียหายทั้งหมด',
+            image: 'images/project6.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: '7 วัน',
+            raised: 67000,
+            goal: 120000
+          },
+          {
+            id: 'relief-002',
+            badge: 'อุทกภัย',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ถุงยังชีพช่วยผู้ประสบภัยน้ำท่วม',
+            description: 'ระดมทุนเพื่อจัดถุงยังชีพ อาหาร น้ำดื่ม และอุปกรณ์จำเป็นแก่ผู้ได้รับผลกระทบในหลายชุมชน',
+            image: 'images/project4.png',
+            location: 'นราธิวาส',
+            beneficiary: '25 ครัวเรือน',
+            urgent: '10 วัน',
+            raised: 54000,
+            goal: 150000
+          }
+        ]
+      },
+
+      housing: {
+        eyebrow: 'โครงการที่อยู่อาศัยเพื่อผู้ยากไร้',
+        title: 'สร้างที่อยู่อาศัยเพื่อผู้ยากไร้',
+        description: 'ซ่อมแซมบ้านที่ทรุดโทรมและสร้างพื้นที่อยู่อาศัยที่ปลอดภัย เพื่อคืนศักดิ์ศรีและคุณภาพชีวิตให้ครอบครัวเปราะบาง',
+        heroImage: 'images/project5.png',
+        heroCardTitle: 'เคสซ่อมแซมและสร้างบ้าน',
+        heroCardText: 'บ้านที่ปลอดภัยคือจุดเริ่มต้นของการมีชีวิตที่มั่นคงขึ้นสำหรับทั้งครอบครัว',
+        chips: ['ซ่อมบ้าน', 'ที่อยู่อาศัย', 'ความปลอดภัย'],
+        cases: [
+          {
+            id: 'housing-001',
+            badge: 'บ้านพัง',
+            status: 'urgent',
+            statusText: 'ต้องการเร่งด่วน',
+            title: 'ซ่อมบ้านไม้ทรุดโทรมผู้สูงอายุ',
+            description: 'ช่วยซ่อมพื้น ผนัง หลังคา และห้องน้ำ ให้ผู้สูงอายุสามารถอยู่อาศัยได้อย่างปลอดภัย',
+            image: 'images/project5.png',
+            location: 'สงขลา',
+            beneficiary: '1 หลัง',
+            urgent: '14 วัน',
+            raised: 76000,
+            goal: 180000
+          },
+          {
+            id: 'housing-002',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'สร้างบ้านใหม่ให้ครอบครัวยากไร้',
+            description: 'ร่วมเป็นส่วนหนึ่งในการสร้างบ้านหลังเล็กที่มั่นคง ปลอดภัย และเหมาะสมกับการอยู่อาศัยขั้นพื้นฐาน',
+            image: 'images/project5.png',
+            location: 'ปัตตานี',
+            beneficiary: '1 ครอบครัว',
+            urgent: '30 วัน',
+            raised: 92000,
+            goal: 250000
+          }
+        ]
+      },
+
+      disaster: {
+        eyebrow: 'โครงการช่วยเหลือผู้ประสบภัย',
+        title: 'ช่วยเหลือผู้ประสบภัย',
+        description: 'ฟื้นฟูชีวิตผู้ประสบภัยจากเหตุฉุกเฉินและความเสียหายฉับพลัน ให้มีทั้งความช่วยเหลือระยะสั้นและการเริ่มต้นใหม่ในระยะยาว',
+        heroImage: 'images/project6.png',
+        heroCardTitle: 'เคสฟื้นฟูหลังเหตุการณ์',
+        heroCardText: 'ทั้งความช่วยเหลือเร่งด่วนและการฟื้นฟูหลังเหตุการณ์ถูกรวมไว้ในมุมมองเดียว เข้าใจง่ายและลงมือช่วยได้จริง',
+        chips: ['ฟื้นฟู', 'ฉุกเฉิน', 'ครอบครัวเดือดร้อน'],
+        cases: [
+          {
+            id: 'disaster-001',
+            badge: 'เร่งฟื้นฟู',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'ฟื้นฟูครอบครัวหลังเหตุเพลิงไหม้',
+            description: 'ช่วยฟื้นฟูอุปกรณ์จำเป็น เฟอร์นิเจอร์ และของใช้พื้นฐานเพื่อให้ครอบครัวกลับมาตั้งหลักได้อีกครั้ง',
+            image: 'images/project6.png',
+            location: 'ยะลา',
+            beneficiary: '1 ครอบครัว',
+            urgent: '20 วัน',
+            raised: 48000,
+            goal: 130000
+          }
+        ]
+      },
+
+      orphan: {
+        eyebrow: 'โครงการเด็กกำพร้า',
+        title: 'ช่วยเหลือเด็กกำพร้า',
+        description: 'ส่งต่อโอกาสแก่เด็กกำพร้าให้มีอาหาร การศึกษา สิ่งจำเป็น และการดูแลที่เหมาะสม เพื่อเติบโตอย่างมีคุณภาพและความหวัง',
+        heroImage: 'images/project7.png',
+        heroCardTitle: 'เคสเด็กกำพร้าที่เปิดรับบริจาค',
+        heroCardText: 'มอบโอกาสให้เด็กได้เติบโตอย่างปลอดภัย มีอาหาร อุปกรณ์การเรียน และคุณภาพชีวิตที่ดีขึ้น',
+        chips: ['เด็กกำพร้า', 'อาหาร', 'การศึกษา'],
+        cases: [
+          {
+            id: 'orphan-001',
+            badge: 'เปิดรับ',
+            status: 'open',
+            statusText: 'เปิดรับบริจาค',
+            title: 'ทุนดูแลเด็กกำพร้ารายเดือน',
+            description: 'ช่วยค่าอาหาร เครื่องใช้จำเป็น และค่าใช้จ่ายพื้นฐาน เพื่อให้เด็กกำพร้ามีชีวิตประจำวันที่มั่นคงขึ้น',
+            image: 'images/project7.png',
+            location: 'นราธิวาส',
+            beneficiary: '6 เด็ก',
+            urgent: 'เดือนนี้',
+            raised: 26000,
+            goal: 70000
+          },
+          {
+            id: 'orphan-002',
+            badge: 'การศึกษา',
+            status: 'progress',
+            statusText: 'กำลังระดมทุน',
+            title: 'อุปกรณ์การเรียนเด็กกำพร้า',
+            description: 'ร่วมซื้อชุดนักเรียน หนังสือ กระเป๋า และอุปกรณ์การเรียนก่อนเปิดภาคเรียน',
+            image: 'images/project7.png',
+            location: 'ปัตตานี',
+            beneficiary: '10 เด็ก',
+            urgent: '12 วัน',
+            raised: 14000,
+            goal: 42000
+          }
+        ]
+      }
+    };
+
+function ensureSixCases(cfg, slug) {
+  if (!cfg || !Array.isArray(cfg.cases)) return cfg;
+
+  const sourceCases = cfg.cases.map(item => ({ ...item }));
+  const expanded = [...sourceCases];
+  const titleSuffixes = [
+    'กรณีเร่งด่วน',
+    'ระยะต่อเนื่อง',
+    'ระยะฟื้นฟู',
+    'เคสสนับสนุนเพิ่มเติม',
+    'เคสขยายโอกาส',
+    'เคสช่วยเหลือเฉพาะหน้า'
+  ];
+  const locationSuffixes = ['ยะลา','ปัตตานี','นราธิวาส','สงขลา','สตูล','กรุงเทพฯ'];
+
+  let i = 0;
+  while (expanded.length < 6 && sourceCases.length > 0) {
+    const base = sourceCases[i % sourceCases.length];
+    const cloneIndex = expanded.length + 1;
+    const raised = Number(base.raised || 0) + (cloneIndex * 2500);
+    const goal = Number(base.goal || 0) + (cloneIndex * 5000);
+
+    expanded.push({
+      ...base,
+      id: `${slug}-auto-${cloneIndex}`,
+      title: `${base.title} · ${titleSuffixes[i % titleSuffixes.length]}`,
+      location: locationSuffixes[i % locationSuffixes.length],
+      raised,
+      goal: goal > raised ? goal : raised + 10000,
+      urgent: `${7 + (i * 3)} วัน`
+    });
+    i += 1;
+  }
+
+  return { ...cfg, cases: expanded.slice(0, 6) };
 }
-function findCase(project, caseId){
-  const cfg = ensureCases(project);
-  return cfg.cases.find(c => c.id === caseId) || cfg.cases[0];
-}
+
 function fmt(n){return '฿ ' + Number(n || 0).toLocaleString('th-TH');}
 function percent(raised, goal){return Math.max(0, Math.min(100, Math.round((raised / Math.max(goal,1)) * 100)));}
+function buildStoryPoints(item, project) {
+  const location = item.location || 'พื้นที่โครงการ';
+  const beneficiary = item.beneficiary || 'กลุ่มเป้าหมายของโครงการ';
+  return [
+    item.description || 'เคสนี้อยู่ระหว่างการเปิดรับการสนับสนุนเพื่อช่วยเหลืออย่างตรงจุด',
+    `การช่วยเหลือมุ่งไปที่ ${beneficiary} ในพื้นที่${location} เพื่อให้ได้รับความช่วยเหลืออย่างต่อเนื่อง`,
+    `เมื่อได้รับการสนับสนุนมากขึ้น เคส “${item.title}” จะเดินหน้าได้เร็วขึ้นภายในช่วงเวลาที่กำหนดคือ ${item.urgent || 'เร็วที่สุด'}`
+  ];
+}
+
 const params = new URLSearchParams(location.search);
 const projectSlug = params.get('project') || 'education';
 const caseId = params.get('case') || '';
-const project = ensureCases(PROJECTS[projectSlug] || PROJECTS.education);
-const currentCase = findCase(project, caseId);
+const project = ensureSixCases(PROJECT_CONFIG[projectSlug] || PROJECT_CONFIG.education, projectSlug);
+const currentCase = project.cases.find(c => c.id === caseId) || project.cases[0];
 const pct = percent(currentCase.raised, currentCase.goal);
+const storyPoints = buildStoryPoints(currentCase, project);
 
 document.title = `${currentCase.title} | ดูรายละเอียดและบริจาค`;
 document.getElementById('backToCases').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
 document.getElementById('footerBackCases').href = `donate-cases.html?project=${encodeURIComponent(projectSlug)}`;
 document.getElementById('goDonate').href = `donate-form-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
-document.getElementById('goStory').href = `donate-case-story-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
+document.getElementById('goStory').href = `Donate-case-story-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
 document.getElementById('summaryDonateBtn').onclick = () => location.href = `donate-form-promax.html?project=${encodeURIComponent(projectSlug)}&case=${encodeURIComponent(currentCase.id)}`;
 
 document.getElementById('hero').style.backgroundImage = `url("${currentCase.image}")`;
@@ -269,9 +580,9 @@ document.getElementById('progressText').textContent = `ช่วยแล้ว 
 document.getElementById('progressBar').style.width = pct + '%';
 document.getElementById('raisedAmount').textContent = fmt(currentCase.raised);
 document.getElementById('goalAmount').textContent = fmt(currentCase.goal);
-document.getElementById('story1').textContent = currentCase.story?.[0] || '-';
-document.getElementById('story2').textContent = currentCase.story?.[1] || '-';
-document.getElementById('story3').textContent = currentCase.story?.[2] || '-';
+document.getElementById('story1').textContent = storyPoints[0] || '-';
+document.getElementById('story2').textContent = storyPoints[1] || '-';
+document.getElementById('story3').textContent = storyPoints[2] || '-';
 document.getElementById('summaryMini').textContent = project.eyebrow;
 document.getElementById('summaryTitle').textContent = project.title;
 document.getElementById('raisedText').textContent = fmt(currentCase.raised);
@@ -280,7 +591,7 @@ document.getElementById('percentText').textContent = pct + '%';
 document.getElementById('summaryProgressBar').style.width = pct + '%';
 document.getElementById('sumProject').textContent = project.title;
 document.getElementById('sumCase').textContent = currentCase.title;
-document.getElementById('heroBadges').innerHTML = [currentCase.badge, currentCase.location, currentCase.urgent].map(t => `<div class="hero-badge">${t}</div>`).join('');
+document.getElementById('heroBadges').innerHTML = [currentCase.badge, currentCase.location, currentCase.urgent].filter(Boolean).map(t => `<div class="hero-badge">${t}</div>`).join('');
 </script>
 </body>
 </html>

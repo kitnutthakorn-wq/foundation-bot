@@ -2040,7 +2040,7 @@ if (elSla) elSla.innerText = slaText;
         } else if (caseCode) {
           data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
         } else {
-          alert("ไม่พบ id หรือ case_code");
+         alert("ไม่พบ id หรือ case_code\nURL ปัจจุบัน: " + window.location.href);
           return null;
         }
 

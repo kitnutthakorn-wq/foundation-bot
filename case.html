@@ -1969,8 +1969,14 @@ function updateWarRoomCommandBar(data){
 
     if (caseId) {
       data = await fetchJSON(`/api/case/${caseId}`);
-    } else if (caseCode) {
-      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+   } else if (caseCode) {
+  try {
+    data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+  } catch (err) {
+    console.warn("PRIMARY CASE LOAD FAILED:", err);
+    data = await fetchJSON(`/api/case/${encodeURIComponent(caseCode)}`);
+  }
+}
     } else {
       alert("ไม่พบ id หรือ case_code\nURL: " + window.location.href);
 

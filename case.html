@@ -1753,64 +1753,108 @@ button,
         </div>
       </div>
 
-<div class="warroom-grid">
-  <!-- LEFT COLUMN -->
-  <div class="warroom-col" id="warroomColLeft">
-    <!-- ข้อมูลเคส -->
-    <div class="card panel-card">
-      <div class="panel-header">
-        <h2 class="panel-title">ข้อมูลเคส</h2>
-        <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
-      </div>
+<div class="card panel-card">
+  <div class="panel-header">
+    <h2 class="panel-title">ข้อมูลเคส</h2>
+    <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
+  </div>
 
-      <div class="summary-strip">
-        <div class="summary-item">
-          <div class="summary-label">เลขเคส</div>
-          <div class="summary-value" id="summary_case_code">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">สถานะล่าสุด</div>
-          <div class="summary-value" id="summary_status">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">ระดับความเร่งด่วน</div>
-          <div class="summary-value" id="summary_priority">-</div>
-        </div>
-        <div class="summary-item">
-          <div class="summary-label">ผู้รับเคส</div>
-          <div class="summary-value" id="summary_assigned_to">-</div>
-        </div>
-      </div>
-
-      <div class="grid case-info-grid">
-        <div><div class="label">เลขเคส</div><div class="value" id="case_code">-</div></div>
-        <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
-        <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
-        <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-        <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
-        <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
-        <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
-        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
-        <div><div class="label">โครงการของเคส</div><div class="value" id="project_name">-</div></div>
-        <div><div class="label">สร้างเมื่อ</div><div class="value" id="created_at">-</div></div>
-        <div class="full"><div class="label">รายละเอียดปัญหา</div><div class="value" id="problem">-</div></div>
-      </div>
+  <div class="summary-strip">
+    <div class="summary-item">
+      <div class="summary-label">เลขเคส</div>
+      <div class="summary-value" id="summary_case_code">-</div>
     </div>
-
-    <!-- Timeline -->
-    <div class="card panel-card">
-      <div class="panel-header">
-        <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-        <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
-      </div>
-
-      <div id="latestUpdateBanner" class="latest-update-banner"></div>
-
-      <div id="case_updates_timeline" class="timeline-list">
-        <div class="timeline-empty">กำลังโหลด Timeline...</div>
-      </div>
+    <div class="summary-item">
+      <div class="summary-label">สถานะล่าสุด</div>
+      <div class="summary-value" id="summary_status">-</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-label">ระดับความเร่งด่วน</div>
+      <div class="summary-value" id="summary_priority">-</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-label">ผู้รับเคส</div>
+      <div class="summary-value" id="summary_assigned_to">-</div>
     </div>
   </div>
+
+  <div class="grid case-info-grid">
+    <div>
+      <div class="label">เลขเคส</div>
+      <div class="value" id="case_code">-</div>
+    </div>
+
+    <div>
+      <div class="label">สถานะล่าสุด</div>
+      <div class="value" id="summary_status_box">-</div>
+    </div>
+
+    <div>
+      <div class="label">ระดับความเร่งด่วน</div>
+      <div class="value" id="summary_priority_box">-</div>
+    </div>
+
+    <div>
+      <div class="label">ผู้รับเคส</div>
+      <div class="value" id="summary_assigned_box">-</div>
+    </div>
+
+    <div>
+      <div class="label">ชื่อผู้ขอความช่วยเหลือ</div>
+      <div class="value" id="full_name">-</div>
+    </div>
+
+    <div>
+      <div class="label">เบอร์โทร</div>
+      <div class="value" id="phone">-</div>
+    </div>
+
+    <div>
+      <div class="label">พื้นที่</div>
+      <div class="value" id="location">-</div>
+    </div>
+
+    <div>
+      <div class="label">หมวดปัญหา</div>
+      <div class="value" id="category_name">-</div>
+    </div>
+
+    <div>
+      <div class="label">สถานะ</div>
+      <div class="value" id="status">-</div>
+    </div>
+
+    <div>
+      <div class="label">ระดับ</div>
+      <div class="value" id="priority">-</div>
+    </div>
+
+    <div>
+      <div class="label">ผู้รับเคส</div>
+      <div class="value" id="assigned_to">-</div>
+    </div>
+
+    <div>
+      <div class="label">โครงการของเคส</div>
+      <div class="value" id="project_name">-</div>
+    </div>
+
+    <div>
+      <div class="label">รายละเอียดปัญหา</div>
+      <div class="value" id="problem">-</div>
+    </div>
+
+    <div>
+      <div class="label">สร้างเมื่อ</div>
+      <div class="value" id="created_at">-</div>
+    </div>
+
+    <div>
+      <div class="label">อัปเดตล่าสุด</div>
+      <div class="value" id="updated_at">-</div>
+    </div>
+  </div>
+</div>
 
   <!-- RIGHT COLUMN -->
   <div class="warroom-col warroom-sticky" id="warroomColRight">

@@ -3427,6 +3427,7 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}){
   gsSetText("latest_step_help", latestStatusLabel || "-");
   gsSetText("latest_waiting", latestWaiting);
   gsSetText("latest_by", latestBy);
+  gsSetText("latest_by_pill", `ผู้บันทึกล่าสุด: ${latestBy || "-"}`);
   gsSetText("latest_area", latestArea);
 
   const bar = document.getElementById("progress_bar");

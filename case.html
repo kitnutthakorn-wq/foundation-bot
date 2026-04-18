@@ -1954,14 +1954,21 @@ function updateWarRoomCommandBar(data){
   try{
     let data;
 
-    if (caseId) {
-      data = await fetchJSON(`/api/case/${caseId}`);
-    } else if (caseCode) {
-      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
-    } else {
-      alert("ไม่พบ id หรือ case_code");
-      return null;
-    }
+   } else {
+  alert("ไม่พบ id หรือ case_code\nURL: " + window.location.href);
+
+  const wrap = document.getElementById("case_updates_timeline");
+  if (wrap) {
+    wrap.innerHTML = `<div class="timeline-empty">กรุณาเปิดหน้านี้พร้อม ?id= หรือ ?case_code=</div>`;
+  }
+
+  const live = document.getElementById("liveStatus");
+  if (live) {
+    live.textContent = "ไม่พบพารามิเตอร์ของเคส";
+  }
+
+  return null;
+}
 
     resolvedCaseId = data.id || resolvedCaseId || "";
     updateCaseStaticFields(data);

@@ -3120,7 +3120,119 @@ function enhanceWorkFilesPanelTitle(files = []){
       : "ยังไม่มีรูปภาพภาคสนามที่แนบเข้ามา";
   }
 }
-    
+/* ===== GOLDEN SAFE PATCH: RIGHT COLUMN DATA BINDING ===== */
+function gsSetText(id, value){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value == null || value === "" ? "-" : String(value);
+}
+
+function gsSetHtml(id, html){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = html;
+}
+
+function gsSafeProgress(value){
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function renderFieldProgressFromTimeline(items = [], caseData = {}){
+  const list = Array.isArray(items) ? items : [];
+  const latest = list[0] || null;
+
+  const progress = gsSafeProgress(
+    latest?.progress_percent ??
+    latest?.progress ??
+    caseData?.progress_percent ??
+    caseData?.progress ??
+    0
+  );
+
+  const latestNote =
+    latest?.note ||
+    latest?.message ||
+    latest?.update_note ||
+    caseData?.latest_note ||
+    caseData?.problem ||
+    "-";
+
+  const latestStep =
+    latest?.current_step ||
+    latest?.step_label ||
+    latest?.step_name ||
+    "-";
+
+  const latestWaiting =
+    latest?.waiting_for ||
+    latest?.pending_on ||
+    latest?.waiting_on ||
+    "-";
+
+  const latestBy =
+    latest?.updated_by ||
+    latest?.created_by ||
+    latest?.staff_name ||
+    latest?.staff ||
+    caseData?.assigned_to ||
+    "-";
+
+  const latestStatusRaw = normalizeTimelineStatus(
+    latest?.status ||
+    caseData?.status ||
+    "in_progress"
+  );
+
+  const latestStatusLabel = statusThai(latestStatusRaw);
+
+  const gps = latest ? getTimelineLatLng(latest) : null;
+  const latestArea =
+    latest?.location_text ||
+    latest?.geo_text ||
+    latest?.area ||
+    (gps ? `${gps.lat}, ${gps.lng}` : "-");
+
+  gsSetText("progress_text", `${progress}%`);
+  gsSetText("latest_note", latestNote);
+  gsSetText("latest_step", latestStep !== "-" ? latestStep : latestStatusLabel);
+  gsSetText("latest_step_help", latestStatusLabel || "-");
+  gsSetText("latest_waiting", latestWaiting);
+  gsSetText("latest_by", latestBy);
+  gsSetText("latest_area", latestArea);
+
+  const bar = document.getElementById("progress_bar");
+  if (bar) {
+    bar.style.width = `${progress}%`;
+  }
+}
+
+function enhanceWorkFilesPanelHeader(files = []){
+  const box = document.getElementById("workFilesSection");
+  if (!box) return;
+
+  const card = box.closest(".panel-card");
+  if (!card) return;
+
+  const titleEl = card.querySelector(".panel-title");
+  const subEl = card.querySelector(".panel-sub");
+
+  const list = Array.isArray(files) ? files : [];
+  const imageFiles = list.filter(file => {
+    const name = String(file?.name || file?.file_name || "");
+    const url = String(file?.url || file?.file_url || "");
+    return /\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
+  });
+
+  if (titleEl) titleEl.textContent = "สรุปภาพภาคสนาม";
+  if (subEl) {
+    subEl.textContent = imageFiles.length
+      ? "รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส"
+      : "ยังไม่มีรูปภาพภาคสนามที่แนบเข้ามา";
+  }
+}
+/* ===== END GOLDEN SAFE PATCH ===== */    
 /* ===== END GOLDEN SAFE PATCH ===== */
 
     async function loadProjects(){
@@ -3271,18 +3383,22 @@ function enhanceWorkFilesPanelTitle(files = []){
       formState.initialized = true;
     }
 
-       async function refreshCaseView(){
-      const data = await loadCase();
-      const timelineItems = await loadCaseTimeline();
-      renderFieldProgressFromTimeline(timelineItems, data || {});
-      if (data) {
-        renderWarRoomMap(data);
-      }
-      decorateTimelineLatest(timelineItems);
-      if (caseCode) {
-        await loadWorkFiles(caseCode);
-      }
-    }
+     async function refreshCaseView(){
+  const data = await loadCase();
+  const timelineItems = await loadCaseTimeline();
+
+  renderFieldProgressFromTimeline(timelineItems, data || {});
+
+  if (data) {
+    renderWarRoomMap(data);
+  }
+
+  decorateTimelineLatest(timelineItems);
+
+  if (caseCode) {
+    await loadWorkFiles(caseCode);
+  }
+}
 
     async function softRefreshWarRoom(reason = "system"){
       const now = Date.now();
@@ -3320,8 +3436,8 @@ function enhanceWorkFilesPanelTitle(files = []){
         }
 
         latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
-        renderFieldProgressFromTimeline(latestTimelineCache, data || {});
-        const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
+renderFieldProgressFromTimeline(latestTimelineCache, data || {});
+const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
         const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
 
         const bestPoint = getBestMapCoordinates(data, latestTimelineCache);
@@ -3507,66 +3623,89 @@ function safeAutoFocusMap(lat, lng, timelineId = ""){
       if (el) el.scrollIntoView({ behavior:"smooth", block:"start" });
     }
 
-    async function loadWorkFiles(caseCodeValue) {
-      const box = document.getElementById("workFilesSection");
-      if (!box) return;
+async function loadWorkFiles(caseCodeValue){
+  const box = document.getElementById("workFilesSection");
+  if (!box) return;
 
-      box.innerHTML = "กำลังโหลดไฟล์...";
+  if (!caseCodeValue) {
+    enhanceWorkFilesPanelHeader([]);
+    box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
+    return;
+  }
 
-      try {
-        const res = await fetch(`/api/work-uploads/files/${encodeURIComponent(caseCodeValue)}`);
-        const json = await res.json();
+  try{
+    box.innerHTML = "กำลังโหลดไฟล์...";
 
-        if (!res.ok || !json.ok) {
-          throw new Error(json.error || "โหลดไฟล์ไม่สำเร็จ");
-        }
+    const res = await fetch(`/api/case-files/${encodeURIComponent(caseCodeValue)}`);
+    const json = await res.json().catch(() => ({}));
 
-               const files = json.files || [];
-        enhanceWorkFilesPanelTitle(files);
+    const files = Array.isArray(json?.files) ? json.files : [];
+    enhanceWorkFilesPanelHeader(files);
 
-        if (!files.length) {
-          box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
-          return;
-        }
-
-        const imageFiles = files.filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f.name));
-        const docFiles = files.filter(f => !/\.(jpg|jpeg|png|webp)$/i.test(f.name));
-
-        box.innerHTML = `
-          <div class="work-files-wrap">
-            ${imageFiles.length ? `
-              <div class="work-file-group">
-                <h4>📸 รูปภาพ</h4>
-                <div class="work-file-grid">
-                  ${imageFiles.map(file => `
-                    <a class="work-image-card" href="${file.url}" target="_blank" rel="noopener noreferrer">
-                      <img src="${file.url}" alt="${escapeHtml(file.name || 'image')}" />
-                      <div class="file-name">${escapeHtml(file.name)}</div>
-                    </a>
-                  `).join("")}
-                </div>
-              </div>
-            ` : ""}
-
-            ${docFiles.length ? `
-              <div class="work-file-group">
-                <h4>📄 เอกสาร</h4>
-                <div class="work-doc-list">
-                  ${docFiles.map(file => `
-                    <a class="work-doc-item" href="${file.url}" target="_blank" rel="noopener noreferrer">
-                      📎 ${escapeHtml(file.name)}
-                    </a>
-                  `).join("")}
-                </div>
-              </div>
-            ` : ""}
-          </div>
-        `;
-      } catch (err) {
-        console.error(err);
-        box.innerHTML = `❌ ${escapeHtml(err.message)}`;
-      }
+    if (!files.length) {
+      box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
+      return;
     }
+
+    const imageFiles = files.filter(file => {
+      const name = String(file?.name || file?.file_name || "");
+      const url = String(file?.url || file?.file_url || "");
+      return /\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
+    });
+
+    const docFiles = files.filter(file => {
+      const name = String(file?.name || file?.file_name || "");
+      const url = String(file?.url || file?.file_url || "");
+      return !/\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
+    });
+
+    const imageHtml = imageFiles.length ? `
+      <div class="work-file-group">
+        <h4>รูปภาพภาคสนาม</h4>
+        <div class="work-file-grid">
+          ${imageFiles.map(file => {
+            const url = escapeHtml(file?.url || file?.file_url || "#");
+            const name = escapeHtml(file?.name || file?.file_name || "image");
+            return `
+              <a class="work-image-card" href="${url}" target="_blank" rel="noopener noreferrer">
+                <img src="${url}" alt="${name}" loading="lazy" />
+                <div class="file-name">${name}</div>
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    ` : "";
+
+    const docHtml = docFiles.length ? `
+      <div class="work-file-group">
+        <h4>เอกสารแนบ</h4>
+        <div class="work-doc-list">
+          ${docFiles.map(file => {
+            const url = escapeHtml(file?.url || file?.file_url || "#");
+            const name = escapeHtml(file?.name || file?.file_name || "document");
+            return `
+              <a class="work-doc-item" href="${url}" target="_blank" rel="noopener noreferrer">
+                ${name}
+              </a>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    ` : "";
+
+    box.innerHTML = `
+      <div class="work-files-wrap">
+        ${imageHtml || ""}
+        ${docHtml || ""}
+      </div>
+    `;
+  } catch (err) {
+    console.error("loadWorkFiles error:", err);
+    enhanceWorkFilesPanelHeader([]);
+    box.innerHTML = "โหลดไฟล์แนบไม่สำเร็จ";
+  }
+}
 
 document.addEventListener("click", function(e){
   if (e.target.closest(".no-map-focus")){

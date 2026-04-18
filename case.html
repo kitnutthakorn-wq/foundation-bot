@@ -2994,6 +2994,134 @@ function fillMissingCaseSummaryMiniPatch(data){
   gsSetIfMissing("category_name", categoryText || "-");
   gsSetIfMissing("updated_at", updatedAtText || "-");
 }
+/* ===== GOLDEN SAFE PATCH: right column data fill ===== */
+function gsSetHtml(id, html){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = html;
+}
+
+function gsSetText(id, value){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value;
+}
+
+function gsSafeProgress(value){
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function renderFieldProgressFromTimeline(items = [], caseData = {}){
+  const list = Array.isArray(items) ? items : [];
+  const latest = list[0] || null;
+
+  const progress = gsSafeProgress(
+    latest?.progress_percent ??
+    latest?.progress ??
+    caseData?.progress_percent ??
+    caseData?.progress ??
+    0
+  );
+
+  const latestNote =
+    latest?.note ||
+    latest?.message ||
+    latest?.update_note ||
+    caseData?.latest_note ||
+    caseData?.problem ||
+    "-";
+
+  const latestStep =
+    latest?.current_step ||
+    latest?.step_label ||
+    latest?.step_name ||
+    "-";
+
+  const latestWaiting =
+    latest?.waiting_for ||
+    latest?.pending_on ||
+    latest?.waiting_on ||
+    "-";
+
+  const latestBy =
+    latest?.updated_by ||
+    latest?.created_by ||
+    latest?.staff_name ||
+    latest?.staff ||
+    caseData?.assigned_to ||
+    "-";
+
+  const latestAt =
+    latest?.updated_at ||
+    latest?.created_at ||
+    latest?.logged_at ||
+    caseData?.updated_at ||
+    caseData?.last_action_at ||
+    caseData?.created_at ||
+    null;
+
+  const latestStatusRaw = normalizeTimelineStatus(
+    latest?.status ||
+    caseData?.status ||
+    "in_progress"
+  );
+
+  const latestStatusLabel = statusThai(latestStatusRaw);
+
+  const gps = latest ? getTimelineLatLng(latest) : null;
+  const latestArea =
+    latest?.location_text ||
+    latest?.geo_text ||
+    latest?.area ||
+    (gps ? `${gps.lat}, ${gps.lng}` : "-");
+
+  gsSetText("progress_text", `${progress}%`);
+  gsSetText("latest_note", latestNote || "-");
+  gsSetText("latest_step", latestStep || "-");
+  gsSetText("latest_waiting", latestWaiting || "-");
+  gsSetText("latest_by", latestBy || "-");
+  gsSetText("latest_at", latestAt ? formatThaiDateTime(latestAt) : "-");
+  gsSetText("latest_step_help", latestStatusLabel || "-");
+
+  gsSetHtml("progress_bar", "");
+  const bar = document.getElementById("progress_bar");
+  if (bar) {
+    bar.style.width = `${progress}%`;
+  }
+
+  const latestStepEl = document.getElementById("latest_step");
+  if (latestStepEl && (!latestStep || latestStep === "-")) {
+    latestStepEl.textContent = latestStatusLabel || "-";
+  }
+
+  const latestAreaEl = document.getElementById("latest_area");
+  if (latestAreaEl) {
+    latestAreaEl.textContent = latestArea || "-";
+  }
+}
+
+function enhanceWorkFilesPanelTitle(files = []){
+  const box = document.getElementById("workFilesSection");
+  if (!box) return;
+
+  const card = box.closest(".panel-card");
+  if (!card) return;
+
+  const titleEl = card.querySelector(".panel-title");
+  const subEl = card.querySelector(".panel-sub");
+
+  const imageCount = (Array.isArray(files) ? files : []).filter(f => /\.(jpg|jpeg|png|webp)$/i.test(f.name || "")).length;
+
+  if (titleEl) titleEl.textContent = "สรุปภาพภาคสนาม";
+  if (subEl) {
+    subEl.textContent = imageCount > 0
+      ? "รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส"
+      : "ยังไม่มีรูปภาพภาคสนามที่แนบเข้ามา";
+  }
+}
+    
 /* ===== END GOLDEN SAFE PATCH ===== */
 
     async function loadProjects(){
@@ -3144,9 +3272,10 @@ function fillMissingCaseSummaryMiniPatch(data){
       formState.initialized = true;
     }
 
-    async function refreshCaseView(){
+       async function refreshCaseView(){
       const data = await loadCase();
       const timelineItems = await loadCaseTimeline();
+      renderFieldProgressFromTimeline(timelineItems, data || {});
       if (data) {
         renderWarRoomMap(data);
       }
@@ -3192,6 +3321,7 @@ function fillMissingCaseSummaryMiniPatch(data){
         }
 
         latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
+        renderFieldProgressFromTimeline(latestTimelineCache, data || {});
         const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
         const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
 
@@ -3392,7 +3522,8 @@ function safeAutoFocusMap(lat, lng, timelineId = ""){
           throw new Error(json.error || "โหลดไฟล์ไม่สำเร็จ");
         }
 
-        const files = json.files || [];
+               const files = json.files || [];
+        enhanceWorkFilesPanelTitle(files);
 
         if (!files.length) {
           box.innerHTML = "ยังไม่มีไฟล์แนบงาน";

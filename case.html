@@ -1679,117 +1679,106 @@
           </div>
         </div>
 
-        <!-- CENTER -->
-        <div class="warroom-col" id="warroomColCenter">
-          <div class="card panel-card warroom-map-card" id="warroomMapPanel">
-            <div class="panel-header">
-              <h2 class="panel-title">แผนที่ปฏิบัติการ</h2>
-              <div class="panel-sub">พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</div>
-            </div>
+<!-- CENTER -->
+<div class="warroom-col" id="warroomColCenter">
+  <div class="card panel-card">
+    <div class="panel-header">
+      <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
+      <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
+    </div>
 
-            <div class="warroom-map-body" id="warroomMapBody">
-              <div class="warroom-map-empty">กำลังเตรียมแผนที่...</div>
-            </div>
+    <div id="latestUpdateBanner" class="latest-update-banner"></div>
 
-            <div class="warroom-map-meta">
-              <div id="warroomMapMeta">พิกัด: -</div>
-              <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
-              <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
-            </div>
-          </div>
+    <div id="case_updates_timeline" class="timeline-list">
+      <div class="timeline-empty">กำลังโหลด Timeline...</div>
+    </div>
+  </div>
+</div>
 
-          <div class="card panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-              <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
-            </div>
+<!-- RIGHT -->
+<div class="warroom-col warroom-sticky" id="warroomColRight">
+  <!-- FILES -->
+  <div class="card panel-card">
+    <div class="panel-header">
+      <h2 class="panel-title">ไฟล์แนบงาน</h2>
+      <div class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</div>
+    </div>
 
-            <div id="latestUpdateBanner" class="latest-update-banner">
-              ยังไม่มีอัปเดตล่าสุด
-            </div>
+    <div id="workFilesSection">กำลังโหลดไฟล์...</div>
+  </div>
 
-            <div id="case_updates_timeline" class="timeline-list">
-              <div class="timeline-empty">กำลังโหลด Timeline...</div>
-            </div>
-          </div>
+  <!-- MAP -->
+  <div class="card panel-card warroom-map-card" id="warroomMapPanel">
+    <div class="panel-header">
+      <h2 class="panel-title">แผนที่ปฏิบัติการ</h2>
+      <div class="panel-sub">พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</div>
+    </div>
+
+    <div class="warroom-map-body" id="warroomMapBody">
+      <div class="warroom-map-empty">กำลังเตรียมแผนที่...</div>
+    </div>
+
+    <div class="warroom-map-meta">
+      <div id="warroomMapMeta">พิกัด: -</div>
+      <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
+      <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
+    </div>
+  </div>
+
+  <!-- ADMIN CONTROL -->
+  <div class="card panel-card">
+    <div class="panel-header">
+      <h2 class="panel-title">จัดการเคส</h2>
+      <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
+    </div>
+
+    <div class="manage-case-grid">
+      <div class="input-shell">
+        <div class="label">ชื่อผู้รับเคส</div>
+        <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
+      </div>
+
+      <div class="input-shell">
+        <div class="label">สถานะที่จะบันทึก</div>
+        <select id="statusSelect">
+          <option value="new">ใหม่</option>
+          <option value="in_progress">กำลังดำเนินการ</option>
+          <option value="done">เสร็จสิ้น</option>
+          <option value="cancelled">ยกเลิก</option>
+        </select>
+      </div>
+
+      <div class="input-shell">
+        <div class="label">ระดับเคส</div>
+        <select id="prioritySelect">
+          <option value="normal">ปกติ</option>
+          <option value="urgent">ด่วน</option>
+        </select>
+      </div>
+
+      <div class="input-shell">
+        <div class="label">โครงการที่สังกัด</div>
+        <select id="projectSelect">
+          <option value="">- เลือกโครงการ -</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <div class="label">แนวทางการใช้งาน</div>
+        <div class="value">
+          เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
         </div>
+      </div>
+    </div>
 
-        <!-- RIGHT -->
-        <div class="warroom-col warroom-sticky" id="warroomColRight">
-          <div class="card panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">ไฟล์แนบงาน</h2>
-              <p class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</p>
-            </div>
-
-            <div id="workFilesSection" class="timeline-empty">
-              กำลังโหลดไฟล์...
-            </div>
-          </div>
-
-          <div class="card panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">จัดการเคส</h2>
-              <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
-            </div>
-
-            <div class="grid manage-case-grid">
-              <div>
-                <div class="input-shell">
-                  <div class="label">ชื่อผู้รับเคส</div>
-                  <input id="staffName" placeholder="ชื่อทีมงาน เช่น ทีมลงพื้นที่ A" style="width:100%">
-                </div>
-              </div>
-
-              <div>
-                <div class="input-shell">
-                  <div class="label">สถานะที่จะบันทึก</div>
-                  <select id="statusSelect" style="width:100%">
-                    <option value="new">ใหม่</option>
-                    <option value="in_progress">กำลังดำเนินการ</option>
-                    <option value="done">ปิดเคส/เสร็จแล้ว</option>
-                    <option value="cancelled">ยกเลิก</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <div class="input-shell">
-                  <div class="label">ระดับเคส</div>
-                  <select id="prioritySelect" style="width:100%">
-                    <option value="normal">ปกติ</option>
-                    <option value="urgent">ด่วน</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <div class="input-shell">
-                  <div class="label">โครงการที่สังกัด</div>
-                  <select id="projectSelect" style="width:100%">
-                    <option value="">- เลือกโครงการ -</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="full">
-                <div class="input-shell">
-                  <div class="label">แนวทางใช้งาน</div>
-                  <div class="value" style="min-height:44px;display:flex;align-items:center">
-                    เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="actions">
-              <button onclick="saveCaseSettings()" class="secondary">บันทึกค่าที่เลือก</button>
-              <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
-              <button onclick="closeCase()">ปิดเคส</button>
-              <button onclick="resetForm()" class="secondary">รีเซ็ตค่า</button>
-            </div>
-          </div>
-        </div>
+    <div class="actions">
+      <button class="secondary" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
+      <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
+      <button onclick="closeCase()">ปิดเคส</button>
+      <button class="secondary" onclick="resetForm()">รีเซ็ตค่า</button>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>

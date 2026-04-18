@@ -2911,10 +2911,16 @@ function updateWarRoomCommandBar(data){
         }
 
         wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
-        decorateTimelineLatest(updates);
-        updateLatestTimelineBanner(updates[0] || null);
-        lastTimelineSignature = getTimelineSignature(updates);
-        return updates;
+decorateTimelineLatest(updates);
+updateLatestTimelineBanner(updates[0] || null);
+
+const timelineCountBadge = document.getElementById("timelineCountBadge");
+if (timelineCountBadge) {
+  timelineCountBadge.textContent = `${updates.length} รายการ`;
+}
+
+lastTimelineSignature = getTimelineSignature(updates);
+return updates;
       } catch (err) {
         console.error("LOAD TIMELINE ERROR:", err);
         wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;

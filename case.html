@@ -1310,12 +1310,25 @@
       setTimeout(()=>div.remove(),5000);
     }
 
-    async function fetchJSON(url, options={}){
-      const res=await fetch(url, options);
-      const data=await res.json();
-      if(!res.ok || !data.ok) throw new Error(data.error || "Request failed");
-      return data.data;
-    }
+   async function fetchJSON(url, options = {}){
+  const res = await fetch(url, options);
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+
+  let payload = null;
+  if (isJson) {
+    payload = await res.json();
+  } else {
+    const text = await res.text();
+    throw new Error(`HTTP ${res.status} ${res.statusText} @ ${url}\n${text.slice(0, 120)}`);
+  }
+
+  if (!res.ok || !payload?.ok) {
+    throw new Error(payload?.error || `HTTP ${res.status} ${res.statusText}`);
+  }
+
+  return payload.data;
+}
 
     function normalizeTimelineStatus(status){
       const s = String(status || "").trim().toLowerCase();

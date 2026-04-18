@@ -916,6 +916,882 @@
   background: linear-gradient(180deg, #ff2d2d, #b91c1c);
   text-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
+/* =========================================================
+   CASE.HTML PROFESSIONAL UI PATCH
+   SAFE PATCH: CSS ONLY / NO JS CHANGES / NO ID CHANGES
+   วางท้ายสุดของ <style>
+========================================================= */
+
+:root{
+  --ui-bg:#eef3f7;
+  --ui-card:#ffffff;
+  --ui-line:#dbe5ee;
+  --ui-line-2:#e8eef5;
+  --ui-text:#0f2747;
+  --ui-muted:#6a7b8f;
+  --ui-brand-1:#0f8a97;
+  --ui-brand-2:#113f97;
+  --ui-brand-deep:#0d3c78;
+  --ui-shadow:0 12px 30px rgba(19,43,77,.08);
+  --ui-shadow-soft:0 8px 22px rgba(19,43,77,.06);
+  --ui-radius-xl:24px;
+  --ui-radius-lg:20px;
+  --ui-radius-md:16px;
+  --ui-radius-sm:12px;
+  --ui-success:#17b26a;
+  --ui-warning:#f79009;
+  --ui-danger:#ef4444;
+}
+
+html,body{
+  background:var(--ui-bg) !important;
+  color:var(--ui-text) !important;
+}
+
+body{
+  font-family:Arial,sans-serif;
+}
+
+.container{
+  max-width:1280px !important;
+  padding:24px 28px 110px !important;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+.topbar{
+  align-items:flex-start !important;
+  margin-bottom:20px !important;
+}
+
+.brand{
+  gap:16px !important;
+}
+
+.brand img{
+  width:74px !important;
+  height:74px !important;
+  padding:10px !important;
+  border-radius:22px !important;
+  background:#fff !important;
+  box-shadow:0 12px 24px rgba(17,63,151,.10) !important;
+}
+
+.topbar h1{
+  font-size:56px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  letter-spacing:-.02em !important;
+  color:#133357 !important;
+}
+
+.subtitle{
+  margin-top:10px !important;
+  font-size:21px !important;
+  line-height:1.35 !important;
+  color:#66768a !important;
+}
+
+.topbar > div:last-child{
+  gap:14px !important;
+}
+
+.live{
+  background:#fff !important;
+  border:1px solid #e6edf4 !important;
+  box-shadow:none !important;
+  border-radius:999px !important;
+  padding:12px 18px !important;
+  font-weight:800 !important;
+  color:#2e506c !important;
+}
+
+.live-dot{
+  background:#22c55e !important;
+}
+
+.topbar .actions{
+  gap:12px !important;
+}
+
+.topbar .actions .secondary{
+  height:54px !important;
+  padding:0 24px !important;
+  border-radius:18px !important;
+  background:#ffffff !important;
+  border:1px solid #d7e3ec !important;
+  color:#113357 !important;
+  font-size:22px !important;
+  font-weight:800 !important;
+  box-shadow:none !important;
+}
+
+.topbar .actions .secondary:last-child{
+  background:#0d7187 !important;
+  color:#fff !important;
+  border-color:#0d7187 !important;
+}
+
+/* =========================
+   GENERAL CARD
+========================= */
+.card,
+.panel-card{
+  background:var(--ui-card) !important;
+  border:1px solid var(--ui-line-2) !important;
+  border-radius:var(--ui-radius-xl) !important;
+  box-shadow:var(--ui-shadow) !important;
+  padding:22px !important;
+  margin-bottom:18px !important;
+}
+
+.panel-header{
+  margin-bottom:16px !important;
+  gap:6px !important;
+}
+
+.panel-title{
+  font-size:22px !important;
+  line-height:1.2 !important;
+  font-weight:900 !important;
+  color:#12365b !important;
+}
+
+.panel-sub{
+  font-size:14px !important;
+  line-height:1.5 !important;
+  color:#6d7d90 !important;
+}
+
+/* =========================
+   HERO / COMMAND BAR
+========================= */
+.warroom-shell{
+  gap:18px !important;
+}
+
+.warroom-command{
+  padding:24px 24px 22px !important;
+  border-radius:28px !important;
+  background:linear-gradient(135deg,#0c8b96 0%, #0f5ea7 52%, #103493 100%) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  box-shadow:0 18px 36px rgba(17,63,151,.18) !important;
+  margin-bottom:12px !important;
+}
+
+.warroom-command-top{
+  gap:18px !important;
+  align-items:flex-start !important;
+}
+
+.warroom-kicker{
+  font-size:15px !important;
+  font-weight:900 !important;
+  letter-spacing:.08em !important;
+  color:rgba(255,255,255,.88) !important;
+}
+
+.warroom-title{
+  font-size:30px !important;
+  line-height:1.12 !important;
+  font-weight:900 !important;
+  color:#fff !important;
+  margin:4px 0 2px !important;
+}
+
+.warroom-sub{
+  font-size:15px !important;
+  line-height:1.55 !important;
+  color:rgba(255,255,255,.88) !important;
+}
+
+.warroom-badges{
+  margin-top:14px !important;
+  gap:10px !important;
+}
+
+.warroom-badges .badge,
+#wr_badge_status,
+#wr_badge_priority,
+#wr_badge_case_code{
+  min-height:38px !important;
+  padding:8px 14px !important;
+  border-radius:999px !important;
+  font-size:14px !important;
+  font-weight:900 !important;
+  border:none !important;
+}
+
+#wr_badge_case_code{
+  background:#ffffff !important;
+  color:#153c63 !important;
+}
+
+.warroom-actions{
+  gap:12px !important;
+  align-items:center !important;
+}
+
+.warroom-actions .secondary{
+  min-width:auto !important;
+  height:48px !important;
+  padding:0 18px !important;
+  border-radius:16px !important;
+  background:#fff !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  color:#12385d !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+  box-shadow:none !important;
+}
+
+.live-sync-chip{
+  min-height:44px !important;
+  padding:0 16px !important;
+  border-radius:999px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+  background:#dbfff3 !important;
+  color:#0f6f64 !important;
+  border:1px solid #9ff0d5 !important;
+}
+
+/* =========================
+   LAYOUT RE-GRID
+   ใช้ display:contents เพื่อไม่แตะ HTML/JS
+========================= */
+.warroom-grid{
+  display:grid !important;
+  grid-template-columns:minmax(300px,1.08fr) minmax(380px,1.28fr) minmax(280px,.92fr) !important;
+  gap:18px !important;
+  align-items:start !important;
+}
+
+#warroomColLeft,
+#warroomColCenter,
+#warroomColRight{
+  display:contents !important;
+}
+
+#warroomColLeft > .panel-card:first-child{ grid-column:1; grid-row:1; }
+#warroomColCenter > .panel-card:first-child{ grid-column:2; grid-row:1; }
+#warroomColRight > .panel-card:first-child{ grid-column:3; grid-row:1; }
+#warroomColRight > .panel-card:last-child{ grid-column:3; grid-row:2; }
+#warroomColLeft > .field-progress-wrapper{ grid-column:1; grid-row:2; }
+#warroomColCenter > .panel-card:last-child{ grid-column:2; grid-row:2; }
+
+/* =========================
+   INFO CASE CARD
+========================= */
+#warroomColLeft > .panel-card:first-child{
+  overflow:hidden !important;
+}
+
+.summary-strip{
+  display:none !important;
+}
+
+.case-info-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+}
+
+.case-info-grid > div{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+}
+
+.case-info-grid .label{
+  margin:0 !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+  color:#6c7b8d !important;
+}
+
+.case-info-grid .value{
+  min-height:72px !important;
+  border-radius:16px !important;
+  background:#f8fbfe !important;
+  border:1px solid #e7eef5 !important;
+  padding:14px 16px !important;
+  font-size:15px !important;
+  line-height:1.45 !important;
+  font-weight:800 !important;
+  color:#18385c !important;
+  box-shadow:none !important;
+}
+
+.case-info-grid > div:nth-child(1) .value,
+.case-info-grid > div:nth-child(2) .value,
+.case-info-grid > div:nth-child(3) .value{
+  font-size:18px !important;
+}
+
+.case-info-grid > div:nth-child(5),
+.case-info-grid > div:nth-child(11){
+  grid-column:1 / -1 !important;
+}
+
+.case-info-grid > div:nth-child(11) .value{
+  min-height:120px !important;
+}
+
+#status .badge,
+#priority .badge{
+  font-size:14px !important;
+  padding:8px 12px !important;
+  min-width:auto !important;
+}
+
+#warroomColLeft > .panel-card:first-child::after{
+  content:"";
+  display:block;
+  height:72px;
+  margin-top:14px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff7e9 0%,#fff2d7 100%);
+  border:1px solid #f3dfb9;
+}
+
+#warroomColLeft > .panel-card:first-child::before{
+  content:"กำลังดำเนินการ\Aอัปเดตล่าสุดจากข้อมูลจริง";
+  white-space:pre-line;
+  position:absolute;
+  left:44px;
+  bottom:34px;
+  z-index:2;
+  font-weight:900;
+  line-height:1.45;
+  color:#b45e11;
+  pointer-events:none;
+}
+
+#warroomColLeft > .panel-card:first-child{
+  position:relative !important;
+  padding-bottom:112px !important;
+}
+
+/* =========================
+   MAP CARD
+========================= */
+.warroom-map-card{
+  min-height:auto !important;
+}
+
+.warroom-map-card .panel-header{
+  margin-bottom:12px !important;
+}
+
+.warroom-map-body{
+  min-height:360px !important;
+  border-radius:22px !important;
+  background:#eef6f5 !important;
+  border:1px solid #d9e6e3 !important;
+}
+
+.warroom-map-frame,
+#mapCanvas{
+  width:100% !important;
+  height:360px !important;
+  border-radius:22px !important;
+}
+
+.warroom-map-meta{
+  margin-top:14px !important;
+  gap:8px !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  font-size:14px !important;
+  color:#5d6f82 !important;
+}
+
+.warroom-map-source,
+.warroom-map-link{
+  font-size:15px !important;
+  font-weight:900 !important;
+  color:#00758d !important;
+  text-decoration:none !important;
+}
+
+/* =========================
+   FILES CARD
+========================= */
+#workFilesSection{
+  min-height:190px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  border-radius:18px !important;
+  border:2px dashed #c8d9ff !important;
+  background:linear-gradient(180deg,#f9fbff 0%,#f3f7ff 100%) !important;
+  color:#7b8aa1 !important;
+  font-size:18px !important;
+  font-weight:800 !important;
+}
+
+.work-files-wrap{
+  width:100%;
+}
+
+.work-file-group h4{
+  margin-bottom:10px !important;
+  color:#17385d !important;
+  font-size:16px !important;
+  font-weight:900 !important;
+}
+
+.work-image-card,
+.work-doc-item{
+  border-radius:16px !important;
+  border:1px solid #e5edf4 !important;
+  box-shadow:none !important;
+}
+
+/* =========================
+   MANAGE CASE CARD
+========================= */
+#warroomColRight > .panel-card:last-child .panel-sub{
+  margin-bottom:6px !important;
+}
+
+.manage-case-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+  margin-bottom:16px !important;
+}
+
+.manage-case-grid .full{
+  grid-column:1 / -1 !important;
+}
+
+.manage-case-grid .label{
+  margin:0 0 6px !important;
+  font-size:13px !important;
+  font-weight:800 !important;
+  color:#708095 !important;
+}
+
+.manage-case-grid input,
+.manage-case-grid select{
+  width:100% !important;
+  height:48px !important;
+  border-radius:16px !important;
+  border:1px solid #d8e3ec !important;
+  background:#fff !important;
+  color:#17395e !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+  box-shadow:none !important;
+}
+
+.manage-case-grid .value{
+  min-height:116px !important;
+  justify-content:center !important;
+  text-align:center !important;
+  border-radius:18px !important;
+  background:#f6f8fc !important;
+  border:1px solid #dbe6ff !important;
+  color:#3e4f65 !important;
+  font-size:16px !important;
+  line-height:1.5 !important;
+  font-weight:800 !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions button{
+  width:100% !important;
+  height:52px !important;
+  margin:0 !important;
+  padding:0 16px !important;
+  border-radius:18px !important;
+  font-size:16px !important;
+  font-weight:900 !important;
+  box-shadow:none !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions button:nth-child(1){
+  grid-column:1 / -1 !important;
+  background:#ffffff !important;
+  color:#18385c !important;
+  border:1px solid #d8e5ef !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions button:nth-child(2){
+  grid-column:1 / -1 !important;
+  background:#1f9746 !important;
+  color:#fff !important;
+  border:none !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions button:nth-child(3){
+  background:#dc2626 !important;
+  color:#fff !important;
+  border:none !important;
+}
+
+#warroomColRight > .panel-card:last-child .actions button:nth-child(4){
+  background:#ffffff !important;
+  color:#16385b !important;
+  border:1px solid #d8e3ec !important;
+}
+
+/* =========================
+   FIELD PROGRESS
+========================= */
+.field-progress-wrapper{
+  overflow:hidden !important;
+}
+
+.field-progress-wrapper .panel-sub{
+  margin-bottom:10px !important;
+}
+
+.field-progress-pro-grid{
+  grid-template-columns:1.12fr 1fr !important;
+  gap:0 !important;
+  border-radius:22px !important;
+  overflow:hidden !important;
+  border:1px solid #dce8f0 !important;
+  background:#f7fafc !important;
+}
+
+.field-progress-hero{
+  min-height:290px !important;
+  padding:22px !important;
+  background:linear-gradient(135deg,#0f8a97 0%, #113f97 100%) !important;
+}
+
+.field-progress-kicker{
+  font-size:24px !important;
+  line-height:1.05 !important;
+  font-weight:900 !important;
+  color:rgba(255,255,255,.92) !important;
+  white-space:pre-line !important;
+}
+
+.field-progress-kicker::after{
+  content:"\AField Progress";
+}
+
+.field-progress-percent{
+  font-size:58px !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  color:#fff !important;
+}
+
+.field-progress-label{
+  font-size:16px !important;
+  font-weight:800 !important;
+  color:rgba(255,255,255,.92) !important;
+  margin-bottom:8px !important;
+}
+
+.field-progress-note{
+  min-height:130px !important;
+  border-radius:22px !important;
+  background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  color:#fff !important;
+  font-size:24px !important;
+  font-weight:800 !important;
+  padding:20px !important;
+}
+
+.field-progress-track.pro{
+  height:14px !important;
+  border-radius:999px !important;
+  background:rgba(255,255,255,.18) !important;
+}
+
+.field-progress-side{
+  grid-template-columns:1fr 1fr !important;
+  gap:14px !important;
+  padding:18px !important;
+  background:#f7f9fc !important;
+}
+
+.field-progress-stat-card{
+  min-height:128px !important;
+  border-radius:20px !important;
+  background:#fff !important;
+  border:1px solid #e2ebf3 !important;
+  padding:16px !important;
+}
+
+.field-progress-stat-label{
+  font-size:14px !important;
+  font-weight:800 !important;
+  color:#708094 !important;
+}
+
+.field-progress-stat-value{
+  font-size:24px !important;
+  line-height:1.35 !important;
+  font-weight:900 !important;
+  color:#16385c !important;
+}
+
+.status-help{
+  font-size:14px !important;
+  color:#7b8b9d !important;
+}
+
+/* =========================
+   TIMELINE CARD
+========================= */
+#warroomColCenter > .panel-card:last-child{
+  padding-bottom:18px !important;
+}
+
+#warroomColCenter > .panel-card:last-child .panel-header{
+  flex-direction:row !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+}
+
+#warroomColCenter > .panel-card:last-child .panel-title::after{
+  content:"ล่าสุด";
+  margin-left:10px;
+  color:#5b7aa3;
+  font-size:14px;
+  font-weight:800;
+}
+
+#case_updates_timeline{
+  gap:0 !important;
+}
+
+.timeline-item{
+  position:relative !important;
+  padding:18px 18px 18px 58px !important;
+  border:none !important;
+  border-left:none !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border-bottom:1px solid #e7edf4 !important;
+}
+
+.timeline-item:last-child{
+  border-bottom:none !important;
+}
+
+.timeline-item::before{
+  content:"";
+  position:absolute;
+  left:24px;
+  top:26px;
+  width:14px;
+  height:14px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 0 4px #e6fff2;
+}
+
+.timeline-item:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  left:30px;
+  top:40px;
+  bottom:-20px;
+  width:2px;
+  background:#dce7ef;
+}
+
+.timeline-item:nth-child(2)::before{
+  background:#f59e0b;
+  box-shadow:0 0 0 4px #fff4dc;
+}
+
+.timeline-item:nth-child(3)::before{
+  background:#3b82f6;
+  box-shadow:0 0 0 4px #e8f1ff;
+}
+
+.timeline-head{
+  margin-bottom:8px !important;
+}
+
+.timeline-title{
+  font-size:15px !important;
+  line-height:1.5 !important;
+  font-weight:900 !important;
+  color:#17395e !important;
+}
+
+.timeline-time{
+  font-size:13px !important;
+  color:#6d7e91 !important;
+}
+
+.timeline-badges,
+.timeline-mini-grid,
+.timeline-images{
+  display:none !important;
+}
+
+.timeline-note{
+  margin:0 !important;
+  font-size:15px !important;
+  line-height:1.55 !important;
+  color:#1f3552 !important;
+  white-space:normal !important;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width:1180px){
+  .warroom-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  #warroomColLeft,
+  #warroomColCenter,
+  #warroomColRight{
+    display:block !important;
+  }
+
+  .warroom-sticky{
+    position:static !important;
+    top:auto !important;
+  }
+}
+
+@media (max-width:780px){
+  .container{
+    padding:16px 14px 120px !important;
+  }
+
+  .topbar{
+    gap:14px !important;
+  }
+
+  .topbar h1{
+    font-size:34px !important;
+  }
+
+  .subtitle{
+    font-size:16px !important;
+  }
+
+  .brand img{
+    width:60px !important;
+    height:60px !important;
+    border-radius:18px !important;
+  }
+
+  .warroom-command{
+    padding:18px 16px !important;
+    border-radius:24px !important;
+  }
+
+  .warroom-title{
+    font-size:20px !important;
+  }
+
+  .warroom-actions{
+    width:100% !important;
+  }
+
+  .warroom-actions .secondary,
+  .live-sync-chip{
+    width:100% !important;
+    justify-content:center !important;
+  }
+
+  .case-info-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .manage-case-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .field-progress-pro-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .field-progress-side{
+    grid-template-columns:1fr 1fr !important;
+  }
+
+  #warroomColRight > .panel-card:last-child .actions{
+    grid-template-columns:1fr 1fr !important;
+  }
+
+  #warroomColRight > .panel-card:last-child .actions button:nth-child(1),
+  #warroomColRight > .panel-card:last-child .actions button:nth-child(2){
+    grid-column:1 / -1 !important;
+  }
+
+  .timeline-item{
+    padding-left:48px !important;
+  }
+
+  .timeline-item::before{
+    left:18px !important;
+  }
+
+  .timeline-item:not(:last-child)::after{
+    left:24px !important;
+  }
+}
+
+@media (max-width:560px){
+  .field-progress-side{
+    grid-template-columns:1fr !important;
+  }
+
+  .topbar .actions{
+    width:100% !important;
+    flex-direction:column !important;
+  }
+
+  .topbar .actions .secondary{
+    width:100% !important;
+  }
+
+  #warroomColRight > .panel-card:last-child .actions{
+    grid-template-columns:1fr !important;
+  }
+
+  #warroomColRight > .panel-card:last-child .actions button{
+    grid-column:auto !important;
+  }
+
+  .mobile-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px !important;
+    padding:12px !important;
+    background:rgba(238,243,247,.96) !important;
+    backdrop-filter:blur(10px);
+    border-top:1px solid #dfe8ef !important;
+  }
+
+  .mobile-actions button{
+    height:50px !important;
+    border-radius:16px !important;
+    font-size:15px !important;
+    font-weight:900 !important;
+  }
+}
+
     
   </style>
 </head>

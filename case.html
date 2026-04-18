@@ -2849,7 +2849,7 @@ function fillMissingCaseSummaryMiniPatch(data){
   gsSetIfMissing("updated_at", updatedAtText || "-");
 }
 /* ===== END GOLDEN SAFE PATCH ===== */
-    
+
     async function loadProjects(){
       try{
         const projects = await fetchJSON("/api/projects/options");
@@ -2903,13 +2903,13 @@ function fillMissingCaseSummaryMiniPatch(data){
       return null;
     }
 
-  resolvedCaseId = data.id || resolvedCaseId || "";
-updateCaseStaticFields(data);
-fillMissingCaseSummaryMiniPatch(data);
-updateWarRoomCommandBar(data);
-renderWarRoomMap(data);
-populateForm(data);
-return data;
+    resolvedCaseId = data.id || resolvedCaseId || "";
+    updateCaseStaticFields(data);
+    fillMissingCaseSummaryMiniPatch(data);
+    updateWarRoomCommandBar(data);
+    renderWarRoomMap(data);
+    populateForm(data);
+    return data;
     
   } catch(err) {
     alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
@@ -3030,11 +3030,11 @@ return data;
           return;
         }
 
-        resolvedCaseId = data.id || resolvedCaseId || "";
-updateCaseStaticFields(data);
-fillMissingCaseSummaryMiniPatch(data);
-updateWarRoomCommandBar(data);
-populateForm(data);
+         resolvedCaseId = data.id || resolvedCaseId || "";
+        updateCaseStaticFields(data);
+        fillMissingCaseSummaryMiniPatch(data);
+        updateWarRoomCommandBar(data);
+        populateForm(data);
 
         let timelineItems = [];
         try {

@@ -1659,10 +1659,11 @@
         summaryPriority.textContent = data.priority_th || priorityThai(data.priority);
       }
 
-      const summaryAssigned = document.getElementById("summary_assigned_to");
-      if (summaryAssigned) summaryAssigned.textContent = data.assigned_to || "-";
-        
-    function updateWarRoomCommandBar(data){
+    const summaryAssigned = document.getElementById("summary_assigned_to");
+if (summaryAssigned) summaryAssigned.textContent = data.assigned_to || "-";
+}
+
+function updateWarRoomCommandBar(data){
       const statusEl = document.getElementById("wr_badge_status");
       const priorityEl = document.getElementById("wr_badge_priority");
       const caseCodeEl = document.getElementById("wr_badge_case_code");

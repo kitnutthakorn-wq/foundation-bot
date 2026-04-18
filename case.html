@@ -1615,7 +1615,7 @@
     }
 
     function updateCaseStaticFields(data){
-      document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
+            document.getElementById("case_code").innerHTML = escapeHtml(data.case_code || "-");
       document.getElementById("full_name").innerHTML = escapeHtml(data.full_name || "-");
       document.getElementById("phone").innerHTML = escapeHtml(data.phone || "-");
       document.getElementById("location").innerHTML = escapeHtml(data.location || "-");
@@ -1624,7 +1624,9 @@
       if (locationTextEl) {
         const locationText =
           data.location_text ||
-          (data.latitude && data.longitude ? `${data.latitude}, ${data.longitude}` : "-");
+          (data.latitude && data.longitude
+            ? `${data.latitude}, ${data.longitude}`
+            : "-");
 
         if (data.case_code && locationText !== "-") {
           locationTextEl.innerHTML = `
@@ -1639,7 +1641,6 @@
           locationTextEl.innerHTML = escapeHtml(locationText);
         }
       }
-
       document.getElementById("assigned_to").innerHTML = escapeHtml(data.assigned_to || "-");
       document.getElementById("created_at").innerHTML = escapeHtml(formatThaiDateTime(data.created_at));
       document.getElementById("problem").innerHTML = escapeHtml(data.problem || "-");

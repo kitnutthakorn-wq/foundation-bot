@@ -2877,13 +2877,18 @@ function updateWarRoomCommandBar(data){
         }
 
         if (!useCaseId) {
-          wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
-          updateLatestTimelineBanner(null);
-          lastTimelineSignature = "missing";
-          latestTimelineCache = [];
-          return [];
-        }
+         wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
+decorateTimelineLatest(updates);
+updateLatestTimelineBanner(updates[0] || null);
 
+const timelineCountBadge = document.getElementById("timelineCountBadge");
+if (timelineCountBadge) {
+  timelineCountBadge.textContent = `${updates.length} รายการ`;
+}
+
+lastTimelineSignature = getTimelineSignature(updates);
+return updates;
+        
         wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
 
         let updates = [];

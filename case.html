@@ -2903,12 +2903,14 @@ function fillMissingCaseSummaryMiniPatch(data){
       return null;
     }
 
-    resolvedCaseId = data.id || resolvedCaseId || "";
-    updateCaseStaticFields(data);
-    updateWarRoomCommandBar(data);
-    renderWarRoomMap(data);
-    populateForm(data);
-    return data;
+  resolvedCaseId = data.id || resolvedCaseId || "";
+updateCaseStaticFields(data);
+fillMissingCaseSummaryMiniPatch(data);
+updateWarRoomCommandBar(data);
+renderWarRoomMap(data);
+populateForm(data);
+return data;
+    
   } catch(err) {
     alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
     return null;
@@ -3029,9 +3031,10 @@ function fillMissingCaseSummaryMiniPatch(data){
         }
 
         resolvedCaseId = data.id || resolvedCaseId || "";
-        updateCaseStaticFields(data);
-        updateWarRoomCommandBar(data);
-        populateForm(data);
+updateCaseStaticFields(data);
+fillMissingCaseSummaryMiniPatch(data);
+updateWarRoomCommandBar(data);
+populateForm(data);
 
         let timelineItems = [];
         try {

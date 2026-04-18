@@ -1843,7 +1843,99 @@ button,
     min-height:70px !important;
   }
 }
-  
+.field-progress-pro-grid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:14px !important;
+  border:1px solid #d7dee7 !important;
+  background:#f6f7f9 !important;
+  border-radius:22px !important;
+  padding:14px !important;
+}
+
+.field-progress-hero{
+  min-height:auto !important;
+  padding:0 !important;
+  background:transparent !important;
+  color:#14385b !important;
+  border-right:none !important;
+}
+
+.field-progress-hero-head{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:12px !important;
+  margin:6px 0 12px !important;
+}
+
+.field-progress-label{
+  color:#6f7f90 !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  margin-bottom:0 !important;
+}
+
+.field-progress-percent{
+  color:#2956d8 !important;
+  font-size:24px !important;
+  font-weight:800 !important;
+}
+
+.field-progress-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  padding:0 14px;
+  border-radius:999px;
+  border:1px solid #cfd8e3;
+  background:#f7f9fc;
+  color:#14385b;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.field-progress-track.pro{
+  margin-top:0 !important;
+  background:#d6dde5 !important;
+  height:14px !important;
+}
+
+.field-progress-side{
+  background:transparent !important;
+  border-left:none !important;
+  padding:0 !important;
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:12px !important;
+}
+
+.field-progress-stat-card{
+  min-height:88px !important;
+  border-radius:16px !important;
+  background:#f2f4f7 !important;
+  border:1px solid #d7dee7 !important;
+  padding:14px !important;
+  box-shadow:none !important;
+}
+
+@media (max-width:780px){
+  .field-progress-side{
+    grid-template-columns:1fr !important;
+  }
+
+  .field-progress-hero-head{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+
+  .field-progress-pill{
+    width:100%;
+    justify-content:flex-start;
+  }
+}  
 </style>
   
 </head>

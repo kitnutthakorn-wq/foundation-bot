@@ -1949,42 +1949,30 @@
       }
     }
 
-    async function loadCase(){
-      try{
-        let data;
+   async function loadCase(){
+  try{
+    let data;
 
-        if (caseId) {
-          data = await fetchJSON(`/api/case/${caseId}`);
-        } else if (caseCode) {
-          data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
-       else {
-  alert("ไม่พบ id หรือ case_code\nURL ปัจจุบัน: " + window.location.href);
-
-  const caseCodeEl = document.getElementById("caseCode");
-  if (caseCodeEl) caseCodeEl.textContent = "ไม่พบเลขเคส";
-
-  const heroCodeEl = document.getElementById("hero_case_code");
-  if (heroCodeEl) heroCodeEl.textContent = "ไม่พบเลขเคส";
-
-  const timelineEl = document.getElementById("case_updates_timeline");
-  if (timelineEl) {
-    timelineEl.innerHTML = `<div class="timeline-empty">กรุณาเปิดหน้านี้พร้อม ?id= หรือ ?case_code=</div>`;
-  }
-
-  return null;
-}
-
-        resolvedCaseId = data.id || resolvedCaseId || "";
-        updateCaseStaticFields(data);
-        updateWarRoomCommandBar(data);
-        renderWarRoomMap(data);
-        populateForm(data);
-        return data;
-      } catch(err) {
-        alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
-        return null;
-      }
+    if (caseId) {
+      data = await fetchJSON(`/api/case/${caseId}`);
+    } else if (caseCode) {
+      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+    } else {
+      alert("ไม่พบ id หรือ case_code");
+      return null;
     }
+
+    resolvedCaseId = data.id || resolvedCaseId || "";
+    updateCaseStaticFields(data);
+    updateWarRoomCommandBar(data);
+    renderWarRoomMap(data);
+    populateForm(data);
+    return data;
+  } catch(err) {
+    alert("โหลดรายละเอียดเคสไม่สำเร็จ: " + err.message);
+    return null;
+  }
+}
 
     function getTargetCaseIdOrAlert(){
       const targetCaseId = resolvedCaseId || caseId;

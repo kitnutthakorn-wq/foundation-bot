@@ -2760,6 +2760,96 @@ function updateWarRoomCommandBar(data){
       formState.initialized = true;
     }
 
+/* ===== GOLDEN SAFE PATCH: fill only missing summary/category fields ===== */
+function gsText(v){
+  if (v === null || v === undefined) return "";
+  return String(v).trim();
+}
+
+function gsIsDashLike(v){
+  const t = gsText(v);
+  return !t || t === "-" || t === "—";
+}
+
+function gsSetIfMissing(id, value){
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const current = gsText(el.textContent || el.innerText);
+  const next = gsText(value);
+
+  if (gsIsDashLike(current) && next) {
+    el.textContent = next;
+  }
+}
+
+function gsPickFirst(){
+  for (const v of arguments) {
+    const t = gsText(v);
+    if (t && t !== "-" && t !== "—") return t;
+  }
+  return "";
+}
+
+function gsFormatThaiDateTimeFallback(value){
+  const raw = gsText(value);
+  if (!raw) return "";
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return raw;
+  return d.toLocaleString("th-TH");
+}
+
+function fillMissingCaseSummaryMiniPatch(data){
+  const row = data || {};
+
+  const statusText = gsPickFirst(
+    row.status_th,
+    (typeof statusThai === "function" ? statusThai(row.status) : ""),
+    row.status
+  );
+
+  const priorityText = gsPickFirst(
+    row.priority_th,
+    (typeof priorityThai === "function" ? priorityThai(row.priority) : ""),
+    row.priority
+  );
+
+  const assignedText = gsPickFirst(
+    row.assigned_name,
+    row.assigned_to_name,
+    row.assignee_name,
+    row.assigned_display_name,
+    row.assigned_to
+  );
+
+  const categoryText = gsPickFirst(
+    row.category_name,
+    row.category,
+    row.type_name,
+    row.case_type,
+    row.problem_type,
+    row.problem_group,
+    row.help_type
+  );
+
+  const updatedAtText = gsFormatThaiDateTimeFallback(
+    gsPickFirst(
+      row.updated_at,
+      row.last_action_at,
+      row.last_updated_at,
+      row.modified_at,
+      row.created_at
+    )
+  );
+
+  gsSetIfMissing("summary_status_box", statusText || "-");
+  gsSetIfMissing("summary_priority_box", priorityText || "-");
+  gsSetIfMissing("summary_assigned_box", assignedText || "-");
+  gsSetIfMissing("category_name", categoryText || "-");
+  gsSetIfMissing("updated_at", updatedAtText || "-");
+}
+/* ===== END GOLDEN SAFE PATCH ===== */
+    
     async function loadProjects(){
       try{
         const projects = await fetchJSON("/api/projects/options");

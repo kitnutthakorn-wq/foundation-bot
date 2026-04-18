@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>รายละเอียดเคส V16 PRO MAX | คนช่วยฅน</title>
- <style>
+<style>
   :root{
     --brand:#0b7c86;
     --brand-dark:#163c72;
@@ -1317,149 +1317,63 @@
     }
   }
 
-/* =========================================================
-   WAR ROOM TOP BAR — FINAL MATCH PATCH
-   วางท้ายสุดของ <style>
-   แก้เฉพาะส่วนบน ไม่แตะส่วนอื่น
-========================================================= */
+  /* =========================================================
+     WAR ROOM TOP BAR — FINAL MATCH PATCH v2
+     วางท้ายสุดของ <style> เพียงก้อนเดียว
+  ========================================================= */
 
-.warroom-command{
-  padding:12px 16px 14px !important;
-  border-radius:20px !important;
-  margin-bottom:8px !important;
-  box-shadow:0 10px 24px rgba(17,63,151,.16) !important;
-}
-
-.warroom-command-top{
-  gap:10px !important;
-  align-items:flex-start !important;
-}
-
-.warroom-command-left{
-  gap:4px !important;
-}
-
-.warroom-kicker{
-  font-size:10px !important;
-  line-height:1 !important;
-  letter-spacing:.08em !important;
-  font-weight:900 !important;
-  opacity:.95 !important;
-}
-
-.warroom-title{
-  font-size:17px !important;
-  line-height:1.12 !important;
-  margin:0 !important;
-  letter-spacing:-.01em !important;
-  font-weight:900 !important;
-}
-
-.warroom-sub{
-  font-size:10px !important;
-  line-height:1.35 !important;
-  margin-top:2px !important;
-  max-width:620px !important;
-  opacity:.92 !important;
-}
-
-.warroom-badges{
-  margin-top:8px !important;
-  gap:6px !important;
-}
-
-.warroom-badges .badge,
-#wr_badge_status,
-#wr_badge_priority,
-#wr_badge_case_code{
-  min-height:24px !important;
-  height:24px !important;
-  padding:0 9px !important;
-  border-radius:999px !important;
-  font-size:10px !important;
-  line-height:24px !important;
-  font-weight:900 !important;
-  box-shadow:none !important;
-}
-
-#wr_badge_case_code{
-  padding:0 10px !important;
-}
-
-.warroom-actions{
-  gap:6px !important;
-  align-items:center !important;
-}
-
-.warroom-actions .secondary{
-  height:28px !important;
-  min-width:auto !important;
-  padding:0 10px !important;
-  border-radius:8px !important;
-  font-size:10px !important;
-  line-height:28px !important;
-  font-weight:900 !important;
-  box-shadow:none !important;
-}
-
-.live-sync-chip{
-  min-height:24px !important;
-  height:24px !important;
-  padding:0 10px !important;
-  border-radius:999px !important;
-  font-size:10px !important;
-  line-height:24px !important;
-  font-weight:900 !important;
-  white-space:nowrap !important;
-}
-
-.warroom-actions button{
-  min-width:0 !important;
-}
-
-/* จัดให้บล็อกขวาไม่ดันความสูงเกิน */
-.warroom-command-top > .warroom-actions{
-  align-self:flex-end !important;
-}
-
-/* tablet / desktop กลาง */
-@media (max-width:1200px){
   .warroom-command{
-    padding:12px 14px 14px !important;
-  }
-
-  .warroom-title{
-    font-size:16px !important;
-  }
-
-  .warroom-sub{
-    font-size:10px !important;
-  }
-}
-
-/* mobile ยังให้ใช้งานง่าย แต่ไม่พอง */
-@media (max-width:780px){
-  .warroom-command{
-    padding:14px !important;
-    border-radius:18px !important;
+    padding:16px 18px 16px !important;
+    border-radius:22px !important;
+    margin-bottom:10px !important;
+    box-shadow:0 12px 28px rgba(17,63,151,.16) !important;
   }
 
   .warroom-command-top{
-    gap:10px !important;
+    display:flex !important;
+    justify-content:space-between !important;
+    align-items:flex-end !important;
+    gap:12px !important;
+    flex-wrap:nowrap !important;
+  }
+
+  .warroom-command-left{
+    display:flex !important;
+    flex-direction:column !important;
+    gap:5px !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+  }
+
+  .warroom-kicker{
+    font-size:11px !important;
+    line-height:1 !important;
+    letter-spacing:.08em !important;
+    font-weight:900 !important;
+    opacity:.96 !important;
   }
 
   .warroom-title{
-    font-size:18px !important;
+    font-size:19px !important;
+    line-height:1.12 !important;
+    margin:0 !important;
+    letter-spacing:-.01em !important;
+    font-weight:900 !important;
   }
 
   .warroom-sub{
     font-size:11px !important;
     line-height:1.4 !important;
-    max-width:none !important;
+    margin-top:1px !important;
+    max-width:640px !important;
+    opacity:.93 !important;
   }
 
   .warroom-badges{
-    gap:6px !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    margin-top:8px !important;
+    gap:7px !important;
   }
 
   .warroom-badges .badge,
@@ -1468,252 +1382,159 @@
   #wr_badge_case_code{
     min-height:28px !important;
     height:28px !important;
+    padding:0 11px !important;
+    border-radius:999px !important;
     font-size:11px !important;
     line-height:28px !important;
-    padding:0 10px !important;
+    font-weight:900 !important;
+  }
+
+  #wr_badge_case_code{
+    padding:0 12px !important;
   }
 
   .warroom-actions{
-    width:100% !important;
-    gap:8px !important;
-  }
-
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:auto !important;
-    min-width:unset !important;
-    height:32px !important;
-    font-size:11px !important;
-    line-height:32px !important;
-    padding:0 12px !important;
-    justify-content:center !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+    gap:7px !important;
+    flex:0 0 auto !important;
+    margin-left:8px !important;
   }
 
   .warroom-command-top > .warroom-actions{
-    align-self:stretch !important;
-  }
-}
-
-@media (max-width:560px){
-  .warroom-actions{
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    width:100% !important;
+    align-self:flex-end !important;
   }
 
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:100% !important;
+  .warroom-actions button{
+    min-width:0 !important;
   }
 
-  .warroom-title{
-    font-size:17px !important;
-  }
-
-  .warroom-sub{
-    font-size:10px !important;
-  }
-}
-
-/* =========================================================
-   WAR ROOM TOP BAR — FINAL MATCH PATCH
-   วางท้ายสุดของ <style>
-   แก้เฉพาะส่วนบน ไม่แตะส่วนอื่น
-========================================================= */
-
-.warroom-command{
-  padding:12px 16px 14px !important;
-  border-radius:20px !important;
-  margin-bottom:8px !important;
-  box-shadow:0 10px 24px rgba(17,63,151,.16) !important;
-}
-
-.warroom-command-top{
-  gap:10px !important;
-  align-items:flex-start !important;
-}
-
-.warroom-command-left{
-  gap:4px !important;
-}
-
-.warroom-kicker{
-  font-size:10px !important;
-  line-height:1 !important;
-  letter-spacing:.08em !important;
-  font-weight:900 !important;
-  opacity:.95 !important;
-}
-
-.warroom-title{
-  font-size:17px !important;
-  line-height:1.12 !important;
-  margin:0 !important;
-  letter-spacing:-.01em !important;
-  font-weight:900 !important;
-}
-
-.warroom-sub{
-  font-size:10px !important;
-  line-height:1.35 !important;
-  margin-top:2px !important;
-  max-width:620px !important;
-  opacity:.92 !important;
-}
-
-.warroom-badges{
-  margin-top:8px !important;
-  gap:6px !important;
-}
-
-.warroom-badges .badge,
-#wr_badge_status,
-#wr_badge_priority,
-#wr_badge_case_code{
-  min-height:24px !important;
-  height:24px !important;
-  padding:0 9px !important;
-  border-radius:999px !important;
-  font-size:10px !important;
-  line-height:24px !important;
-  font-weight:900 !important;
-  box-shadow:none !important;
-}
-
-#wr_badge_case_code{
-  padding:0 10px !important;
-}
-
-.warroom-actions{
-  gap:6px !important;
-  align-items:center !important;
-}
-
-.warroom-actions .secondary{
-  height:28px !important;
-  min-width:auto !important;
-  padding:0 10px !important;
-  border-radius:8px !important;
-  font-size:10px !important;
-  line-height:28px !important;
-  font-weight:900 !important;
-  box-shadow:none !important;
-}
-
-.live-sync-chip{
-  min-height:24px !important;
-  height:24px !important;
-  padding:0 10px !important;
-  border-radius:999px !important;
-  font-size:10px !important;
-  line-height:24px !important;
-  font-weight:900 !important;
-  white-space:nowrap !important;
-}
-
-.warroom-actions button{
-  min-width:0 !important;
-}
-
-/* จัดให้บล็อกขวาไม่ดันความสูงเกิน */
-.warroom-command-top > .warroom-actions{
-  align-self:flex-end !important;
-}
-
-/* tablet / desktop กลาง */
-@media (max-width:1200px){
-  .warroom-command{
-    padding:12px 14px 14px !important;
-  }
-
-  .warroom-title{
-    font-size:16px !important;
-  }
-
-  .warroom-sub{
-    font-size:10px !important;
-  }
-}
-
-/* mobile ยังให้ใช้งานง่าย แต่ไม่พอง */
-@media (max-width:780px){
-  .warroom-command{
-    padding:14px !important;
-    border-radius:18px !important;
-  }
-
-  .warroom-command-top{
-    gap:10px !important;
-  }
-
-  .warroom-title{
-    font-size:18px !important;
-  }
-
-  .warroom-sub{
+  .warroom-actions .secondary{
+    height:32px !important;
+    min-width:auto !important;
+    padding:0 12px !important;
+    border-radius:10px !important;
     font-size:11px !important;
-    line-height:1.4 !important;
-    max-width:none !important;
+    line-height:32px !important;
+    font-weight:900 !important;
+    box-shadow:none !important;
   }
 
-  .warroom-badges{
-    gap:6px !important;
-  }
-
-  .warroom-badges .badge,
-  #wr_badge_status,
-  #wr_badge_priority,
-  #wr_badge_case_code{
+  .live-sync-chip{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
     min-height:28px !important;
     height:28px !important;
+    padding:0 12px !important;
+    border-radius:999px !important;
     font-size:11px !important;
     line-height:28px !important;
-    padding:0 10px !important;
+    font-weight:900 !important;
+    white-space:nowrap !important;
   }
 
-  .warroom-actions{
-    width:100% !important;
-    gap:8px !important;
+  .warroom-command-left + .warroom-actions{
+    margin-left:6px !important;
   }
 
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:auto !important;
-    min-width:unset !important;
-    height:32px !important;
-    font-size:11px !important;
-    line-height:32px !important;
-    padding:0 12px !important;
-    justify-content:center !important;
+  @media (max-width:1280px){
+    .warroom-command{
+      padding:15px 17px 15px !important;
+    }
+
+    .warroom-title{
+      font-size:18px !important;
+    }
+
+    .warroom-sub{
+      font-size:10.5px !important;
+    }
+
+    .warroom-actions{
+      gap:6px !important;
+    }
   }
 
-  .warroom-command-top > .warroom-actions{
-    align-self:stretch !important;
-  }
-}
+  @media (max-width:980px){
+    .warroom-command-top{
+      flex-wrap:wrap !important;
+      align-items:flex-start !important;
+    }
 
-@media (max-width:560px){
-  .warroom-actions{
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    width:100% !important;
-  }
-
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:100% !important;
+    .warroom-actions{
+      width:100% !important;
+      justify-content:flex-start !important;
+      margin-left:0 !important;
+      margin-top:4px !important;
+    }
   }
 
-  .warroom-title{
-    font-size:17px !important;
+  @media (max-width:780px){
+    .warroom-command{
+      padding:14px !important;
+      border-radius:18px !important;
+    }
+
+    .warroom-title{
+      font-size:18px !important;
+    }
+
+    .warroom-sub{
+      font-size:11px !important;
+      line-height:1.4 !important;
+      max-width:none !important;
+    }
+
+    .warroom-badges .badge,
+    #wr_badge_status,
+    #wr_badge_priority,
+    #wr_badge_case_code{
+      min-height:30px !important;
+      height:30px !important;
+      font-size:11px !important;
+      line-height:30px !important;
+      padding:0 12px !important;
+    }
+
+    .warroom-actions{
+      width:100% !important;
+      gap:8px !important;
+      justify-content:flex-start !important;
+    }
+
+    .warroom-actions .secondary,
+    .live-sync-chip{
+      height:34px !important;
+      min-height:34px !important;
+      font-size:11px !important;
+      line-height:34px !important;
+      padding:0 12px !important;
+    }
   }
 
-  .warroom-sub{
-    font-size:10px !important;
-  }
-}
+  @media (max-width:560px){
+    .warroom-actions{
+      display:grid !important;
+      grid-template-columns:1fr 1fr !important;
+      width:100% !important;
+    }
 
-   
+    .warroom-actions .secondary,
+    .live-sync-chip{
+      width:100% !important;
+    }
+
+    .warroom-title{
+      font-size:17px !important;
+    }
+
+    .warroom-sub{
+      font-size:10px !important;
+    }
+  }
 </style>
   
 </head>

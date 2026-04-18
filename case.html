@@ -1572,197 +1572,197 @@
         </div>
       </div>
 
-      <div class="warroom-grid">
-        <!-- LEFT -->
-        <div class="warroom-col" id="warroomColLeft">
-          <div class="card panel-card">
-            <div class="panel-header">
-              <h2 class="panel-title">ข้อมูลเคส</h2>
-              <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
-            </div>
+<div class="warroom-grid">
+  <!-- LEFT COLUMN -->
+  <div class="warroom-col" id="warroomColLeft">
+    <!-- ข้อมูลเคส -->
+    <div class="card panel-card">
+      <div class="panel-header">
+        <h2 class="panel-title">ข้อมูลเคส</h2>
+        <div class="panel-sub">ภาพรวมรายละเอียดของผู้ขอความช่วยเหลือและสถานะปัจจุบัน</div>
+      </div>
 
-            <div class="summary-strip">
-              <div class="summary-item">
-                <div class="summary-label">เลขเคส</div>
-                <div class="summary-value" id="summary_case_code">-</div>
-              </div>
-              <div class="summary-item">
-                <div class="summary-label">สถานะล่าสุด</div>
-                <div class="summary-value" id="summary_status">-</div>
-              </div>
-              <div class="summary-item">
-                <div class="summary-label">ระดับความเร่งด่วน</div>
-                <div class="summary-value" id="summary_priority">-</div>
-              </div>
-              <div class="summary-item">
-                <div class="summary-label">ผู้รับเคส</div>
-                <div class="summary-value" id="summary_assigned_to">-</div>
-              </div>
-            </div>
+      <div class="summary-strip">
+        <div class="summary-item">
+          <div class="summary-label">เลขเคส</div>
+          <div class="summary-value" id="summary_case_code">-</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">สถานะล่าสุด</div>
+          <div class="summary-value" id="summary_status">-</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">ระดับความเร่งด่วน</div>
+          <div class="summary-value" id="summary_priority">-</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">ผู้รับเคส</div>
+          <div class="summary-value" id="summary_assigned_to">-</div>
+        </div>
+      </div>
 
-            <div class="grid case-info-grid">
-              <div><div class="label">เลขเคส</div><div class="value" id="case_code">-</div></div>
-              <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
-              <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
-              <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
-              <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
-              <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
-              <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
-              <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
-              <div><div class="label">โครงการของเคส</div><div class="value" id="project_name">-</div></div>
-              <div><div class="label">สร้างเมื่อ</div><div class="value" id="created_at">-</div></div>
-              <div class="full"><div class="label">รายละเอียดปัญหา</div><div class="value" id="problem">-</div></div>
-            </div>
+      <div class="grid case-info-grid">
+        <div><div class="label">เลขเคส</div><div class="value" id="case_code">-</div></div>
+        <div><div class="label">ชื่อผู้ขอความช่วยเหลือ</div><div class="value" id="full_name">-</div></div>
+        <div><div class="label">เบอร์โทร</div><div class="value" id="phone">-</div></div>
+        <div><div class="label">พื้นที่</div><div class="value" id="location">-</div></div>
+        <div><div class="label">พิกัดหน้างาน</div><div class="value" id="location_text">-</div></div>
+        <div><div class="label">สถานะ</div><div class="value" id="status">-</div></div>
+        <div><div class="label">ระดับ</div><div class="value" id="priority">-</div></div>
+        <div><div class="label">ผู้รับเคส</div><div class="value" id="assigned_to">-</div></div>
+        <div><div class="label">โครงการของเคส</div><div class="value" id="project_name">-</div></div>
+        <div><div class="label">สร้างเมื่อ</div><div class="value" id="created_at">-</div></div>
+        <div class="full"><div class="label">รายละเอียดปัญหา</div><div class="value" id="problem">-</div></div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card panel-card">
+      <div class="panel-header">
+        <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
+        <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
+      </div>
+
+      <div id="latestUpdateBanner" class="latest-update-banner"></div>
+
+      <div id="case_updates_timeline" class="timeline-list">
+        <div class="timeline-empty">กำลังโหลด Timeline...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="warroom-col warroom-sticky" id="warroomColRight">
+    <!-- ความคืบหน้าภาคสนาม -->
+    <div class="card panel-card field-progress-wrapper">
+      <div class="panel-header">
+        <h2 class="panel-title">ความคืบหน้าภาคสนาม</h2>
+        <div class="panel-sub">สรุปความคืบหน้าล่าสุดจากทีมปฏิบัติงานภาคสนามแบบอ่านง่ายและน่าเชื่อถือมากขึ้น</div>
+      </div>
+
+      <div class="field-progress-pro-grid">
+        <div class="field-progress-hero">
+          <div class="field-progress-hero-head">
+            <div class="field-progress-kicker">Field Progress</div>
+            <div class="field-progress-percent" id="progress_text">0%</div>
           </div>
 
-          <div class="card panel-card field-progress-wrapper">
-            <div class="panel-header">
-              <h2 class="panel-title">ความคืบหน้าภาคสนาม</h2>
-              <div class="panel-sub">สรุปความคืบหน้าล่าสุดจากทีมปฏิบัติงานภาคสนามแบบอ่านง่ายและน่าเชื่อถือมากขึ้น</div>
-            </div>
+          <div class="field-progress-label">หมายเหตุล่าสุด</div>
+          <div class="field-progress-note" id="latest_note">-</div>
 
-            <div class="field-progress-pro-grid">
-              <div class="field-progress-hero">
-                <div class="field-progress-hero-head">
-                  <div class="field-progress-kicker">Field Progress</div>
-                  <div class="field-progress-percent" id="progress_text">0%</div>
-                </div>
-
-                <div class="field-progress-label">หมายเหตุล่าสุด</div>
-                <div class="field-progress-note" id="latest_note">-</div>
-
-                <div class="field-progress-track pro">
-                  <div id="progress_bar" class="field-progress-bar"></div>
-                </div>
-              </div>
-
-              <div class="field-progress-side">
-                <div class="field-progress-stat-card">
-                  <div class="field-progress-stat-label">สถานะล่าสุด</div>
-                  <div class="field-progress-stat-value" id="latest_step">-</div>
-                  <div class="status-help" id="latest_step_help">-</div>
-                </div>
-
-                <div class="field-progress-stat-card">
-                  <div class="field-progress-stat-label">กำลังรอ</div>
-                  <div class="field-progress-stat-value" id="latest_waiting">-</div>
-                </div>
-
-                <div class="field-progress-stat-card">
-                  <div class="field-progress-stat-label">รายงานโดย</div>
-                  <div class="field-progress-stat-value" id="latest_by">-</div>
-                </div>
-
-                <div class="field-progress-stat-card">
-                  <div class="field-progress-stat-label">เวลารายงานล่าสุด</div>
-                  <div class="field-progress-stat-value" id="latest_at">-</div>
-                </div>
-              </div>
-            </div>
+          <div class="field-progress-track pro">
+            <div id="progress_bar" class="field-progress-bar"></div>
           </div>
         </div>
 
-<!-- CENTER -->
-<div class="warroom-col" id="warroomColCenter">
-  <div class="card panel-card">
-    <div class="panel-header">
-      <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
-      <div class="panel-sub">ลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้ สำหรับแอดมินและผู้บริหาร</div>
-    </div>
+        <div class="field-progress-side">
+          <div class="field-progress-stat-card">
+            <div class="field-progress-stat-label">สถานะล่าสุด</div>
+            <div class="field-progress-stat-value" id="latest_step">-</div>
+            <div class="status-help" id="latest_step_help">-</div>
+          </div>
 
-    <div id="latestUpdateBanner" class="latest-update-banner"></div>
+          <div class="field-progress-stat-card">
+            <div class="field-progress-stat-label">กำลังรอ</div>
+            <div class="field-progress-stat-value" id="latest_waiting">-</div>
+          </div>
 
-    <div id="case_updates_timeline" class="timeline-list">
-      <div class="timeline-empty">กำลังโหลด Timeline...</div>
-    </div>
-  </div>
-</div>
+          <div class="field-progress-stat-card">
+            <div class="field-progress-stat-label">รายงานโดย</div>
+            <div class="field-progress-stat-value" id="latest_by">-</div>
+          </div>
 
-<!-- RIGHT -->
-<div class="warroom-col warroom-sticky" id="warroomColRight">
-  <!-- FILES -->
-  <div class="card panel-card">
-    <div class="panel-header">
-      <h2 class="panel-title">ไฟล์แนบงาน</h2>
-      <div class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</div>
-    </div>
-
-    <div id="workFilesSection">กำลังโหลดไฟล์...</div>
-  </div>
-
-  <!-- MAP -->
-  <div class="card panel-card warroom-map-card" id="warroomMapPanel">
-    <div class="panel-header">
-      <h2 class="panel-title">แผนที่ปฏิบัติการ</h2>
-      <div class="panel-sub">พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</div>
-    </div>
-
-    <div class="warroom-map-body" id="warroomMapBody">
-      <div class="warroom-map-empty">กำลังเตรียมแผนที่...</div>
-    </div>
-
-    <div class="warroom-map-meta">
-      <div id="warroomMapMeta">พิกัด: -</div>
-      <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
-      <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
-    </div>
-  </div>
-
-  <!-- ADMIN CONTROL -->
-  <div class="card panel-card">
-    <div class="panel-header">
-      <h2 class="panel-title">จัดการเคส</h2>
-      <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
-    </div>
-
-    <div class="manage-case-grid">
-      <div class="input-shell">
-        <div class="label">ชื่อผู้รับเคส</div>
-        <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
-      </div>
-
-      <div class="input-shell">
-        <div class="label">สถานะที่จะบันทึก</div>
-        <select id="statusSelect">
-          <option value="new">ใหม่</option>
-          <option value="in_progress">กำลังดำเนินการ</option>
-          <option value="done">เสร็จสิ้น</option>
-          <option value="cancelled">ยกเลิก</option>
-        </select>
-      </div>
-
-      <div class="input-shell">
-        <div class="label">ระดับเคส</div>
-        <select id="prioritySelect">
-          <option value="normal">ปกติ</option>
-          <option value="urgent">ด่วน</option>
-        </select>
-      </div>
-
-      <div class="input-shell">
-        <div class="label">โครงการที่สังกัด</div>
-        <select id="projectSelect">
-          <option value="">- เลือกโครงการ -</option>
-        </select>
-      </div>
-
-      <div class="full">
-        <div class="label">แนวทางการใช้งาน</div>
-        <div class="value">
-          เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+          <div class="field-progress-stat-card">
+            <div class="field-progress-stat-label">เวลารายงานล่าสุด</div>
+            <div class="field-progress-stat-value" id="latest_at">-</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="actions">
-      <button class="secondary" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
-      <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
-      <button onclick="closeCase()">ปิดเคส</button>
-      <button class="secondary" onclick="resetForm()">รีเซ็ตค่า</button>
+    <!-- ไฟล์แนบงาน -->
+    <div class="card panel-card">
+      <div class="panel-header">
+        <h2 class="panel-title">ไฟล์แนบงาน</h2>
+        <div class="panel-sub">รูปภาพและเอกสารจากการดำเนินงาน</div>
+      </div>
+
+      <div id="workFilesSection">กำลังโหลดไฟล์...</div>
+    </div>
+
+    <!-- แผนที่ -->
+    <div class="card panel-card warroom-map-card" id="warroomMapPanel">
+      <div class="panel-header">
+        <h2 class="panel-title">แผนที่ปฏิบัติการ</h2>
+        <div class="panel-sub">พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</div>
+      </div>
+
+      <div class="warroom-map-body" id="warroomMapBody">
+        <div class="warroom-map-empty">กำลังเตรียมแผนที่...</div>
+      </div>
+
+      <div class="warroom-map-meta">
+        <div id="warroomMapMeta">พิกัด: -</div>
+        <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
+        <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
+      </div>
+    </div>
+
+    <!-- จัดการเคส -->
+    <div class="card panel-card">
+      <div class="panel-header">
+        <h2 class="panel-title">จัดการเคส</h2>
+        <div class="panel-sub">ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</div>
+      </div>
+
+      <div class="manage-case-grid">
+        <div class="input-shell">
+          <div class="label">ชื่อผู้รับเคส</div>
+          <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
+        </div>
+
+        <div class="input-shell">
+          <div class="label">สถานะที่จะบันทึก</div>
+          <select id="statusSelect">
+            <option value="new">ใหม่</option>
+            <option value="in_progress">กำลังดำเนินการ</option>
+            <option value="done">เสร็จสิ้น</option>
+            <option value="cancelled">ยกเลิก</option>
+          </select>
+        </div>
+
+        <div class="input-shell">
+          <div class="label">ระดับเคส</div>
+          <select id="prioritySelect">
+            <option value="normal">ปกติ</option>
+            <option value="urgent">ด่วน</option>
+          </select>
+        </div>
+
+        <div class="input-shell">
+          <div class="label">โครงการที่สังกัด</div>
+          <select id="projectSelect">
+            <option value="">- เลือกโครงการ -</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <div class="label">แนวทางการใช้งาน</div>
+          <div class="value">
+            เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="secondary" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
+        <button onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
+        <button onclick="closeCase()">ปิดเคส</button>
+        <button class="secondary" onclick="resetForm()">รีเซ็ตค่า</button>
+      </div>
     </div>
   </div>
 </div>
-      </div>
     </div>
   </div>
 

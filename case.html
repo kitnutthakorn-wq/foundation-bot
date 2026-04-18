@@ -2436,6 +2436,22 @@ document.addEventListener("click", function(e){
   }
 }, true);
 
+    const trackBtn = document.querySelector(".btn-track");
+    if (trackBtn) {
+      trackBtn.onclick = () => {
+        const currentCode = caseCode || "";
+        window.location.href = `/case.html?case_code=${encodeURIComponent(currentCode)}`;
+      };
+    }
+
+    const openBtn = document.querySelector(".btn-open");
+    if (openBtn) {
+      openBtn.onclick = () => {
+        const currentCode = caseCode || "";
+        window.location.href = `/team.html?case_code=${encodeURIComponent(currentCode)}`;
+      };
+    }
+    
 registerFormLocking();
 bindTimelineUserInteraction();
 setWarRoomLiveChip("● กำลังเตรียม War Room...", "syncing");

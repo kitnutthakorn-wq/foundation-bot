@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>รายละเอียดเคส V16 PRO MAX | คนช่วยฅน</title>
- 
-<style>
+ <style>
   :root{
     --brand:#0b7c86;
     --brand-dark:#163c72;
@@ -26,7 +25,6 @@
     --ui-brand-2:#113f97;
     --ui-brand-deep:#0d3c78;
     --ui-shadow:0 12px 30px rgba(19,43,77,.08);
-    --ui-shadow-soft:0 8px 22px rgba(19,43,77,.06);
     --ui-radius-xl:24px;
     --ui-radius-lg:20px;
     --ui-radius-md:16px;
@@ -56,9 +54,6 @@
 
   h1,h2{margin:0}
 
-  /* =========================
-     TOP BAR
-  ========================= */
   .topbar{
     display:flex;
     justify-content:space-between;
@@ -191,9 +186,6 @@
     border-color:#0d7187;
   }
 
-  /* =========================
-     GENERAL CARD
-  ========================= */
   .card,
   .panel-card{
     background:var(--ui-card);
@@ -302,9 +294,6 @@
     max-height:200px;
   }
 
-  /* =========================
-     COMMAND BAR
-  ========================= */
   .warroom-shell{
     display:flex;
     flex-direction:column;
@@ -312,66 +301,68 @@
   }
 
   .warroom-command{
-    padding:24px 24px 22px;
-    border-radius:28px;
+    padding:18px 22px 20px !important;
+    border-radius:26px !important;
     background:linear-gradient(135deg,#0c8b96 0%, #0f5ea7 52%, #103493 100%);
     border:1px solid rgba(255,255,255,.08);
     box-shadow:0 18px 36px rgba(17,63,151,.18);
     color:#fff;
-    margin-bottom:12px;
+    margin-bottom:10px !important;
   }
 
   .warroom-command-top{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    gap:18px;
+    gap:14px !important;
     flex-wrap:wrap;
   }
 
   .warroom-command-left{
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:6px !important;
   }
 
   .warroom-kicker{
-    font-size:15px;
-    font-weight:900;
-    letter-spacing:.08em;
+    font-size:12px !important;
+    font-weight:900 !important;
+    letter-spacing:.08em !important;
     color:rgba(255,255,255,.88);
   }
 
   .warroom-title{
-    font-size:30px;
-    line-height:1.12;
+    font-size:24px !important;
+    line-height:1.12 !important;
     font-weight:900;
     color:#fff;
-    margin:4px 0 2px;
+    margin:2px 0 0 !important;
+    letter-spacing:-.01em !important;
   }
 
   .warroom-sub{
-    font-size:15px;
-    line-height:1.55;
+    font-size:13px !important;
+    line-height:1.45 !important;
     color:rgba(255,255,255,.88);
+    max-width:780px !important;
   }
 
   .warroom-badges{
     display:flex;
     flex-wrap:wrap;
-    margin-top:14px;
-    gap:10px;
+    margin-top:10px !important;
+    gap:8px !important;
   }
 
   .warroom-badges .badge,
   #wr_badge_status,
   #wr_badge_priority,
   #wr_badge_case_code{
-    min-height:38px;
-    padding:8px 14px;
+    min-height:34px !important;
+    padding:7px 12px !important;
     border-radius:999px;
-    font-size:14px;
-    font-weight:900;
+    font-size:13px !important;
+    font-weight:900 !important;
     border:none;
     box-shadow:none;
   }
@@ -383,9 +374,9 @@
 
   .warroom-actions{
     display:flex;
-    gap:12px;
+    gap:10px !important;
     flex-wrap:wrap;
-    align-items:center;
+    align-items:center !important;
   }
 
   .warroom-actions button{
@@ -393,14 +384,14 @@
   }
 
   .warroom-actions .secondary{
-    height:48px;
-    padding:0 18px;
-    border-radius:16px;
+    height:42px !important;
+    padding:0 16px !important;
+    border-radius:15px !important;
     background:#fff;
     border:1px solid rgba(255,255,255,.14);
     color:#12385d;
-    font-size:14px;
-    font-weight:800;
+    font-size:13px !important;
+    font-weight:900 !important;
     box-shadow:none;
   }
 
@@ -408,19 +399,16 @@
     display:inline-flex;
     align-items:center;
     gap:8px;
-    min-height:44px;
-    padding:0 16px;
+    min-height:40px !important;
+    padding:0 14px !important;
     border-radius:999px;
     background:#dbfff3;
     color:#0f6f64;
     border:1px solid #9ff0d5;
-    font-size:13px;
-    font-weight:900;
+    font-size:12px !important;
+    font-weight:900 !important;
   }
 
-  /* =========================
-     MAIN GRID
-  ========================= */
   .warroom-grid{
     display:grid;
     grid-template-columns:minmax(300px,1.08fr) minmax(380px,1.28fr) minmax(280px,.92fr);
@@ -440,70 +428,174 @@
     top:16px;
   }
 
-  /* =========================
-     CASE INFO
-  ========================= */
   .summary-strip{
     display:none;
   }
 
+  #warroomColLeft > .panel-card:first-child{
+    padding:18px !important;
+    position:relative !important;
+    overflow:hidden !important;
+    padding-bottom:120px !important;
+  }
+
+  #warroomColLeft > .panel-card:first-child .panel-header{
+    margin-bottom:12px !important;
+    padding-bottom:12px !important;
+    border-bottom:1px solid #e7edf4 !important;
+  }
+
+  #warroomColLeft > .panel-card:first-child .panel-title{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    font-size:22px !important;
+  }
+
+  #warroomColLeft > .panel-card:first-child .panel-title::before{
+    content:"☑";
+    width:34px;
+    height:34px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:#eef4ff;
+    color:#3b82f6;
+    font-size:18px;
+    box-shadow:inset 0 0 0 1px #dbe7ff;
+  }
+
+  #warroomColLeft > .panel-card:first-child .panel-sub{
+    display:none !important;
+  }
+
   .case-info-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:10px !important;
   }
 
   .case-info-grid > div{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:6px !important;
   }
 
   .case-info-grid .label{
-    margin:0;
-    font-size:13px;
-    font-weight:800;
-    color:#6c7b8d;
+    margin:0 !important;
+    font-size:12px !important;
+    font-weight:800 !important;
+    color:#6d7c90 !important;
   }
 
   .case-info-grid .value{
-    min-height:72px;
-    border-radius:16px;
-    background:#f8fbfe;
-    border:1px solid #e7eef5;
-    padding:14px 16px;
-    font-size:15px;
-    line-height:1.45;
-    font-weight:800;
-    color:#18385c;
-    box-shadow:none;
+    min-height:78px !important;
+    border-radius:16px !important;
+    background:#f8fbff !important;
+    border:1px solid #e4ebf3 !important;
+    padding:14px 14px !important;
+    font-size:15px !important;
+    line-height:1.45 !important;
+    font-weight:900 !important;
+    color:#16385c !important;
+    box-shadow:none !important;
+    display:flex !important;
+    align-items:center !important;
   }
 
   .case-info-grid > div:nth-child(1) .value,
-  .case-info-grid > div:nth-child(2) .value,
-  .case-info-grid > div:nth-child(3) .value{
-    font-size:18px;
+  .case-info-grid > div:nth-child(6) .value{
+    min-height:82px !important;
+    font-size:18px !important;
   }
 
+  .case-info-grid > div:nth-child(2),
   .case-info-grid > div:nth-child(5),
+  .case-info-grid > div:nth-child(7),
+  .case-info-grid > div:nth-child(10){
+    grid-column:1 / -1 !important;
+  }
+
+  .case-info-grid > div:nth-child(2) .value,
+  .case-info-grid > div:nth-child(7) .value{
+    min-height:84px !important;
+  }
+
+  .case-info-grid > div:nth-child(5) .value,
+  .case-info-grid > div:nth-child(10) .value{
+    min-height:80px !important;
+  }
+
+  .case-info-grid > div:nth-child(5) .value{
+    justify-content:flex-start !important;
+  }
+
   .case-info-grid > div:nth-child(11){
-    grid-column:1 / -1;
+    display:none !important;
   }
 
-  .case-info-grid > div:nth-child(11) .value{
-    min-height:120px;
+  #status,
+  #priority{
+    background:#f8fbff !important;
   }
 
-  #status .badge,
+  #status .badge{
+    background:#fff1db !important;
+    color:#c76711 !important;
+    padding:8px 14px !important;
+    min-width:auto !important;
+    font-size:13px !important;
+    border-radius:999px !important;
+  }
+
   #priority .badge{
-    font-size:14px;
-    padding:8px 12px;
-    min-width:auto;
+    background:#fde2e2 !important;
+    color:#d62828 !important;
+    padding:8px 14px !important;
+    min-width:auto !important;
+    font-size:13px !important;
+    border-radius:999px !important;
   }
 
-  /* =========================
-     MAP
-  ========================= */
+  #full_name.value::before,
+  #phone.value::before,
+  #location.value::before,
+  #location_text.value::before{
+    margin-right:8px;
+    flex:none;
+    opacity:.95;
+  }
+
+  #full_name.value::before{ content:"👤"; }
+  #phone.value::before{ content:"📞"; }
+  #location.value::before{ content:"📍"; }
+  #location_text.value::before{ content:"◎"; }
+
+  #warroomColLeft > .panel-card:first-child::after{
+    content:"";
+    display:block;
+    height:78px;
+    margin-top:16px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#fff5e5 0%,#fff0d1 100%);
+    border:1px solid #f1ddb2;
+  }
+
+  #warroomColLeft > .panel-card:first-child::before{
+    content:"กำลังดำเนินการ\Aอัปเดตล่าสุดจากข้อมูลจริง";
+    white-space:pre-line;
+    position:absolute;
+    left:38px;
+    bottom:32px;
+    z-index:2;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.45;
+    color:#b86511;
+    pointer-events:none;
+  }
+
   .warroom-map-card{
     min-height:auto;
   }
@@ -562,9 +654,6 @@
     text-decoration:none;
   }
 
-  /* =========================
-     WORK FILES
-  ========================= */
   #workFilesSection{
     min-height:190px;
     display:flex;
@@ -634,9 +723,6 @@
     box-shadow:none;
   }
 
-  /* =========================
-     MANAGE CASE
-  ========================= */
   .manage-case-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -732,27 +818,33 @@
     border:1px solid #d8e3ec;
   }
 
-  /* =========================
-     FIELD PROGRESS
-  ========================= */
   .field-progress-wrapper{
-    padding:22px !important;
+    padding:18px !important;
     overflow:hidden;
+  }
+
+  .field-progress-wrapper .panel-title{
+    font-size:20px !important;
+  }
+
+  .field-progress-wrapper .panel-sub{
+    font-size:13px !important;
+    line-height:1.45 !important;
   }
 
   .field-progress-pro-grid{
     display:grid;
-    grid-template-columns:1.12fr 1fr;
+    grid-template-columns:1fr 1fr !important;
     gap:0;
-    border-radius:22px;
+    border-radius:22px !important;
     overflow:hidden;
     border:1px solid #dce8f0;
     background:#f7fafc;
   }
 
   .field-progress-hero{
-    min-height:290px;
-    padding:22px;
+    min-height:250px !important;
+    padding:18px !important;
     background:linear-gradient(135deg,#0f8a97 0%, #113f97 100%);
     color:#fff;
     display:flex;
@@ -768,7 +860,7 @@
   }
 
   .field-progress-kicker{
-    font-size:24px;
+    font-size:18px !important;
     line-height:1.05;
     font-weight:900;
     color:rgba(255,255,255,.92);
@@ -780,28 +872,28 @@
   }
 
   .field-progress-percent{
-    font-size:58px;
+    font-size:48px !important;
     line-height:1;
     font-weight:900;
     color:#fff;
   }
 
   .field-progress-label{
-    font-size:16px;
+    font-size:14px !important;
     font-weight:800;
     color:rgba(255,255,255,.92);
     margin-bottom:8px;
   }
 
   .field-progress-note{
-    min-height:130px;
-    border-radius:22px;
+    min-height:110px !important;
+    border-radius:18px !important;
     background:rgba(255,255,255,.10);
     border:1px solid rgba(255,255,255,.18);
     color:#fff;
-    font-size:24px;
+    font-size:18px !important;
     font-weight:800;
-    padding:20px;
+    padding:16px !important;
     margin-bottom:14px;
   }
 
@@ -809,7 +901,7 @@
     margin-top:auto;
     background:rgba(255,255,255,.18);
     border-radius:999px;
-    height:14px;
+    height:12px !important;
     overflow:hidden;
   }
 
@@ -821,16 +913,16 @@
 
   .field-progress-side{
     background:#f7f9fc;
-    padding:18px;
+    padding:14px !important;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:14px;
+    gap:12px !important;
     border-left:1px solid #e5e7eb;
   }
 
   .field-progress-stat-card{
-    min-height:128px;
-    border-radius:20px;
+    min-height:112px !important;
+    border-radius:18px !important;
     background:#fff;
     border:1px solid #e2ebf3;
     padding:16px;
@@ -842,13 +934,13 @@
 
   .field-progress-stat-label{
     color:#708094;
-    font-size:14px;
+    font-size:13px !important;
     font-weight:800;
     margin-bottom:8px;
   }
 
   .field-progress-stat-value{
-    font-size:24px;
+    font-size:20px !important;
     font-weight:900;
     line-height:1.35;
     color:#16385c;
@@ -862,9 +954,6 @@
     line-height:1.45;
   }
 
-  /* =========================
-     TIMELINE
-  ========================= */
   .latest-update-banner{
     display:none;
     margin-bottom:12px;
@@ -1068,9 +1157,6 @@
     100%{box-shadow:0 0 0 0 rgba(11,124,134,0)}
   }
 
-  /* =========================
-     MOBILE
-  ========================= */
   @media (max-width:1200px){
     .warroom-grid{
       grid-template-columns:1fr;
@@ -1084,13 +1170,13 @@
 
   @media (max-width:980px){
     .field-progress-pro-grid{
-      grid-template-columns:1fr;
+      grid-template-columns:1fr !important;
     }
 
     .field-progress-side{
-      border-left:none;
-      border-top:1px solid #e5e7eb;
-      grid-template-columns:1fr 1fr;
+      border-left:none !important;
+      border-top:1px solid #e5e7eb !important;
+      grid-template-columns:1fr 1fr !important;
     }
   }
 
@@ -1127,22 +1213,26 @@
     }
 
     .warroom-command{
-      padding:18px 16px;
-      border-radius:24px;
+      padding:16px 16px 18px !important;
+      border-radius:22px !important;
     }
 
     .warroom-title{
-      font-size:20px;
+      font-size:20px !important;
+    }
+
+    .warroom-sub{
+      font-size:12px !important;
     }
 
     .warroom-actions{
-      width:100%;
+      width:100% !important;
     }
 
     .warroom-actions .secondary,
     .live-sync-chip{
-      width:100%;
-      justify-content:center;
+      width:100% !important;
+      justify-content:center !important;
     }
 
     .grid,
@@ -1151,8 +1241,12 @@
       grid-template-columns:1fr;
     }
 
+    .case-info-grid > div{
+      grid-column:1 / -1 !important;
+    }
+
     .field-progress-side{
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr !important;
     }
 
     #warroomColRight > .panel-card:last-child .actions{
@@ -1202,7 +1296,7 @@
 
   @media (max-width:560px){
     .field-progress-side{
-      grid-template-columns:1fr;
+      grid-template-columns:1fr !important;
     }
 
     .topbar .actions{
@@ -1222,837 +1316,6 @@
       grid-column:auto;
     }
   }
-
-/* =========================================================
-   CASE.HTML FINAL SAFE VISUAL PATCH
-   เป้าหมาย:
-   1) ทำ warroom-command ให้ตรงต้นแบบมากขึ้น
-   2) ทำการ์ดข้อมูลเคสให้กลับไปเป็นแบบอ่านง่าย
-   3) ไม่กระทบฟังก์ชันเดิม / ไม่แตะ JS / ไม่แตะ id
-   วางท้ายสุดของ <style>
-========================================================= */
-
-/* =========================
-   TOP WAR ROOM BAR — ปรับให้เตี้ยและคมขึ้น
-========================= */
-.warroom-command{
-  padding:18px 22px 20px !important;
-  border-radius:26px !important;
-  margin-bottom:10px !important;
-}
-
-.warroom-command-top{
-  gap:14px !important;
-}
-
-.warroom-command-left{
-  gap:6px !important;
-}
-
-.warroom-kicker{
-  font-size:12px !important;
-  font-weight:900 !important;
-  letter-spacing:.08em !important;
-}
-
-.warroom-title{
-  font-size:24px !important;
-  line-height:1.12 !important;
-  margin:2px 0 0 !important;
-  letter-spacing:-.01em !important;
-}
-
-.warroom-sub{
-  font-size:13px !important;
-  line-height:1.45 !important;
-  max-width:780px !important;
-}
-
-.warroom-badges{
-  margin-top:10px !important;
-  gap:8px !important;
-}
-
-.warroom-badges .badge,
-#wr_badge_status,
-#wr_badge_priority,
-#wr_badge_case_code{
-  min-height:34px !important;
-  padding:7px 12px !important;
-  font-size:13px !important;
-  font-weight:900 !important;
-}
-
-.warroom-actions{
-  gap:10px !important;
-  align-items:center !important;
-}
-
-.warroom-actions .secondary{
-  height:42px !important;
-  min-width:auto !important;
-  padding:0 16px !important;
-  border-radius:15px !important;
-  font-size:13px !important;
-  font-weight:900 !important;
-}
-
-.live-sync-chip{
-  min-height:40px !important;
-  padding:0 14px !important;
-  font-size:12px !important;
-  font-weight:900 !important;
-}
-
-/* =========================
-   CASE INFO CARD — คืนรูปแบบให้ใกล้ต้นแบบ
-========================= */
-#warroomColLeft > .panel-card:first-child{
-  padding:18px !important;
-  position:relative !important;
-  overflow:hidden !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-header{
-  margin-bottom:12px !important;
-  padding-bottom:12px !important;
-  border-bottom:1px solid #e7edf4 !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-title{
-  display:flex !important;
-  align-items:center !important;
-  gap:12px !important;
-  font-size:22px !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-title::before{
-  content:"☑";
-  width:34px;
-  height:34px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:#eef4ff;
-  color:#3b82f6;
-  font-size:18px;
-  box-shadow:inset 0 0 0 1px #dbe7ff;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-sub{
-  display:none !important;
-}
-
-/* ซ่อน summary strip เพื่อให้เหมือนต้นแบบ */
-.summary-strip{
-  display:none !important;
-}
-
-/* โครงใหม่แบบต้นแบบ แต่ยังใช้ field เดิมครบ */
-.case-info-grid{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:10px !important;
-}
-
-.case-info-grid > div{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:6px !important;
-}
-
-.case-info-grid .label{
-  margin:0 !important;
-  font-size:12px !important;
-  font-weight:800 !important;
-  color:#6d7c90 !important;
-}
-
-.case-info-grid .value{
-  min-height:78px !important;
-  border-radius:16px !important;
-  background:#f8fbff !important;
-  border:1px solid #e4ebf3 !important;
-  padding:14px 14px !important;
-  font-size:15px !important;
-  line-height:1.45 !important;
-  font-weight:900 !important;
-  color:#16385c !important;
-  box-shadow:none !important;
-  display:flex !important;
-  align-items:center !important;
-}
-
-/* เลขเคส + สถานะล่าสุด แถวบน */
-.case-info-grid > div:nth-child(1),
-.case-info-grid > div:nth-child(6){
-  grid-column:auto !important;
-}
-
-.case-info-grid > div:nth-child(1) .value,
-.case-info-grid > div:nth-child(6) .value{
-  min-height:82px !important;
-  font-size:18px !important;
-}
-
-/* ระดับเร่งด่วนเต็มแถว */
-.case-info-grid > div:nth-child(7){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(7) .value{
-  min-height:84px !important;
-}
-
-/* ชื่อเต็มแถว */
-.case-info-grid > div:nth-child(2){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(2) .value{
-  min-height:84px !important;
-}
-
-/* เบอร์ + พื้นที่ */
-.case-info-grid > div:nth-child(3),
-.case-info-grid > div:nth-child(4){
-  grid-column:auto !important;
-}
-
-/* พิกัดเต็มแถว */
-.case-info-grid > div:nth-child(5){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(5) .value{
-  min-height:80px !important;
-  justify-content:flex-start !important;
-}
-
-/* ผู้รับเคส + โครงการ */
-.case-info-grid > div:nth-child(8),
-.case-info-grid > div:nth-child(9){
-  grid-column:auto !important;
-}
-
-/* วันที่สร้าง */
-.case-info-grid > div:nth-child(10){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(10) .value{
-  min-height:80px !important;
-}
-
-/* ซ่อนรายละเอียดปัญหาในการ์ดซ้ายเพื่อให้เหมือนต้นแบบมากขึ้น
-   แต่ยังคง DOM เดิมไว้ ไม่ลบฟิลด์ออกจากระบบ */
-.case-info-grid > div:nth-child(11){
-  display:none !important;
-}
-
-/* badge ในการ์ดข้อมูล */
-#status,
-#priority{
-  background:#f8fbff !important;
-}
-
-#status .badge{
-  background:#fff1db !important;
-  color:#c76711 !important;
-  padding:8px 14px !important;
-  min-width:auto !important;
-  font-size:13px !important;
-  border-radius:999px !important;
-}
-
-#priority .badge{
-  background:#fde2e2 !important;
-  color:#d62828 !important;
-  padding:8px 14px !important;
-  min-width:auto !important;
-  font-size:13px !important;
-  border-radius:999px !important;
-}
-
-/* ไอคอนนำสายตาให้บางฟิลด์ */
-#full_name.value::before,
-#phone.value::before,
-#location.value::before,
-#location_text.value::before{
-  margin-right:8px;
-  flex:none;
-  opacity:.95;
-}
-
-#full_name.value::before{ content:"👤"; }
-#phone.value::before{ content:"📞"; }
-#location.value::before{ content:"📍"; }
-#location_text.value::before{ content:"◎"; }
-
-/* แถบสถานะล่างแบบต้นแบบ */
-#warroomColLeft > .panel-card:first-child::after{
-  content:"";
-  display:block;
-  height:78px;
-  margin-top:16px;
-  border-radius:18px;
-  background:linear-gradient(180deg,#fff5e5 0%,#fff0d1 100%);
-  border:1px solid #f1ddb2;
-}
-
-#warroomColLeft > .panel-card:first-child::before{
-  content:"กำลังดำเนินการ\Aอัปเดตล่าสุดจากข้อมูลจริง";
-  white-space:pre-line;
-  position:absolute;
-  left:38px;
-  bottom:32px;
-  z-index:2;
-  font-size:14px;
-  font-weight:900;
-  line-height:1.45;
-  color:#b86511;
-  pointer-events:none;
-}
-
-#warroomColLeft > .panel-card:first-child{
-  padding-bottom:120px !important;
-}
-
-/* =========================
-   FIELD PROGRESS — ให้คงอยู่ครบ แต่กระชับขึ้น
-========================= */
-.field-progress-wrapper{
-  padding:18px !important;
-}
-
-.field-progress-wrapper .panel-title{
-  font-size:20px !important;
-}
-
-.field-progress-wrapper .panel-sub{
-  font-size:13px !important;
-  line-height:1.45 !important;
-}
-
-.field-progress-pro-grid{
-  grid-template-columns:1fr 1fr !important;
-  border-radius:22px !important;
-}
-
-.field-progress-hero{
-  min-height:250px !important;
-  padding:18px !important;
-}
-
-.field-progress-kicker{
-  font-size:18px !important;
-}
-
-.field-progress-percent{
-  font-size:48px !important;
-}
-
-.field-progress-label{
-  font-size:14px !important;
-}
-
-.field-progress-note{
-  min-height:110px !important;
-  font-size:18px !important;
-  padding:16px !important;
-  border-radius:18px !important;
-}
-
-.field-progress-track.pro{
-  height:12px !important;
-}
-
-.field-progress-side{
-  gap:12px !important;
-  padding:14px !important;
-}
-
-.field-progress-stat-card{
-  min-height:112px !important;
-  border-radius:18px !important;
-}
-
-.field-progress-stat-label{
-  font-size:13px !important;
-}
-
-.field-progress-stat-value{
-  font-size:20px !important;
-}
-
-/* =========================
-   MOBILE SAFE
-========================= */
-@media (max-width:980px){
-  .field-progress-pro-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .field-progress-side{
-    grid-template-columns:1fr 1fr !important;
-    border-left:none !important;
-    border-top:1px solid #e5e7eb !important;
-  }
-}
-
-@media (max-width:780px){
-  .warroom-command{
-    padding:16px 16px 18px !important;
-    border-radius:22px !important;
-  }
-
-  .warroom-title{
-    font-size:20px !important;
-  }
-
-  .warroom-sub{
-    font-size:12px !important;
-  }
-
-  .warroom-actions{
-    width:100% !important;
-  }
-
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:100% !important;
-    justify-content:center !important;
-  }
-
-  .case-info-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .case-info-grid > div{
-    grid-column:1 / -1 !important;
-  }
-
-  .field-progress-side{
-    grid-template-columns:1fr !important;
-  }
-}
-
-/* =========================================================
-   CASE.HTML FINAL SAFE VISUAL PATCH
-   เป้าหมาย:
-   1) ทำ warroom-command ให้ตรงต้นแบบมากขึ้น
-   2) ทำการ์ดข้อมูลเคสให้กลับไปเป็นแบบอ่านง่าย
-   3) ไม่กระทบฟังก์ชันเดิม / ไม่แตะ JS / ไม่แตะ id
-   วางท้ายสุดของ <style>
-========================================================= */
-
-/* =========================
-   TOP WAR ROOM BAR — ปรับให้เตี้ยและคมขึ้น
-========================= */
-.warroom-command{
-  padding:18px 22px 20px !important;
-  border-radius:26px !important;
-  margin-bottom:10px !important;
-}
-
-.warroom-command-top{
-  gap:14px !important;
-}
-
-.warroom-command-left{
-  gap:6px !important;
-}
-
-.warroom-kicker{
-  font-size:12px !important;
-  font-weight:900 !important;
-  letter-spacing:.08em !important;
-}
-
-.warroom-title{
-  font-size:24px !important;
-  line-height:1.12 !important;
-  margin:2px 0 0 !important;
-  letter-spacing:-.01em !important;
-}
-
-.warroom-sub{
-  font-size:13px !important;
-  line-height:1.45 !important;
-  max-width:780px !important;
-}
-
-.warroom-badges{
-  margin-top:10px !important;
-  gap:8px !important;
-}
-
-.warroom-badges .badge,
-#wr_badge_status,
-#wr_badge_priority,
-#wr_badge_case_code{
-  min-height:34px !important;
-  padding:7px 12px !important;
-  font-size:13px !important;
-  font-weight:900 !important;
-}
-
-.warroom-actions{
-  gap:10px !important;
-  align-items:center !important;
-}
-
-.warroom-actions .secondary{
-  height:42px !important;
-  min-width:auto !important;
-  padding:0 16px !important;
-  border-radius:15px !important;
-  font-size:13px !important;
-  font-weight:900 !important;
-}
-
-.live-sync-chip{
-  min-height:40px !important;
-  padding:0 14px !important;
-  font-size:12px !important;
-  font-weight:900 !important;
-}
-
-/* =========================
-   CASE INFO CARD — คืนรูปแบบให้ใกล้ต้นแบบ
-========================= */
-#warroomColLeft > .panel-card:first-child{
-  padding:18px !important;
-  position:relative !important;
-  overflow:hidden !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-header{
-  margin-bottom:12px !important;
-  padding-bottom:12px !important;
-  border-bottom:1px solid #e7edf4 !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-title{
-  display:flex !important;
-  align-items:center !important;
-  gap:12px !important;
-  font-size:22px !important;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-title::before{
-  content:"☑";
-  width:34px;
-  height:34px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:#eef4ff;
-  color:#3b82f6;
-  font-size:18px;
-  box-shadow:inset 0 0 0 1px #dbe7ff;
-}
-
-#warroomColLeft > .panel-card:first-child .panel-sub{
-  display:none !important;
-}
-
-/* ซ่อน summary strip เพื่อให้เหมือนต้นแบบ */
-.summary-strip{
-  display:none !important;
-}
-
-/* โครงใหม่แบบต้นแบบ แต่ยังใช้ field เดิมครบ */
-.case-info-grid{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:10px !important;
-}
-
-.case-info-grid > div{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:6px !important;
-}
-
-.case-info-grid .label{
-  margin:0 !important;
-  font-size:12px !important;
-  font-weight:800 !important;
-  color:#6d7c90 !important;
-}
-
-.case-info-grid .value{
-  min-height:78px !important;
-  border-radius:16px !important;
-  background:#f8fbff !important;
-  border:1px solid #e4ebf3 !important;
-  padding:14px 14px !important;
-  font-size:15px !important;
-  line-height:1.45 !important;
-  font-weight:900 !important;
-  color:#16385c !important;
-  box-shadow:none !important;
-  display:flex !important;
-  align-items:center !important;
-}
-
-/* เลขเคส + สถานะล่าสุด แถวบน */
-.case-info-grid > div:nth-child(1),
-.case-info-grid > div:nth-child(6){
-  grid-column:auto !important;
-}
-
-.case-info-grid > div:nth-child(1) .value,
-.case-info-grid > div:nth-child(6) .value{
-  min-height:82px !important;
-  font-size:18px !important;
-}
-
-/* ระดับเร่งด่วนเต็มแถว */
-.case-info-grid > div:nth-child(7){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(7) .value{
-  min-height:84px !important;
-}
-
-/* ชื่อเต็มแถว */
-.case-info-grid > div:nth-child(2){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(2) .value{
-  min-height:84px !important;
-}
-
-/* เบอร์ + พื้นที่ */
-.case-info-grid > div:nth-child(3),
-.case-info-grid > div:nth-child(4){
-  grid-column:auto !important;
-}
-
-/* พิกัดเต็มแถว */
-.case-info-grid > div:nth-child(5){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(5) .value{
-  min-height:80px !important;
-  justify-content:flex-start !important;
-}
-
-/* ผู้รับเคส + โครงการ */
-.case-info-grid > div:nth-child(8),
-.case-info-grid > div:nth-child(9){
-  grid-column:auto !important;
-}
-
-/* วันที่สร้าง */
-.case-info-grid > div:nth-child(10){
-  grid-column:1 / -1 !important;
-}
-
-.case-info-grid > div:nth-child(10) .value{
-  min-height:80px !important;
-}
-
-/* ซ่อนรายละเอียดปัญหาในการ์ดซ้ายเพื่อให้เหมือนต้นแบบมากขึ้น
-   แต่ยังคง DOM เดิมไว้ ไม่ลบฟิลด์ออกจากระบบ */
-.case-info-grid > div:nth-child(11){
-  display:none !important;
-}
-
-/* badge ในการ์ดข้อมูล */
-#status,
-#priority{
-  background:#f8fbff !important;
-}
-
-#status .badge{
-  background:#fff1db !important;
-  color:#c76711 !important;
-  padding:8px 14px !important;
-  min-width:auto !important;
-  font-size:13px !important;
-  border-radius:999px !important;
-}
-
-#priority .badge{
-  background:#fde2e2 !important;
-  color:#d62828 !important;
-  padding:8px 14px !important;
-  min-width:auto !important;
-  font-size:13px !important;
-  border-radius:999px !important;
-}
-
-/* ไอคอนนำสายตาให้บางฟิลด์ */
-#full_name.value::before,
-#phone.value::before,
-#location.value::before,
-#location_text.value::before{
-  margin-right:8px;
-  flex:none;
-  opacity:.95;
-}
-
-#full_name.value::before{ content:"👤"; }
-#phone.value::before{ content:"📞"; }
-#location.value::before{ content:"📍"; }
-#location_text.value::before{ content:"◎"; }
-
-/* แถบสถานะล่างแบบต้นแบบ */
-#warroomColLeft > .panel-card:first-child::after{
-  content:"";
-  display:block;
-  height:78px;
-  margin-top:16px;
-  border-radius:18px;
-  background:linear-gradient(180deg,#fff5e5 0%,#fff0d1 100%);
-  border:1px solid #f1ddb2;
-}
-
-#warroomColLeft > .panel-card:first-child::before{
-  content:"กำลังดำเนินการ\Aอัปเดตล่าสุดจากข้อมูลจริง";
-  white-space:pre-line;
-  position:absolute;
-  left:38px;
-  bottom:32px;
-  z-index:2;
-  font-size:14px;
-  font-weight:900;
-  line-height:1.45;
-  color:#b86511;
-  pointer-events:none;
-}
-
-#warroomColLeft > .panel-card:first-child{
-  padding-bottom:120px !important;
-}
-
-/* =========================
-   FIELD PROGRESS — ให้คงอยู่ครบ แต่กระชับขึ้น
-========================= */
-.field-progress-wrapper{
-  padding:18px !important;
-}
-
-.field-progress-wrapper .panel-title{
-  font-size:20px !important;
-}
-
-.field-progress-wrapper .panel-sub{
-  font-size:13px !important;
-  line-height:1.45 !important;
-}
-
-.field-progress-pro-grid{
-  grid-template-columns:1fr 1fr !important;
-  border-radius:22px !important;
-}
-
-.field-progress-hero{
-  min-height:250px !important;
-  padding:18px !important;
-}
-
-.field-progress-kicker{
-  font-size:18px !important;
-}
-
-.field-progress-percent{
-  font-size:48px !important;
-}
-
-.field-progress-label{
-  font-size:14px !important;
-}
-
-.field-progress-note{
-  min-height:110px !important;
-  font-size:18px !important;
-  padding:16px !important;
-  border-radius:18px !important;
-}
-
-.field-progress-track.pro{
-  height:12px !important;
-}
-
-.field-progress-side{
-  gap:12px !important;
-  padding:14px !important;
-}
-
-.field-progress-stat-card{
-  min-height:112px !important;
-  border-radius:18px !important;
-}
-
-.field-progress-stat-label{
-  font-size:13px !important;
-}
-
-.field-progress-stat-value{
-  font-size:20px !important;
-}
-
-/* =========================
-   MOBILE SAFE
-========================= */
-@media (max-width:980px){
-  .field-progress-pro-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .field-progress-side{
-    grid-template-columns:1fr 1fr !important;
-    border-left:none !important;
-    border-top:1px solid #e5e7eb !important;
-  }
-}
-
-@media (max-width:780px){
-  .warroom-command{
-    padding:16px 16px 18px !important;
-    border-radius:22px !important;
-  }
-
-  .warroom-title{
-    font-size:20px !important;
-  }
-
-  .warroom-sub{
-    font-size:12px !important;
-  }
-
-  .warroom-actions{
-    width:100% !important;
-  }
-
-  .warroom-actions .secondary,
-  .live-sync-chip{
-    width:100% !important;
-    justify-content:center !important;
-  }
-
-  .case-info-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .case-info-grid > div{
-    grid-column:1 / -1 !important;
-  }
-
-  .field-progress-side{
-    grid-template-columns:1fr !important;
-  }
-}
-  
 </style>
   
 </head>

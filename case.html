@@ -2198,21 +2198,37 @@ function updateWarRoomCommandBar(data){
 
 function focusMapToPoint(lat, lng, timelineId = ""){
   if (!window._warroomMap) return;
+  if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lng))) return;
 
-  window._warroomMap.panTo({ lat, lng });
-  window._warroomMap.setZoom(17);
+  const safeLat = Number(lat);
+  const safeLng = Number(lng);
+
+  if (typeof window._warroomMap.panTo === "function") {
+    window._warroomMap.panTo({ lat: safeLat, lng: safeLng });
+  }
+  if (typeof window._warroomMap.setZoom === "function") {
+    window._warroomMap.setZoom(17);
+  }
 
   if (Array.isArray(window._warroomMarkers)) {
     window._warroomMarkers.forEach(marker => {
+      if (!marker || typeof marker.getPosition !== "function") return;
+
       const pos = marker.getPosition();
+      if (!pos || typeof pos.lat !== "function" || typeof pos.lng !== "function") return;
+
       const isTarget =
-        Math.abs(pos.lat() - lat) < 0.000001 &&
-        Math.abs(pos.lng() - lng) < 0.000001;
+        Math.abs(pos.lat() - safeLat) < 0.000001 &&
+        Math.abs(pos.lng() - safeLng) < 0.000001;
 
-      marker.setAnimation(isTarget ? google.maps.Animation.BOUNCE : null);
+      if (typeof marker.setAnimation === "function" && window.google?.maps?.Animation) {
+        marker.setAnimation(isTarget ? google.maps.Animation.BOUNCE : null);
 
-      if (isTarget) {
-        setTimeout(() => marker.setAnimation(null), 1400);
+        if (isTarget) {
+          setTimeout(() => {
+            try { marker.setAnimation(null); } catch (_) {}
+          }, 1400);
+        }
       }
     });
   }

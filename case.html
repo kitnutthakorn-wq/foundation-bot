@@ -3787,7 +3787,7 @@ function renderLatestFieldImages(files = []){
       formState.initialized = true;
     }
 
-     async function refreshCaseView(){
+ async function refreshCaseView(){
   const data = await loadCase();
   const timelineItems = await loadCaseTimeline();
 
@@ -3839,7 +3839,7 @@ function renderLatestFieldImages(files = []){
           timelineItems = caseDetail.updates || caseDetail.case_updates || caseDetail.timeline || [];
         }
 
-        latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
+latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
 renderFieldProgressFromTimeline(latestTimelineCache, data || {});
 const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
         const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
@@ -4032,82 +4032,51 @@ async function loadWorkFiles(caseCodeValue){
   if (!box) return;
 
   if (!caseCodeValue) {
-    enhanceWorkFilesPanelHeader([]);
-    box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
+    renderLatestFieldImages([]);
     return;
   }
 
   try{
-    box.innerHTML = "กำลังโหลดไฟล์...";
+    box.innerHTML = `
+      <div style="
+        min-height:180px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:2px dashed #c8d9ff;
+        border-radius:20px;
+        background:linear-gradient(180deg,#f9fbff 0%,#f3f7ff 100%);
+        color:#8a97ab;
+        font-size:18px;
+        font-weight:800;
+      ">
+        กำลังโหลดไฟล์...
+      </div>
+    `;
 
     const res = await fetch(`/api/case-files/${encodeURIComponent(caseCodeValue)}`);
     const json = await res.json().catch(() => ({}));
 
     const files = Array.isArray(json?.files) ? json.files : [];
-    enhanceWorkFilesPanelHeader(files);
-
-    if (!files.length) {
-      box.innerHTML = "ยังไม่มีไฟล์แนบงาน";
-      return;
-    }
-
-    const imageFiles = files.filter(file => {
-      const name = String(file?.name || file?.file_name || "");
-      const url = String(file?.url || file?.file_url || "");
-      return /\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
-    });
-
-    const docFiles = files.filter(file => {
-      const name = String(file?.name || file?.file_name || "");
-      const url = String(file?.url || file?.file_url || "");
-      return !/\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
-    });
-
-    const imageHtml = imageFiles.length ? `
-      <div class="work-file-group">
-        <h4>รูปภาพภาคสนาม</h4>
-        <div class="work-file-grid">
-          ${imageFiles.map(file => {
-            const url = escapeHtml(file?.url || file?.file_url || "#");
-            const name = escapeHtml(file?.name || file?.file_name || "image");
-            return `
-              <a class="work-image-card" href="${url}" target="_blank" rel="noopener noreferrer">
-                <img src="${url}" alt="${name}" loading="lazy" />
-                <div class="file-name">${name}</div>
-              </a>
-            `;
-          }).join("")}
-        </div>
-      </div>
-    ` : "";
-
-    const docHtml = docFiles.length ? `
-      <div class="work-file-group">
-        <h4>เอกสารแนบ</h4>
-        <div class="work-doc-list">
-          ${docFiles.map(file => {
-            const url = escapeHtml(file?.url || file?.file_url || "#");
-            const name = escapeHtml(file?.name || file?.file_name || "document");
-            return `
-              <a class="work-doc-item" href="${url}" target="_blank" rel="noopener noreferrer">
-                ${name}
-              </a>
-            `;
-          }).join("")}
-        </div>
-      </div>
-    ` : "";
-
-    box.innerHTML = `
-      <div class="work-files-wrap">
-        ${imageHtml || ""}
-        ${docHtml || ""}
-      </div>
-    `;
+    renderLatestFieldImages(files);
   } catch (err) {
     console.error("loadWorkFiles error:", err);
-    enhanceWorkFilesPanelHeader([]);
-    box.innerHTML = "โหลดไฟล์แนบไม่สำเร็จ";
+    box.innerHTML = `
+      <div style="
+        min-height:180px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:2px dashed #ffd1d1;
+        border-radius:20px;
+        background:#fff7f7;
+        color:#c2410c;
+        font-size:18px;
+        font-weight:800;
+      ">
+        โหลดรูปภาพภาคสนามไม่สำเร็จ
+      </div>
+    `;
   }
 }
 

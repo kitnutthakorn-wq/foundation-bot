@@ -2428,7 +2428,7 @@ button,
       return null;
     }
 
- function renderTimelineItem(item, idx = 0){
+function renderTimelineItem(item, idx = 0){
   const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
   const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
   const note = item.note || item.message || item.update_note || "-";
@@ -2495,6 +2495,7 @@ button,
     </div>
   `;
 }
+    
     function setWarRoomLiveChip(text, mode = "idle"){
       const el = document.getElementById("warroomLiveChip");
       if (!el) return;

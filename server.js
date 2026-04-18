@@ -7452,6 +7452,64 @@ app.post("/api/work-uploads/files", upload.array("files", 10), async (req, res) 
   }
 });
 
+app.get("/api/work-uploads/files/:caseCode", async (req, res) => {
+  try {
+    const caseCode = String(req.params.caseCode || "").trim();
+
+    if (!caseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: "caseCode is required"
+      });
+    }
+
+    // อ่านรายการไฟล์จาก Supabase Storage bucket: work-uploads
+    const { data: list, error: listError } = await supabase.storage
+      .from("work-uploads")
+      .list(caseCode, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: "name", order: "desc" }
+      });
+
+    if (listError) {
+      return res.status(500).json({
+        ok: false,
+        error: listError.message
+      });
+    }
+
+    const files = (Array.isArray(list) ? list : [])
+      .filter((item) => item && item.name)
+      .map((item) => {
+        const filePath = `${caseCode}/${item.name}`;
+        const { data: publicUrlData } = supabase.storage
+          .from("work-uploads")
+          .getPublicUrl(filePath);
+
+        return {
+          name: item.name,
+          path: filePath,
+          url: publicUrlData?.publicUrl || "",
+          size: item.metadata?.size || 0,
+          updated_at: item.updated_at || item.created_at || null
+        };
+      });
+
+    return res.json({
+      ok: true,
+      case_code: caseCode,
+      files
+    });
+  } catch (err) {
+    console.error("GET /api/work-uploads/files/:caseCode error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "internal server error"
+    });
+  }
+});
+
 app.post("/api/team/case-info/upload", caseInfoUpload.array("files", 10), async (req, res) => {
   try {
     const caseCode = String(req.body.case_code || "").trim();

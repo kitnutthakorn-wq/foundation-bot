@@ -2910,11 +2910,6 @@ return updates;
 decorateTimelineLatest(updates);
 updateLatestTimelineBanner(updates[0] || null);
 
-const timelineCountBadge = document.getElementById("timelineCountBadge");
-if (timelineCountBadge) {
-  timelineCountBadge.textContent = `${updates.length} รายการ`;
-}
-
 lastTimelineSignature = getTimelineSignature(updates);
 return updates;
       } catch (err) {

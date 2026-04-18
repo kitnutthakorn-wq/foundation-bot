@@ -2428,7 +2428,7 @@ button,
       return null;
     }
 
-    function renderTimelineItem(item, idx = 0){
+ function renderTimelineItem(item, idx = 0){
   const updatedBy = item.updated_by || item.created_by || item.staff_name || item.staff || "-";
   const updatedAt = item.updated_at || item.created_at || item.logged_at || null;
   const note = item.note || item.message || item.update_note || "-";
@@ -2445,11 +2445,11 @@ button,
 
   return `
     <div
-      class="timeline-item map-linked ${isGpsItem ? 'gps-highlight' : ''}"
+      class="timeline-item map-linked ${isGpsItem ? "gps-highlight" : ""}"
       data-timeline-id="${escapeHtml(itemId)}"
-      data-updated-at="${escapeHtml(updatedAt || '')}"
+      data-updated-at="${escapeHtml(updatedAt || "")}"
       ${gps ? `onclick="focusMapToPoint(${gps.lat}, ${gps.lng}, '${escapeHtml(itemId)}')"` : ""}
-      style="${gps ? 'cursor:pointer;' : ''}"
+      style="${gps ? "cursor:pointer;" : ""}"
     >
       <div class="timeline-head">
         <div class="timeline-title">อัปเดตโดย ${escapeHtml(updatedBy)}</div>
@@ -2459,44 +2459,39 @@ button,
       <div class="timeline-badges">
         ${statusBadge(statusRaw, statusLabel)}
         <span class="badge priority-normal">ความคืบหน้า ${escapeHtml(String(progress))}%</span>
-        ${isGpsItem ? `<span class="warroom-focus-badge">📍 มีพิกัดล่าสุด</span>` : ""}
+        ${isGpsItem ? `<span class="badge priority-normal no-map-focus">Lat ${escapeHtml(String(gps.lat))}, Lng ${escapeHtml(String(gps.lng))}</span>` : ""}
       </div>
 
       <div class="timeline-note">${escapeHtml(note)}</div>
 
       <div class="timeline-mini-grid">
         <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ขั้นตอนล่าสุด</div>
-          <div class="timeline-mini-value">${escapeHtml(currentStep)}</div>
+          <span class="timeline-mini-label">ขั้นตอนล่าสุด</span>
+          <span class="timeline-mini-value">${escapeHtml(currentStep)}</span>
         </div>
         <div class="timeline-mini-card">
-          <div class="timeline-mini-label">กำลังรอ</div>
-          <div class="timeline-mini-value">${escapeHtml(waitingFor)}</div>
+          <span class="timeline-mini-label">กำลังรอ</span>
+          <span class="timeline-mini-value">${escapeHtml(waitingFor)}</span>
         </div>
         <div class="timeline-mini-card">
-          <div class="timeline-mini-label">ตำแหน่ง/พื้นที่</div>
-          <div class="timeline-mini-value">
-            ${escapeHtml(locationText)}
-            ${isGpsItem ? `<br><span class="warroom-focus-badge">Lat ${escapeHtml(String(gps.lat))} / Lng ${escapeHtml(String(gps.lng))}</span>` : ""}
-          </div>
+          <span class="timeline-mini-label">ตำแหน่ง/พื้นที่</span>
+          <span class="timeline-mini-value">${escapeHtml(locationText)}</span>
         </div>
       </div>
 
-      ${images.length ? `
+      ${
+        images.length
+          ? `
         <div class="timeline-images">
-          ${images.map(img => `
-            <a
-              class="no-map-focus"
-              href="${escapeHtml(img)}"
-              target="_blank"
-              rel="noopener noreferrer"
-              onclick="event.stopPropagation()"
-            >
-              <img src="${escapeHtml(img)}" alt="timeline image" loading="lazy" />
+          ${images.slice(0, 3).map((url) => `
+            <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="no-map-focus">
+              <img src="${escapeHtml(url)}" alt="timeline-image" loading="lazy" />
             </a>
           `).join("")}
         </div>
-      ` : ""}
+      `
+          : ""
+      }
     </div>
   `;
 }

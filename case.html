@@ -1679,6 +1679,20 @@
       document.getElementById("status").innerHTML = statusBadge(data.status, statusThai(data.status));
       document.getElementById("priority").innerHTML = priorityBadge(data.priority, data.priority_th || priorityThai(data.priority));
 
+      const summaryCaseCode = document.getElementById("summary_case_code");
+      if (summaryCaseCode) summaryCaseCode.textContent = data.case_code || "-";
+
+      const summaryStatus = document.getElementById("summary_status");
+      if (summaryStatus) summaryStatus.textContent = statusThai(data.status);
+
+      const summaryPriority = document.getElementById("summary_priority");
+      if (summaryPriority) {
+        summaryPriority.textContent = data.priority_th || priorityThai(data.priority);
+      }
+
+      const summaryAssigned = document.getElementById("summary_assigned_to");
+      if (summaryAssigned) summaryAssigned.textContent = data.assigned_to || "-";
+      
 // ===== HERO CARD FINAL (วางตรงนี้) =====
 const elCase = document.getElementById("hero_case_code");
 if (elCase) elCase.innerText = data.case_code || "-";

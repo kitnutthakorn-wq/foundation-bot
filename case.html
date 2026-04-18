@@ -3460,7 +3460,183 @@ function enhanceWorkFilesPanelHeader(files = []){
       : "ยังไม่มีรูปภาพภาคสนามที่แนบเข้ามา";
   }
 }
-/* ===== END GOLDEN SAFE PATCH ===== */    
+/* ===== GOLDEN SAFE PATCH: RIGHT COLUMN FINAL ===== */
+function gsSetText(id, value){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value == null || value === "" ? "-" : String(value);
+}
+
+function gsSafeProgress(value){
+  const n = Number(value);
+  if (!Number.isFinite(n)) return 0;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function pickLatestTimelineItem(items = []){
+  const list = Array.isArray(items) ? items.slice() : [];
+  if (!list.length) return null;
+
+  list.sort((a, b) => {
+    const at = new Date(a?.updated_at || a?.created_at || a?.logged_at || 0).getTime();
+    const bt = new Date(b?.updated_at || b?.created_at || b?.logged_at || 0).getTime();
+    return bt - at;
+  });
+
+  return list[0] || null;
+}
+
+function renderFieldProgressFromTimeline(items = [], caseData = {}){
+  const latest = pickLatestTimelineItem(items);
+
+  const progress = gsSafeProgress(
+    latest?.progress_percent ??
+    latest?.progress ??
+    caseData?.progress_percent ??
+    caseData?.progress ??
+    0
+  );
+
+  const latestStep =
+    latest?.current_step ||
+    latest?.step_label ||
+    latest?.step_name ||
+    "-";
+
+  const latestWaiting =
+    latest?.waiting_for ||
+    latest?.pending_on ||
+    latest?.waiting_on ||
+    "-";
+
+  const latestBy =
+    latest?.updated_by ||
+    latest?.created_by ||
+    latest?.staff_name ||
+    latest?.staff ||
+    caseData?.assigned_to ||
+    "-";
+
+  const latestStatusRaw = normalizeTimelineStatus(
+    latest?.status ||
+    caseData?.status ||
+    "in_progress"
+  );
+
+  const latestStatusLabel = statusThai(latestStatusRaw);
+
+  const gps = latest ? getTimelineLatLng(latest) : null;
+  const latestArea =
+    latest?.location_text ||
+    latest?.geo_text ||
+    latest?.area ||
+    (gps ? `${gps.lat}, ${gps.lng}` : "-");
+
+  gsSetText("progress_text", `${progress}%`);
+  gsSetText("latest_step", latestStep !== "-" ? latestStep : latestStatusLabel);
+  gsSetText("latest_waiting", latestWaiting);
+  gsSetText("latest_step_help", latestStatusLabel || "-");
+  gsSetText("latest_area", latestArea);
+  gsSetText("latest_by_pill", `ผู้บันทึกล่าสุด: ${latestBy || "-"}`);
+
+  const bar = document.getElementById("progress_bar");
+  if (bar) {
+    bar.style.width = `${progress}%`;
+  }
+}
+
+function normalizeFileUrl(file){
+  return String(
+    file?.url ||
+    file?.file_url ||
+    file?.public_url ||
+    file?.path ||
+    ""
+  ).trim();
+}
+
+function normalizeFileName(file){
+  return String(
+    file?.name ||
+    file?.file_name ||
+    file?.filename ||
+    ""
+  ).trim();
+}
+
+function isImageFile(file){
+  const name = normalizeFileName(file);
+  const url = normalizeFileUrl(file);
+  return /\.(jpg|jpeg|png|webp|gif)$/i.test(name || url);
+}
+
+function getLatestImageFiles(files = [], limit = 3){
+  const imageFiles = (Array.isArray(files) ? files : [])
+    .filter(isImageFile)
+    .slice()
+    .sort((a, b) => {
+      const at = new Date(a?.created_at || a?.uploaded_at || a?.updated_at || 0).getTime();
+      const bt = new Date(b?.created_at || b?.uploaded_at || b?.updated_at || 0).getTime();
+      return bt - at;
+    });
+
+  return imageFiles.slice(0, limit);
+}
+
+function renderLatestFieldImages(files = []){
+  const box = document.getElementById("workFilesSection");
+  if (!box) return;
+
+  const latestImages = getLatestImageFiles(files, 3);
+
+  if (!latestImages.length) {
+    box.innerHTML = `
+      <div style="
+        min-height:180px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:2px dashed #c8d9ff;
+        border-radius:20px;
+        background:linear-gradient(180deg,#f9fbff 0%,#f3f7ff 100%);
+        color:#8a97ab;
+        font-size:18px;
+        font-weight:800;
+      ">
+        ยังไม่มีรูปภาพภาคสนามล่าสุด
+      </div>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="work-files-wrap">
+      <div class="work-file-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+        ${latestImages.map(file => {
+          const url = escapeHtml(normalizeFileUrl(file));
+          const name = escapeHtml(normalizeFileName(file) || "ภาพภาคสนาม");
+          return `
+            <a
+              class="work-image-card"
+              href="${url}"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="border-radius:18px; overflow:hidden;"
+            >
+              <img
+                src="${url}"
+                alt="${name}"
+                loading="lazy"
+                style="width:100%; height:180px; object-fit:cover; display:block;"
+              />
+            </a>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
+}
+/* ===== END GOLDEN SAFE PATCH ===== */ 
 /* ===== END GOLDEN SAFE PATCH ===== */
 
     async function loadProjects(){

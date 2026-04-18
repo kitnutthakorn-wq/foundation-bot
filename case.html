@@ -2877,48 +2877,67 @@ function updateWarRoomCommandBar(data){
           resolvedCaseId = caseData.id || "";
         }
 
-        if (!useCaseId) {
-         wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
-decorateTimelineLatest(updates);
-updateLatestTimelineBanner(updates[0] || null);
+        async function loadCaseTimeline(){
+  const wrap = document.getElementById("case_updates_timeline");
+  if (!wrap) return;
 
-lastTimelineSignature = getTimelineSignature(updates);
-return updates;
-        
-        wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
+  let useCaseId = resolvedCaseId || caseId;
 
-        let updates = [];
-
-        try {
-          updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
-        } catch (primaryErr) {
-          console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
-          const caseData = await fetchJSON(`/api/case/${useCaseId}`);
-          updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
-        }
-
-        latestTimelineCache = Array.isArray(updates) ? updates : [];
-
-        if (!Array.isArray(updates) || updates.length === 0) {
-          wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-          updateLatestTimelineBanner(null);
-          lastTimelineSignature = "empty";
-          return [];
-        }
-
-        wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
-decorateTimelineLatest(updates);
-updateLatestTimelineBanner(updates[0] || null);
-
-lastTimelineSignature = getTimelineSignature(updates);
-return updates;
-      } catch (err) {
-        console.error("LOAD TIMELINE ERROR:", err);
-        wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
-        updateLatestTimelineBanner(null);
-        return [];
-      }
+  try {
+    if (!useCaseId && caseCode) {
+      const caseData = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+      useCaseId = caseData.id;
+      resolvedCaseId = caseData.id || "";
     }
+
+    if (!useCaseId) {
+      wrap.innerHTML = `<div class="timeline-empty">ไม่พบเคส</div>`;
+      updateLatestTimelineBanner(null);
+      lastTimelineSignature = "missing";
+      latestTimelineCache = [];
+      return [];
+    }
+
+    wrap.innerHTML = `<div class="timeline-empty">กำลังโหลด Timeline...</div>`;
+
+    let updates = [];
+
+    try {
+      updates = await fetchJSON(`/api/case/${useCaseId}/updates`);
+    } catch (primaryErr) {
+      console.warn("LOAD TIMELINE PRIMARY ERROR:", primaryErr);
+      const caseData = await fetchJSON(`/api/case/${useCaseId}`);
+      updates = caseData.updates || caseData.case_updates || caseData.timeline || [];
+    }
+
+    latestTimelineCache = Array.isArray(updates) ? updates : [];
+
+    if (!Array.isArray(updates) || updates.length === 0) {
+      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+      updateLatestTimelineBanner(null);
+      lastTimelineSignature = "empty";
+      return [];
+    }
+
+    wrap.innerHTML = updates.map((item, idx) => renderTimelineItem(item, idx)).join("");
+    decorateTimelineLatest(updates);
+    updateLatestTimelineBanner(updates[0] || null);
+
+    const timelineCountBadge = document.getElementById("timelineCountBadge");
+    if (timelineCountBadge) {
+      timelineCountBadge.textContent = `${updates.length} รายการ`;
+    }
+
+    lastTimelineSignature = getTimelineSignature(updates);
+    return updates;
+  } catch (err) {
+    console.error("LOAD TIMELINE ERROR:", err);
+    wrap.innerHTML = `<div class="timeline-empty">โหลด Timeline ไม่สำเร็จ</div>`;
+    updateLatestTimelineBanner(null);
+    latestTimelineCache = [];
+    return [];
+  }
+}
 
     function populateForm(data){
       const staffNameEl = document.getElementById("staffName");

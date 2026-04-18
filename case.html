@@ -1660,54 +1660,7 @@
 
       const summaryAssigned = document.getElementById("summary_assigned_to");
       if (summaryAssigned) summaryAssigned.textContent = data.assigned_to || "-";
-      
-// ===== HERO CARD FINAL (วางตรงนี้) =====
-const elCase = document.getElementById("hero_case_code");
-if (elCase) elCase.innerText = data.case_code || "-";
-
-const elName = document.getElementById("hero_full_name");
-if (elName) elName.innerText = data.full_name || "-";
-
-const loc =
-  data.location ||
-  data.location_text ||
-  (data.latitude && data.longitude
-    ? `${data.latitude}, ${data.longitude}`
-    : "-");
-
-const elLoc = document.getElementById("hero_location");
-if (elLoc) elLoc.innerText = loc;
-
-const elStatus = document.getElementById("hero_status");
-if (elStatus) elStatus.innerText = statusThai(data.status);
-
-const elPriority = document.getElementById("hero_priority");
-if (elPriority) elPriority.innerText = priorityThai(data.priority);
-
-const elUpdated = document.getElementById("hero_updatedAt");
-if (elUpdated) {
-  elUpdated.innerText =
-    formatThaiDateTime(data.last_action_at || data.created_at);
-}
-
-// SLA
-const latest = data.latest_update || data || {};
-const percent = Number(latest.progress_percent || 0);
-
-const elBar = document.getElementById("hero_progressBar");
-if (elBar) elBar.style.width = percent + "%";
-
-const elPercent = document.getElementById("hero_slaPercent");
-if (elPercent) elPercent.innerText = percent + "%";
-
-let slaText = "SLA: ปกติ";
-if (percent >= 80) slaText = "SLA: เกินกำหนดแล้ว";
-else if (percent >= 50) slaText = "SLA: ใกล้เกินกำหนด";
-
-const elSla = document.getElementById("hero_slaText");
-if (elSla) elSla.innerText = slaText;
-}
-    
+        
     function updateWarRoomCommandBar(data){
       const statusEl = document.getElementById("wr_badge_status");
       const priorityEl = document.getElementById("wr_badge_priority");

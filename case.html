@@ -1488,6 +1488,222 @@ button,
   display:none !important;
 }
 
+/* ===== CASE INFO CARD — MATCH FINAL REFERENCE ===== */
+
+#warroomColLeft > .panel-card:first-child{
+  padding:20px !important;
+  border-radius:26px !important;
+  overflow:hidden !important;
+}
+
+#warroomColLeft > .panel-card:first-child .panel-header{
+  margin-bottom:14px !important;
+  padding-bottom:12px !important;
+  border-bottom:1px solid #dfe7ef !important;
+}
+
+#warroomColLeft > .panel-card:first-child .panel-title{
+  display:flex !important;
+  align-items:center !important;
+  gap:12px !important;
+  font-size:21px !important;
+  line-height:1.2 !important;
+  font-weight:800 !important;
+  color:#12365b !important;
+}
+
+#warroomColLeft > .panel-card:first-child .panel-title::before{
+  content:"☑";
+  width:34px;
+  height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:#eef4ff;
+  color:#4a86ff;
+  font-size:18px;
+  box-shadow:inset 0 0 0 1px #d7e5ff;
+}
+
+#warroomColLeft > .panel-card:first-child .panel-sub{
+  display:block !important;
+  font-size:13px !important;
+  line-height:1.45 !important;
+  color:#7a8798 !important;
+  font-weight:500 !important;
+}
+
+#warroomColLeft > .panel-card:first-child::before,
+#warroomColLeft > .panel-card:first-child::after{
+  display:none !important;
+  content:none !important;
+}
+
+.summary-strip{
+  display:none !important;
+}
+
+.case-info-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:14px !important;
+}
+
+.case-info-grid > div{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+  min-width:0 !important;
+}
+
+.case-info-grid .label{
+  margin:0 !important;
+  font-size:13px !important;
+  line-height:1.25 !important;
+  font-weight:700 !important;
+  color:#6e7c8f !important;
+}
+
+.case-info-grid .value{
+  min-height:54px !important;
+  border-radius:16px !important;
+  border:1px solid #dfe7ef !important;
+  background:#f8fbff !important;
+  padding:14px 16px !important;
+  font-size:15px !important;
+  line-height:1.45 !important;
+  font-weight:600 !important;
+  color:#16385c !important;
+  box-shadow:none !important;
+  display:flex !important;
+  align-items:center !important;
+  white-space:pre-wrap !important;
+  word-break:break-word !important;
+}
+
+/* แถวบน 4 กล่อง */
+.case-info-grid > div:nth-child(1) .value,
+.case-info-grid > div:nth-child(2) .value,
+.case-info-grid > div:nth-child(3) .value,
+.case-info-grid > div:nth-child(4) .value{
+  min-height:84px !important;
+  align-items:flex-start !important;
+  padding-top:16px !important;
+}
+
+/* ชื่อผู้ขอ */
+.case-info-grid > div:nth-child(5){
+  grid-column:1 / -1 !important;
+}
+.case-info-grid > div:nth-child(5) .value{
+  min-height:58px !important;
+}
+
+/* เบอร์โทร / พื้นที่ */
+.case-info-grid > div:nth-child(6) .value,
+.case-info-grid > div:nth-child(7) .value{
+  min-height:56px !important;
+}
+
+/* หมวดปัญหา */
+.case-info-grid > div:nth-child(8) .value{
+  min-height:56px !important;
+}
+
+/* สถานะ / ระดับ */
+.case-info-grid > div:nth-child(9) .value,
+.case-info-grid > div:nth-child(10) .value{
+  min-height:56px !important;
+}
+
+/* ผู้รับเคส / โครงการ */
+.case-info-grid > div:nth-child(11) .value,
+.case-info-grid > div:nth-child(12) .value{
+  min-height:56px !important;
+}
+
+/* รายละเอียดปัญหา */
+.case-info-grid > div:nth-child(13){
+  grid-column:1 / -1 !important;
+}
+.case-info-grid > div:nth-child(13) .value{
+  min-height:58px !important;
+}
+
+/* สร้างเมื่อ / อัปเดตล่าสุด */
+.case-info-grid > div:nth-child(14) .value,
+.case-info-grid > div:nth-child(15) .value{
+  min-height:60px !important;
+}
+
+/* icon หน้าค่าบางช่อง */
+#full_name.value::before,
+#phone.value::before,
+#location.value::before,
+#location_text.value::before{
+  margin-right:8px;
+  flex:none;
+  opacity:.95;
+}
+
+#full_name.value::before{ content:"👤"; }
+#phone.value::before{ content:"📞"; }
+#location.value::before{ content:"📍"; }
+#location_text.value::before{ content:"◎"; }
+
+#status .badge{
+  background:#fff1db !important;
+  color:#cb7416 !important;
+  padding:8px 14px !important;
+  border-radius:999px !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  min-width:auto !important;
+}
+
+#priority .badge{
+  background:#e8f4ff !important;
+  color:#2f8de4 !important;
+  padding:8px 14px !important;
+  border-radius:999px !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  min-width:auto !important;
+}
+
+#case_code,
+#full_name,
+#phone,
+#location,
+#location_text,
+#assigned_to,
+#project_name,
+#problem,
+#created_at,
+#updated_at{
+  font-weight:600 !important;
+}
+
+/* มือถือ */
+@media (max-width:780px){
+  .case-info-grid{
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .case-info-grid > div{
+    grid-column:1 / -1 !important;
+  }
+
+  .case-info-grid > div:nth-child(1) .value,
+  .case-info-grid > div:nth-child(2) .value,
+  .case-info-grid > div:nth-child(3) .value,
+  .case-info-grid > div:nth-child(4) .value{
+    min-height:70px !important;
+  }
+}
+  
 </style>
   
 </head>

@@ -1488,49 +1488,43 @@ button,
   display:none !important;
 }
 
-/* ===== CASE INFO CARD — MATCH FINAL REFERENCE ===== */
+/* ===== CASE INFO CARD — SOFT REFINED THEME (match easier reference) ===== */
 
 #warroomColLeft > .panel-card:first-child{
-  padding:20px !important;
-  border-radius:26px !important;
+  padding:22px !important;
+  border-radius:28px !important;
   overflow:hidden !important;
+  background:#fbfbfc !important;
+  border:1px solid #d9e0e7 !important;
+  box-shadow:0 10px 28px rgba(15,39,71,.05) !important;
 }
 
 #warroomColLeft > .panel-card:first-child .panel-header{
   margin-bottom:14px !important;
-  padding-bottom:12px !important;
-  border-bottom:1px solid #dfe7ef !important;
+  padding-bottom:10px !important;
+  border-bottom:none !important;
 }
 
 #warroomColLeft > .panel-card:first-child .panel-title{
-  display:flex !important;
-  align-items:center !important;
-  gap:12px !important;
-  font-size:21px !important;
-  line-height:1.2 !important;
+  display:block !important;
+  font-size:18px !important;
+  line-height:1.25 !important;
   font-weight:800 !important;
-  color:#12365b !important;
+  color:#133b63 !important;
+  letter-spacing:0 !important;
 }
 
 #warroomColLeft > .panel-card:first-child .panel-title::before{
-  content:"☑";
-  width:34px;
-  height:34px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:12px;
-  background:#eef4ff;
-  color:#4a86ff;
-  font-size:18px;
-  box-shadow:inset 0 0 0 1px #d7e5ff;
+  display:none !important;
+  content:none !important;
 }
 
 #warroomColLeft > .panel-card:first-child .panel-sub{
   display:block !important;
-  font-size:13px !important;
+  margin-top:4px !important;
+  font-size:12px !important;
   line-height:1.45 !important;
-  color:#7a8798 !important;
+  color:#6f7f90 !important;
   font-weight:500 !important;
 }
 
@@ -1541,7 +1535,38 @@ button,
 }
 
 .summary-strip{
-  display:none !important;
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:12px !important;
+  margin-bottom:14px !important;
+}
+
+.summary-item{
+  background:#f2f4f7 !important;
+  border:1px solid #d7dee7 !important;
+  border-radius:18px !important;
+  padding:12px 14px !important;
+  min-height:96px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:space-between !important;
+  box-shadow:none !important;
+}
+
+.summary-label{
+  margin:0 !important;
+  font-size:12px !important;
+  line-height:1.25 !important;
+  font-weight:600 !important;
+  color:#728295 !important;
+}
+
+.summary-value{
+  font-size:15px !important;
+  line-height:1.4 !important;
+  font-weight:800 !important;
+  color:#14385b !important;
+  word-break:break-word !important;
 }
 
 .case-info-grid{
@@ -1559,22 +1584,22 @@ button,
 
 .case-info-grid .label{
   margin:0 !important;
-  font-size:13px !important;
+  font-size:12px !important;
   line-height:1.25 !important;
-  font-weight:700 !important;
-  color:#6e7c8f !important;
+  font-weight:600 !important;
+  color:#728295 !important;
 }
 
 .case-info-grid .value{
   min-height:54px !important;
   border-radius:16px !important;
-  border:1px solid #dfe7ef !important;
-  background:#f8fbff !important;
+  border:1px solid #d7dee7 !important;
+  background:#f2f4f7 !important;
   padding:14px 16px !important;
   font-size:15px !important;
   line-height:1.45 !important;
-  font-weight:600 !important;
-  color:#16385c !important;
+  font-weight:700 !important;
+  color:#14385b !important;
   box-shadow:none !important;
   display:flex !important;
   align-items:center !important;
@@ -1582,7 +1607,7 @@ button,
   word-break:break-word !important;
 }
 
-/* แถวบน 4 กล่อง */
+/* แถวบน 4 กล่อง summary ใน grid หลัก */
 .case-info-grid > div:nth-child(1) .value,
 .case-info-grid > div:nth-child(2) .value,
 .case-info-grid > div:nth-child(3) .value,
@@ -1637,7 +1662,6 @@ button,
   min-height:60px !important;
 }
 
-/* icon หน้าค่าบางช่อง */
 #full_name.value::before,
 #phone.value::before,
 #location.value::before,
@@ -1653,23 +1677,27 @@ button,
 #location_text.value::before{ content:"◎"; }
 
 #status .badge{
-  background:#fff1db !important;
-  color:#cb7416 !important;
-  padding:8px 14px !important;
+  background:#f7e8cc !important;
+  color:#b77212 !important;
+  padding:7px 14px !important;
   border-radius:999px !important;
   font-size:13px !important;
   font-weight:700 !important;
   min-width:auto !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 
 #priority .badge{
-  background:#e8f4ff !important;
-  color:#2f8de4 !important;
-  padding:8px 14px !important;
+  background:#dcebfa !important;
+  color:#2b79cf !important;
+  padding:7px 14px !important;
   border-radius:999px !important;
   font-size:13px !important;
   font-weight:700 !important;
   min-width:auto !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 
 #case_code,
@@ -1681,10 +1709,122 @@ button,
 #project_name,
 #problem,
 #created_at,
-#updated_at{
+#updated_at,
+#summary_status_box,
+#summary_priority_box,
+#summary_assigned_box,
+#category_name{
+  font-weight:700 !important;
+  color:#14385b !important;
+}
+
+/* ===== RIGHT COLUMN SOFT THEME ===== */
+
+#warroomColRight > .panel-card{
+  background:#fbfbfc !important;
+  border:1px solid #d9e0e7 !important;
+  box-shadow:0 10px 28px rgba(15,39,71,.05) !important;
+  border-radius:28px !important;
+}
+
+#warroomColRight .panel-title{
+  font-size:18px !important;
+  line-height:1.25 !important;
+  font-weight:800 !important;
+  color:#133b63 !important;
+}
+
+#warroomColRight .panel-sub{
+  font-size:12px !important;
+  line-height:1.45 !important;
+  color:#6f7f90 !important;
+  font-weight:500 !important;
+}
+
+.field-progress-pro-grid{
+  border:1px solid #d7dee7 !important;
+  background:#f6f7f9 !important;
+  border-radius:22px !important;
+}
+
+.field-progress-hero{
+  background:#fbfbfc !important;
+  color:#14385b !important;
+  border-right:1px solid #d7dee7 !important;
+}
+
+.field-progress-kicker{
+  color:#6f7f90 !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+}
+
+.field-progress-percent{
+  color:#2956d8 !important;
+  font-size:24px !important;
+  font-weight:800 !important;
+}
+
+.field-progress-label{
+  color:#6f7f90 !important;
+  font-size:12px !important;
   font-weight:600 !important;
 }
 
+.field-progress-note{
+  min-height:84px !important;
+  border-radius:16px !important;
+  background:#f2f4f7 !important;
+  border:1px solid #d7dee7 !important;
+  color:#14385b !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+  padding:14px !important;
+}
+
+.field-progress-track.pro{
+  background:#d6dde5 !important;
+  height:14px !important;
+}
+
+.field-progress-bar{
+  background:linear-gradient(90deg,#2f60df 0%, #15829a 100%) !important;
+}
+
+.field-progress-side{
+  background:#fbfbfc !important;
+  border-left:none !important;
+  padding:14px !important;
+  gap:12px !important;
+}
+
+.field-progress-stat-card{
+  min-height:108px !important;
+  border-radius:16px !important;
+  background:#f2f4f7 !important;
+  border:1px solid #d7dee7 !important;
+  padding:14px !important;
+  box-shadow:none !important;
+}
+
+.field-progress-stat-label{
+  color:#728295 !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+}
+
+.field-progress-stat-value{
+  font-size:15px !important;
+  line-height:1.45 !important;
+  font-weight:800 !important;
+  color:#14385b !important;
+}
+
+.status-help{
+  margin-top:4px !important;
+  font-size:12px !important;
+  color:#728295 !important;
+}
 /* มือถือ */
 @media (max-width:780px){
   .case-info-grid{

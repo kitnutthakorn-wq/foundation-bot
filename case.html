@@ -2197,40 +2197,21 @@ function updateWarRoomCommandBar(data){
     }
 
 function focusMapToPoint(lat, lng, timelineId = ""){
-  if (!window._warroomMap) return;
-  if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lng))) return;
-
   const safeLat = Number(lat);
   const safeLng = Number(lng);
 
-  if (typeof window._warroomMap.panTo === "function") {
+  if (!Number.isFinite(safeLat) || !Number.isFinite(safeLng)) return;
+
+  if (window._warroomMap && typeof window._warroomMap.panTo === "function") {
     window._warroomMap.panTo({ lat: safeLat, lng: safeLng });
-  }
-  if (typeof window._warroomMap.setZoom === "function") {
-    window._warroomMap.setZoom(17);
-  }
-
-  if (Array.isArray(window._warroomMarkers)) {
-    window._warroomMarkers.forEach(marker => {
-      if (!marker || typeof marker.getPosition !== "function") return;
-
-      const pos = marker.getPosition();
-      if (!pos || typeof pos.lat !== "function" || typeof pos.lng !== "function") return;
-
-      const isTarget =
-        Math.abs(pos.lat() - safeLat) < 0.000001 &&
-        Math.abs(pos.lng() - safeLng) < 0.000001;
-
-      if (typeof marker.setAnimation === "function" && window.google?.maps?.Animation) {
-        marker.setAnimation(isTarget ? google.maps.Animation.BOUNCE : null);
-
-        if (isTarget) {
-          setTimeout(() => {
-            try { marker.setAnimation(null); } catch (_) {}
-          }, 1400);
-        }
-      }
-    });
+    if (typeof window._warroomMap.setZoom === "function") {
+      window._warroomMap.setZoom(17);
+    }
+  } else {
+    const link = document.getElementById("warroomMapLink");
+    if (link) {
+      link.href = `https://www.google.com/maps?q=${safeLat},${safeLng}`;
+    }
   }
 
   if (timelineId) {
@@ -2444,6 +2425,6 @@ loadProjects().then(async () => {
   
 connectRealtime();
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+
 </body>
 </html>

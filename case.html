@@ -1991,8 +1991,42 @@ button,
       </div>
     </div>
 
-  </div>
+    </div>
 </div>
+
+    <div class="card panel-card" id="timelinePanel">
+      <div class="panel-header" style="flex-direction:row;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+        <div>
+          <h2 class="panel-title">Timeline การอัปเดตภาคสนาม</h2>
+          <div class="panel-sub">แสดงลำดับสิ่งที่ทีมปฏิบัติงานได้ดำเนินการไปแล้วในเคสนี้</div>
+        </div>
+        <div
+          id="timelineCountBadge"
+          style="
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-height:38px;
+            padding:0 16px;
+            border-radius:999px;
+            background:#fff1db;
+            color:#c76711;
+            font-size:14px;
+            font-weight:800;
+            border:1px solid #f7dfb2;
+            white-space:nowrap;
+          "
+        >0 รายการ</div>
+      </div>
+
+      <div id="latestUpdateBanner" class="latest-update-banner">ยังไม่มีอัปเดตล่าสุด</div>
+
+      <div id="case_updates_timeline" class="timeline-list">
+        <div class="timeline-empty">กำลังโหลด Timeline...</div>
+      </div>
+    </div>
+
+  <div class="mobile-actions">
 
 
 

@@ -3509,9 +3509,13 @@ const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
             updateLatestTimelineBanner(null);
           } else {
             wrap.innerHTML = latestTimelineCache.map((item, idx) => renderTimelineItem(item, idx)).join("");
-            decorateTimelineLatest(latestTimelineCache);
-            updateLatestTimelineBanner(latestTimelineCache[0]);
-          }
+decorateTimelineLatest(latestTimelineCache);
+updateLatestTimelineBanner(latestTimelineCache[0]);
+
+const timelineCountBadge = document.getElementById("timelineCountBadge");
+if (timelineCountBadge) {
+  timelineCountBadge.textContent = `${latestTimelineCache.length} รายการ`;
+}
         }
 
         if (caseCode) {

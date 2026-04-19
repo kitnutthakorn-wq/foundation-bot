@@ -3104,11 +3104,75 @@ function gsSafeProgress(value){
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-function renderFieldProgressFromTimeline(items = [], caseData = {}){
-  const list = Array.isArray(items) ? items : [];
+function getAutoProgress(caseData = {}, items = []) {
+  const sorted = Array.isArray(items) ? items.slice() : [];
+  if (!sorted.length) return 0;
+
+  const latest = sorted[0] || {};
+
+  const latestWithStep =
+    sorted.find((item) => String(item.current_step || item.currentStep || item.step_label || item.step_name || "").trim()) || {};
+
+  const latestWithWaiting =
+    sorted.find((item) => String(item.waiting_for || item.waitingFor || item.pending_on || item.waiting_on || "").trim()) || {};
+
+  const latestWithStatus =
+    sorted.find((item) => String(item.status_after || item.status || "").trim()) || {};
+
+  const statusAfter = String(
+    latestWithStatus.status_after ||
+    latest.status_after ||
+    latest.status ||
+    caseData.status ||
+    ""
+  ).toLowerCase();
+
+  const currentStep = String(
+    latestWithStep.current_step ||
+    latestWithStep.currentStep ||
+    latestWithStep.step_label ||
+    latestWithStep.step_name ||
+    caseData.current_step ||
+    caseData.currentStep ||
+    caseData.step_name ||
+    ""
+  ).toLowerCase();
+
+  const waitingFor = String(
+    latestWithWaiting.waiting_for ||
+    latestWithWaiting.waitingFor ||
+    latestWithWaiting.pending_on ||
+    latestWithWaiting.waiting_on ||
+    caseData.waiting_for ||
+    caseData.waitingFor ||
+    ""
+  ).toLowerCase();
+
+  if (statusAfter === "done") return 100;
+  if (statusAfter === "cancelled") return 0;
+
+  if (waitingFor.includes("ลงพื้นที่") || waitingFor.includes("ตรวจ")) return 25;
+  if (waitingFor.includes("ประสาน") || waitingFor.includes("พิจารณา")) return 50;
+  if (waitingFor.includes("ช่วยเหลือ") || waitingFor.includes("ดำเนินการ")) return 75;
+  if (waitingFor.includes("ติดตาม")) return 90;
+
+  if (currentStep.includes("รับเรื่อง")) return 10;
+  if (currentStep.includes("ตรวจ") || currentStep.includes("ลงพื้นที่")) return 25;
+  if (currentStep.includes("ประสาน")) return 50;
+  if (currentStep.includes("ช่วยเหลือ") || currentStep.includes("เสร็จ")) return 75;
+  if (currentStep.includes("ปิดเคส")) return 100;
+
+  if (statusAfter === "in_progress") return 50;
+  if (statusAfter === "new") return 10;
+
+  return 0;
+}
+    
+function renderFieldProgressFromTimeline(items = [], caseData = {}) {
+  const list = Array.isArray(items) ? items.slice() : [];
   const latest = list[0] || null;
 
-  const progress = gsSafeProgress(
+  let progress = gsSafeProgress(
     latest?.progress_percent ??
     latest?.progress ??
     caseData?.progress_percent ??
@@ -3116,44 +3180,27 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}){
     0
   );
 
-  const latestNote =
-    latest?.note ||
-    latest?.message ||
-    latest?.update_note ||
-    caseData?.latest_note ||
-    caseData?.problem ||
-    "-";
+  if (!progress || progress === 0) {
+    progress = getAutoProgress(caseData, list);
+  }
 
   const latestStep =
     latest?.current_step ||
     latest?.step_label ||
     latest?.step_name ||
+    caseData?.current_step ||
+    caseData?.step_name ||
     "-";
 
   const latestWaiting =
     latest?.waiting_for ||
     latest?.pending_on ||
     latest?.waiting_on ||
+    caseData?.waiting_for ||
     "-";
-
-  const latestBy =
-    latest?.updated_by ||
-    latest?.created_by ||
-    latest?.staff_name ||
-    latest?.staff ||
-    caseData?.assigned_to ||
-    "-";
-
-  const latestAt =
-    latest?.updated_at ||
-    latest?.created_at ||
-    latest?.logged_at ||
-    caseData?.updated_at ||
-    caseData?.last_action_at ||
-    caseData?.created_at ||
-    null;
 
   const latestStatusRaw = normalizeTimelineStatus(
+    latest?.status_after ||
     latest?.status ||
     caseData?.status ||
     "in_progress"
@@ -3166,33 +3213,31 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}){
     latest?.location_text ||
     latest?.geo_text ||
     latest?.area ||
+    caseData?.location_text ||
     (gps ? `${gps.lat}, ${gps.lng}` : "-");
 
-  gsSetText("progress_text", `${progress}%`);
-  gsSetText("latest_note", latestNote || "-");
-  gsSetText("latest_step", latestStep || "-");
-  gsSetText("latest_waiting", latestWaiting || "-");
-  gsSetText("latest_by", latestBy || "-");
-  gsSetText("latest_at", latestAt ? formatThaiDateTime(latestAt) : "-");
-  gsSetText("latest_step_help", latestStatusLabel || "-");
+  const latestBy =
+    latest?.updater_name ||
+    latest?.staff_name ||
+    latest?.staff ||
+    latest?.updated_by_name ||
+    latest?.updated_by ||
+    caseData?.last_action_by ||
+    caseData?.assigned_to ||
+    "-";
 
-  gsSetHtml("progress_bar", "");
+  gsSetText("progress_text", `${progress}%`);
+  gsSetText("latest_step", latestStep !== "-" ? latestStep : latestStatusLabel);
+  gsSetText("latest_waiting", latestWaiting || "-");
+  gsSetText("latest_step_help", latestStatusLabel || "-");
+  gsSetText("latest_area", latestArea || "-");
+  gsSetText("latest_by_pill", `ผู้บันทึกล่าสุด: ${latestBy}`);
+
   const bar = document.getElementById("progress_bar");
   if (bar) {
     bar.style.width = `${progress}%`;
   }
-
-  const latestStepEl = document.getElementById("latest_step");
-  if (latestStepEl && (!latestStep || latestStep === "-")) {
-    latestStepEl.textContent = latestStatusLabel || "-";
-  }
-
-  const latestAreaEl = document.getElementById("latest_area");
-  if (latestAreaEl) {
-    latestAreaEl.textContent = latestArea || "-";
-  }
 }
-
 function enhanceWorkFilesPanelTitle(files = []){
   const box = document.getElementById("workFilesSection");
   if (!box) return;

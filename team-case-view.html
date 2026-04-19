@@ -628,6 +628,115 @@
         text-align:center;
       }
     }
+
+.warroom-map-card{
+  min-height:auto;
+}
+
+.warroom-map-body{
+  min-height:360px;
+  border:1px solid #d9e6e3;
+  border-radius:22px;
+  overflow:hidden;
+  background:#eef6f5;
+  position:relative;
+}
+
+.warroom-map-frame{
+  width:100%;
+  height:360px;
+  border:0;
+  display:block;
+  border-radius:22px;
+}
+
+#mapCanvas{
+  width:100%;
+  height:360px;
+  border-radius:22px;
+}
+
+.warroom-map-empty{
+  min-height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  color:#6b7280;
+  text-align:center;
+  line-height:1.6;
+}
+
+.warroom-map-meta{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+  margin-top:14px;
+  font-size:14px;
+  color:#5d6f82;
+}
+
+.warroom-map-link,
+.warroom-map-source{
+  font-size:15px;
+  font-weight:800;
+  color:#00758d;
+  text-decoration:none;
+}
+
+.manage-case-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.manage-case-grid .full{
+  grid-column:1 / -1;
+}
+
+.input-shell{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.manage-case-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.manage-case-actions .btn-secondary:first-child{
+  grid-column:1 / -1;
+}
+
+.manage-case-actions .btn-primary{
+  grid-column:1 / -1;
+}
+
+.btn-danger{
+  background:#dc2626;
+  color:#fff;
+  border:none;
+}
+
+@media (max-width:780px){
+  .manage-case-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .manage-case-actions{
+    grid-template-columns:1fr !important;
+  }
+
+  .manage-case-actions .btn-secondary:first-child,
+  .manage-case-actions .btn-primary{
+    grid-column:auto;
+  }
+}
+    
   </style>
 </head>
 <body>
@@ -744,6 +853,62 @@
               <p>รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส</p>
             </div>
           </div>
+
+<div class="card" id="adminManageCaseCard">
+  <div class="headline">
+    <div>
+      <h2>จัดการเคส</h2>
+      <p>ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</p>
+    </div>
+  </div>
+
+  <div class="manage-case-grid">
+    <div class="input-shell">
+      <div class="label">ชื่อผู้รับเคส</div>
+      <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
+    </div>
+
+    <div class="input-shell">
+      <div class="label">สถานะที่จะบันทึก</div>
+      <select id="statusSelect">
+        <option value="new">ใหม่</option>
+        <option value="in_progress">กำลังดำเนินการ</option>
+        <option value="done">เสร็จสิ้น</option>
+        <option value="cancelled">ยกเลิก</option>
+      </select>
+    </div>
+
+    <div class="input-shell">
+      <div class="label">ระดับเคส</div>
+      <select id="prioritySelect">
+        <option value="normal">ปกติ</option>
+        <option value="urgent">ด่วน</option>
+      </select>
+    </div>
+
+    <div class="input-shell">
+      <div class="label">โครงการที่สังกัด</div>
+      <select id="projectSelect">
+        <option value="">- เลือกโครงการ -</option>
+      </select>
+    </div>
+
+    <div class="field full">
+      <label>แนวทางการใช้งาน</label>
+      <div class="value-box multiline">
+        เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+      </div>
+    </div>
+  </div>
+
+  <div class="manage-case-actions">
+    <button class="btn-secondary" type="button" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
+    <button class="btn-primary" type="button" onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
+    <button class="btn-danger" type="button" onclick="closeCase()">ปิดเคส</button>
+    <button class="btn-secondary" type="button" onclick="resetForm()">รีเซ็ตค่า</button>
+  </div>
+</div>
+          
           <div id="latestImages" class="image-grid"></div>
         </div>
       </div>

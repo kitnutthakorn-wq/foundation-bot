@@ -2404,12 +2404,14 @@ button,
         }
         if (typeof candidate === "string" && candidate.trim()) {
           try {
-            const parsed = JSON.parse(candidate);
-            if (Array.isArray(parsed)) {
-              return parsed.filter(Boolean).map(String);
-            }
-          } catch (_) {}
-          return candidate.split(",").map(s => s.trim()).filter(Boolean);
+  const parsed = JSON.parse(candidate);
+  if (Array.isArray(parsed)) {
+    return parsed.filter(Boolean).map(String);
+  }
+} catch (err) {
+  // ignore parse error
+}
+return candidate.split(",").map((s) => s.trim()).filter(Boolean);
         }
       }
 

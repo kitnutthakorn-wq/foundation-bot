@@ -1080,7 +1080,25 @@ function qs(name){
   return new URLSearchParams(window.location.search).get(name) || "";
 }
 
-    function escapeHtml(str){
+function getCaseCodeFromUrl() {
+  const direct = String(qs("case_code") || "").trim();
+  if (direct) return direct;
+
+  const liffStateRaw = String(qs("liff.state") || qs("liff_state") || "").trim();
+  if (liffStateRaw) {
+    try {
+      const decoded = decodeURIComponent(liffStateRaw);
+      const nested = new URLSearchParams(decoded.startsWith("?") ? decoded.slice(1) : decoded);
+      const nestedCaseCode = String(nested.get("case_code") || "").trim();
+      if (nestedCaseCode) return nestedCaseCode;
+    } catch (err) {
+      console.warn("parse liff.state error:", err);
+    }
+  }
+
+  return "";
+}    
+  function escapeHtml(str){
   return String(str ?? "")
     .replaceAll("&","&amp;")
     .replaceAll("<","&lt;")
@@ -1984,14 +2002,22 @@ async function closeCase(){
     
     async function bootstrap(){
       try{
-        currentCaseCode = qs("case_code").trim();
-        if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
+       await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
 
-await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+if (window.liff && typeof liff.isLoggedIn === "function" && !liff.isLoggedIn()) {
+  liff.login({ redirectUri: window.location.href });
+  return;
+}
+
+currentCaseCode = getCaseCodeFromUrl();
+if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
+
 await loadProjectOptions();
 await loadViewerRole();
 await loadCaseReport();
 connectRealtime();
+
+      
         if(fallbackInterval) clearInterval(fallbackInterval);
         fallbackInterval = setInterval(() => {
           if(!document.hidden){

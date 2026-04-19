@@ -1992,7 +1992,6 @@ await loadProjectOptions();
 await loadViewerRole();
 await loadCaseReport();
 connectRealtime();
-
         if(fallbackInterval) clearInterval(fallbackInterval);
         fallbackInterval = setInterval(() => {
           if(!document.hidden){

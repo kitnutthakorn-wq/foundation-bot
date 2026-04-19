@@ -1101,9 +1101,9 @@ function getLineUserIdFromPage() {
 function applyRoleUI(role) {
   viewerRole = String(role || "viewer").toLowerCase();
 
-  const adminBox = document.getElementById("adminOnlyActions");
+  const adminBox = document.getElementById("adminManageCaseCard");
   if (adminBox) {
-    adminBox.style.display = viewerRole === "admin" ? "flex" : "none";
+    adminBox.style.display = viewerRole === "admin" ? "block" : "none";
   }
 }
 
@@ -1845,6 +1845,10 @@ function renderInfoUpdates(infoUpdates = []) {
       }
     }
 
+function showToast(title, message){
+  alert(`${title}\n${message}`);
+}
+    
 function resetForm(){
   const staff = document.getElementById("staffName");
   const status = document.getElementById("statusSelect");
@@ -1893,7 +1897,7 @@ async function saveCaseSettings(){
     alert("บันทึกไม่สำเร็จ: " + err.message);
   }
 }
-
+    
 async function assignCase(){
   const activeCaseCode = String(
     document.getElementById("sumCaseCode")?.textContent ||
@@ -1926,6 +1930,7 @@ async function assignCase(){
     alert("รับเคสไม่สำเร็จ: " + err.message);
   }
 }
+    
 async function closeCase(){
   const activeCaseCode = String(
     document.getElementById("sumCaseCode")?.textContent ||
@@ -1966,11 +1971,11 @@ async function closeCase(){
         currentCaseCode = qs("case_code").trim();
         if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
 
-       await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
-        await loadProjectOptions();
-        await loadCaseReport();
-        await loadViewerRole();
-        connectRealtime();
+      await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+await loadProjectOptions();
+await loadViewerRole();
+await loadCaseReport();
+connectRealtime();
 
         if(fallbackInterval) clearInterval(fallbackInterval);
         fallbackInterval = setInterval(() => {

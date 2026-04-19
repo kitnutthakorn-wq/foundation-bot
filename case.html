@@ -3704,23 +3704,51 @@ function enhanceWorkFilesPanelHeader(files = []){
       formState.initialized = true;
     }
 
- async function refreshCaseView(){
+async function refreshCaseView() {
   const data = await loadCase();
-  const timelineItems = await loadCaseTimeline();
-
-  renderFieldProgressFromTimeline(timelineItems, data || {});
 
   if (data) {
-    renderWarRoomMap(data);
+    resolvedCaseId = data.id || resolvedCaseId || "";
+    updateCaseStaticFields(data);
+    fillMissingCaseSummaryMiniPatch(data);
+    updateWarRoomCommandBar(data);
+    populateForm(data);
   }
 
-  decorateTimelineLatest(timelineItems);
+  const teamDetail = await loadTeamCaseDetail(
+    data?.case_code || caseCode || ""
+  );
+
+  const fieldCase = teamDetail?.case || {};
+  const fieldUpdates = Array.isArray(teamDetail?.updates) ? teamDetail.updates : [];
+  const fieldInfoUpdates = Array.isArray(teamDetail?.info_updates) ? teamDetail.info_updates : [];
+
+  latestTimelineCache = fieldUpdates;
+
+  renderFieldProgressFromTimeline(fieldUpdates, fieldCase);
+  renderWarRoomMapAdvanced(fieldCase || data || {}, fieldUpdates);
+
+  const wrap = document.getElementById("case_updates_timeline");
+  if (wrap) {
+    if (!fieldUpdates.length) {
+      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+      updateLatestTimelineBanner(null);
+    } else {
+      wrap.innerHTML = fieldUpdates.map((item, idx) => renderTimelineItem(item, idx)).join("");
+      decorateTimelineLatest(fieldUpdates);
+      updateLatestTimelineBanner(fieldUpdates[0]);
+    }
+  }
+
+  const timelineCountBadge = document.getElementById("timelineCountBadge");
+  if (timelineCountBadge) {
+    timelineCountBadge.textContent = `${fieldUpdates.length} รายการ`;
+  }
 
   if (caseCode) {
     await loadWorkFiles(caseCode);
   }
 }
-
    async function softRefreshWarRoom(reason = "system") {
   const now = Date.now();
   if (now - lastRealtimeAt < 1200) return;

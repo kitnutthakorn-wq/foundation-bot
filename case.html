@@ -3491,111 +3491,126 @@ function enhanceWorkFilesPanelHeader(files = []){
   }
 }
 
-    async function softRefreshWarRoom(reason = "system"){
-      const now = Date.now();
-      if (now - lastRealtimeAt < 1200) return;
-      lastRealtimeAt = now;
+    async function softRefreshWarRoom(reason = "system") {
+  const now = Date.now();
+  if (now - lastRealtimeAt < 1200) return;
+  lastRealtimeAt = now;
 
-      try {
-        setWarRoomLiveChip("● กำลังซิงก์ข้อมูลสด...", "syncing");
+  try {
+    setWarRoomLiveChip("● กำลังซิงก์ข้อมูลสด...", "syncing");
 
-        let data;
-        if (resolvedCaseId) {
-          data = await fetchJSON(`/api/case/${resolvedCaseId}`);
-        } else if (caseId) {
-          data = await fetchJSON(`/api/case/${caseId}`);
-        } else if (caseCode) {
-          data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
-        } else {
-          setWarRoomLiveChip("● ไม่พบเคสสำหรับซิงก์", "warn");
-          return;
+    let data;
+    if (resolvedCaseId) {
+      data = await fetchJSON(`/api/case/${resolvedCaseId}`);
+    } else if (caseId) {
+      data = await fetchJSON(`/api/case/${caseId}`);
+    } else if (caseCode) {
+      data = await fetchJSON(`/api/help-requests/by-case-code/${encodeURIComponent(caseCode)}`);
+    } else {
+      setWarRoomLiveChip("● ไม่พบเคสสำหรับซิงก์", "warn");
+      return;
+    }
+
+    resolvedCaseId = data.id || resolvedCaseId || "";
+
+    updateCaseStaticFields(data);
+    fillMissingCaseSummaryMiniPatch(data);
+    updateWarRoomCommandBar(data);
+    populateForm(data);
+
+    let timelineItems = [];
+    try {
+      timelineItems = await fetchJSON(`/api/case/${resolvedCaseId}/updates`);
+    } catch (err) {
+      console.warn("SOFT REFRESH TIMELINE FALLBACK:", err);
+      const caseDetail = await fetchJSON(`/api/case/${resolvedCaseId}`);
+      timelineItems = caseDetail.updates || caseDetail.case_updates || caseDetail.timeline || [];
+    }
+
+    latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
+
+    renderFieldProgressFromTimeline(latestTimelineCache, data || {});
+
+    const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
+    const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
+
+    const bestPoint = getBestMapCoordinates(data, latestTimelineCache);
+    const nextMapSignature = getMapSignatureFromPoint(bestPoint);
+    const mapChanged = nextMapSignature !== lastMapSignature;
+
+    renderWarRoomMapAdvanced(data, latestTimelineCache);
+
+    if (bestPoint && mapChanged) {
+      const focusTimelineId =
+        bestPoint?.item?.id ||
+        (bestPoint?.item
+          ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0`
+          : "");
+
+      setTimeout(() => {
+        safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
+      }, 280);
+    }
+
+    const wrap = document.getElementById("case_updates_timeline");
+    if (wrap) {
+      if (!Array.isArray(latestTimelineCache) || !latestTimelineCache.length) {
+        wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+        updateLatestTimelineBanner(null);
+
+        const timelineCountBadge = document.getElementById("timelineCountBadge");
+        if (timelineCountBadge) {
+          timelineCountBadge.textContent = "0 รายการ";
         }
+      } else {
+        wrap.innerHTML = latestTimelineCache
+          .map((item, idx) => renderTimelineItem(item, idx))
+          .join("");
 
-         resolvedCaseId = data.id || resolvedCaseId || "";
-        updateCaseStaticFields(data);
-        fillMissingCaseSummaryMiniPatch(data);
-        updateWarRoomCommandBar(data);
-        populateForm(data);
+        decorateTimelineLatest(latestTimelineCache);
+        updateLatestTimelineBanner(latestTimelineCache[0]);
 
-        let timelineItems = [];
-        try {
-          timelineItems = await fetchJSON(`/api/case/${resolvedCaseId}/updates`);
-        } catch (err) {
-          console.warn("SOFT REFRESH TIMELINE FALLBACK:", err);
-          const caseDetail = await fetchJSON(`/api/case/${resolvedCaseId}`);
-          timelineItems = caseDetail.updates || caseDetail.case_updates || caseDetail.timeline || [];
+        const timelineCountBadge = document.getElementById("timelineCountBadge");
+        if (timelineCountBadge) {
+          timelineCountBadge.textContent = `${latestTimelineCache.length} รายการ`;
         }
-
-latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
-renderFieldProgressFromTimeline(latestTimelineCache, data || {});
-const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
-        const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
-
-        const bestPoint = getBestMapCoordinates(data, latestTimelineCache);
-        const nextMapSignature = getMapSignatureFromPoint(bestPoint);
-        const mapChanged = nextMapSignature !== lastMapSignature;
-
-       renderWarRoomMapAdvanced(data, latestTimelineCache);
-        
-  if (bestPoint && mapChanged){
-  const focusTimelineId =
-    bestPoint?.item?.id ||
-    (bestPoint?.item ? `${bestPoint.item.updated_at || bestPoint.item.created_at || ""}_0` : "");
-
-  setTimeout(() => {
-    safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
-  }, 280);
-}
-
-        const wrap = document.getElementById("case_updates_timeline");
-        if (wrap) {
-          if (!Array.isArray(latestTimelineCache) || !latestTimelineCache.length) {
-            wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-            updateLatestTimelineBanner(null);
-          } else {
-            wrap.innerHTML = latestTimelineCache.map((item, idx) => renderTimelineItem(item, idx)).join("");
-decorateTimelineLatest(latestTimelineCache);
-updateLatestTimelineBanner(latestTimelineCache[0]);
-
-const timelineCountBadge = document.getElementById("timelineCountBadge");
-if (timelineCountBadge) {
-  timelineCountBadge.textContent = `${latestTimelineCache.length} รายการ`;
-}
-        }
-
-        if (caseCode) {
-          loadWorkFiles(caseCode).catch(console.error);
-        }
-
-        if (mapChanged) {
-          flashMapPanel();
-          lastMapSignature = nextMapSignature;
-        }
-
-        if (timelineChanged) {
-          flashTimelinePanel();
-          lastTimelineSignature = nextTimelineSignature;
-          maybeAutoFocusLatestUpdate(latestTimelineCache, false);
-        }
-
-        const changedParts = [];
-        if (mapChanged) changedParts.push("Map");
-        if (timelineChanged) changedParts.push("Timeline");
-
-        if (changedParts.length) {
-          showToast("War Room Sync", `${changedParts.join(" + ")} อัปเดตแล้ว`);
-        }
-
-        setWarRoomLiveChip(
-          reason === "manual" ? "● รีเฟรชล่าสุดเรียบร้อย" : "● Realtime ซิงก์ล่าสุดแล้ว",
-          "live"
-        );
-      } catch (err) {
-        console.error("SOFT REFRESH WAR ROOM ERROR:", err);
-        setWarRoomLiveChip("● ซิงก์สดมีปัญหา กำลังรอรอบถัดไป", "warn");
       }
     }
 
+    if (caseCode) {
+      loadWorkFiles(caseCode).catch(console.error);
+    }
+
+    if (mapChanged) {
+      flashMapPanel();
+      lastMapSignature = nextMapSignature;
+    }
+
+    if (timelineChanged) {
+      flashTimelinePanel();
+      lastTimelineSignature = nextTimelineSignature;
+      maybeAutoFocusLatestUpdate(latestTimelineCache, false);
+    }
+
+    const changedParts = [];
+    if (mapChanged) changedParts.push("Map");
+    if (timelineChanged) changedParts.push("Timeline");
+
+    if (changedParts.length) {
+      showToast("War Room Sync", `${changedParts.join(" + ")} อัปเดตแล้ว`);
+    }
+
+    setWarRoomLiveChip(
+      reason === "manual"
+        ? "● รีเฟรชล่าสุดเรียบร้อย"
+        : "● Realtime ซิงก์ล่าสุดแล้ว",
+      "live"
+    );
+  } catch (err) {
+    console.error("SOFT REFRESH WAR ROOM ERROR:", err);
+    setWarRoomLiveChip("● ซิงก์สดมีปัญหา กำลังรอรอบถัดไป", "warn");
+  }
+}
 function focusMapToPoint(lat, lng, timelineId = ""){
   const safeLat = Number(lat);
   const safeLng = Number(lng);

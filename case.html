@@ -3765,7 +3765,38 @@ function renderLatestImagesFromTeam(updates = []) {
       resetFormLocking();
       formState.initialized = true;
     }
+<script>
+function renderTimelineFromTeam(fieldCase = {}, updates = []) {
+  const wrap = document.getElementById("case_updates_timeline");
+  if (!wrap) return;
 
+  const safeUpdates = Array.isArray(updates) ? updates : [];
+
+  if (!safeUpdates.length) {
+    wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
+
+    const timelineCountBadge = document.getElementById("timelineCountBadge");
+    if (timelineCountBadge) {
+      timelineCountBadge.textContent = `0 รายการ`;
+    }
+
+    updateLatestTimelineBanner(null);
+    lastTimelineSignature = "empty";
+    return;
+  }
+
+  wrap.innerHTML = safeUpdates.map((item, idx) => renderTimelineItem(item, idx)).join("");
+
+  const timelineCountBadge = document.getElementById("timelineCountBadge");
+  if (timelineCountBadge) {
+    timelineCountBadge.textContent = `${safeUpdates.length} รายการ`;
+  }
+
+  decorateTimelineLatest(safeUpdates);
+  updateLatestTimelineBanner(safeUpdates[0] || null);
+  lastTimelineSignature = getTimelineSignature(safeUpdates);
+}
+</script>
 async function refreshCaseView() {
   const data = await loadCase();
 

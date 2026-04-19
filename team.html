@@ -668,19 +668,27 @@ if (window.location.search.includes("liffLogin=1")) {
   }
 
   // 🔥 STEP 2: เช็ค redirect loop กันเด้งซ้ำ
-  const urlParams = new URLSearchParams(window.location.search);
-  const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
+  const isTeamHtmlPage = window.location.pathname.includes("team.html");
 
-  if (!alreadyTriedLogin) {
-    const redirectUrl = window.location.href + (window.location.search ? "&" : "?") + "liffLogin=1";
-    liff.login({ redirectUri: redirectUrl });
-  } else {
-    console.warn("⚠️ Skip login loop");
-  }
-
+if (isTeamHtmlPage) {
+ 
   return;
 }
 
+const urlParams = new URLSearchParams(window.location.search);
+const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
+
+if (!liff.isLoggedIn()) {
+  if (!alreadyTriedLogin) {
+    const redirectUrl =
+      window.location.href + (window.location.search ? "&" : "?") + "liffLogin=1";
+    liff.login({ redirectUri: redirectUrl });
+    return;
+  } else {
+    console.warn("⚠ Skip login loop");
+    return;
+  }
+}
   // 3) login แล้ว ดึง profile จริง + cache ไว้
   try {
     currentProfile = await liff.getProfile();

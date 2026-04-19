@@ -3105,19 +3105,44 @@ function gsSafeProgress(value){
 }
 
 function getAutoProgress(caseData = {}, items = []) {
-  const sorted = Array.isArray(items) ? items.slice() : [];
+  const sorted = Array.isArray(items)
+    ? items.slice().sort((a, b) => {
+        const aTime = new Date(a?.updated_at || a?.created_at || 0).getTime();
+        const bTime = new Date(b?.updated_at || b?.created_at || 0).getTime();
+        return bTime - aTime;
+      })
+    : [];
+
   if (!sorted.length) return 0;
 
   const latest = sorted[0] || {};
 
   const latestWithStep =
-    sorted.find((item) => String(item.current_step || item.currentStep || item.step_label || item.step_name || "").trim()) || {};
+    sorted.find((item) =>
+      String(
+        item?.current_step ||
+        item?.currentStep ||
+        item?.step_label ||
+        item?.step_name ||
+        ""
+      ).trim()
+    ) || {};
 
   const latestWithWaiting =
-    sorted.find((item) => String(item.waiting_for || item.waitingFor || item.pending_on || item.waiting_on || "").trim()) || {};
+    sorted.find((item) =>
+      String(
+        item?.waiting_for ||
+        item?.waitingFor ||
+        item?.pending_on ||
+        item?.waiting_on ||
+        ""
+      ).trim()
+    ) || {};
 
   const latestWithStatus =
-    sorted.find((item) => String(item.status_after || item.status || "").trim()) || {};
+    sorted.find((item) =>
+      String(item?.status_after || item?.status || "").trim()
+    ) || {};
 
   const statusAfter = String(
     latestWithStatus.status_after ||
@@ -3167,9 +3192,16 @@ function getAutoProgress(caseData = {}, items = []) {
 
   return 0;
 }
-    
+
 function renderFieldProgressFromTimeline(items = [], caseData = {}) {
-  const list = Array.isArray(items) ? items.slice() : [];
+  const list = Array.isArray(items)
+    ? items.slice().sort((a, b) => {
+        const aTime = new Date(a?.updated_at || a?.created_at || 0).getTime();
+        const bTime = new Date(b?.updated_at || b?.created_at || 0).getTime();
+        return bTime - aTime;
+      })
+    : [];
+
   const latest = list[0] || null;
 
   let progress = gsSafeProgress(
@@ -3183,6 +3215,8 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}) {
   if (!progress || progress === 0) {
     progress = getAutoProgress(caseData, list);
   }
+
+  progress = Math.max(0, Math.min(100, Number(progress || 0)));
 
   const latestStep =
     latest?.current_step ||
@@ -3216,7 +3250,7 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}) {
     caseData?.location_text ||
     (gps ? `${gps.lat}, ${gps.lng}` : "-");
 
-  const latestBy =
+  let latestBy =
     latest?.updater_name ||
     latest?.staff_name ||
     latest?.staff ||
@@ -3225,6 +3259,17 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}) {
     caseData?.last_action_by ||
     caseData?.assigned_to ||
     "-";
+
+  if (/^U[a-zA-Z0-9]{10,}$/.test(String(latestBy || "").trim())) {
+    latestBy =
+      latest?.updater_name ||
+      latest?.staff_name ||
+      latest?.staff ||
+      latest?.updated_by_name ||
+      caseData?.last_action_by ||
+      caseData?.assigned_to ||
+      latestBy;
+  }
 
   gsSetText("progress_text", `${progress}%`);
   gsSetText("latest_step", latestStep !== "-" ? latestStep : latestStatusLabel);
@@ -3238,6 +3283,7 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}) {
     bar.style.width = `${progress}%`;
   }
 }
+    
 function enhanceWorkFilesPanelTitle(files = []){
   const box = document.getElementById("workFilesSection");
   if (!box) return;

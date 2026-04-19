@@ -3766,9 +3766,33 @@ function renderLatestImagesFromTeam(updates = []) {
       formState.initialized = true;
     }
 
+async function refreshCaseView() {
+  const data = await loadCase();
 
+  if (data) {
+    resolvedCaseId = data.id || resolvedCaseId || "";
+    updateCaseStaticFields(data);
+    fillMissingCaseSummaryMiniPatch(data);
+    updateWarRoomCommandBar(data);
+    populateForm(data);
+  }
+
+  const teamDetail = await loadTeamCaseDetail(
+    data?.case_code || caseCode || ""
+  );
+
+  const fieldCase = teamDetail?.case || {};
+  const fieldUpdates = Array.isArray(teamDetail?.updates) ? teamDetail.updates : [];
+
+  latestTimelineCache = fieldUpdates;
+
+  renderFieldProgressFromTimeline(fieldUpdates, fieldCase);
+  renderWarRoomMapAdvanced(fieldCase || data || {}, fieldUpdates);
+  renderTimelineFromTeam(fieldCase, fieldUpdates);
+  renderLatestImagesFromTeam(fieldUpdates);
+}
     
- async function softRefreshWarRoom(reason = "system") {
+async function softRefreshWarRoom(reason = "system") {
   const now = Date.now();
   if (now - lastRealtimeAt < 1200) return;
   lastRealtimeAt = now;
@@ -3859,6 +3883,7 @@ function renderLatestImagesFromTeam(updates = []) {
     setWarRoomLiveChip("● ซิงก์สดมีปัญหา กำลังรอรอบถัดไป", "warn");
   }
 }
+    
 function focusMapToPoint(lat, lng, timelineId = ""){
   const safeLat = Number(lat);
   const safeLng = Number(lng);

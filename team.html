@@ -668,10 +668,9 @@ if (window.location.search.includes("liffLogin=1")) {
   }
 
   // 🔥 STEP 2: เช็ค redirect loop กันเด้งซ้ำ
-  const isTeamHtmlPage = window.location.pathname.includes("team.html");
+const isTeamHtmlPage = window.location.pathname.includes("team.html");
 
 if (isTeamHtmlPage) {
- 
   return;
 }
 
@@ -689,21 +688,23 @@ if (!liff.isLoggedIn()) {
     return;
   }
 }
-  // 3) login แล้ว ดึง profile จริง + cache ไว้
-  try {
-    currentProfile = await liff.getProfile();
-    localStorage.setItem('line_profile_cache', JSON.stringify(currentProfile));
-  } catch (err) {
-    if (cachedProfile) {
-      currentProfile = JSON.parse(cachedProfile);
-    } else {
-      throw err;
-    }
-  }
 
-  bindProfile(currentProfile, 'ทีมงาน');
-  document.getElementById('envChip').textContent = 'External browser';
+// 3) login แล้ว ดึง profile จริง + cache ไว้
+try {
+  currentProfile = await liff.getProfile();
+  localStorage.setItem("line_profile_cache", JSON.stringify(currentProfile));
+} catch (err) {
+  if (cachedProfile) {
+    currentProfile = JSON.parse(cachedProfile);
+  } else {
+    throw err;
+  }
 }
+
+bindProfile(currentProfile, "ทีมงาน");
+document.getElementById("envChip").textContent = "External browser";
+}
+    
 async function loadTeamRole(){try{if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return; const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.TEAM_ROLE_ENDPOINT}?userId=${encodeURIComponent(currentProfile.userId)}`); if(data?.roleName) document.getElementById('userRole').textContent=data.roleName;}catch(err){console.warn(err.message);}}
 async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
 

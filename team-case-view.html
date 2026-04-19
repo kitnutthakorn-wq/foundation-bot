@@ -1560,7 +1560,7 @@ if (
   locationTextLinkEl.style.textDecoration = "none";
 }
 document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
-   
+}   
 function renderLatestImages(updates = []) {
   const latestWithImages = [...updates].find(
     item => Array.isArray(item.images) && item.images.filter(Boolean).length > 0

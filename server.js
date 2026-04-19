@@ -6853,6 +6853,7 @@ app.get("/api/cases/map", async (req, res) => {
 
 function getViewerLineUserId(req) {
   return String(
+    req.body?.line_user_id ||
     req.query.line_user_id ||
     req.headers["x-line-user-id"] ||
     req.headers["x-user-id"] ||

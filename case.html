@@ -3721,7 +3721,7 @@ function enhanceWorkFilesPanelHeader(files = []){
   }
 }
 
-    async function softRefreshWarRoom(reason = "system") {
+   async function softRefreshWarRoom(reason = "system") {
   const now = Date.now();
   if (now - lastRealtimeAt < 1200) return;
   lastRealtimeAt = now;
@@ -3748,27 +3748,26 @@ function enhanceWorkFilesPanelHeader(files = []){
     updateWarRoomCommandBar(data);
     populateForm(data);
 
-    let timelineItems = [];
-    try {
-      timelineItems = await fetchJSON(`/api/case/${resolvedCaseId}/updates`);
-    } catch (err) {
-      console.warn("SOFT REFRESH TIMELINE FALLBACK:", err);
-      const caseDetail = await fetchJSON(`/api/case/${resolvedCaseId}`);
-      timelineItems = caseDetail.updates || caseDetail.case_updates || caseDetail.timeline || [];
-    }
+    const teamDetail = await loadTeamCaseDetail(
+      data.case_code || caseCode || ""
+    );
 
-    latestTimelineCache = Array.isArray(timelineItems) ? timelineItems : [];
+    const fieldCase = teamDetail?.case || {};
+    const fieldUpdates = Array.isArray(teamDetail?.updates) ? teamDetail.updates : [];
+    const fieldInfoUpdates = Array.isArray(teamDetail?.info_updates) ? teamDetail.info_updates : [];
 
-    renderFieldProgressFromTimeline(latestTimelineCache, data || {});
+    latestTimelineCache = fieldUpdates;
+
+    renderFieldProgressFromTimeline(fieldUpdates, fieldCase);
 
     const nextTimelineSignature = getTimelineSignature(latestTimelineCache);
     const timelineChanged = nextTimelineSignature !== lastTimelineSignature;
 
-    const bestPoint = getBestMapCoordinates(data, latestTimelineCache);
+    const bestPoint = getBestMapCoordinates(fieldCase || data, latestTimelineCache);
     const nextMapSignature = getMapSignatureFromPoint(bestPoint);
     const mapChanged = nextMapSignature !== lastMapSignature;
 
-    renderWarRoomMapAdvanced(data, latestTimelineCache);
+    renderWarRoomMapAdvanced(fieldCase || data, latestTimelineCache);
 
     if (bestPoint && mapChanged) {
       const focusTimelineId =
@@ -3784,7 +3783,7 @@ function enhanceWorkFilesPanelHeader(files = []){
 
     const wrap = document.getElementById("case_updates_timeline");
     if (wrap) {
-      if (!Array.isArray(latestTimelineCache) || !latestTimelineCache.length) {
+      if (!latestTimelineCache.length) {
         wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
         updateLatestTimelineBanner(null);
 

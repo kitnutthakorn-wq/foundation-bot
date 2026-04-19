@@ -792,14 +792,17 @@
       MENU_VERSION: "TEAM-CASE-VIEW-v1"
     };
 
-    let currentCaseCode = "";
-    let eventSource = null;
-    let refreshTimer = null;
-    let fallbackInterval = null;
+   let currentCaseCode = "";
+let eventSource = null;
+let refreshTimer = null;
+let fallbackInterval = null;
 
-    function qs(name){
-      return new URLSearchParams(window.location.search).get(name) || "";
-    }
+let viewerRole = "viewer";
+let viewerLineUserId = "";
+
+function qs(name){
+  return new URLSearchParams(window.location.search).get(name) || "";
+}
 
     function escapeHtml(str){
       return String(str ?? "")

@@ -1862,6 +1862,65 @@ button,
     grid-template-columns:1fr !important;
   }
 }
+
+/* =========================================================
+   GOLDEN SAFE PATCH — FIX ONLY 3 POINTS
+   1) show warroom badges
+   2) unhide first 4 case-info items
+   3) lock final case-info layout from duplicate CSS overrides
+   ========================================================= */
+
+/* [POINT 1] เปิด badge บน War Room กลับมา */
+.warroom-badges{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap:10px !important;
+  margin-top:10px !important;
+}
+
+/* [POINT 2] ยกเลิกการซ่อน 4 ช่องแรกของ case-info-grid */
+.case-info-grid > div:nth-child(1),
+.case-info-grid > div:nth-child(2),
+.case-info-grid > div:nth-child(3),
+.case-info-grid > div:nth-child(4){
+  display:flex !important;
+}
+
+/* [POINT 3] ล็อก layout ชุดข้อมูลเคสให้ไม่โดน CSS เก่าทับ */
+.case-info-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:14px !important;
+}
+
+.case-info-grid > div{
+  min-width:0 !important;
+}
+
+.case-info-grid > div:nth-child(1),
+.case-info-grid > div:nth-child(2),
+.case-info-grid > div:nth-child(3),
+.case-info-grid > div:nth-child(4){
+  grid-column:auto !important;
+}
+
+.case-info-grid > div:nth-child(5){
+  grid-column:1 / -1 !important;
+}
+
+.case-info-grid > div:nth-child(13){
+  grid-column:1 / -1 !important;
+}
+
+@media (max-width:780px){
+  .case-info-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .case-info-grid > div{
+    grid-column:1 / -1 !important;
+  }
+}
   
 </style>
   

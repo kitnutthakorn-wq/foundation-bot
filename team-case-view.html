@@ -1858,13 +1858,13 @@ function resetForm(){
 }
 
 async function saveCaseSettings(){
-  const currentCaseCode = String(
-  document.getElementById("sumCaseCode")?.textContent ||
-  currentCaseCode ||
-  ""
-).trim();
+  const activeCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCode ||
+    ""
+  ).trim();
 
-  if (!currentCaseCode || currentCaseCode === "-") {
+  if (!activeCaseCode || activeCaseCode === "-") {
     alert("ไม่พบเลขเคส");
     return;
   }
@@ -1875,7 +1875,7 @@ async function saveCaseSettings(){
   const project_ref = document.getElementById("projectSelect")?.value || "";
 
   try{
-    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(currentCaseCode)}/update-by-case-code`, {
+    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(activeCaseCode)}/update-by-case-code`, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
@@ -1895,13 +1895,13 @@ async function saveCaseSettings(){
 }
 
 async function assignCase(){
- const currentCaseCode = String(
-  document.getElementById("sumCaseCode")?.textContent ||
-  currentCaseCode ||
-  ""
-).trim();
+  const activeCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCode ||
+    ""
+  ).trim();
 
-  if (!currentCaseCode || currentCaseCode === "-") {
+  if (!activeCaseCode || activeCaseCode === "-") {
     alert("ไม่พบเลขเคส");
     return;
   }
@@ -1913,7 +1913,7 @@ async function assignCase(){
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
-        caseCode: currentCaseCode,
+        caseCode: activeCaseCode,
         userId: "",
         displayName,
         line_user_id: viewerLineUserId
@@ -1926,15 +1926,14 @@ async function assignCase(){
     alert("รับเคสไม่สำเร็จ: " + err.message);
   }
 }
-
 async function closeCase(){
-  const currentCaseCode = String(
-  document.getElementById("sumCaseCode")?.textContent ||
-  currentCaseCode ||
-  ""
-).trim();
+  const activeCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCode ||
+    ""
+  ).trim();
 
-  if (!currentCaseCode || currentCaseCode === "-") {
+  if (!activeCaseCode || activeCaseCode === "-") {
     alert("ไม่พบเลขเคส");
     return;
   }
@@ -1948,7 +1947,7 @@ async function closeCase(){
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
-        caseCode: currentCaseCode,
+        caseCode: activeCaseCode,
         status: "done",
         displayName,
         line_user_id: viewerLineUserId

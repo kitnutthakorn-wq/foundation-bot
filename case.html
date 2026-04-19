@@ -2383,6 +2383,48 @@ button,
   return payload.data;
 }
 
+async function loadTeamCaseDetail(forCaseCode = "") {
+  const effectiveCaseCode =
+    String(
+      forCaseCode ||
+      caseCode ||
+      document.getElementById("case_code")?.textContent ||
+      document.getElementById("summary_case_code")?.textContent ||
+      ""
+    ).trim();
+
+  if (!effectiveCaseCode || effectiveCaseCode === "-") {
+    throw new Error("ไม่พบ case_code สำหรับโหลดข้อมูลภาคสนาม");
+  }
+
+  const res = await fetch(
+    `/api/team/case-detail?case_code=${encodeURIComponent(effectiveCaseCode)}`
+  );
+
+  const text = await res.text();
+  let parsed = {};
+
+  try {
+    parsed = text ? JSON.parse(text) : {};
+  } catch (err) {
+    throw new Error(text || `HTTP ${res.status}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(parsed?.error || text || `HTTP ${res.status}`);
+  }
+
+  const payload = parsed?.data && typeof parsed.data === "object"
+    ? parsed.data
+    : parsed;
+
+  return {
+    case: payload?.case || {},
+    updates: Array.isArray(payload?.updates) ? payload.updates : [],
+    info_updates: Array.isArray(payload?.info_updates) ? payload.info_updates : []
+  };
+}
+    
     function normalizeTimelineStatus(status){
       const s = String(status || "").trim().toLowerCase();
       if (s === "progress") return "in_progress";

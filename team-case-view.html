@@ -1859,11 +1859,10 @@ function resetForm(){
 
 async function saveCaseSettings(){
   const currentCaseCode = String(
-    document.getElementById("sumCaseCode")?.textContent ||
-    currentCaseCodeGlobal ||
-    currentCaseCode ||
-    ""
-  ).trim();
+  document.getElementById("sumCaseCode")?.textContent ||
+  currentCaseCode ||
+  ""
+).trim();
 
   if (!currentCaseCode || currentCaseCode === "-") {
     alert("ไม่พบเลขเคส");
@@ -1896,12 +1895,11 @@ async function saveCaseSettings(){
 }
 
 async function assignCase(){
-  const currentCaseCode = String(
-    document.getElementById("sumCaseCode")?.textContent ||
-    currentCaseCodeGlobal ||
-    currentCaseCode ||
-    ""
-  ).trim();
+ const currentCaseCode = String(
+  document.getElementById("sumCaseCode")?.textContent ||
+  currentCaseCode ||
+  ""
+).trim();
 
   if (!currentCaseCode || currentCaseCode === "-") {
     alert("ไม่พบเลขเคส");
@@ -1931,11 +1929,10 @@ async function assignCase(){
 
 async function closeCase(){
   const currentCaseCode = String(
-    document.getElementById("sumCaseCode")?.textContent ||
-    currentCaseCodeGlobal ||
-    currentCaseCode ||
-    ""
-  ).trim();
+  document.getElementById("sumCaseCode")?.textContent ||
+  currentCaseCode ||
+  ""
+).trim();
 
   if (!currentCaseCode || currentCaseCode === "-") {
     alert("ไม่พบเลขเคส");

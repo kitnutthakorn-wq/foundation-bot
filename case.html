@@ -3568,6 +3568,56 @@ function enhanceWorkFilesPanelHeader(files = []){
   }
 }
 
+function renderLatestImagesFromTeam(updates = []) {
+  const latestWithImages = [...updates].find((item) => {
+    if (Array.isArray(item?.images) && item.images.filter(Boolean).length > 0) {
+      return true;
+    }
+
+    const normalized = normalizeTimelineImages(item);
+    return Array.isArray(normalized) && normalized.length > 0;
+  });
+
+  const root = document.getElementById("workFilesSection");
+  if (!root) return;
+
+  if (!latestWithImages) {
+    root.innerHTML = `<div class="warroom-map-empty">ยังไม่มีรูปภาพภาคสนาม</div>`;
+    return;
+  }
+
+  const imageList = Array.isArray(latestWithImages.images) && latestWithImages.images.length
+    ? latestWithImages.images.filter(Boolean)
+    : normalizeTimelineImages(latestWithImages);
+
+  if (!imageList.length) {
+    root.innerHTML = `<div class="warroom-map-empty">ยังไม่มีรูปภาพภาคสนาม</div>`;
+    return;
+  }
+
+  root.innerHTML = `
+    <div class="work-files-wrap">
+      <div class="work-file-group">
+        <h4>รูปภาพล่าสุดจากภาคสนาม</h4>
+        <div class="work-file-grid">
+          ${imageList.map((src, idx) => `
+            <a
+              href="${escapeHtml(src)}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="work-image-card no-map-focus"
+              onclick='openPmxImageViewer(${JSON.stringify(imageList)}, ${idx}); return false;'
+            >
+              <img src="${escapeHtml(src)}" alt="field image ${idx + 1}" />
+              <div class="file-name">ภาพภาคสนาม ${idx + 1}</div>
+            </a>
+          `).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+    
     async function loadProjects(){
       try{
         const projects = await fetchJSON("/api/projects/options");
@@ -3739,29 +3789,10 @@ async function refreshCaseView() {
 
   renderFieldProgressFromTimeline(fieldUpdates, fieldCase);
   renderWarRoomMapAdvanced(fieldCase || data || {}, fieldUpdates);
-
-  const wrap = document.getElementById("case_updates_timeline");
-  if (wrap) {
-    if (!fieldUpdates.length) {
-      wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-      updateLatestTimelineBanner(null);
-    } else {
-      wrap.innerHTML = fieldUpdates.map((item, idx) => renderTimelineItem(item, idx)).join("");
-      decorateTimelineLatest(fieldUpdates);
-      updateLatestTimelineBanner(fieldUpdates[0]);
-    }
-  }
-
-  const timelineCountBadge = document.getElementById("timelineCountBadge");
-  if (timelineCountBadge) {
-    timelineCountBadge.textContent = `${fieldUpdates.length} รายการ`;
-  }
-
-  if (caseCode) {
-    await loadWorkFiles(caseCode);
-  }
+  renderTimelineFromTeam(fieldCase, fieldUpdates);
+  renderLatestImagesFromTeam(fieldUpdates);
 }
-   async function softRefreshWarRoom(reason = "system") {
+ async function softRefreshWarRoom(reason = "system") {
   const now = Date.now();
   if (now - lastRealtimeAt < 1200) return;
   lastRealtimeAt = now;
@@ -3808,6 +3839,8 @@ async function refreshCaseView() {
     const mapChanged = nextMapSignature !== lastMapSignature;
 
     renderWarRoomMapAdvanced(fieldCase || data, latestTimelineCache);
+    renderTimelineFromTeam(fieldCase, latestTimelineCache);
+    renderLatestImagesFromTeam(latestTimelineCache);
 
     if (bestPoint && mapChanged) {
       const focusTimelineId =
@@ -3819,35 +3852,6 @@ async function refreshCaseView() {
       setTimeout(() => {
         safeAutoFocusMap(bestPoint.lat, bestPoint.lng, focusTimelineId);
       }, 280);
-    }
-
-    const wrap = document.getElementById("case_updates_timeline");
-    if (wrap) {
-      if (!latestTimelineCache.length) {
-        wrap.innerHTML = `<div class="timeline-empty">ยังไม่มีรายการอัปเดต</div>`;
-        updateLatestTimelineBanner(null);
-
-        const timelineCountBadge = document.getElementById("timelineCountBadge");
-        if (timelineCountBadge) {
-          timelineCountBadge.textContent = "0 รายการ";
-        }
-      } else {
-        wrap.innerHTML = latestTimelineCache
-          .map((item, idx) => renderTimelineItem(item, idx))
-          .join("");
-
-        decorateTimelineLatest(latestTimelineCache);
-        updateLatestTimelineBanner(latestTimelineCache[0]);
-
-        const timelineCountBadge = document.getElementById("timelineCountBadge");
-        if (timelineCountBadge) {
-          timelineCountBadge.textContent = `${latestTimelineCache.length} รายการ`;
-        }
-      }
-    }
-
-    if (caseCode) {
-      loadWorkFiles(caseCode).catch(console.error);
     }
 
     if (mapChanged) {

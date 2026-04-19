@@ -6884,6 +6884,38 @@ async function requireAdminFromRequest(req, res) {
   return { lineUserId, role };
 }
 
+app.get("/api/team/viewer-role", async (req, res) => {
+  try {
+    const lineUserId = getViewerLineUserId(req);
+
+    if (!lineUserId) {
+      return res.json({
+        ok: true,
+        data: {
+          viewer_role: "viewer",
+          line_user_id: ""
+        }
+      });
+    }
+
+    const role = await getUserRole(lineUserId);
+
+    return res.json({
+      ok: true,
+      data: {
+        viewer_role: role || "viewer",
+        line_user_id: lineUserId
+      }
+    });
+  } catch (err) {
+    console.error("❌ /api/team/viewer-role error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "viewer-role failed"
+    });
+  }
+});
+
 // =========================
 // TEAM CASE DETAIL (Golden Safe)
 // =========================

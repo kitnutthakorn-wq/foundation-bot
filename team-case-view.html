@@ -1845,6 +1845,126 @@ function renderInfoUpdates(infoUpdates = []) {
       }
     }
 
+function resetForm(){
+  const staff = document.getElementById("staffName");
+  const status = document.getElementById("statusSelect");
+  const priority = document.getElementById("prioritySelect");
+  const project = document.getElementById("projectSelect");
+
+  if (staff) staff.value = "";
+  if (status) status.value = "new";
+  if (priority) priority.value = "normal";
+  if (project) project.value = "";
+}
+
+async function saveCaseSettings(){
+  const currentCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCodeGlobal ||
+    currentCaseCode ||
+    ""
+  ).trim();
+
+  if (!currentCaseCode || currentCaseCode === "-") {
+    alert("ไม่พบเลขเคส");
+    return;
+  }
+
+  const staff_name = document.getElementById("staffName")?.value.trim() || "";
+  const status = document.getElementById("statusSelect")?.value || "new";
+  const priority = document.getElementById("prioritySelect")?.value || "normal";
+  const project_ref = document.getElementById("projectSelect")?.value || "";
+
+  try{
+    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(currentCaseCode)}/update-by-case-code`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        staff_name,
+        status,
+        priority,
+        project_ref,
+        line_user_id: viewerLineUserId
+      })
+    });
+
+    showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
+    await refreshPageData();
+  }catch(err){
+    alert("บันทึกไม่สำเร็จ: " + err.message);
+  }
+}
+
+async function assignCase(){
+  const currentCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCodeGlobal ||
+    currentCaseCode ||
+    ""
+  ).trim();
+
+  if (!currentCaseCode || currentCaseCode === "-") {
+    alert("ไม่พบเลขเคส");
+    return;
+  }
+
+  const displayName = document.getElementById("staffName")?.value.trim() || "";
+
+  try{
+    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/team/cases/assign`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        caseCode: currentCaseCode,
+        userId: "",
+        displayName,
+        line_user_id: viewerLineUserId
+      })
+    });
+
+    showToast("รับเคสแล้ว", "ระบบบันทึกการรับเคสเรียบร้อย");
+    await refreshPageData();
+  }catch(err){
+    alert("รับเคสไม่สำเร็จ: " + err.message);
+  }
+}
+
+async function closeCase(){
+  const currentCaseCode = String(
+    document.getElementById("sumCaseCode")?.textContent ||
+    currentCaseCodeGlobal ||
+    currentCaseCode ||
+    ""
+  ).trim();
+
+  if (!currentCaseCode || currentCaseCode === "-") {
+    alert("ไม่พบเลขเคส");
+    return;
+  }
+
+  if (!confirm("ยืนยันปิดเคสนี้ใช่หรือไม่?")) return;
+
+  const displayName = document.getElementById("staffName")?.value.trim() || "";
+
+  try{
+    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/team/cases/status`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        caseCode: currentCaseCode,
+        status: "done",
+        displayName,
+        line_user_id: viewerLineUserId
+      })
+    });
+
+    showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
+    await refreshPageData();
+  }catch(err){
+    alert("ปิดเคสไม่สำเร็จ: " + err.message);
+  }
+}
+    
     async function bootstrap(){
       try{
         currentCaseCode = qs("case_code").trim();

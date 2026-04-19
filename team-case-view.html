@@ -736,6 +736,55 @@
     grid-column:auto;
   }
 }
+
+.manage-case-grid .input-shell input,
+.manage-case-grid .input-shell select{
+  width:100%;
+  height:48px;
+  border-radius:18px;
+  border:1px solid #d8e3ec;
+  background:#f8fbfc;
+  color:#17395e;
+  font-size:15px;
+  font-weight:700;
+  padding:0 16px;
+  outline:none;
+  box-shadow:none;
+  appearance:auto;
+}
+
+.manage-case-grid .input-shell input::placeholder{
+  color:#8a97a8;
+  font-weight:600;
+}
+
+.manage-case-grid .input-shell input:focus,
+.manage-case-grid .input-shell select:focus{
+  border-color:#9fc5ff;
+  background:#ffffff;
+}
+
+.manage-case-grid .label{
+  margin:0 0 6px;
+  font-size:13px;
+  font-weight:700;
+  color:#708095;
+}
+
+.manage-case-grid .value-box.multiline{
+  min-height:108px;
+  border-radius:18px;
+  background:#f8fbfc;
+  border:1px solid #d8e3ec;
+  color:#2b4260;
+  font-size:16px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px;
+}
     
   </style>
 </head>
@@ -1144,6 +1193,29 @@ function formatThaiDateTime(value){
       return data;
     }
 
+function ensureExtraProjects() {
+  const select = document.getElementById("projectSelect");
+  if (!select) return;
+
+  const extraProjects = [
+    "โครงการสร้างอาชีพ",
+    "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้"
+  ];
+
+  const existingTexts = Array.from(select.options).map(opt =>
+    String(opt.textContent || "").trim()
+  );
+
+  extraProjects.forEach(name => {
+    if (!existingTexts.includes(name)) {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    }
+  });
+}
+    
     function renderSummary(caseItem={}){
       safeText("sumCaseCode", caseItem.case_code || "-");
       safeText("sumAssignedTo", caseItem.assigned_to || "-");

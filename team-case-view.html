@@ -805,27 +805,67 @@ function qs(name){
 }
 
     function escapeHtml(str){
-      return String(str ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#39;");
+  return String(str ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+function getLineUserIdFromPage() {
+  const params = new URLSearchParams(window.location.search);
+  return String(
+    params.get("line_user_id") ||
+    window.LINE_USER_ID ||
+    ""
+  ).trim();
+}
+
+function applyRoleUI(role) {
+  viewerRole = String(role || "viewer").toLowerCase();
+
+  const adminBox = document.getElementById("adminOnlyActions");
+  if (adminBox) {
+    adminBox.style.display = viewerRole === "admin" ? "flex" : "none";
+  }
+}
+
+async function loadViewerRole() {
+  try {
+    const lineUserId = getLineUserIdFromPage();
+    viewerLineUserId = lineUserId;
+
+    const res = await fetch(
+      `/api/team/viewer-role?line_user_id=${encodeURIComponent(lineUserId)}`
+    );
+
+    const json = await res.json();
+
+    if (!res.ok || !json?.ok) {
+      throw new Error(json?.error || "โหลด role ไม่สำเร็จ");
     }
 
-    function formatThaiDateTime(value){
-      if(!value) return "-";
-      const d = new Date(value);
-      if(Number.isNaN(d.getTime())) return String(value);
-      return d.toLocaleString("th-TH",{
-        year:"numeric",
-        month:"short",
-        day:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
-      });
-    }
-
+    const role = json?.data?.viewer_role || "viewer";
+    applyRoleUI(role);
+  } catch (err) {
+    console.error("loadViewerRole error:", err);
+    applyRoleUI("viewer");
+  }
+}
+    
+function formatThaiDateTime(value){
+  if(!value) return "-";
+  const d = new Date(value);
+  if(Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString("th-TH",{
+    year:"numeric",
+    month:"short",
+    day:"numeric",
+    hour:"2-digit",
+    minute:"2-digit"
+  });
+}
     function setLoading(v){
       document.getElementById("loading").classList.toggle("hidden", !v);
       document.getElementById("app").classList.toggle("hidden", v);

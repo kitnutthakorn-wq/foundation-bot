@@ -1045,18 +1045,18 @@ async function bootstrap() {
   try {
     setToday();
 
-    let hasWebSession = await tryWebSessionLogin();
+   let hasWebSession = await tryWebSessionLogin();
+const isTeamHtmlPage = window.location.pathname.includes("team.html");
 
-    if (!hasWebSession) {
-      await initLiff();
+if (!hasWebSession && !isTeamHtmlPage) {
+  await initLiff();
 
-      // ✅ หลัง LIFF login สำเร็จ ให้สร้าง web session ต่อทันที
-      hasWebSession = await ensureWebSessionFromLiff();
+  hasWebSession = await ensureWebSessionFromLiff();
 
-      if (hasWebSession) {
-        document.getElementById("envChip").textContent = "Web Session + LIFF";
-      }
-    }
+  if (hasWebSession) {
+    document.getElementById("envChip").textContent = "Web Session + LIFF";
+  }
+}
 
     await loadTeamRole();
 

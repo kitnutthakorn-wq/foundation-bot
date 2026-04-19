@@ -6851,6 +6851,39 @@ app.get("/api/cases/map", async (req, res) => {
   }
 });
 
+function getViewerLineUserId(req) {
+  return String(
+    req.query.line_user_id ||
+    req.headers["x-line-user-id"] ||
+    req.headers["x-user-id"] ||
+    ""
+  ).trim();
+}
+
+async function requireAdminFromRequest(req, res) {
+  const lineUserId = getViewerLineUserId(req);
+
+  if (!lineUserId) {
+    res.status(401).json({
+      ok: false,
+      error: "ไม่พบ line_user_id"
+    });
+    return null;
+  }
+
+  const role = await getUserRole(lineUserId);
+
+  if (String(role || "").toLowerCase() !== "admin") {
+    res.status(403).json({
+      ok: false,
+      error: "Admin only"
+    });
+    return null;
+  }
+
+  return { lineUserId, role };
+}
+
 // =========================
 // TEAM CASE DETAIL (Golden Safe)
 // =========================

@@ -3783,7 +3783,6 @@ async function refreshCaseView() {
 
   const fieldCase = teamDetail?.case || {};
   const fieldUpdates = Array.isArray(teamDetail?.updates) ? teamDetail.updates : [];
-  const fieldInfoUpdates = Array.isArray(teamDetail?.info_updates) ? teamDetail.info_updates : [];
 
   latestTimelineCache = fieldUpdates;
 
@@ -3825,7 +3824,6 @@ async function refreshCaseView() {
 
     const fieldCase = teamDetail?.case || {};
     const fieldUpdates = Array.isArray(teamDetail?.updates) ? teamDetail.updates : [];
-    const fieldInfoUpdates = Array.isArray(teamDetail?.info_updates) ? teamDetail.info_updates : [];
 
     latestTimelineCache = fieldUpdates;
 

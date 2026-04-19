@@ -817,95 +817,117 @@
   <div id="infoUpdateList" class="timeline"></div>
 </div>
 </div>      
-      <div class="stack">
-        <div class="card">
-          <div class="headline">
-            <div>
-              <h2>ความคืบหน้าภาคสนาม</h2>
-              <p>สรุปล่าสุดจากการอัปเดตของทีมงาน</p>
-            </div>
-          </div>
+   <div class="stack">
+  <div class="card">
+    <div class="headline">
+      <div>
+        <h2>ความคืบหน้าภาคสนาม</h2>
+        <p>สรุปล่าสุดจากการอัปเดตของทีมงาน</p>
+      </div>
+    </div>
 
-          <div class="progress-wrap">
-            <div class="progress-top">
-              <div>
-                <div style="font-size:.88rem;color:var(--muted);font-weight:700;">ความคืบหน้า</div>
-                <div id="progressPercent" class="progress-number">0%</div>
-              </div>
-              <div id="latestUpdater" class="chip">ผู้บันทึกล่าสุด: -</div>
-            </div>
-
-            <div class="progress-bar"><div id="progressBarFill"></div></div>
-
-            <div class="mini-grid">
-              <div class="summary-box"><strong>ขั้นตอนล่าสุด</strong><span id="currentStep">-</span></div>
-              <div class="summary-box"><strong>กำลังรอ</strong><span id="waitingFor">-</span></div>
-              <div class="summary-box"><strong>สถานะหลังอัปเดต</strong><span id="statusAfter">-</span></div>
-              <div class="summary-box"><strong>พื้นที่ที่อัปเดต</strong><span id="locationText">-</span></div>
-            </div>
-          </div>
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <div>
+          <div style="font-size:.88rem;color:var(--muted);font-weight:700;">ความคืบหน้า</div>
+          <div id="progressPercent" class="progress-number">0%</div>
         </div>
+        <div id="latestUpdater" class="chip">ผู้บันทึกล่าสุด: -</div>
+      </div>
 
-        <div class="card">
-          <div class="headline">
-            <div>
-              <h2>สรุปภาพภาคสนาม</h2>
-              <p>รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส</p>
-            </div>
-          </div>
+      <div class="progress-bar"><div id="progressBarFill"></div></div>
 
-<div class="card" id="adminManageCaseCard">
-  <div class="headline">
-    <div>
-      <h2>จัดการเคส</h2>
-      <p>ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</p>
-    </div>
-  </div>
-
-  <div class="manage-case-grid">
-    <div class="input-shell">
-      <div class="label">ชื่อผู้รับเคส</div>
-      <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
-    </div>
-
-    <div class="input-shell">
-      <div class="label">สถานะที่จะบันทึก</div>
-      <select id="statusSelect">
-        <option value="new">ใหม่</option>
-        <option value="in_progress">กำลังดำเนินการ</option>
-        <option value="done">เสร็จสิ้น</option>
-        <option value="cancelled">ยกเลิก</option>
-      </select>
-    </div>
-
-    <div class="input-shell">
-      <div class="label">ระดับเคส</div>
-      <select id="prioritySelect">
-        <option value="normal">ปกติ</option>
-        <option value="urgent">ด่วน</option>
-      </select>
-    </div>
-
-    <div class="input-shell">
-      <div class="label">โครงการที่สังกัด</div>
-      <select id="projectSelect">
-        <option value="">- เลือกโครงการ -</option>
-      </select>
-    </div>
-
-    <div class="field full">
-      <label>แนวทางการใช้งาน</label>
-      <div class="value-box multiline">
-        เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+      <div class="mini-grid">
+        <div class="summary-box"><strong>ขั้นตอนล่าสุด</strong><span id="currentStep">-</span></div>
+        <div class="summary-box"><strong>กำลังรอ</strong><span id="waitingFor">-</span></div>
+        <div class="summary-box"><strong>สถานะหลังอัปเดต</strong><span id="statusAfter">-</span></div>
+        <div class="summary-box"><strong>พื้นที่ที่อัปเดต</strong><span id="locationText">-</span></div>
       </div>
     </div>
   </div>
 
-  <div class="manage-case-actions">
-    <button class="btn-secondary" type="button" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
-    <button class="btn-primary" type="button" onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
-    <button class="btn-danger" type="button" onclick="closeCase()">ปิดเคส</button>
-    <button class="btn-secondary" type="button" onclick="resetForm()">รีเซ็ตค่า</button>
+  <div class="card warroom-map-card" id="warroomMapPanel">
+    <div class="headline">
+      <div>
+        <h2>แผนที่ปฏิบัติการ</h2>
+        <p>พิกัดล่าสุดจากเคสหลักหรือ Timeline พร้อมโฟกัสจุดอัปเดตใหม่</p>
+      </div>
+    </div>
+
+    <div class="warroom-map-body" id="warroomMapBody">
+      <div class="warroom-map-empty">กำลังเตรียมแผนที่...</div>
+    </div>
+
+    <div class="warroom-map-meta">
+      <div id="warroomMapMeta">พิกัด: -</div>
+      <div id="warroomMapSource" class="warroom-map-source">แหล่งพิกัด: -</div>
+      <a id="warroomMapLink" class="warroom-map-link" href="#" target="_blank" rel="noopener">เปิดใน Google Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="headline">
+      <div>
+        <h2>สรุปภาพภาคสนาม</h2>
+        <p>รูปภาพล่าสุดที่แนบมากับการอัปเดตเคส</p>
+      </div>
+    </div>
+    <div id="latestImages" class="image-grid"></div>
+  </div>
+
+  <div class="card" id="adminManageCaseCard">
+    <div class="headline">
+      <div>
+        <h2>จัดการเคส</h2>
+        <p>ปรับสถานะ ระดับความเร่งด่วน ผู้รับเคส และโครงการ โดยยังคง flow เดิมทั้งหมด</p>
+      </div>
+    </div>
+
+    <div class="manage-case-grid">
+      <div class="input-shell">
+        <div class="label">ชื่อผู้รับเคส</div>
+        <input id="staffName" type="text" placeholder="ชื่อทีมงาน เช่น ..." />
+      </div>
+
+      <div class="input-shell">
+        <div class="label">สถานะที่จะบันทึก</div>
+        <select id="statusSelect">
+          <option value="new">ใหม่</option>
+          <option value="in_progress">กำลังดำเนินการ</option>
+          <option value="done">เสร็จสิ้น</option>
+          <option value="cancelled">ยกเลิก</option>
+        </select>
+      </div>
+
+      <div class="input-shell">
+        <div class="label">ระดับเคส</div>
+        <select id="prioritySelect">
+          <option value="normal">ปกติ</option>
+          <option value="urgent">ด่วน</option>
+        </select>
+      </div>
+
+      <div class="input-shell">
+        <div class="label">โครงการที่สังกัด</div>
+        <select id="projectSelect">
+          <option value="">- เลือกโครงการ -</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>แนวทางการใช้งาน</label>
+        <div class="value-box multiline">
+          เลือกสถานะ ระดับ และผู้รับเคสให้เรียบร้อยก่อน แล้วค่อยกดปุ่มตามที่ต้องการ
+        </div>
+      </div>
+    </div>
+
+    <div class="manage-case-actions">
+      <button class="btn-secondary" type="button" onclick="saveCaseSettings()">บันทึกค่าที่เลือก</button>
+      <button class="btn-primary" type="button" onclick="assignCase()">รับเคสตามค่าที่เลือก</button>
+      <button class="btn-danger" type="button" onclick="closeCase()">ปิดเคส</button>
+      <button class="btn-secondary" type="button" onclick="resetForm()">รีเซ็ตค่า</button>
+    </div>
   </div>
 </div>
           

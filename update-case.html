@@ -192,10 +192,34 @@ let selectedFiles = [];
 let currentLocation = null;
 const params = new URLSearchParams(window.location.search);
 
-const caseCode =
-  params.get("case_code") ||
-  params.get("caseCode") ||
-  "";
+function getCaseCodeFromUrl() {
+  const direct =
+    String(params.get("case_code") || params.get("caseCode") || "").trim();
+  if (direct) return direct;
+
+  const liffStateRaw = String(
+    params.get("liff.state") || params.get("liff_state") || ""
+  ).trim();
+
+  if (liffStateRaw) {
+    try {
+      const decoded = decodeURIComponent(liffStateRaw);
+      const nested = new URLSearchParams(
+        decoded.startsWith("?") ? decoded.slice(1) : decoded
+      );
+      const nestedCaseCode = String(
+        nested.get("case_code") || nested.get("caseCode") || ""
+      ).trim();
+      if (nestedCaseCode) return nestedCaseCode;
+    } catch (err) {
+      console.warn("parse liff.state error:", err);
+    }
+  }
+
+  return "";
+}
+
+const caseCode = getCaseCodeFromUrl();
 
 document.getElementById("case_code").value = caseCode;;
 
@@ -378,8 +402,11 @@ async function submitCaseUpdate() {
     formData.append('title', title);
     formData.append('message', message);
     formData.append('progressStatus', progressStatus);
-    const currentStep = document.getElementById('currentStepInput').value;
-    const waitingFor = document.getElementById('waitingForInput').value;
+    const currentStepEl = document.getElementById('currentStepInput');
+const waitingForEl = document.getElementById('waitingForInput');
+
+const currentStep = currentStepEl ? currentStepEl.value.trim() : title;
+const waitingFor = waitingForEl ? waitingForEl.value.trim() : "";
 
 formData.append('current_step', currentStep);
 formData.append('waiting_for', waitingFor);

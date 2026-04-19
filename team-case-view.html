@@ -1454,9 +1454,9 @@ function getAutoProgress(caseItem = {}, updates = []) {
   return 0;
 }
     
-   function renderProgress(caseItem={}, updates=[]){
+ function renderProgress(caseItem={}, updates=[]){
  const sortedUpdates = [...updates].sort((a, b) => {
-  return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at);
+ return new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at);
 });
      
 const latest =
@@ -1528,14 +1528,28 @@ const waitingFor =
   caseItem.locationText ||
   "-";
 
+const statusAfter = latest.status_after || caseItem.status || "-";
+const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
+const locationText =
+  latestWithLocation.location_text ||
+  latestWithLocation.locationText ||
+  caseItem.location_text ||
+  caseItem.locationText ||
+  "-";
+
+safeText("progressPercent", `${progress}%`);
+safeText("currentStep", currentStep);
+safeText("waitingFor", waitingFor);
+safeText("statusAfter", formatStatusThai(statusAfter));
+safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`);
+
 const locationTextEl = document.getElementById("locationText");
 const locationTextLinkEl = document.getElementById("locationTextLink");
+const effectiveCaseCode = String(caseItem.case_code || caseCode || "").trim();
 
 if (locationTextEl) {
   locationTextEl.textContent = locationText;
 }
-
-const effectiveCaseCode = String(caseItem.case_code || caseCode || "").trim();
 
 if (
   locationTextLinkEl &&
@@ -1553,11 +1567,8 @@ if (
   locationTextLinkEl.style.cursor = "default";
   locationTextLinkEl.style.textDecoration = "none";
 }
-  safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`);
-
-  document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
-}
-
+document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;
+   
 function renderLatestImages(updates = []) {
   const latestWithImages = [...updates].find(
     item => Array.isArray(item.images) && item.images.filter(Boolean).length > 0

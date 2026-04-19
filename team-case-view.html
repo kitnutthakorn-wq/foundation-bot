@@ -1521,8 +1521,6 @@ const waitingFor =
   "-";
 
      
-  const statusAfter = latest.status_after || caseItem.status || "-";
-  const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
   const locationText =
   latestWithLocation.location_text ||
   latestWithLocation.locationText ||
@@ -1530,11 +1528,31 @@ const waitingFor =
   caseItem.locationText ||
   "-";
 
-  safeText("progressPercent", `${progress}%`);
-  safeText("currentStep", currentStep);
-  safeText("waitingFor", waitingFor);
-  safeText("statusAfter", formatStatusThai(statusAfter));
-  safeText("locationText", locationText);
+const locationTextEl = document.getElementById("locationText");
+const locationTextLinkEl = document.getElementById("locationTextLink");
+
+if (locationTextEl) {
+  locationTextEl.textContent = locationText;
+}
+
+const effectiveCaseCode = String(caseItem.case_code || caseCode || "").trim();
+
+if (
+  locationTextLinkEl &&
+  effectiveCaseCode &&
+  locationText &&
+  locationText !== "-"
+) {
+  locationTextLinkEl.href = `/map.html?case_code=${encodeURIComponent(effectiveCaseCode)}`;
+  locationTextLinkEl.style.pointerEvents = "auto";
+  locationTextLinkEl.style.cursor = "pointer";
+  locationTextLinkEl.style.textDecoration = "underline";
+} else if (locationTextLinkEl) {
+  locationTextLinkEl.href = "#";
+  locationTextLinkEl.style.pointerEvents = "none";
+  locationTextLinkEl.style.cursor = "default";
+  locationTextLinkEl.style.textDecoration = "none";
+}
   safeText("latestUpdater", `ผู้บันทึกล่าสุด: ${updaterName}`);
 
   document.getElementById("progressBarFill").style.width = `${Math.max(0, Math.min(progress, 100))}%`;

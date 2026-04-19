@@ -1986,7 +1986,7 @@ async function closeCase(){
         currentCaseCode = qs("case_code").trim();
         if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
 
-      await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+     await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
 await loadProjectOptions();
 await loadViewerRole();
 await loadCaseReport();

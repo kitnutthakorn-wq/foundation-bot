@@ -1094,12 +1094,10 @@ async function getLineUserIdFromPage() {
     const fromQuery = String(qs("line_user_id") || "").trim();
     if (fromQuery) return fromQuery;
 
-    if (window.LINE_USER_ID) {
-      const fromWindow = String(window.LINE_USER_ID || "").trim();
-      if (fromWindow) return fromWindow;
-    }
+    const fromWindow = String(window.LINE_USER_ID || "").trim();
+    if (fromWindow) return fromWindow;
 
-    if (window.liff && liff.isLoggedIn()) {
+    if (window.liff && typeof liff.isLoggedIn === "function" && liff.isLoggedIn()) {
       const profile = await liff.getProfile();
       const fromLiff = String(profile?.userId || "").trim();
       if (fromLiff) return fromLiff;
@@ -1111,7 +1109,7 @@ async function getLineUserIdFromPage() {
     return "";
   }
 }
-
+    
 function applyRoleUI(role) {
   viewerRole = String(role || "viewer").toLowerCase();
 
@@ -1125,6 +1123,8 @@ async function loadViewerRole() {
   try {
     const lineUserId = await getLineUserIdFromPage();
     viewerLineUserId = lineUserId;
+
+    console.log("viewerLineUserId =", viewerLineUserId);
 
     if (!viewerLineUserId) {
       console.warn("ไม่พบ viewerLineUserId");
@@ -1986,7 +1986,7 @@ async function closeCase(){
         currentCaseCode = qs("case_code").trim();
         if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
 
-     await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
 await loadProjectOptions();
 await loadViewerRole();
 await loadCaseReport();

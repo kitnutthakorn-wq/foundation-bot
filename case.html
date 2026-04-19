@@ -3693,68 +3693,96 @@ function renderLatestImagesFromTeam(updates = []) {
       return targetCaseId;
     }
 
-    async function saveCaseSettings(){
-      const targetCaseId = getTargetCaseIdOrAlert();
-      if (!targetCaseId) return;
+  async function saveCaseSettings(){
+  const targetCaseId = getTargetCaseIdOrAlert();
+  if (!targetCaseId) return;
 
-      const staff_name = document.getElementById("staffName").value.trim();
-      const status = document.getElementById("statusSelect").value;
-      const priority = document.getElementById("prioritySelect").value;
-      const project_ref = document.getElementById("projectSelect").value;
+  const staff_name = document.getElementById("staffName").value.trim();
+  const status = document.getElementById("statusSelect").value;
+  const priority = document.getElementById("prioritySelect").value;
+  const project_ref = document.getElementById("projectSelect").value;
 
-      try{
-        await fetchJSON(`/api/case/${targetCaseId}/update`, {
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({staff_name,status,priority,project_ref})
-        });
-        showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
-        resetFormLocking();
-        await refreshCaseView();
-      }catch(err){
-        alert("บันทึกไม่สำเร็จ: " + err.message);
-      }
-    }
+  try{
+    await fetchJSON(`/api/case/${targetCaseId}/update`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        staff_name,
+        status,
+        priority,
+        project_ref,
+        line_user_id: viewerLineUserId
+      })
+    });
 
-    async function assignCase(){
-      const targetCaseId = getTargetCaseIdOrAlert();
-      if (!targetCaseId) return;
+    showToast("บันทึกค่าแล้ว", "อัปเดตสถานะและระดับเรียบร้อย");
+    resetFormLocking();
+    await refreshCaseView();
+  }catch(err){
+    alert("บันทึกไม่สำเร็จ: " + err.message);
+  }
+}
 
-      const staff_name = document.getElementById("staffName").value.trim() || "ทีมงาน";
-      let status = document.getElementById("statusSelect").value;
-      const priority = document.getElementById("prioritySelect").value;
-      const project_ref = document.getElementById("projectSelect").value;
+    aasync function assignCase(){
+  const targetCaseId = getTargetCaseIdOrAlert();
+  if (!targetCaseId) return;
 
-      if(status === "new") status = "in_progress";
+  const currentCaseCode =
+    String(
+      document.getElementById("case_code")?.textContent ||
+      document.getElementById("summary_case_code")?.textContent ||
+      caseCode ||
+      ""
+    ).trim();
 
-      try{
-        await fetchJSON(`/api/case/${targetCaseId}/assign`, {
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({staff_name,status,priority,project_ref})
-        });
-        showToast("รับเคสเรียบร้อย", "ระบบอัปเดตผู้รับเคสและสถานะแล้ว");
-        resetFormLocking();
-        await refreshCaseView();
-      }catch(err){
-        alert("รับเคสไม่สำเร็จ: " + err.message);
-      }
-    }
+  if (!currentCaseCode || currentCaseCode === "-") {
+    alert("ไม่พบเลขเคสสำหรับการรับเคส");
+    return;
+  }
 
-    async function closeCase(){
-      const targetCaseId = getTargetCaseIdOrAlert();
-      if (!targetCaseId) return;
-      if(!confirm("ยืนยันปิดเคสนี้ใช่หรือไม่?")) return;
+  const displayName = document.getElementById("staffName").value.trim();
 
-      try{
-        await fetchJSON(`/api/case/${targetCaseId}/close`, {method:"POST"});
-        showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
-        resetFormLocking();
-        await refreshCaseView();
-      }catch(err){
-        alert("ปิดเคสไม่สำเร็จ: " + err.message);
-      }
-    }
+  try{
+    await fetchJSON(`/api/team/cases/assign`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        caseCode: currentCaseCode,
+        userId: "",
+        displayName,
+        line_user_id: viewerLineUserId
+      })
+    });
+
+    showToast("รับเคสแล้ว", "ระบบบันทึกการรับเคสเรียบร้อย");
+    resetFormLocking();
+    await refreshCaseView();
+  }catch(err){
+    alert("รับเคสไม่สำเร็จ: " + err.message);
+  }
+}
+
+   async function closeCase(){
+  const targetCaseId = getTargetCaseIdOrAlert();
+  if (!targetCaseId) return;
+  if (!confirm("ยืนยันปิดเคสนี้ใช่หรือไม่?")) return;
+
+  try{
+    await fetchJSON(`/api/case/${targetCaseId}/close`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        line_user_id: viewerLineUserId
+      })
+    });
+
+    showToast("ปิดเคสแล้ว", "ระบบบันทึกการปิดเคสเรียบร้อย");
+    resetFormLocking();
+    await refreshCaseView();
+  }catch(err){
+    alert("ปิดเคสไม่สำเร็จ: " + err.message);
+  }
+}
 
     function resetForm(){
       document.getElementById("staffName").value = "";

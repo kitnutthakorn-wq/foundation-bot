@@ -13196,6 +13196,57 @@ app.post("/api/team/cases/status", async (req, res) => {
     return res.status(500).json({ ok: false, error: err.message });
   }
 });
+
+app.post("/api/case/:caseCode/update-by-case-code", async (req, res) => {
+  try {
+    const adminGuard = await requireAdminFromRequest(req, res);
+    if (!adminGuard) return;
+
+    const caseCode = String(req.params.caseCode || "").trim();
+    const { staff_name, status, priority, project_ref } = req.body || {};
+
+    if (!caseCode) {
+      return res.status(400).json({
+        ok: false,
+        error: "missing caseCode"
+      });
+    }
+
+    const patch = {
+      assigned_to: staff_name || null,
+      status: status || "new",
+      priority: priority || "normal",
+      project_ref: project_ref || null,
+      last_action_at: new Date().toISOString(),
+      last_action_by: staff_name || adminGuard.lineUserId || "ทีมงาน"
+    };
+
+    if (String(status || "").toLowerCase() === "done") {
+      patch.closed_at = new Date().toISOString();
+    }
+
+    const { data, error } = await supabase
+      .from("help_requests")
+      .update(patch)
+      .eq("case_code", caseCode)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return res.json({
+      ok: true,
+      data
+    });
+  } catch (err) {
+    console.error("POST /api/case/:caseCode/update-by-case-code error:", err);
+    return res.status(500).json({
+      ok: false,
+      error: err.message
+    });
+  }
+});
+
 // =========================
 // DEBUG TEAM GROUP
 // =========================

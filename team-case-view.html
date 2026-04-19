@@ -853,6 +853,40 @@ async function loadViewerRole() {
     applyRoleUI("viewer");
   }
 }
+
+function ensureAdminAction() {
+  if (String(viewerRole).toLowerCase() !== "admin") {
+    alert("เมนูนี้สำหรับแอดมินเท่านั้น");
+    return false;
+  }
+  return true;
+}
+
+function openAssignDialog() {
+  if (!ensureAdminAction()) return;
+  const input = document.getElementById("staffName");
+  if (input) input.focus();
+  showToast?.("โหมดแอดมิน", "กรอกชื่อผู้รับเคส แล้วกดปุ่มบันทึกหรือรับเคส");
+}
+
+function openPriorityDialog() {
+  if (!ensureAdminAction()) return;
+  const select = document.getElementById("prioritySelect");
+  if (select) select.focus();
+  showToast?.("โหมดแอดมิน", "เลือกระดับเคสที่ต้องการปรับ");
+}
+
+function openStatusDialog() {
+  if (!ensureAdminAction()) return;
+  const select = document.getElementById("statusSelect");
+  if (select) select.focus();
+  showToast?.("โหมดแอดมิน", "เลือกสถานะใหม่ของเคส");
+}
+
+async function closeCaseAsAdmin() {
+  if (!ensureAdminAction()) return;
+  await closeCase();
+}
     
 function formatThaiDateTime(value){
   if(!value) return "-";

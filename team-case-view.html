@@ -1733,9 +1733,11 @@ function renderInfoUpdates(infoUpdates = []) {
         if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
 
        await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
-await loadViewerRole();
-await loadCaseReport();
-connectRealtime();
+        await loadProjectOptions();
+        await loadCaseReport();
+       await loadViewerRole();
+       await loadCaseReport();
+       connectRealtime();
 
         if(fallbackInterval) clearInterval(fallbackInterval);
         fallbackInterval = setInterval(() => {

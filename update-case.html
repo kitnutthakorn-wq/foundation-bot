@@ -180,7 +180,7 @@
 
 <script>
 const CONFIG = {
-  LIFF_ID: "2009446483-2q6biMUk",
+  LIFF_ID: "2009446483-nz0IBSI5",
   API_BASE_URL: "https://satisfied-stillness-production-7942.up.railway.app",
   CREATE_CASE_UPDATE_ENDPOINT: "/api/case-updates",
   APP_ENV_LABEL: "Production",
@@ -225,11 +225,10 @@ async function initLiff() {
   }
 
   await liff.init({ liffId: CONFIG.LIFF_ID });
-
-  if (!liff.isLoggedIn()) {
-    liff.login();
-    return;
-  }
+if (!liff.isLoggedIn()) {
+  liff.login({ redirectUri: window.location.href });
+  return;
+}
 
   currentProfile = await liff.getProfile();
   document.getElementById('senderText').textContent = currentProfile?.displayName || 'ไม่ทราบชื่อ';

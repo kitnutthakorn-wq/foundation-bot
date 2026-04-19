@@ -3235,64 +3235,231 @@ function getAutoProgress(caseData = {}, items = []) {
   return 0;
 }
 
-function renderFieldProgressFromTimeline(items = [], caseData = {}) {
-  const list = Array.isArray(items)
-    ? items.slice().sort((a, b) => {
-        const aTime = new Date(a?.updated_at || a?.created_at || 0).getTime();
-        const bTime = new Date(b?.updated_at || b?.created_at || 0).getTime();
-        return bTime - aTime;
-      })
+function getAutoProgress(caseItem = {}, updates = []) {
+  const sorted = Array.isArray(updates) && updates.length
+    ? [...updates].sort((a, b) =>
+        new Date(b?.updated_at || b?.created_at || 0) -
+        new Date(a?.updated_at || a?.created_at || 0)
+      )
     : [];
 
-  const latest = list[0] || null;
+  const latest = sorted[0] || {};
 
-  let progress = gsSafeProgress(
-    latest?.progress_percent ??
-    latest?.progress ??
-    caseData?.progress_percent ??
-    caseData?.progress ??
+  const latestWithStep =
+    sorted.find((item) =>
+      String(
+        item?.current_step ||
+        item?.currentStep ||
+        item?.step_label ||
+        item?.step_name ||
+        ""
+      ).trim()
+    ) || {};
+
+  const latestWithWaiting =
+    sorted.find((item) =>
+      String(
+        item?.waiting_for ||
+        item?.waitingFor ||
+        item?.pending_on ||
+        item?.waiting_on ||
+        item?.waiting_reason ||
+        item?.waitingReason ||
+        item?.latest_waiting ||
+        ""
+      ).trim()
+    ) || {};
+
+  const latestWithStatus =
+    sorted.find((item) =>
+      String(item?.status_after || item?.status || "").trim()
+    ) || {};
+
+  const statusAfter = String(
+    latestWithStatus.status_after ||
+    latest.status_after ||
+    latest.status ||
+    caseItem.status ||
+    ""
+  ).toLowerCase();
+
+  const currentStep = String(
+    latestWithStep.current_step ||
+    latestWithStep.currentStep ||
+    latestWithStep.step_label ||
+    latestWithStep.step_name ||
+    caseItem.current_step ||
+    caseItem.currentStep ||
+    caseItem.step_name ||
+    caseItem.stepName ||
+    ""
+  ).toLowerCase();
+
+  const waitingFor = String(
+    latestWithWaiting.waiting_for ||
+    latestWithWaiting.waitingFor ||
+    latestWithWaiting.pending_on ||
+    latestWithWaiting.waiting_on ||
+    latestWithWaiting.waiting_reason ||
+    latestWithWaiting.waitingReason ||
+    latestWithWaiting.latest_waiting ||
+    caseItem.waiting_for ||
+    caseItem.waitingFor ||
+    caseItem.latest_waiting ||
+    ""
+  ).toLowerCase();
+
+  if (statusAfter === "done") return 100;
+  if (statusAfter === "cancelled") return 0;
+
+  if (waitingFor.includes("ลงพื้นที่") || waitingFor.includes("ตรวจ")) return 25;
+  if (waitingFor.includes("ประสาน") || waitingFor.includes("พิจารณา")) return 50;
+  if (waitingFor.includes("ช่วยเหลือ") || waitingFor.includes("ดำเนินการ")) return 75;
+  if (waitingFor.includes("ติดตาม")) return 90;
+
+  if (currentStep.includes("รับเรื่อง")) return 10;
+  if (currentStep.includes("ตรวจ") || currentStep.includes("ลงพื้นที่")) return 25;
+  if (currentStep.includes("ประสาน")) return 50;
+  if (currentStep.includes("ช่วยเหลือ")) return 75;
+  if (currentStep.includes("เสร็จ")) return 100;
+  if (currentStep.includes("ปิดเคส")) return 100;
+
+  if (statusAfter === "in_progress") return 50;
+  if (statusAfter === "new") return 10;
+
+  return 0;
+}
+
+function renderFieldProgressFromTimeline(items = [], caseData = {}) {
+  const sortedUpdates = Array.isArray(items)
+    ? [...items].sort((a, b) =>
+        new Date(b?.updated_at || b?.created_at || 0) -
+        new Date(a?.updated_at || a?.created_at || 0)
+      )
+    : [];
+
+  const latest =
+    sortedUpdates.find((item) =>
+      item?.progress_percent != null || item?.progressPercent != null || item?.progress != null
+    ) || sortedUpdates[0] || {};
+
+  const latestWithProgress =
+    sortedUpdates.find((item) =>
+      Number(item?.progress_percent ?? item?.progressPercent ?? item?.progress ?? 0) > 0
+    ) || {};
+
+  const latestWithStep =
+    sortedUpdates.find((item) =>
+      String(
+        item?.current_step ||
+        item?.currentStep ||
+        item?.step_label ||
+        item?.step_name ||
+        ""
+      ).trim()
+    ) || {};
+
+  const latestWithWaiting =
+    sortedUpdates.find((item) =>
+      String(
+        item?.waiting_for ||
+        item?.waitingFor ||
+        item?.pending_on ||
+        item?.waiting_on ||
+        item?.waiting_reason ||
+        item?.waitingReason ||
+        item?.latest_waiting ||
+        ""
+      ).trim()
+    ) || {};
+
+  const latestWithLocation =
+    sortedUpdates.find((item) =>
+      String(
+        item?.location_text ||
+        item?.locationText ||
+        item?.geo_text ||
+        item?.area ||
+        ""
+      ).trim()
+    ) || {};
+
+  let progress = Number(
+    latestWithProgress?.progress_percent ??
+    latestWithProgress?.progressPercent ??
+    latestWithProgress?.progress ??
     0
   );
 
   if (!progress || progress === 0) {
-    progress = getAutoProgress(caseData, list);
+    progress = getAutoProgress(caseData, sortedUpdates);
   }
 
   progress = Math.max(0, Math.min(100, Number(progress || 0)));
 
-  const latestStep =
+  const currentStep =
+    latestWithStep?.current_step ||
+    latestWithStep?.currentStep ||
+    latestWithStep?.step_label ||
+    latestWithStep?.step_name ||
     latest?.current_step ||
+    latest?.currentStep ||
     latest?.step_label ||
     latest?.step_name ||
     caseData?.current_step ||
+    caseData?.currentStep ||
     caseData?.step_name ||
+    caseData?.stepName ||
+    latest?.latest_note ||
+    latest?.message ||
     "-";
 
-  const latestWaiting =
+  const waitingFor =
+    latestWithWaiting?.waiting_for ||
+    latestWithWaiting?.waitingFor ||
+    latestWithWaiting?.pending_on ||
+    latestWithWaiting?.waiting_on ||
+    latestWithWaiting?.waiting_reason ||
+    latestWithWaiting?.waitingReason ||
+    latestWithWaiting?.latest_waiting ||
     latest?.waiting_for ||
+    latest?.waitingFor ||
     latest?.pending_on ||
     latest?.waiting_on ||
+    latest?.latest_waiting ||
     caseData?.waiting_for ||
+    caseData?.waitingFor ||
+    caseData?.latest_waiting ||
     "-";
 
-  const latestStatusRaw = normalizeTimelineStatus(
+  const statusAfterRaw =
     latest?.status_after ||
+    latest?.statusAfter ||
     latest?.status ||
     caseData?.status ||
-    "in_progress"
+    "-";
+
+  const statusAfterLabel = statusThai(
+    normalizeTimelineStatus(statusAfterRaw)
   );
 
-  const latestStatusLabel = statusThai(latestStatusRaw);
-
-  const gps = latest ? getTimelineLatLng(latest) : null;
-  const latestArea =
+  const locationText =
+    latestWithLocation?.location_text ||
+    latestWithLocation?.locationText ||
+    latestWithLocation?.geo_text ||
+    latestWithLocation?.area ||
     latest?.location_text ||
-    latest?.geo_text ||
-    latest?.area ||
+    latest?.locationText ||
     caseData?.location_text ||
-    (gps ? `${gps.lat}, ${gps.lng}` : "-");
+    caseData?.locationText ||
+    (
+      latest?.latitude != null && latest?.longitude != null
+        ? `${latest.latitude}, ${latest.longitude}`
+        : ""
+    ) ||
+    "-";
 
-  let latestBy =
+  let updaterName =
     latest?.updater_name ||
     latest?.staff_name ||
     latest?.staff ||
@@ -3302,23 +3469,23 @@ function renderFieldProgressFromTimeline(items = [], caseData = {}) {
     caseData?.assigned_to ||
     "-";
 
-  if (/^U[a-zA-Z0-9]{10,}$/.test(String(latestBy || "").trim())) {
-    latestBy =
+  if (/^U[a-zA-Z0-9]{10,}$/.test(String(updaterName || "").trim())) {
+    updaterName =
       latest?.updater_name ||
       latest?.staff_name ||
       latest?.staff ||
       latest?.updated_by_name ||
       caseData?.last_action_by ||
       caseData?.assigned_to ||
-      latestBy;
+      updaterName;
   }
 
   gsSetText("progress_text", `${progress}%`);
-  gsSetText("latest_step", latestStep !== "-" ? latestStep : latestStatusLabel);
-  gsSetText("latest_waiting", latestWaiting || "-");
-  gsSetText("latest_step_help", latestStatusLabel || "-");
-  gsSetText("latest_area", latestArea || "-");
-  gsSetText("latest_by_pill", `ผู้บันทึกล่าสุด: ${latestBy}`);
+  gsSetText("latest_step", currentStep || "-");
+  gsSetText("latest_waiting", waitingFor || "-");
+  gsSetText("latest_step_help", statusAfterLabel || "-");
+  gsSetText("latest_area", locationText || "-");
+  gsSetText("latest_by_pill", `ผู้บันทึกล่าสุด: ${updaterName}`);
 
   const bar = document.getElementById("progress_bar");
   if (bar) {

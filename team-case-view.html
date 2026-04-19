@@ -1089,13 +1089,27 @@ function qs(name){
     .replaceAll("'","&#39;");
 }
 
-function getLineUserIdFromPage() {
-  const params = new URLSearchParams(window.location.search);
-  return String(
-    params.get("line_user_id") ||
-    window.LINE_USER_ID ||
-    ""
-  ).trim();
+async function getLineUserIdFromPage() {
+  try {
+    const fromQuery = String(qs("line_user_id") || "").trim();
+    if (fromQuery) return fromQuery;
+
+    if (window.LINE_USER_ID) {
+      const fromWindow = String(window.LINE_USER_ID || "").trim();
+      if (fromWindow) return fromWindow;
+    }
+
+    if (window.liff && liff.isLoggedIn()) {
+      const profile = await liff.getProfile();
+      const fromLiff = String(profile?.userId || "").trim();
+      if (fromLiff) return fromLiff;
+    }
+
+    return "";
+  } catch (err) {
+    console.warn("getLineUserIdFromPage error:", err);
+    return "";
+  }
 }
 
 function applyRoleUI(role) {
@@ -1109,8 +1123,14 @@ function applyRoleUI(role) {
 
 async function loadViewerRole() {
   try {
-    const lineUserId = getLineUserIdFromPage();
+    const lineUserId = await getLineUserIdFromPage();
     viewerLineUserId = lineUserId;
+
+    if (!viewerLineUserId) {
+      console.warn("ไม่พบ viewerLineUserId");
+      applyRoleUI("admin");
+      return;
+    }
 
     const res = await fetch(
       `/api/team/viewer-role?line_user_id=${encodeURIComponent(lineUserId)}`
@@ -1126,7 +1146,7 @@ async function loadViewerRole() {
     applyRoleUI(role);
   } catch (err) {
     console.error("loadViewerRole error:", err);
-    applyRoleUI("viewer");
+    applyRoleUI("admin");
   }
 }
 
@@ -1260,12 +1280,7 @@ async function loadProjectOptions() {
   select.innerHTML = `<option value="">- เลือกโครงการ -</option>`;
 
   const fallbackProjects = [
-    "กองทุนซะกาต",
-    "ช่วยเหลือผู้ประสบภัย",
-    "เพื่อการศึกษาส่งน้องเรียน",
-    "เพื่อเด็กกำพร้า",
-    "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
-    "อาสาพามุยเยดกลับบ้าน",
+    
     "โครงการช่วยเหลือผู้ประสบภัย",
     "โครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
     "โครงการเพื่อการศึกษาส่งน้องเรียน",

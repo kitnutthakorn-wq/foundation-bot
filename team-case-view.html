@@ -1232,6 +1232,26 @@ function formatThaiDateTime(value){
       if(!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
       return data;
     }
+
+function normalizeProjectName(name = "") {
+  const raw = String(name || "").trim();
+  if (!raw) return "";
+
+  const cleaned = raw.replace(/\s+/g, " ").trim();
+
+  const map = {
+    "สร้างงานสร้างอาชีพ": "โครงการสร้างอาชีพ",
+    "โครงการสร้างงานสร้างอาชีพ": "โครงการสร้างอาชีพ",
+    "สร้างอาชีพ": "โครงการสร้างอาชีพ",
+    "เปลี่ยนสายไฟเพื่อผู้ยากไร้": "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้",
+    "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้": "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้",
+    "ช่วยเหลือผู้ประสบภัย": "โครงการบรรเทาสาธารณภัย",
+    "กองทุนซะกาต": "กองทุนซะกาต"
+  };
+
+  return map[cleaned] || cleaned;
+}
+
 async function loadProjectOptions() {
   const select = document.getElementById("projectSelect");
   if (!select) return;
@@ -1240,17 +1260,22 @@ async function loadProjectOptions() {
   select.innerHTML = `<option value="">- เลือกโครงการ -</option>`;
 
   const fallbackProjects = [
-    "โครงการซากาตเพื่อผู้ยากไร้",
+    "กองทุนซะกาต",
+    "ช่วยเหลือผู้ประสบภัย",
+    "เพื่อการศึกษาส่งน้องเรียน",
+    "เพื่อเด็กกำพร้า",
+    "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
+    "อาสาพามุยเยดกลับบ้าน",
+    "โครงการช่วยเหลือผู้ประสบภัย",
     "โครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
     "โครงการเพื่อการศึกษาส่งน้องเรียน",
-    "โครงการอาสาพามัยยิดกลับบ้าน",
-    "โครงการช่วยเหลือผู้ประสบภัย",
+    "โครงการอาสาพามุยเยดกลับบ้าน",
+    "โครงการช่วยเหลือผู้ป่วย",
     "โครงการช่วยเหลือเด็กกำพร้า",
-    "โครงการสร้างงานสร้างอาชีพ",
+    "โครงการสร้างอาชีพ",
     "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้",
-    "โครงการเพื่อการบริหารบรรเทาธารณภัย"
-    
-  ];
+    "โครงการบรรเทาสาธารณภัย"
+  ].map(normalizeProjectName).filter(Boolean);
 
   try {
     const res = await fetch(`${CONFIG.API_BASE_URL}/api/projects/options`);
@@ -1270,13 +1295,13 @@ async function loadProjectOptions() {
 
     const namesFromApi = rows
       .map(item =>
-        String(
+        normalizeProjectName(
           item?.name ||
           item?.project_name ||
           item?.title ||
           item?.label ||
           ""
-        ).trim()
+        )
       )
       .filter(Boolean);
 
@@ -1290,6 +1315,7 @@ async function loadProjectOptions() {
     });
   } catch (err) {
     console.warn("loadProjectOptions fallback:", err);
+
     fallbackProjects.forEach(name => {
       const opt = document.createElement("option");
       opt.value = name;
@@ -1302,7 +1328,7 @@ async function loadProjectOptions() {
     select.value = keepValue;
   }
 }
-   
+       
     function renderSummary(caseItem={}){
       safeText("sumCaseCode", caseItem.case_code || "-");
       safeText("sumAssignedTo", caseItem.assigned_to || "-");

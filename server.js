@@ -12916,31 +12916,48 @@ app.get("/api/team/activities", async (req, res) => {
 
 app.post("/api/team/cases/assign", async (req, res) => {
   try {
+    const adminGuard = await requireAdminFromRequest(req, res);
+    if (!adminGuard) return;
+
     const { caseCode, userId, displayName } = req.body || {};
 
     if (!caseCode) {
-      return res.status(400).json({ ok: false, error: "missing caseCode" });
+      return res.status(400).json({
+        ok: false,
+        error: "missing caseCode"
+      });
     }
 
-    const actorName = displayName || "ทีมงาน";
-const payload = {
-  assigned_to: actorName,
-  status: "in_progress",
-  assigned_at: new Date().toISOString(),
-  last_action_at: new Date().toISOString(),
-  last_action_by: actorName
-};
+    const actorName =
+      String(displayName || "").trim() ||
+      adminGuard.lineUserId ||
+      "ทีมงาน";
 
-    const result = await supabase
+    const assignedUserId = String(userId || "").trim() || null;
+    const now = new Date().toISOString();
+
+    const patch = {
+      status: "in_progress",
+      assigned_at: now,
+      assigned_to: actorName,
+      last_action_at: now,
+      last_action_by: actorName
+    };
+
+    if (assignedUserId) {
+      patch.assigned_user_id = assignedUserId;
+    }
+
+    const { data, error } = await supabase
       .from("help_requests")
-      .update(payload)
+      .update(patch)
       .eq("case_code", caseCode)
       .select()
       .limit(1);
 
-    if (result.error) throw result.error;
+    if (error) throw error;
 
-    const updatedCase = result.data?.[0] || null;
+    const updatedCase = data?.[0] || null;
 
     try {
       if (updatedCase) {
@@ -12954,45 +12971,87 @@ const payload = {
       console.warn("TEAM ASSIGN ALERT WARNING:", alertErr?.message || alertErr);
     }
 
-  broadcastSse("team_case_assigned", {
-  case_code: caseCode,
-  assigned_to: payload.assigned_to,
-  sync_target: "dashboard_and_team",
-});
+    broadcastSse("team_case_assigned", {
+      case_code: caseCode,
+      assigned_to: actorName,
+      assigned_user_id: assignedUserId,
+      sync_target: "dashboard_and_team"
+    });
 
     broadcastSse("dashboard_refresh", {
       reason: "team_case_assigned",
       case_code: caseCode,
-      sync_target: "dashboard_and_team",
+      assigned_to: actorName,
+      sync_target: "dashboard_and_team"
     });
 
-   if (PRESENTATION_MODE) {
-  console.log("📣 PRESENTATION MODE (assign)");
+    let teamNotifyOk = false;
+    let requesterNotifyOk = false;
+    const notifyWarnings = [];
 
-  await pushTeamNotification(
-    buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName)
-  );
-} else {
-  await pushTeamNotification(
-    buildTeamWorkspaceAutoText("assign", updatedCase || payload, actorName)
-  );
-}
-    if (updatedCase?.line_user_id) {
-      await pushLineTextSafe(updatedCase.line_user_id, buildRequesterAutoText("assign", updatedCase, actorName));
+    if (PRESENTATION_MODE) {
+      await sendPresentationNotify({
+        replyToken: req.body?.replyToken || "",
+        fallbackText:
+          "📣 มีการรับเคส\n" +
+          `เลขเคส: ${caseCode || "-"}\n` +
+          `ผู้รับเคส: ${actorName || "ทีมงาน"}`
+      });
+    } else {
+      try {
+        await pushTeamNotification(
+          buildTeamWorkspaceAutoText(
+            "assign",
+            updatedCase || { case_code: caseCode, assigned_to: actorName },
+            actorName
+          )
+        );
+        teamNotifyOk = true;
+      } catch (notifyErr) {
+        console.warn("TEAM ASSIGN NOTIFY WARNING:", notifyErr?.message || notifyErr);
+        notifyWarnings.push({
+          target: "team",
+          message: notifyErr?.message || String(notifyErr)
+        });
+      }
+
+      if (updatedCase?.line_user_id) {
+        try {
+          await pushLineTextSafe(
+            updatedCase.line_user_id,
+            buildRequesterAutoText(
+              "assign",
+              updatedCase || { case_code: caseCode },
+              actorName
+            )
+          );
+          requesterNotifyOk = true;
+        } catch (requesterErr) {
+          console.warn("REQUESTER ASSIGN NOTIFY WARNING:", requesterErr?.message || requesterErr);
+          notifyWarnings.push({
+            target: "requester",
+            message: requesterErr?.message || String(requesterErr)
+          });
+        }
+      }
     }
 
     return res.json({
       ok: true,
-      message: "assigned",
+      message: "case assigned",
       case: updatedCase,
       auto_notify: {
-        team: true,
-        requester: !!updatedCase?.line_user_id,
+        team: teamNotifyOk,
+        requester: requesterNotifyOk
       },
+      warnings: notifyWarnings
     });
   } catch (err) {
     console.error("POST /api/team/cases/assign error:", err);
-    return res.status(500).json({ ok: false, error: err.message });
+    return res.status(500).json({
+      ok: false,
+      error: err.message || "assign failed"
+    });
   }
 });
 

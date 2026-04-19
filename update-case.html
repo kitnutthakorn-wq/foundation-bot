@@ -249,8 +249,11 @@ async function initLiff() {
   }
 
   await liff.init({ liffId: CONFIG.LIFF_ID });
+  console.log("SEARCH =", window.location.search);
+  console.log("CASE =", caseCode);
 if (!liff.isLoggedIn()) {
-  liff.login({ redirectUri: window.location.href });
+  const redirectUri = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+  liff.login({ redirectUri });
   return;
 }
 

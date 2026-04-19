@@ -1463,6 +1463,58 @@ function renderLatestImages(updates = []) {
     />
   `).join("");
 }
+
+function renderWarRoomMap(caseItem = {}, updates = []) {
+  const body = document.getElementById("warroomMapBody");
+  const meta = document.getElementById("warroomMapMeta");
+  const source = document.getElementById("warroomMapSource");
+  const link = document.getElementById("warroomMapLink");
+
+  if (!body || !meta || !source || !link) return;
+
+  const latestWithCoords = [...updates].find(item =>
+    item.latitude != null && item.longitude != null
+  );
+
+  const lat = Number(
+    latestWithCoords?.latitude ??
+    caseItem?.latitude ??
+    null
+  );
+
+  const lng = Number(
+    latestWithCoords?.longitude ??
+    caseItem?.longitude ??
+    null
+  );
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    body.innerHTML = `<div class="warroom-map-empty">ยังไม่พบพิกัดสำหรับเคสนี้</div>`;
+    meta.textContent = "พิกัด: -";
+    source.textContent = "แหล่งพิกัด: -";
+    link.href = "#";
+    return;
+  }
+
+  const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+  const openUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+  body.innerHTML = `
+    <iframe
+      class="warroom-map-frame"
+      src="${mapUrl}"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen>
+    </iframe>
+  `;
+
+  meta.textContent = `พิกัด: ${lat}, ${lng}`;
+  source.textContent = latestWithCoords
+    ? "แหล่งพิกัด: จาก Timeline ล่าสุด"
+    : "แหล่งพิกัด: จากข้อมูลเคสหลัก";
+  link.href = openUrl;
+}
     
 function renderTimeline(caseItem = {}, updates=[]){
   const root = document.getElementById("timelineList");
@@ -1626,7 +1678,8 @@ function renderInfoUpdates(infoUpdates = []) {
       renderSummary(caseItem);
       renderProgress(caseItem, updates);
       renderLatestImages(updates);
-     renderTimeline(caseItem, updates);
+      renderWarRoomMap(caseItem, updates);
+      renderTimeline(caseItem, updates);
       renderInfoUpdates(infoUpdates);
     }
 

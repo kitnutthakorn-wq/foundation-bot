@@ -1734,9 +1734,8 @@ function renderInfoUpdates(infoUpdates = []) {
        await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
         await loadProjectOptions();
         await loadCaseReport();
-       await loadViewerRole();
-       await loadCaseReport();
-       connectRealtime();
+        await loadViewerRole();
+        connectRealtime();
 
         if(fallbackInterval) clearInterval(fallbackInterval);
         fallbackInterval = setInterval(() => {

@@ -1123,7 +1123,7 @@ async function getLineUserIdFromPage() {
 
     return "";
   } catch (err) {
-    console.warn("getLineUserIdFromPage error:", err);
+   
     return "";
   }
 }
@@ -1143,10 +1143,10 @@ async function loadViewerRole() {
     const lineUserId = await getLineUserIdFromPage();
     viewerLineUserId = lineUserId;
 
-    console.log("viewerLineUserId =", viewerLineUserId);
+    
 
     if (!viewerLineUserId) {
-      console.warn("ไม่พบ viewerLineUserId");
+     
       applyRoleUI("admin");
       return;
     }

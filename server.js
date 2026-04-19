@@ -12998,17 +12998,27 @@ const payload = {
 
 app.post("/api/team/cases/status", async (req, res) => {
   try {
+    const adminGuard = await requireAdminFromRequest(req, res);
+    if (!adminGuard) return;
+
     const { caseCode, status, displayName } = req.body || {};
 
     if (!caseCode || !status) {
-      return res.status(400).json({ ok: false, error: "missing caseCode or status" });
+      return res.status(400).json({
+        ok: false,
+        error: "missing caseCode or status"
+      });
     }
 
-    let nextStatus = status;
-    if (status === "progress") nextStatus = "in_progress";
-    if (status === "done") nextStatus = "done";
+    let nextStatus = String(status || "").trim();
+    if (nextStatus === "progress") nextStatus = "in_progress";
+    if (nextStatus === "done") nextStatus = "done";
 
-    const actorName = displayName || "ทีมงาน";
+    const actorName =
+      String(displayName || "").trim() ||
+      adminGuard.lineUserId ||
+      "ทีมงาน";
+
     const now = new Date().toISOString();
 
     const payload = {
@@ -13045,7 +13055,6 @@ app.post("/api/team/cases/status", async (req, res) => {
       console.warn("TEAM STATUS ALERT WARNING:", alertErr?.message || alertErr);
     }
 
-    // ✅ งานหลักต้องสำเร็จก่อน
     broadcastSse("team_case_status_updated", {
       case_code: caseCode,
       status: nextStatus,
@@ -13059,61 +13068,60 @@ app.post("/api/team/cases/status", async (req, res) => {
       sync_target: "dashboard_and_team",
     });
 
-    // ✅ งานรอง: แจ้งเตือน LINE แต่ห้ามทำให้ route ล้ม
     const notifyAction = nextStatus === "done" ? "done" : "progress";
 
     let teamNotifyOk = false;
     let requesterNotifyOk = false;
     const notifyWarnings = [];
 
-  if (PRESENTATION_MODE) {
-  await sendPresentationNotify({
-    replyToken: req.body?.replyToken || "",
-    fallbackText:
-      "📣 มีการอัปเดตเคส\n" +
-      `เลขเคส: ${caseCode || "-"}\n` +
-      `สถานะ: ${nextStatus || "-"}\n` +
-      `โดย: ${actorName || "ทีมงาน"}`
-  });
-} else {
-  try {
-    await pushTeamNotification(
-      buildTeamWorkspaceAutoText(
-        notifyAction,
-        updatedCase || { case_code: caseCode, status: nextStatus },
-        actorName
-      )
-    );
-    teamNotifyOk = true;
-  } catch (notifyErr) {
-    console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
-    notifyWarnings.push({
-      target: "team",
-      message: notifyErr?.message || String(notifyErr),
-    });
-  }
-
-  if (updatedCase?.line_user_id) {
-    try {
-      await pushLineTextSafe(
-        updatedCase.line_user_id,
-        buildRequesterAutoText(
-          notifyAction,
-          updatedCase || { case_code: caseCode },
-          actorName
-        )
-      );
-      requesterNotifyOk = true;
-    } catch (requesterErr) {
-      console.warn("REQUESTER STATUS NOTIFY WARNING:", requesterErr?.message || requesterErr);
-      notifyWarnings.push({
-        target: "requester",
-        message: requesterErr?.message || String(requesterErr),
+    if (PRESENTATION_MODE) {
+      await sendPresentationNotify({
+        replyToken: req.body?.replyToken || "",
+        fallbackText:
+          "📣 มีการอัปเดตเคส\n" +
+          `เลขเคส: ${caseCode || "-"}\n` +
+          `สถานะ: ${nextStatus || "-"}\n` +
+          `โดย: ${actorName || "ทีมงาน"}`
       });
+    } else {
+      try {
+        await pushTeamNotification(
+          buildTeamWorkspaceAutoText(
+            notifyAction,
+            updatedCase || { case_code: caseCode, status: nextStatus },
+            actorName
+          )
+        );
+        teamNotifyOk = true;
+      } catch (notifyErr) {
+        console.warn("TEAM STATUS NOTIFY WARNING:", notifyErr?.message || notifyErr);
+        notifyWarnings.push({
+          target: "team",
+          message: notifyErr?.message || String(notifyErr),
+        });
+      }
+
+      if (updatedCase?.line_user_id) {
+        try {
+          await pushLineTextSafe(
+            updatedCase.line_user_id,
+            buildRequesterAutoText(
+              notifyAction,
+              updatedCase || { case_code: caseCode },
+              actorName
+            )
+          );
+          requesterNotifyOk = true;
+        } catch (requesterErr) {
+          console.warn("REQUESTER STATUS NOTIFY WARNING:", requesterErr?.message || requesterErr);
+          notifyWarnings.push({
+            target: "requester",
+            message: requesterErr?.message || String(requesterErr),
+          });
+        }
+      }
     }
-  }
-}
-    // ✅ ถึง LINE push จะ fail ก็ยังตอบสำเร็จ
+
     return res.json({
       ok: true,
       message: "status updated",
@@ -13126,79 +13134,6 @@ app.post("/api/team/cases/status", async (req, res) => {
     });
   } catch (err) {
     console.error("POST /api/team/cases/status error:", err);
-    return res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
-app.post("/api/team/send-update", async (req, res) => {
-  try {
-    const { type, message, caseCode, targetUserId } = req.body || {};
-
-    if (!message) {
-      return res.status(400).json({ ok: false, error: "missing message" });
-    }
-
-    const effectiveTeamGroupId = process.env.LINE_TEAM_GROUP_ID || EFFECTIVE_TEAM_GROUP_ID;
-
-    if (type === "team") {
-      if (!effectiveTeamGroupId) {
-        return res.status(400).json({ ok: false, error: "missing LINE_TEAM_GROUP_ID / TEAM_GROUP_ID / LINE_GROUP_ID" });
-      }
-
-      await callLinePushApi(effectiveTeamGroupId, [
-        {
-          type: "text",
-          text: message,
-        },
-      ]);
-
-      broadcastSse("team_message_sent", {
-        type: "team",
-        target: "team_group",
-        sync_target: "dashboard_and_team",
-      });
-
-      return res.json({ ok: true, sentTo: "team_group" });
-    }
-
-    if (type === "requester") {
-      let userId = targetUserId || null;
-
-      if (!userId && caseCode) {
-        const caseResult = await supabase
-          .from("help_requests")
-          .select("line_user_id")
-          .eq("case_code", caseCode)
-          .maybeSingle();
-
-        if (caseResult.error) throw caseResult.error;
-        userId = caseResult.data?.line_user_id || null;
-      }
-
-      if (!userId) {
-        return res.status(400).json({ ok: false, error: "missing requester line user id" });
-      }
-
-      await callLinePushApi(userId, [
-        {
-          type: "text",
-          text: message,
-        },
-      ]);
-
-      broadcastSse("team_message_sent", {
-        type: "requester",
-        target: userId,
-        case_code: caseCode || null,
-        sync_target: "dashboard_and_team",
-      });
-
-      return res.json({ ok: true, sentTo: "requester" });
-    }
-
-    return res.status(400).json({ ok: false, error: "invalid type" });
-  } catch (err) {
-    console.error("POST /api/team/send-update error:", err);
     return res.status(500).json({ ok: false, error: err.message });
   }
 });

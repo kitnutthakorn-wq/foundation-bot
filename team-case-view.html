@@ -1429,7 +1429,7 @@ async function loadProjectOptions() {
     const seen = new Set();
 
     normalizedRows.forEach(item => {
-      const key = `${item.id}__${item.name}`;
+      const key = item.id;
       if (seen.has(key)) return;
       seen.add(key);
       uniqueRows.push(item);
@@ -1437,8 +1437,8 @@ async function loadProjectOptions() {
 
     uniqueRows.forEach(item => {
       const opt = document.createElement("option");
-      opt.value = item.id;          // ✅ ส่ง UUID / project id
-      opt.textContent = item.name;  // ✅ แสดงชื่อโครงการ
+      opt.value = item.id;          // สำคัญ: ใช้ UUID
+      opt.textContent = item.name;  // แสดงชื่อไทย
       select.appendChild(opt);
     });
   } catch (err) {

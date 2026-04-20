@@ -2148,44 +2148,42 @@ async function saveCaseSettings(){
 }
     
 async function assignCase() {
-  const activeCaseId = String(window.currentCaseId || "").trim();
   const activeCaseCode = String(
     document.getElementById("sumCaseCode")?.textContent ||
     currentCaseCode ||
     ""
   ).trim();
 
-  if (!activeCaseId) {
-    alert("ไม่พบ id ของเคส");
-    return;
-  }
-
   if (!activeCaseCode || activeCaseCode === "-") {
     alert("ไม่พบเลขเคส");
     return;
   }
 
-  const staffName = document.getElementById("staffName")?.value.trim() || "";
-  const status = document.getElementById("statusSelect")?.value || "";
-  const priority = document.getElementById("prioritySelect")?.value || "";
-  const projectRef = document.getElementById("projectSelect")?.value || "";
+  const staff_name = document.getElementById("staffName")?.value.trim() || "";
+  const status = document.getElementById("statusSelect")?.value || "new";
+  const priority = document.getElementById("prioritySelect")?.value || "normal";
+  const project_ref = document.getElementById("projectSelect")?.value || "";
 
-  if (!staffName) {
+  if (!staff_name) {
     alert("กรุณากรอกชื่อผู้รับเคส");
     return;
   }
 
   try {
-    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(activeCaseId)}/update`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        staff_name: staffName,
-        status,
-        priority,
-        project_ref: projectRef
-      })
-    });
+    await safeFetchJson(
+      `${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(activeCaseCode)}/update-by-case-code`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          staff_name,
+          status,
+          priority,
+          project_ref,
+          line_user_id: viewerLineUserId
+        })
+      }
+    );
 
     showToast("บันทึกสำเร็จ", "ระบบอัปเดตผู้รับเคส สถานะ ระดับ และโครงการเรียบร้อย");
     await refreshPageData();

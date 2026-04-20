@@ -1029,9 +1029,22 @@ function viewCase(code){
 }
 
 function openCaseUpdateLiff(caseCode){
-  const target = `update-case.html?case_code=${encodeURIComponent(caseCode)}`;
+  const senderName = encodeURIComponent(
+    currentProfile?.displayName ||
+    document.getElementById("userName")?.textContent?.trim() ||
+    "CREATIVE"
+  );
+
+  const senderUserId = encodeURIComponent(
+    currentProfile?.userId ||
+    ""
+  );
+
+  const target =
+    `update-case.html?case_code=${encodeURIComponent(caseCode)}&senderName=${senderName}&senderUserId=${senderUserId}`;
+
   window.location.href = target;
-}  
+}
 function goToWebLogin() {
   const confirmGo = confirm("คุณต้องการเข้าสู่ระบบผ่าน Web Login หรือไม่?");
   if (!confirmGo) return;

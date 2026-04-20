@@ -1379,24 +1379,13 @@ function normalizeProjectName(name = "") {
 
   return map[cleaned] || cleaned;
 }
+    
 async function loadProjectOptions() {
   const select = document.getElementById("projectSelect");
   if (!select) return;
 
   const keepValue = select.value || "";
   select.innerHTML = `<option value="">- เลือกโครงการ -</option>`;
-
-  const fallbackProjects = [
-    "โครงการช่วยเหลือผู้ประสบภัย",
-    "โครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
-    "โครงการเพื่อการศึกษาส่งน้องเรียน",
-    "โครงการอาสาพายเด็กกลับบ้าน",
-    "โครงการช่วยเหลือผู้ป่วย",
-    "โครงการช่วยเหลือเด็กกำพร้า",
-    "โครงการสร้างอาชีพ",
-    "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้",
-    "โครงการบรรเทาสาธารณภัย"
-  ].map(normalizeProjectName).filter(Boolean);
 
   try {
     const res = await fetch(`${CONFIG.API_BASE_URL}/api/projects/options`);
@@ -1414,39 +1403,46 @@ async function loadProjectOptions() {
       Array.isArray(json) ? json :
       [];
 
-    const namesFromApi = rows
-      .map(item =>
-        normalizeProjectName(
+    const normalizedRows = rows
+      .map(item => {
+        const id = String(
+          item?.id ||
+          item?.project_id ||
+          item?.value ||
+          ""
+        ).trim();
+
+        const name = normalizeProjectName(
           item?.name ||
           item?.project_name ||
           item?.title ||
           item?.label ||
           ""
-        )
-      )
-      .filter(Boolean);
+        );
 
-    const finalNames = [...new Set([...namesFromApi, ...fallbackProjects])]
-      .map(normalizeProjectName)
-      .filter(name => String(name || "").trim().startsWith("โครงการ"));
+        return { id, name };
+      })
+      .filter(item => item.id && item.name)
+      .filter(item => String(item.name).trim().startsWith("โครงการ"));
 
-    finalNames.forEach(name => {
+    const uniqueRows = [];
+    const seen = new Set();
+
+    normalizedRows.forEach(item => {
+      const key = `${item.id}__${item.name}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      uniqueRows.push(item);
+    });
+
+    uniqueRows.forEach(item => {
       const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
+      opt.value = item.id;          // ✅ ส่ง UUID / project id
+      opt.textContent = item.name;  // ✅ แสดงชื่อโครงการ
       select.appendChild(opt);
     });
   } catch (err) {
-    console.warn("loadProjectOptions fallback:", err);
-
-    fallbackProjects
-      .filter(name => String(name || "").trim().startsWith("โครงการ"))
-      .forEach(name => {
-        const opt = document.createElement("option");
-        opt.value = name;
-        opt.textContent = name;
-        select.appendChild(opt);
-      });
+    console.warn("loadProjectOptions error:", err);
   }
 
   if (keepValue && Array.from(select.options).some(opt => opt.value === keepValue)) {

@@ -1134,6 +1134,66 @@ async function getLineUserIdFromPage() {
     return "";
   }
 }
+
+function applyTopProfileCard(session = {}) {
+  const nameEl =
+    document.getElementById("profileName") ||
+    document.getElementById("topProfileName");
+
+  const roleEl =
+    document.getElementById("profileRole") ||
+    document.getElementById("topProfileRole");
+
+  const avatarEl =
+    document.getElementById("profileImage") ||
+    document.getElementById("topProfileImage");
+
+  const displayName =
+    String(
+      session.displayName ||
+      session.display_name ||
+      session.name ||
+      ""
+    ).trim() || "ทีมงาน";
+
+  const role =
+    String(
+      session.role ||
+      session.viewer_role ||
+      "viewer"
+    ).trim() || "viewer";
+
+  const pictureUrl =
+    String(
+      session.pictureUrl ||
+      session.picture_url ||
+      ""
+    ).trim();
+
+  if (nameEl) nameEl.textContent = displayName;
+  if (roleEl) roleEl.textContent = role;
+
+  if (avatarEl) {
+    if (pictureUrl) {
+      avatarEl.src = pictureUrl;
+      avatarEl.onerror = () => {
+        avatarEl.onerror = null;
+        avatarEl.src = "https://placehold.co/80x80?text=User";
+      };
+    } else {
+      avatarEl.src = "https://placehold.co/80x80?text=User";
+    }
+  }
+}
+
+function hydrateTopProfileCard(role = "viewer") {
+  const profile = window.__TEAM_PROFILE || {};
+  applyTopProfileCard({
+    displayName: profile.displayName || "ทีมงาน",
+    pictureUrl: profile.pictureUrl || "",
+    role
+  });
+}
     
 function applyRoleUI(role) {
   viewerRole = String(role || "viewer").toLowerCase();
@@ -1150,6 +1210,7 @@ async function loadViewerRole(lineUserId){
     if(!lineUserId){
       console.warn("loadViewerRole: missing lineUserId");
       applyRoleUI("viewer");
+      hydrateTopProfileCard("viewer");
       return "viewer";
     }
 
@@ -1165,10 +1226,12 @@ async function loadViewerRole(lineUserId){
 
     const role = String(json?.data?.viewer_role || "viewer").trim() || "viewer";
     applyRoleUI(role);
+    hydrateTopProfileCard(role);
     return role;
   } catch (err) {
     console.error("loadViewerRole error:", err);
     applyRoleUI("viewer");
+    hydrateTopProfileCard("viewer");
     return "viewer";
   }
 }

@@ -1436,8 +1436,38 @@ async function loadProjectOptions() {
       safeText("fullName", caseItem.full_name || "-");
       safeText("phone", caseItem.phone || "-");
       safeText("location", caseItem.location || "-");
-      safeText("problemCategory", caseItem.problem_category || caseItem.problem_group || caseItem.problem_type || "-");
-      safeText("assignedTo", caseItem.assigned_to || "-");
+      safeText(
+  "problemCategory",
+  String(
+    caseItem.problem_category ||
+    caseItem.problemCategory ||
+    caseItem.problem_group ||
+    caseItem.problemGroup ||
+    caseItem.problem_type ||
+    caseItem.problemType ||
+    caseItem.category ||
+    caseItem.problem_category_name ||
+    caseItem.problem_type_name ||
+    "-"
+  ).trim() || "-"
+);
+
+safeText(
+  "projectName",
+  String(
+    caseItem.project_name ||
+    caseItem.projectName ||
+    caseItem.project_title ||
+    caseItem.projectTitle ||
+    caseItem.project_label ||
+    caseItem.projectLabel ||
+    caseItem.project_ref ||
+    caseItem.projectRef ||
+    caseItem.project_code ||
+    caseItem.projectCode ||
+    "-"
+  ).trim() || "-"
+);
       safeText("projectName", caseItem.project_name || "-");
       safeText("problemDetail", caseItem.problem || "-");
       safeText("createdAt", formatThaiDateTime(caseItem.created_at));

@@ -1138,37 +1138,33 @@ function applyRoleUI(role) {
 }
 
     
-async function loadViewerRole() {
-  try {
-    const lineUserId = await getLineUserIdFromPage();
-    viewerLineUserId = lineUserId;
-
-    
-
-    if (!viewerLineUserId) {
-     
-      applyRoleUI("admin");
-      return;
+async function loadViewerRole(lineUserId){
+  try{
+    if(!lineUserId){
+      console.warn("loadViewerRole: missing lineUserId");
+      applyRoleUI("viewer");
+      return "viewer";
     }
 
     const res = await fetch(
       `/api/team/viewer-role?line_user_id=${encodeURIComponent(lineUserId)}`
     );
 
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
 
     if (!res.ok || !json?.ok) {
       throw new Error(json?.error || "โหลด role ไม่สำเร็จ");
     }
 
-    const role = json?.data?.viewer_role || "viewer";
+    const role = String(json?.data?.viewer_role || "viewer").trim() || "viewer";
     applyRoleUI(role);
+    return role;
   } catch (err) {
     console.error("loadViewerRole error:", err);
-    applyRoleUI("admin");
+    applyRoleUI("viewer");
+    return "viewer";
   }
 }
-
     
 function ensureAdminAction() {
   if (String(viewerRole).toLowerCase() !== "admin") {

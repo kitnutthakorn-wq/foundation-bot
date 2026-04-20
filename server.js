@@ -6940,7 +6940,7 @@ app.get("/api/team/case-detail", async (req, res) => {
       });
     }
 
-    // 🔹 ดึงข้อมูลเคสหลัก
+    // ◆ ดึงข้อมูลเคสหลัก
     const { data: caseItem, error: caseError } = await supabase
       .from("help_requests")
       .select("*")
@@ -6956,29 +6956,45 @@ app.get("/api/team/case-detail", async (req, res) => {
       });
     }
 
-   // 🔹 ดึง timeline อัปเดต
-const { data: updates, error: updatesError } = await supabase
-  .from("case_updates")
-  .select("*")
-  .eq("case_code", caseCode)
-  .order("updated_at", { ascending: false });
+    // ◆ ดึง timeline อัปเดต
+    const { data: updatesRaw, error: updatesError } = await supabase
+      .from("case_updates")
+      .select("*")
+      .eq("case_code", caseCode)
+      .order("updated_at", { ascending: false });
 
-const { data: infoUpdates, error: infoError } = await supabase
-  .from("case_info_updates")
-  .select("*")
-  .eq("case_code", caseCode)
-  .order("created_at", { ascending: false });
+    const { data: infoUpdates, error: infoError } = await supabase
+      .from("case_info_updates")
+      .select("*")
+      .eq("case_code", caseCode)
+      .order("created_at", { ascending: false });
 
-if (updatesError) throw updatesError;
-if (infoError) throw infoError;
+    if (updatesError) throw updatesError;
+    if (infoError) throw infoError;
 
-return res.json({
-  ok: true,
-  case: caseItem,
-  updates: updates || [],
-  info_updates: infoUpdates || []
-});
+    const updates = (updatesRaw || []).map((row) => {
+      const updatedByName =
+        String(
+          row.updater_name ||
+          row.updated_by_name ||
+          row.updated_by ||
+          row.updated_by_user_id ||
+          ""
+        ).trim() || "ทีมงาน";
 
+      return {
+        ...row,
+        updated_by_name: updatedByName,
+        updater_name: updatedByName
+      };
+    });
+
+    return res.json({
+      ok: true,
+      case: caseItem,
+      updates: updates,
+      info_updates: infoUpdates || []
+    });
   } catch (err) {
     console.error("TEAM CASE DETAIL ERROR:", err);
     return res.status(500).json({

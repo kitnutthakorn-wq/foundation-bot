@@ -248,14 +248,14 @@
         return status || '-';
       }
 
-      function priorityThai(priority) {
-        const value = String(priority || '').toLowerCase();
-        if (value === 'urgent') return 'ด่วน';
-        if (value === 'high') return 'สูง';
-        if (value === 'normal') return 'ปกติ';
-        if (value === 'low') return 'ต่ำ';
-        return priority || '-';
-      }
+     function priorityThai(priority) {
+  const value = String(priority || '').toLowerCase().trim();
+  if (value === 'urgent') return 'เร่งด่วน';
+  if (value === 'high') return 'ด่วน';
+  if (value === 'normal') return 'ปกติ';
+  if (value === 'low') return 'ต่ำ';
+  return priority || '-';
+}
 
       function formatDateTime(value) {
         if (!value) return '-';

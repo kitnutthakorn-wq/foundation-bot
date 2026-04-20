@@ -419,8 +419,14 @@ const waitingFor = waitingForEl ? waitingForEl.value.trim() : "";
 
 formData.append('current_step', currentStep);
 formData.append('waiting_for', waitingFor);
-    formData.append('senderName', currentProfile?.displayName || 'Unknown');
-    formData.append('senderUserId', currentProfile?.userId || '');
+    formData.append(
+  'senderName',
+  senderNameFromUrl || currentProfile?.displayName || 'Unknown'
+);
+formData.append(
+  'senderUserId',
+  senderUserIdFromUrl || currentProfile?.userId || ''
+);
     formData.append('notifyTeam', notifyTeam ? 'true' : 'false');
     formData.append('notifyRequester', notifyRequester ? 'true' : 'false');
     formData.append('clientTimestamp', new Date().toISOString());

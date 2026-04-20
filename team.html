@@ -765,7 +765,23 @@ async function loadTeamRole(){
     console.warn(err.message);
   }
 }
-async function loadCases(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){allCases=demoCases;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);allCases=Array.isArray(data?.cases)?data.cases:[];}}catch{allCases=demoCases;} updateStats(); renderCases();}
+async function loadCases() {
+  try {
+    if (CONFIG.API_BASE_URL.includes('your-domain.com')) {
+      allCases = demoCases;
+    } else {
+      const data = await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.CASES_ENDPOINT}`);
+      allCases = Array.isArray(data?.cases) ? data.cases : [];
+    }
+  } catch (err) {
+    console.error("loadCases failed:", err);
+    allCases = [];
+    alert("โหลดรายการเคสไม่สำเร็จ: " + (err.message || err));
+  }
+
+  updateStats();
+  renderCases();
+}
 
 async function loadActivities(){try{if(CONFIG.API_BASE_URL.includes('your-domain.com')){activities=demoActivities;}else{const data=await safeFetchJson(`${CONFIG.API_BASE_URL}${CONFIG.ACTIVITY_ENDPOINT}`);activities=Array.isArray(data?.activities)?data.activities:[];}}catch{activities=demoActivities;} renderActivities();}
 

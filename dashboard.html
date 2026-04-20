@@ -1089,7 +1089,7 @@ function renderAlerts(alerts){
             <div class="decision-action-wrap">
               <div class="decision-action-text">${escapeHtml(item.recommended_action_label_th || item.recommended_action || "ปกติ")} ${autoAssignBadge(item)}</div>
               ${autoAssignNote(item)}
-              <button type="button" class="decision-action-btn ${escapeHtml(item.action_code || 'follow_case')}" onclick="openDecisionCase('${escapeHtml(item.case?.id || "")}')">${escapeHtml(getDecisionActionLabel(item))}</button>
+             <button type="button" class="decision-action-btn ${escapeHtml(item.action_code || 'follow_case')}" onclick="openDecisionCase('${escapeHtml(item.case?.case_code || "")}')">${escapeHtml(getDecisionActionLabel(item))}</button>
             </div>
           </td>
         </tr>

@@ -1387,11 +1387,10 @@ async function loadProjectOptions() {
   select.innerHTML = `<option value="">- เลือกโครงการ -</option>`;
 
   const fallbackProjects = [
-    
     "โครงการช่วยเหลือผู้ประสบภัย",
     "โครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
     "โครงการเพื่อการศึกษาส่งน้องเรียน",
-    "โครงการอาสาพามุยเยดกลับบ้าน",
+    "โครงการอาสาพายเด็กกลับบ้าน",
     "โครงการช่วยเหลือผู้ป่วย",
     "โครงการช่วยเหลือเด็กกำพร้า",
     "โครงการสร้างอาชีพ",
@@ -1427,7 +1426,9 @@ async function loadProjectOptions() {
       )
       .filter(Boolean);
 
-    const finalNames = [...new Set([...namesFromApi, ...fallbackProjects])];
+    const finalNames = [...new Set([...namesFromApi, ...fallbackProjects])]
+      .map(normalizeProjectName)
+      .filter(name => String(name || "").trim().startsWith("โครงการ"));
 
     finalNames.forEach(name => {
       const opt = document.createElement("option");
@@ -1438,12 +1439,14 @@ async function loadProjectOptions() {
   } catch (err) {
     console.warn("loadProjectOptions fallback:", err);
 
-    fallbackProjects.forEach(name => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
+    fallbackProjects
+      .filter(name => String(name || "").trim().startsWith("โครงการ"))
+      .forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
   }
 
   if (keepValue && Array.from(select.options).some(opt => opt.value === keepValue)) {

@@ -554,8 +554,8 @@ const now=new Date();document.getElementById('todayDate').textContent=now.toLoca
   
 function bindProfile(profile, roleText){
   const nameEl = document.getElementById("displayName");
-  const roleEl = document.getElementById("roleText");
-  const imgEl = document.getElementById("profileImage");
+  const roleEl = document.getElementById("userRole");
+  const imgEl = document.getElementById("avatar");
 
   if (nameEl) nameEl.textContent = profile?.displayName || "ทีมงาน";
   if (roleEl) roleEl.textContent = roleText || "ทีมงาน (viewer)";
@@ -569,7 +569,7 @@ function bindProfile(profile, roleText){
     };
   }
 }
-
+  
 async function tryWebSessionLogin() {
   try {
     const res = await fetch(`${CONFIG.API_BASE_URL}/api/auth/me`, {
@@ -1114,19 +1114,20 @@ async function bootstrap() {
   try {
     setToday();
 
-   let hasWebSession = await tryWebSessionLogin();
-const isTeamHtmlPage = window.location.pathname.includes("team.html");
+  let hasWebSession = await tryWebSessionLogin();
 
-if (!hasWebSession && !isTeamHtmlPage) {
+if (!hasWebSession) {
   await initLiff();
 
-  hasWebSession = await ensureWebSessionFromLiff();
+  if (currentProfile?.userId) {
+    const createdSession = await ensureWebSessionFromLiff();
 
-  if (hasWebSession) {
-    document.getElementById("envChip").textContent = "Web Session + LIFF";
+    if (createdSession) {
+      document.getElementById("envChip").textContent = "Web Session + LIFF";
+      hasWebSession = true;
+    }
   }
 }
-
     await loadTeamRole();
 
     if (isPickMemberMode()) {

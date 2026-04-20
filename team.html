@@ -1086,10 +1086,10 @@ function viewCase(code){
 
 function openCaseUpdateLiff(caseCode){
   const senderName = encodeURIComponent(
-    currentProfile?.displayName ||
-    document.getElementById("userName")?.textContent?.trim() ||
-    "CREATIVE"
-  );
+  currentProfile?.displayName ||
+  document.getElementById("displayName")?.textContent?.trim() ||
+  "ทีมงาน"
+);
 
   const senderUserId = encodeURIComponent(
     currentProfile?.userId ||

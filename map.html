@@ -26,7 +26,15 @@
     html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
     body { overflow: hidden; }
     .app { display: grid; grid-template-columns: 360px 1fr; height: 100vh; }
-    .sidebar { background: linear-gradient(180deg, #f8fbfc 0%, #eef5f7 100%); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; }
+    .sidebar {
+  background: linear-gradient(180deg, #f8fbfc 0%, #eef5f7 100%);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+}
     .sidebar-header { padding: 18px 18px 14px; border-bottom: 1px solid var(--line); background: rgba(255,255,255,.75); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10; }
     .title { font-size: 22px; font-weight: 800; color: var(--brand-dark); margin: 0 0 4px; }
     .subtitle { font-size: 13px; color: var(--muted); margin: 0; }
@@ -42,7 +50,15 @@
     .dot { width: 8px; height: 8px; border-radius: 999px; background: #cbd5e1; display: inline-block; }
     .dot.live { background: var(--success); box-shadow: 0 0 0 8px rgba(22,163,74,.10); }
     .dot.warn { background: var(--high); }
-    .case-list { overflow: auto; padding: 12px; display: grid; gap: 10px; }
+    .case-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
     .case-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; box-shadow: var(--shadow); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
     .case-card:hover { transform: translateY(-2px); }
     .case-card.active { border-color: #93c5fd; box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow); }

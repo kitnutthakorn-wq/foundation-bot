@@ -668,7 +668,7 @@ async function ensureWebSessionFromLiff() {
   }
 }
   
-  async function initLiff() {
+ async function initLiff() {
   if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
     currentProfile = {
       displayName: 'Demo Team Member',
@@ -681,11 +681,12 @@ async function ensureWebSessionFromLiff() {
   }
 
   await liff.init({ liffId: CONFIG.LIFF_ID });
-  // 🔥 ล้าง ?liffLogin=1 หลังกลับมา
-if (window.location.search.includes("liffLogin=1")) {
-  const cleanUrl = window.location.origin + window.location.pathname;
-  window.history.replaceState({}, document.title, cleanUrl);
-}
+
+  // ล้าง ?liffLogin=1 หลังกลับมา
+  if (window.location.search.includes("liffLogin=1")) {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
 
   // 1) ถ้าเปิดในแอป LINE ให้ดึง profile ตรง
   if (liff.isInClient()) {
@@ -707,46 +708,47 @@ if (window.location.search.includes("liffLogin=1")) {
     return;
   }
 
- // 2) ถ้าเปิดจาก browser ภายนอก
-const cachedProfile = localStorage.getItem('line_profile_cache');
+  // 2) ถ้าเปิดจาก browser ภายนอก
+  const cachedProfile = localStorage.getItem('line_profile_cache');
 
-if (!liff.isLoggedIn()) {
-  if (cachedProfile) {
-    try {
+  if (!liff.isLoggedIn()) {
+    // ใช้ cache แสดงก่อน ถ้ามี
+    if (cachedProfile) {
+      try {
+        currentProfile = JSON.parse(cachedProfile);
+        bindProfile(currentProfile, 'ทีมงาน (cached)');
+        document.getElementById('envChip').textContent = 'External browser (cached)';
+      } catch (_) {}
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
+
+    if (!alreadyTriedLogin) {
+      const redirectUrl =
+        window.location.href + (window.location.search ? "&" : "?") + "liffLogin=1";
+      liff.login({ redirectUri: redirectUrl });
+      return;
+    } else {
+      console.warn("⚠ Skip login loop");
+      return;
+    }
+  }
+
+  try {
+    currentProfile = await liff.getProfile();
+    localStorage.setItem("line_profile_cache", JSON.stringify(currentProfile));
+  } catch (err) {
+    if (cachedProfile) {
       currentProfile = JSON.parse(cachedProfile);
-      bindProfile(currentProfile, 'ทีมงาน (cached)');
-      document.getElementById('envChip').textContent = 'External browser (cached)';
-    } catch (_) {}
+    } else {
+      throw err;
+    }
   }
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
-
-  if (!alreadyTriedLogin) {
-    const redirectUrl =
-      window.location.href + (window.location.search ? "&" : "?") + "liffLogin=1";
-    liff.login({ redirectUri: redirectUrl });
-    return;
-  } else {
-    console.warn("⚠ Skip login loop");
-    return;
-  }
+  bindProfile(currentProfile, "ทีมงาน");
+  document.getElementById("envChip").textContent = "External browser";
 }
-
-try {
-  currentProfile = await liff.getProfile();
-  localStorage.setItem("line_profile_cache", JSON.stringify(currentProfile));
-} catch (err) {
-  if (cachedProfile) {
-    currentProfile = JSON.parse(cachedProfile);
-  } else {
-    throw err;
-  }
-}
-
-bindProfile(currentProfile, "ทีมงาน");
-document.getElementById("envChip").textContent = "External browser";
- }
   
 async function loadTeamRole(){
   try{

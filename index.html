@@ -2668,6 +2668,131 @@
       applyLanguage(localStorage.getItem('siteLang') || 'th');
     })();
   </script>
+<script>
+  (function () {
+    const mainTrack = document.getElementById('urgentMainTrack');
+    const mainSlides = document.querySelectorAll('.urgent-main-slide');
+    const mainPrev = document.getElementById('urgentMainPrev');
+    const mainNext = document.getElementById('urgentMainNext');
 
+    const sideTrack = document.getElementById('urgentSideTrack');
+    const sideItems = document.querySelectorAll('.urgent-side-item');
+    const sideViewport = document.getElementById('urgentSideViewport');
+    const sideUp = document.getElementById('urgentSideUp');
+    const sideDown = document.getElementById('urgentSideDown');
+
+    if (!mainTrack || !mainSlides.length || !sideTrack || !sideItems.length) return;
+
+    let mainIndex = 0;
+    let sideIndex = 0;
+    let mainTimer = null;
+    let sideTimer = null;
+
+    function renderMain() {
+      mainTrack.style.transform = `translateX(-${mainIndex * 100}%)`;
+    }
+
+    function nextMain() {
+      mainIndex = (mainIndex + 1) % mainSlides.length;
+      renderMain();
+    }
+
+    function prevMain() {
+      mainIndex = (mainIndex - 1 + mainSlides.length) % mainSlides.length;
+      renderMain();
+    }
+
+    function startMainAuto() {
+      stopMainAuto();
+      mainTimer = setInterval(nextMain, 4500);
+    }
+
+    function stopMainAuto() {
+      if (mainTimer) clearInterval(mainTimer);
+    }
+
+    const getSideStep = () => {
+      const firstItem = sideItems[0];
+      if (!firstItem) return 0;
+      return firstItem.offsetHeight;
+    };
+
+    function getVisibleCount() {
+      const step = getSideStep();
+      if (!step || !sideViewport) return 1;
+      return Math.max(1, Math.floor(sideViewport.clientHeight / step));
+    }
+
+    function getMaxSideIndex() {
+      return Math.max(0, sideItems.length - getVisibleCount());
+    }
+
+    function renderSide() {
+      const step = getSideStep();
+      sideTrack.style.transform = `translateY(-${sideIndex * step}px)`;
+    }
+
+    function nextSide() {
+      const maxIndex = getMaxSideIndex();
+      sideIndex = sideIndex >= maxIndex ? 0 : sideIndex + 1;
+      renderSide();
+    }
+
+    function prevSide() {
+      const maxIndex = getMaxSideIndex();
+      sideIndex = sideIndex <= 0 ? maxIndex : sideIndex - 1;
+      renderSide();
+    }
+
+    function startSideAuto() {
+      stopSideAuto();
+      sideTimer = setInterval(nextSide, 3200);
+    }
+
+    function stopSideAuto() {
+      if (sideTimer) clearInterval(sideTimer);
+    }
+
+    if (mainPrev) {
+      mainPrev.addEventListener('click', function () {
+        prevMain();
+        startMainAuto();
+      });
+    }
+
+    if (mainNext) {
+      mainNext.addEventListener('click', function () {
+        nextMain();
+        startMainAuto();
+      });
+    }
+
+    if (sideUp) {
+      sideUp.addEventListener('click', function () {
+        prevSide();
+        startSideAuto();
+      });
+    }
+
+    if (sideDown) {
+      sideDown.addEventListener('click', function () {
+        nextSide();
+        startSideAuto();
+      });
+    }
+
+    window.addEventListener('resize', function () {
+      const maxIndex = getMaxSideIndex();
+      if (sideIndex > maxIndex) sideIndex = maxIndex;
+      renderSide();
+      renderMain();
+    });
+
+    renderMain();
+    renderSide();
+    startMainAuto();
+    startSideAuto();
+  })();
+</script>
 </body>
 </html>

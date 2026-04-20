@@ -1200,7 +1200,7 @@ function applyRoleUI(role) {
 
   const adminBox = document.getElementById("adminManageCaseCard");
   if (adminBox) {
-    adminBox.style.display = "block";
+    adminBox.style.display = viewerRole === "admin" ? "block" : "none";
   }
 }
 
@@ -2132,7 +2132,10 @@ currentCaseCode = getCaseCodeFromUrl();
 if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
 
 await loadProjectOptions();
-await loadViewerRole();
+
+viewerLineUserId = await getLineUserIdFromPage();
+await loadViewerRole(viewerLineUserId);
+
 await loadCaseReport();
 connectRealtime();
 

@@ -624,10 +624,11 @@ function autoAssignNote(item){
   return '';
 }
 
-function openDecisionCase(caseId){
-  if(!caseId) return;
-  window.location.href = `/case?id=${encodeURIComponent(caseId)}`;
+function openDecisionCase(caseCode){
+  if(!caseCode) return;
+  window.location.href = `/team-case-view.html?case_code=${encodeURIComponent(caseCode)}`;
 }
+    
 function showErrorBanner(message, meta = "") {
       const banner = document.getElementById("errorBanner");
       const messageEl = document.getElementById("errorMessage");

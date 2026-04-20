@@ -1637,6 +1637,37 @@ function renderWarRoomMap(caseItem = {}, updates = []) {
     : "แหล่งพิกัด: จากข้อมูลเคสหลัก";
   link.href = openUrl;
 }
+
+function getRealUserName(item = {}) {
+  const candidates = [
+    item.updated_by_name,
+    item.updater_name,
+    item.updated_by_display_name,
+    item.display_name,
+    item.real_name,
+    item.staff_name,
+    item.user_name,
+    item.updated_by,
+    item.updated_by_user_id
+  ];
+
+  for (const value of candidates) {
+    const name = String(value || "").trim();
+    if (!name) continue;
+
+    if (
+      /^U[a-zA-Z0-9]+$/.test(name) ||
+      /^fallback user$/i.test(name) ||
+      /^unknown$/i.test(name)
+    ) {
+      continue;
+    }
+
+    return name;
+  }
+
+  return "ทีมงาน";
+}    
     
 function renderTimeline(caseItem = {}, updates=[]){
   const root = document.getElementById("timelineList");
@@ -1649,12 +1680,12 @@ function renderTimeline(caseItem = {}, updates=[]){
 
   root.innerHTML = updates.map(item => {
     const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
-
+    const actorName = getRealUserName(item);
     return `
       <div class="timeline-item">
         <div class="timeline-head">
           <div>
-            <div class="timeline-title">อัปเดตโดย ${escapeHtml(item.updater_name || item.updated_by || "-")}</div>
+           <div class="timeline-title">อัปเดตโดย ${escapeHtml(actorName)}</div>
             <div class="timeline-meta" style="margin-top:8px;">
               <span class="chip">สถานะ ${escapeHtml(formatStatusThai(
                 item.status_after ||

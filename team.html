@@ -707,12 +707,10 @@ if (window.location.search.includes("liffLogin=1")) {
     return;
   }
 
-  // 2) ถ้าเปิดจาก browser ภายนอก
-  const cachedProfile = localStorage.getItem('line_profile_cache');
+ // 2) ถ้าเปิดจาก browser ภายนอก
+const cachedProfile = localStorage.getItem('line_profile_cache');
 
- if (!liff.isLoggedIn()) {
-
-  // 🔥 STEP 1: ใช้ cache แสดงก่อน
+if (!liff.isLoggedIn()) {
   if (cachedProfile) {
     try {
       currentProfile = JSON.parse(cachedProfile);
@@ -721,12 +719,9 @@ if (window.location.search.includes("liffLogin=1")) {
     } catch (_) {}
   }
 
-  // 🔥 STEP 2: เช็ค redirect loop กันเด้งซ้ำ
+  const urlParams = new URLSearchParams(window.location.search);
+  const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
 
-const urlParams = new URLSearchParams(window.location.search);
-const alreadyTriedLogin = urlParams.get("liffLogin") === "1";
-
-if (!liff.isLoggedIn()) {
   if (!alreadyTriedLogin) {
     const redirectUrl =
       window.location.href + (window.location.search ? "&" : "?") + "liffLogin=1";
@@ -738,7 +733,6 @@ if (!liff.isLoggedIn()) {
   }
 }
 
-// 3) login แล้ว ดึง profile จริง + cache ไว้
 try {
   currentProfile = await liff.getProfile();
   localStorage.setItem("line_profile_cache", JSON.stringify(currentProfile));
@@ -752,8 +746,6 @@ try {
 
 bindProfile(currentProfile, "ทีมงาน");
 document.getElementById("envChip").textContent = "External browser";
-}
-}
     
 async function loadTeamRole(){
   try{

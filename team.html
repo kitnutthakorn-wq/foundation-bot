@@ -722,11 +722,6 @@ if (window.location.search.includes("liffLogin=1")) {
   }
 
   // 🔥 STEP 2: เช็ค redirect loop กันเด้งซ้ำ
-const isTeamHtmlPage = window.location.pathname.includes("team.html");
-
-if (isTeamHtmlPage) {
-  return;
-}
 
 const urlParams = new URLSearchParams(window.location.search);
 const alreadyTriedLogin = urlParams.get("liffLogin") === "1";

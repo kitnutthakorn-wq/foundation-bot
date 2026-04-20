@@ -13301,10 +13301,11 @@ app.post("/api/case/:caseCode/update-by-case-code", async (req, res) => {
       assigned_to: staff_name || null,
       status: status || "new",
       priority: priority || "normal",
-      project_ref: project_ref || null,
       last_action_at: new Date().toISOString(),
       last_action_by: staff_name || adminGuard.lineUserId || "ทีมงาน"
     };
+
+    Object.assign(patch, buildProjectPatchForHelpRequest(project_ref));
 
     if (String(status || "").toLowerCase() === "done") {
       patch.closed_at = new Date().toISOString();

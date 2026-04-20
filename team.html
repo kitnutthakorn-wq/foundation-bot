@@ -550,7 +550,23 @@ function getFallbackAvatar(name = "TK") {
 }  
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
 function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
-function bindProfile(profile, roleText){document.getElementById('displayName').textContent=profile?.displayName||'ไม่ทราบชื่อ';document.getElementById('avatar').src=profile?.pictureUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="100%" height="100%" fill="#dbe3ea"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="28" fill="#6b7280">TK</text></svg>');document.getElementById('userRole').textContent=roleText;}
+function bindProfile(profile, roleText){
+  const nameEl = document.getElementById("displayName");
+  const roleEl = document.getElementById("roleText");
+  const imgEl = document.getElementById("profileImage");
+
+  if (nameEl) nameEl.textContent = profile?.displayName || "ทีมงาน";
+  if (roleEl) roleEl.textContent = roleText || "ทีมงาน (viewer)";
+
+  if (imgEl) {
+    const pictureUrl = String(profile?.pictureUrl || "").trim();
+    imgEl.src = pictureUrl || "https://placehold.co/80x80?text=User";
+    imgEl.onerror = () => {
+      imgEl.onerror = null;
+      imgEl.src = "https://placehold.co/80x80?text=User";
+    };
+  }
+}
 
 async function tryWebSessionLogin() {
   try {

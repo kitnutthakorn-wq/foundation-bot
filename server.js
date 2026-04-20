@@ -8203,7 +8203,7 @@ const donationFlex = {
         "ซากาตเพื่อผู้ยากไร้",
         "ร่วมมอบโอกาสให้ผู้ขาดแคลน",
         "https://img2.pic.in.th/project2.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=zakat"
       ),
       createProjectBubble(
         "เพื่อการศึกษา ส่งน้องเรียน",
@@ -8215,31 +8215,31 @@ const donationFlex = {
         "สร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
         "ช่วยเหลือด้านที่พักอาศัย",
         "https://img1.pic.in.th/images/project5.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=housing"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing"
       ),
       createProjectBubble(
         "ช่วยเหลือผู้ประสบภัย",
         "ช่วยเหลือผู้ประสบภัยเร่งด่วน",
         "https://img2.pic.in.th/project6.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=disaster"
       ),
       createProjectBubble(
         "อาสาพามัยยิดกลับบ้าน",
         "ร่วมสร้างความดีพาร่างผู้เสียชีวิตกลับภูมิลำเนา",
         "https://img2.pic.in.th/KCK54af3446f47283561.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=transport"
       ),
       createProjectBubble(
         "กองทุนซากาตเพื่อเด็กกำพร้า",
         "ส่งต่อโอกาสและอนาคตที่ดี",
         "https://img2.pic.in.th/project7.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=orphan"
       ),
       createProjectBubble(
         "มูลนิธิคนช่วยฅน",
         "สนับสนุนภารกิจช่วยเหลือสังคม",
         "https://img1.pic.in.th/images/project4.png",
-        "https://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation"
+        "https://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=relief"
       ),
     ],
   },
@@ -8250,18 +8250,18 @@ const donationFallbackText = [
     type: "text",
     text:
       "โครงการช่วยเหลือของมูลนิธิ ❤️\n\n" +
-      "1) ซากาต\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=zakat\n\n" +
-      "2) การศึกษา\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=education\n\n" +
-      "3) ที่อยู่อาศัย\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=housing\n\n" +
-      "4) ภัยพิบัติ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=disaster",
+      "1) ซากาต\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=zakat\n\n" +
+      "2) การศึกษา\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=education\n\n" +
+      "3) ที่อยู่อาศัย\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=housing\n\n" +
+      "4) ภัยพิบัติ\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=disaster",
   },
   {
     type: "text",
     text:
       "โครงการเพิ่มเติม\n\n" +
-      "5) มัสยิด\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=masjid\n\n" +
-      "6) เด็กกำพร้า\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=orphan\n\n" +
-      "7) มูลนิธิ\nhttps://preeminent-otter-b3610c.netlify.app/projects.html?case=foundation",
+      "5) มัยยิด\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=transport\n\n" +
+      "6) เด็กกำพร้า\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=orphan\n\n" +
+      "7) มูลนิธิ\nhttps://satisfied-stillness-production-7942.up.railway.app/donate-cases.html?project=relief",
   },
 ];
 

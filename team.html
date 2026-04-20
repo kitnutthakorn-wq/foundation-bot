@@ -549,7 +549,9 @@ function getFallbackAvatar(name = "TK") {
   );
 }  
 function setLoading(v){document.getElementById('loading').classList.toggle('hidden', !v);document.getElementById('app').classList.toggle('hidden', v);}
-function setToday(){const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
+function setToday(){
+const now=new Date();document.getElementById('todayDate').textContent=now.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});document.getElementById('menuVersionChip').textContent=CONFIG.MENU_VERSION;}
+  
 function bindProfile(profile, roleText){
   const nameEl = document.getElementById("displayName");
   const roleEl = document.getElementById("roleText");

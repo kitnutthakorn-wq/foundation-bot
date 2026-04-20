@@ -515,11 +515,9 @@
             showToast(`โหลดข้อมูลแล้ว ${allItems.length} เคส`);
           }
 
-          if (focusCaseCode) {
-            focusCaseByCode(focusCaseCode);
-          } else if (allItems.length && !selectedCaseCode) {
-            fitAllMarkers();
-          }
+         if (allItems.length && !selectedCaseCode) {
+  fitAllMarkers();
+}
 
           setLiveState('polling');
         } catch (err) {

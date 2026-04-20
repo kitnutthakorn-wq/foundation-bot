@@ -2112,13 +2112,22 @@ async function upsertCaseUpdateLegacy({
   const waitingFor = CASE_UPDATE_WAITING_FOR_MAP[updateStage] || "รอการอัปเดต";
   const helpRequest = await getHelpRequestByCaseCode(caseCode);
 
- const inserted = await insertCaseUpdateLog({
+const realUpdaterName =
+  cleanText(updatedBy) || "ทีมงาน";
+
+const realUpdaterUserId =
+  /^U[a-zA-Z0-9]+$/.test(String(updatedBy || "").trim())
+    ? String(updatedBy).trim()
+    : null;
+
+const inserted = await insertCaseUpdateLog({
   case_code: caseCode,
   latest_note: detail,
   message: detail,
-  updated_by: updatedBy,
-  updated_by_user_id: updatedBy,
-  updater_name: updatedBy
+  updated_by: realUpdaterName,
+  updated_by_user_id: realUpdaterUserId,
+  updater_name: realUpdaterName,
+  updater_user_id: realUpdaterUserId
 });
 
   const syncPatch = {

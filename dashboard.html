@@ -995,7 +995,7 @@ const sorted = [...rows].sort((a,b)=>{
     const level = String(item.sla_level || "").toLowerCase();
     const cls = level === "breached" ? "breached" : (level === "warning" ? "warning" : "");
     return `
-      <div class="sla-top-risk-item ${cls}" onclick="window.location.href='/case?id=${item.id}'" style="cursor:pointer">
+      <div class="sla-top-risk-item ${cls}" onclick="window.location.href='/team-case-view.html?case_code=${encodeURIComponent(item.case_code || "")}'" style="cursor:pointer">
         <div class="sla-top-risk-head">
           <div class="sla-top-risk-title">${escapeHtml(item.case_code || "-")} • ${escapeHtml(item.full_name || "-")}</div>
           ${slaBadge(item.sla_level, item.sla_label_th)}

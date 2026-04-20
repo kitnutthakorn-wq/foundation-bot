@@ -2109,59 +2109,138 @@
           <h2 id="mission-urgent-title">ภารกิจเร่งด่วน</h2>
         </div>
 
-        <div class="urgent-layout">
-          <article class="urgent-feature">
-            <div class="urgent-ribbon">Exclusive content</div>
-            <img src="./images/M1.jpg" alt="Featured Story" />
-            <div class="urgent-feature-content">
-              <div class="urgent-tag">EXCLUSIVE</div>
-              <h2 class="urgent-feature-title">
-                10 Outfits Inspired<br />
-                by Famous Art are Sold<br />
-                in London
-              </h2>
-              <p class="urgent-feature-desc">
-                Find people with high expectations and a low tolerance for excuses.
-                They’ll have higher expectations and a low tolerance for excuses. Don’t flatter yourself...
-              </p>
-            </div>
-          </article>
-
-          <div class="urgent-grid">
-            <article class="urgent-card">
-              <img src="./images/Z1.png" alt="Marketing News" />
-              <div class="urgent-card-body">
-                <div class="urgent-cat">MARKETING</div>
-                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>Customer Engagement: New Strategy for the Economy</h3>
-              </div>
-            </article>
-
-            <article class="urgent-card">
-              <img src="./images/Edu2.png" alt="Finance News" />
-              <div class="urgent-card-body">
-                <div class="urgent-cat">FINANCE</div>
-                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>Things to Look For in a Financial Trading Platform</h3>
-              </div>
-            </article>
-
-            <article class="urgent-card">
-              <img src="./images/Q1.jpg" alt="Politics News" />
-              <div class="urgent-card-body">
-                <div class="urgent-cat">POLITICS</div>
-                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>New Harvard Student Candidates Presented Minutes Before Results</h3>
-              </div>
-            </article>
-
-            <article class="urgent-card">
-              <img src="./images/Q2.jpg" alt="Tech News" />
-              <div class="urgent-card-body">
-                <div class="urgent-cat">TECH</div>
-                <h3 class="urgent-card-title"><span class="urgent-inline-tag">EXCLUSIVE</span>New Soundboard from Bose Review: Pricing is Not Always the Only Criteria</h3>
-              </div>
-            </article>
-          </div>
+       <div class="urgent-layout">
+  <div class="urgent-main-slider" id="urgentMainSlider">
+    <div class="urgent-main-track" id="urgentMainTrack">
+      <article class="urgent-main-slide">
+        <div class="urgent-ribbon">Exclusive content</div>
+        <img src="./images/M1.jpg" alt="Featured Story 1" />
+        <div class="urgent-feature-content">
+          <div class="urgent-tag">EXCLUSIVE</div>
+          <h2 class="urgent-feature-title">
+            ภารกิจช่วยเหลือผู้ประสบภัยไฟไหม้<br />
+            ฟื้นฟูที่อยู่อาศัยอย่างเร่งด่วน
+          </h2>
+          <p class="urgent-feature-desc">
+            ลงพื้นที่ช่วยเหลือครอบครัวที่ได้รับผลกระทบ พร้อมประเมินความเสียหาย
+            และเร่งประสานการฟื้นฟูให้กลับมาดำเนินชีวิตได้โดยเร็วที่สุด
+          </p>
         </div>
+      </article>
+
+      <article class="urgent-main-slide">
+        <div class="urgent-ribbon">Emergency mission</div>
+        <img src="./images/Z1.png" alt="Featured Story 2" />
+        <div class="urgent-feature-content">
+          <div class="urgent-tag">HOT CASE</div>
+          <h2 class="urgent-feature-title">
+            ถุงยังชีพถึงมือผู้เดือดร้อน<br />
+            ในพื้นที่ขาดแคลน
+          </h2>
+          <p class="urgent-feature-desc">
+            มอบสิ่งของจำเป็นให้ผู้สูงอายุและครอบครัวยากไร้
+            เพื่อบรรเทาความเดือดร้อนในช่วงวิกฤตอย่างทันท่วงที
+          </p>
+        </div>
+      </article>
+
+      <article class="urgent-main-slide">
+        <div class="urgent-ribbon">Urgent support</div>
+        <img src="./images/Edu2.png" alt="Featured Story 3" />
+        <div class="urgent-feature-content">
+          <div class="urgent-tag">PRIORITY</div>
+          <h2 class="urgent-feature-title">
+            เด็กในพื้นที่ห่างไกล<br />
+            รอการสนับสนุนอย่างเร่งด่วน
+          </h2>
+          <p class="urgent-feature-desc">
+            ระดมการช่วยเหลือเพื่อให้เด็กและครอบครัวเข้าถึงโอกาสพื้นฐาน
+            ทั้งด้านการศึกษา อาหาร และคุณภาพชีวิตที่ดีขึ้น
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <div class="urgent-main-nav">
+      <button class="urgent-main-btn" type="button" id="urgentMainPrev" aria-label="สไลด์ก่อนหน้า">‹</button>
+      <button class="urgent-main-btn" type="button" id="urgentMainNext" aria-label="สไลด์ถัดไป">›</button>
+    </div>
+  </div>
+
+  <div class="urgent-side-slider" id="urgentSideSlider">
+    <div class="urgent-side-head">
+      <h3 class="urgent-side-title">Trending now</h3>
+      <div class="urgent-side-nav">
+        <button class="urgent-side-btn" type="button" id="urgentSideUp" aria-label="เลื่อนขึ้น">˄</button>
+        <button class="urgent-side-btn" type="button" id="urgentSideDown" aria-label="เลื่อนลง">˅</button>
       </div>
+    </div>
+
+    <div class="urgent-side-viewport" id="urgentSideViewport">
+      <div class="urgent-side-track" id="urgentSideTrack">
+        <article class="urgent-side-item">
+          <img src="./images/Z1.png" alt="Urgent item 1" />
+          <div class="urgent-side-body">
+            <div class="urgent-cat">ช่วยเหลือฉุกเฉิน</div>
+            <h3 class="urgent-card-title"><span class="urgent-inline-tag">NEW</span>ลงพื้นที่มอบถุงยังชีพแก่ผู้สูงอายุและครอบครัวเปราะบาง</h3>
+            <div class="urgent-card-meta">
+              <span>May 14, 2024</span>
+              <span>935 views</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="urgent-side-item">
+          <img src="./images/Edu2.png" alt="Urgent item 2" />
+          <div class="urgent-side-body">
+            <div class="urgent-cat">การศึกษา</div>
+            <h3 class="urgent-card-title"><span class="urgent-inline-tag">HOT</span>เร่งสนับสนุนเด็กยากไร้ให้เข้าถึงโอกาสทางการศึกษา</h3>
+            <div class="urgent-card-meta">
+              <span>May 14, 2024</span>
+              <span>877 views</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="urgent-side-item">
+          <img src="./images/Q1.jpg" alt="Urgent item 3" />
+          <div class="urgent-side-body">
+            <div class="urgent-cat">ภาคสนาม</div>
+            <h3 class="urgent-card-title"><span class="urgent-inline-tag">LIVE</span>ทีมงานติดตามสถานการณ์ในชุมชนที่ต้องการความช่วยเหลือทันที</h3>
+            <div class="urgent-card-meta">
+              <span>May 14, 2024</span>
+              <span>905 views</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="urgent-side-item">
+          <img src="./images/Q2.jpg" alt="Urgent item 4" />
+          <div class="urgent-side-body">
+            <div class="urgent-cat">ที่อยู่อาศัย</div>
+            <h3 class="urgent-card-title"><span class="urgent-inline-tag">UPDATE</span>ซ่อมแซมโครงสร้างบ้านเพื่อความปลอดภัยของครอบครัวผู้ประสบภัย</h3>
+            <div class="urgent-card-meta">
+              <span>May 14, 2024</span>
+              <span>828 views</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="urgent-side-item">
+          <img src="./images/M1.jpg" alt="Urgent item 5" />
+          <div class="urgent-side-body">
+            <div class="urgent-cat">ฟื้นฟูหลังภัยพิบัติ</div>
+            <h3 class="urgent-card-title"><span class="urgent-inline-tag">FOCUS</span>ประเมินความเสียหายและจัดแผนช่วยเหลือระยะเร่งด่วนในพื้นที่เกิดเหตุ</h3>
+            <div class="urgent-card-meta">
+              <span>May 14, 2024</span>
+              <span>790 views</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
     </section>
 
     <section class="mission-ongoing">

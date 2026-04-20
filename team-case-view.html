@@ -2147,36 +2147,50 @@ async function saveCaseSettings(){
   }
 }
     
-async function assignCase(){
+async function assignCase() {
+  const activeCaseId = String(window.currentCaseId || "").trim();
   const activeCaseCode = String(
     document.getElementById("sumCaseCode")?.textContent ||
     currentCaseCode ||
     ""
   ).trim();
 
+  if (!activeCaseId) {
+    alert("ไม่พบ id ของเคส");
+    return;
+  }
+
   if (!activeCaseCode || activeCaseCode === "-") {
     alert("ไม่พบเลขเคส");
     return;
   }
 
-  const displayName = document.getElementById("staffName")?.value.trim() || "";
+  const staffName = document.getElementById("staffName")?.value.trim() || "";
+  const status = document.getElementById("statusSelect")?.value || "";
+  const priority = document.getElementById("prioritySelect")?.value || "";
+  const projectRef = document.getElementById("projectSelect")?.value || "";
 
-  try{
-    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/team/cases/assign`, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+  if (!staffName) {
+    alert("กรุณากรอกชื่อผู้รับเคส");
+    return;
+  }
+
+  try {
+    await safeFetchJson(`${CONFIG.API_BASE_URL}/api/case/${encodeURIComponent(activeCaseId)}/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        caseCode: activeCaseCode,
-        userId: "",
-        displayName,
-        line_user_id: viewerLineUserId
+        staff_name: staffName,
+        status,
+        priority,
+        project_ref: projectRef
       })
     });
 
-    showToast("รับเคสแล้ว", "ระบบบันทึกการรับเคสเรียบร้อย");
+    showToast("บันทึกสำเร็จ", "ระบบอัปเดตผู้รับเคส สถานะ ระดับ และโครงการเรียบร้อย");
     await refreshPageData();
-  }catch(err){
-    alert("รับเคสไม่สำเร็จ: " + err.message);
+  } catch (err) {
+    alert("บันทึกไม่สำเร็จ: " + err.message);
   }
 }
     

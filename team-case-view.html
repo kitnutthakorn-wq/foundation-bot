@@ -1389,17 +1389,6 @@ async function loadProjectOptions() {
   const keepValue = select.value || "";
   select.innerHTML = `<option value="">- เลือกโครงการ -</option>`;
 
-  const allowedProjectNames = [
-    "โครงการบรรเทาสาธารณภัย",
-    "โครงการเพื่อการศึกษาส่งน้องเรียน",
-    "โครงการอาสาพามัยยิดกลับบ้าน",
-    "โครงการสร้างอาชีพ",
-    "โครงการสร้างที่อยู่อาศัยเพื่อผู้ยากไร้",
-    "โครงการช่วยเหลือผู้ป่วย",
-    "โครงการช่วยเหลือเด็กกำพร้า",
-    "โครงการเปลี่ยนสายไฟเพื่อผู้ยากไร้"
-  ];
-
   try {
     const res = await fetch(`${CONFIG.API_BASE_URL}/api/projects/options`);
     const text = await res.text();
@@ -1435,26 +1424,27 @@ async function loadProjectOptions() {
 
         return { id, name };
       })
-      .filter(item => item.id && item.name);
+      .filter(item => item.id && item.name)
+      .filter(item => String(item.name).trim().startsWith("โครงการ"));
 
-    const projectMap = new Map();
+    const uniqueRows = [];
+    const seen = new Set();
 
     normalizedRows.forEach(item => {
-      if (!allowedProjectNames.includes(item.name)) return;
-      if (!projectMap.has(item.name)) {
-        projectMap.set(item.name, item.id);
-      }
+      const key = item.id;
+      if (seen.has(key)) return;
+      seen.add(key);
+      uniqueRows.push(item);
     });
 
-    allowedProjectNames.forEach(name => {
-      const id = projectMap.get(name);
-      if (!id) return;
-
-      const opt = document.createElement("option");
-      opt.value = id;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
+    uniqueRows
+      .sort((a, b) => a.name.localeCompare(b.name, "th"))
+      .forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;         // บันทึกด้วย id จริง
+        opt.textContent = item.name; // แสดงชื่อไทย
+        select.appendChild(opt);
+      });
   } catch (err) {
     console.warn("loadProjectOptions error:", err);
   }

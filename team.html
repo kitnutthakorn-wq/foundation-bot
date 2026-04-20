@@ -746,7 +746,8 @@ try {
 
 bindProfile(currentProfile, "ทีมงาน");
 document.getElementById("envChip").textContent = "External browser";
-    
+ }
+  
 async function loadTeamRole(){
   try{
     if(!currentProfile?.userId || CONFIG.API_BASE_URL.includes('your-domain.com')) return;

@@ -1117,13 +1117,20 @@ async function getLineUserIdFromPage() {
 
     if (window.liff && typeof liff.isLoggedIn === "function" && liff.isLoggedIn()) {
       const profile = await liff.getProfile();
+
+      window.__TEAM_PROFILE = {
+        userId: String(profile?.userId || "").trim(),
+        displayName: String(profile?.displayName || "").trim(),
+        pictureUrl: String(profile?.pictureUrl || "").trim()
+      };
+
       const fromLiff = String(profile?.userId || "").trim();
       if (fromLiff) return fromLiff;
     }
 
     return "";
   } catch (err) {
-   
+    console.error("getLineUserIdFromPage error:", err);
     return "";
   }
 }

@@ -191,7 +191,10 @@ let currentProfile = null;
 let selectedFiles = [];  
 let currentLocation = null;
 const params = new URLSearchParams(window.location.search);
+const senderNameFromUrl = String(params.get("senderName") || "").trim();
+const senderUserIdFromUrl = String(params.get("senderUserId") || "").trim();
 
+  
 function getCaseCodeFromUrl() {
   const direct =
     String(params.get("case_code") || params.get("caseCode") || "").trim();

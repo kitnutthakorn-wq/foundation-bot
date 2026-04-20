@@ -1430,62 +1430,96 @@ async function loadProjectOptions() {
   }
 }
        
-    function renderSummary(caseItem={}){
-      safeText("sumCaseCode", caseItem.case_code || "-");
-      safeText("sumAssignedTo", caseItem.assigned_to || "-");
-      safeText("fullName", caseItem.full_name || "-");
-      safeText("phone", caseItem.phone || "-");
-      safeText("location", caseItem.location || "-");
-      safeText(
-  "problemCategory",
-  String(
-    caseItem.problem_category ||
-    caseItem.problemCategory ||
-    caseItem.problem_group ||
-    caseItem.problemGroup ||
-    caseItem.problem_type ||
-    caseItem.problemType ||
-    caseItem.category ||
-    caseItem.problem_category_name ||
-    caseItem.problem_type_name ||
-    "-"
-  ).trim() || "-"
-);
+  function renderSummary(caseItem = {}) {
+  safeText("sumCaseCode", caseItem.case_code || "-");
+  safeText(
+    "sumAssignedTo",
+    String(
+      caseItem.assigned_to ||
+      caseItem.assignedTo ||
+      caseItem.assigned_name ||
+      caseItem.assignedName ||
+      caseItem.owner ||
+      caseItem.staff_name ||
+      caseItem.staffName ||
+      "-"
+    ).trim() || "-"
+  );
 
-safeText(
-  "projectName",
-  String(
-    caseItem.project_name ||
-    caseItem.projectName ||
-    caseItem.project_title ||
-    caseItem.projectTitle ||
-    caseItem.project_label ||
-    caseItem.projectLabel ||
-    caseItem.project_ref ||
-    caseItem.projectRef ||
-    caseItem.project_code ||
-    caseItem.projectCode ||
-    "-"
-  ).trim() || "-"
-);
-      safeText("projectName", caseItem.project_name || "-");
-      safeText("problemDetail", caseItem.problem || "-");
-      safeText("createdAt", formatThaiDateTime(caseItem.created_at));
-      safeText("lastActionAt", formatThaiDateTime(caseItem.last_action_at || caseItem.created_at));
+  safeText("fullName", caseItem.full_name || "-");
+  safeText("phone", caseItem.phone || "-");
+  safeText("location", caseItem.location || "-");
 
-      const statusText = formatStatusThai(caseItem.status);
-      const priorityText = formatPriorityThai(caseItem.priority);
+  safeText(
+    "problemCategory",
+    String(
+      caseItem.problem_category ||
+      caseItem.problemCategory ||
+      caseItem.problem_group ||
+      caseItem.problemGroup ||
+      caseItem.problem_type ||
+      caseItem.problemType ||
+      caseItem.category ||
+      caseItem.case_category ||
+      caseItem.caseCategory ||
+      caseItem.problem_category_name ||
+      caseItem.problem_type_name ||
+      "-"
+    ).trim() || "-"
+  );
 
-      safeText("sumStatus", statusText);
-      safeText("sumPriority", priorityText);
+  safeText(
+    "assignedTo",
+    String(
+      caseItem.assigned_to ||
+      caseItem.assignedTo ||
+      caseItem.assigned_name ||
+      caseItem.assignedName ||
+      caseItem.owner ||
+      caseItem.staff_name ||
+      caseItem.staffName ||
+      "-"
+    ).trim() || "-"
+  );
 
-      document.getElementById("statusBox").innerHTML =
-        `<span class="badge ${getStatusBadgeClass(caseItem.status)}">${escapeHtml(statusText)}</span>`;
+  safeText(
+    "projectName",
+    String(
+      normalizeProjectName(
+        caseItem.project_name ||
+        caseItem.projectName ||
+        caseItem.project_title ||
+        caseItem.projectTitle ||
+        caseItem.project_label ||
+        caseItem.projectLabel ||
+        caseItem.project_ref ||
+        caseItem.projectRef ||
+        caseItem.project_code ||
+        caseItem.projectCode ||
+        ""
+      ) || "-"
+    ).trim() || "-"
+  );
 
-      document.getElementById("priorityBox").innerHTML =
-        `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`;
-    }
+  safeText("problemDetail", caseItem.problem || "-");
+  safeText("createdAt", formatThaiDateTime(caseItem.created_at));
+  safeText(
+    "lastActionAt",
+    formatThaiDateTime(caseItem.last_action_at || caseItem.created_at)
+  );
 
+  const statusText = formatStatusThai(caseItem.status);
+  const priorityText = formatPriorityThai(caseItem.priority);
+
+  safeText("sumStatus", statusText);
+  safeText("sumPriority", priorityText);
+
+  document.getElementById("statusBox").innerHTML =
+    `<span class="badge ${getStatusBadgeClass(caseItem.status)}">${escapeHtml(statusText)}</span>`;
+
+  document.getElementById("priorityBox").innerHTML =
+    `<span class="badge ${getPriorityBadgeClass(caseItem.priority)}">${escapeHtml(priorityText)}</span>`;
+}
 function getAutoProgress(caseItem = {}, updates = []) {
   const sorted = Array.isArray(updates) && updates.length
     ? [...updates].sort((a, b) =>

@@ -7009,9 +7009,24 @@ app.post("/api/case-updates", upload.array("images", 5), async (req, res) => {
     const waiting_for = cleanText(body.waiting_for || body.waitingFor) || CASE_UPDATE_WAITING_FOR_MAP[current_step] || null;
     const progress_percent = toNumberOrNull(body.progress_percent ?? body.progressPercent) ?? CASE_UPDATE_PROGRESS_MAP[current_step] ?? null;
 
-    const updater_name = toNullableText(body.updater_name || body.senderName || body.updated_by_name || body.staff_name || body.staffName || body.updated_by || body.updater_user_id);
-    const updater_user_id = toNullableText(body.updater_user_id || body.senderUserId || body.updated_by_user_id || body.updated_by);
-    const updated_by = toNullableText(body.updated_by || updater_user_id || updater_name);
+    const updater_name = toNullableText(
+  body.updater_name ||
+  body.senderName ||
+  body.updated_by_name ||
+  body.staff_name ||
+  body.staffName ||
+  body.display_name
+);
+
+const updater_user_id = toNullableText(
+  body.updater_user_id ||
+  body.senderUserId ||
+  body.updated_by_user_id
+);
+
+const updated_by = toNullableText(
+  updater_name || updater_user_id || body.updated_by
+);
     const location_text = toNullableText(body.location_text || body.locationText);
     const latitude = toNumberOrNull(body.latitude);
     const longitude = toNumberOrNull(body.longitude);

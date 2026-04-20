@@ -1587,7 +1587,15 @@ const waitingFor =
   "-";
 
 const statusAfter = latest.status_after || caseItem.status || "-";
-const updaterName = latest.updater_name || latest.updated_by || caseItem.last_action_by || "-";
+const updaterName = getRealUserName({
+  updated_by_name: latest.updated_by_name,
+  updater_name: latest.updater_name,
+  updated_by: latest.updated_by,
+  updated_by_user_id: latest.updated_by_user_id,
+  staff_name: latest.staff_name,
+  user_name: latest.user_name,
+  real_name: latest.real_name
+}) || caseItem.last_action_by || "-";
 const locationText =
   latestWithLocation.location_text ||
   latestWithLocation.locationText ||
@@ -2119,42 +2127,40 @@ async function closeCase(){
   }
 }
     
-    async function bootstrap(){
-      try{
-       await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
+async function bootstrap(){
+  try{
+    await liff.init({ liffId: CONFIG.LIFF_ID }).catch(() => {});
 
-if (window.liff && typeof liff.isLoggedIn === "function" && !liff.isLoggedIn()) {
-  liff.login({ redirectUri: window.location.href });
-  return;
-}
-
-currentCaseCode = getCaseCodeFromUrl();
-if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
-
-await loadProjectOptions();
-
-viewerLineUserId = await getLineUserIdFromPage();
-await loadViewerRole(viewerLineUserId);
-
-await loadCaseReport();
-connectRealtime();
-
-      
-        if(fallbackInterval) clearInterval(fallbackInterval);
-        fallbackInterval = setInterval(() => {
-          if(!document.hidden){
-            loadCaseReport().catch(err => console.error("fallback refresh error", err));
-          }
-        }, 45000);
-
-      }catch(err){
-        console.error(err);
-        alert(`เปิดรายงานเคสไม่สำเร็จ: ${err.message}`);
-      }finally{
-        setLoading(false);
-      }
+    if (window.liff && typeof liff.isLoggedIn === "function" && !liff.isLoggedIn()) {
+      liff.login({ redirectUri: window.location.href });
+      return;
     }
 
+    currentCaseCode = getCaseCodeFromUrl();
+    if(!currentCaseCode) throw new Error("ไม่พบเลขเคสใน URL");
+
+    await loadProjectOptions();
+
+    viewerLineUserId = await getLineUserIdFromPage();
+    await loadViewerRole(viewerLineUserId);
+
+    await loadCaseReport();
+    connectRealtime();
+
+    if(fallbackInterval) clearInterval(fallbackInterval);
+    fallbackInterval = setInterval(() => {
+      if(!document.hidden){
+        loadCaseReport().catch(err => console.error("fallback refresh error", err));
+      }
+    }, 45000);
+
+  }catch(err){
+    console.error(err);
+    alert(`เปิดรายงานเคสไม่สำเร็จ: ${err.message}`);
+  }finally{
+    setLoading(false);
+  }
+}
     /* =========================
        PRO MAX IMAGE VIEWER JS
     ========================= */

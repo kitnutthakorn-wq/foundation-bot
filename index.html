@@ -1338,20 +1338,21 @@
     color:#6b7280;
   }
 
- .urgent-layout{
+.urgent-layout{
   display:grid;
-  grid-template-columns:minmax(0, 1.95fr) minmax(320px, .95fr);
-  gap:18px;
+  grid-template-columns:minmax(0, 1.9fr) 370px;
+  gap:14px;
   align-items:stretch;
 }
 
+/* ===== LEFT : MAIN NEWS ===== */
 .urgent-main-slider{
   position:relative;
   overflow:hidden;
   background:#fff;
-  min-height:560px;
-  border:18px solid #fff;
-  box-shadow:0 8px 20px rgba(0,0,0,.10);
+  border:1px solid #e6e6e6;
+  padding:48px 14px 14px;   /* เว้นพื้นที่ด้านบนไว้ให้ปุ่ม */
+  min-height:620px;
 }
 
 .urgent-main-track{
@@ -1365,7 +1366,8 @@
 .urgent-main-slide{
   min-width:100%;
   position:relative;
-  min-height:560px;
+  min-height:0;
+  height:100%;
   overflow:hidden;
   background:#111;
 }
@@ -1382,93 +1384,97 @@
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,.06) 0%, rgba(0,0,0,.22) 34%, rgba(0,0,0,.82) 100%);
   z-index:1;
+  background:linear-gradient(
+    180deg,
+    rgba(0,0,0,.03) 0%,
+    rgba(0,0,0,.08) 45%,
+    rgba(0,0,0,.62) 100%
+  );
 }
 
+/* ซ่อนริบบอนบนซ้าย เพราะภาพที่ 2 ไม่มี */
 .urgent-ribbon{
-  position:absolute;
-  top:14px;
-  left:14px;
-  z-index:3;
-  background:#ff4a3d;
-  color:#fff;
-  font-size:13px;
-  font-style:italic;
-  font-weight:700;
-  padding:7px 12px;
+  display:none;
 }
 
 .urgent-feature-content{
   position:absolute;
-  left:20px;
-  right:20px;
+  left:18px;
+  right:18px;
   bottom:18px;
   z-index:3;
   color:#fff;
+  max-width:72%;
 }
 
 .urgent-tag{
   display:inline-block;
-  background:#ff3a2f;
+  background:#ff4a3d;
   color:#fff;
   font-size:11px;
   font-weight:900;
   padding:4px 8px;
   margin-bottom:10px;
   line-height:1;
+  text-transform:uppercase;
 }
 
 .urgent-feature-title{
   margin:0 0 10px;
-  font-size:34px;
-  line-height:1.08;
+  font-size:27px;
+  line-height:1.18;
   font-weight:900;
   color:#fff;
-  letter-spacing:-.5px;
+  letter-spacing:-.2px;
+  text-shadow:0 2px 8px rgba(0,0,0,.28);
 }
 
 .urgent-feature-desc{
   margin:0;
-  max-width:88%;
-  font-size:15px;
-  line-height:1.55;
+  max-width:95%;
+  font-size:13px;
+  line-height:1.5;
   color:rgba(255,255,255,.95);
+  text-shadow:0 2px 8px rgba(0,0,0,.22);
 }
 
 .urgent-main-nav{
   position:absolute;
+  top:12px;
   right:14px;
-  bottom:14px;
+  bottom:auto;
   z-index:4;
   display:flex;
-  gap:8px;
+  gap:6px;
 }
 
 .urgent-main-btn{
-  width:42px;
-  height:42px;
-  border:none;
+  width:28px;
+  height:28px;
+  border:1px solid #e5e7eb;
   cursor:pointer;
-  background:rgba(255,255,255,.92);
+  background:#f7f7f7;
   color:#111827;
-  font-size:20px;
+  font-size:16px;
   font-weight:900;
   display:grid;
   place-items:center;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
-  transition:transform .2s ease, background .2s ease;
+  box-shadow:none;
+  transition:background .2s ease, border-color .2s ease;
 }
 
 .urgent-main-btn:hover{
-  transform:translateY(-1px);
-  background:#fff;
+  background:#ededed;
+  border-color:#d9d9d9;
+  transform:none;
 }
 
+/* ===== RIGHT : TRENDING NOW ===== */
 .urgent-side-slider{
   background:#fff;
-  border:1px solid #e5e7eb;
-  min-height:560px;
+  border:1px solid #e6e6e6;
+  min-height:620px;
   display:grid;
   grid-template-rows:auto 1fr;
   overflow:hidden;
@@ -1485,11 +1491,11 @@
 
 .urgent-side-title{
   margin:0;
-  font-size:14px;
+  font-size:13px;
   font-weight:900;
-  color:#111827;
+  color:#0f172a;
   text-transform:uppercase;
-  letter-spacing:.04em;
+  letter-spacing:.06em;
 }
 
 .urgent-side-nav{
@@ -1498,22 +1504,23 @@
 }
 
 .urgent-side-btn{
-  width:34px;
-  height:34px;
-  border:none;
+  width:28px;
+  height:28px;
+  border:1px solid #e5e7eb;
   cursor:pointer;
-  background:#f3f4f6;
+  background:#f7f7f7;
   color:#111827;
-  font-size:16px;
+  font-size:14px;
   font-weight:900;
   display:grid;
   place-items:center;
-  transition:transform .2s ease, background .2s ease;
+  transition:background .2s ease, border-color .2s ease;
 }
 
 .urgent-side-btn:hover{
-  transform:translateY(-1px);
-  background:#e5e7eb;
+  background:#ededed;
+  border-color:#d9d9d9;
+  transform:none;
 }
 
 .urgent-side-viewport{
@@ -1530,17 +1537,18 @@
 
 .urgent-side-item{
   display:grid;
-  grid-template-columns:126px 1fr;
-  gap:14px;
+  grid-template-columns:108px 1fr;
+  gap:12px;
   padding:14px;
-  min-height:130px;
+  min-height:98px;
   border-bottom:1px solid #efefef;
   background:#fff;
+  align-items:start;
 }
 
 .urgent-side-item img{
   width:100%;
-  height:102px;
+  height:76px;
   object-fit:cover;
   display:block;
 }
@@ -1553,15 +1561,15 @@
 
 .urgent-cat{
   font-size:11px;
-  font-weight:900;
+  font-weight:800;
   color:#111;
-  text-transform:uppercase;
-  margin-bottom:7px;
+  margin-bottom:6px;
+  line-height:1.2;
 }
 
 .urgent-inline-tag{
   display:inline-block;
-  background:#ff3a2f;
+  background:#ff4a3d;
   color:#fff;
   font-size:10px;
   font-weight:900;
@@ -1573,30 +1581,30 @@
 
 .urgent-card-title{
   margin:0;
-  font-size:15px;
+  font-size:12px;
   line-height:1.35;
   font-weight:900;
   color:#111;
-  font-family:"Georgia","Times New Roman",serif;
+  font-family:"Noto Sans Thai","Inter",sans-serif;
 }
 
 .urgent-card-meta{
-  margin-top:10px;
+  margin-top:8px;
   display:flex;
   align-items:center;
   gap:14px;
   flex-wrap:wrap;
-  color:#6b7280;
-  font-size:12px;
+  color:#7b8591;
+  font-size:11px;
 }
 
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1200px){
   .urgent-layout{
     grid-template-columns:1fr;
   }
 
   .urgent-main-slider,
-  .urgent-main-slide,
   .urgent-side-slider{
     min-height:auto;
   }
@@ -1607,40 +1615,43 @@
 }
 
 @media (max-width: 768px){
+  .urgent-main-slider{
+    padding:44px 10px 10px;
+  }
+
   .urgent-main-slide{
     min-height:360px;
   }
 
+  .urgent-feature-content{
+    left:14px;
+    right:14px;
+    bottom:14px;
+    max-width:92%;
+  }
+
   .urgent-feature-title{
-    font-size:24px;
+    font-size:22px;
   }
 
   .urgent-feature-desc{
-    max-width:100%;
-    font-size:13px;
+    font-size:12px;
   }
 
   .urgent-side-item{
-    grid-template-columns:110px 1fr;
-    gap:12px;
-    min-height:118px;
+    grid-template-columns:96px 1fr;
+    gap:10px;
     padding:12px;
   }
 
   .urgent-side-item img{
-    height:88px;
+    height:68px;
   }
 
   .urgent-card-title{
-    font-size:13px;
+    font-size:12px;
   }
-
-  .urgent-card-meta{
-    font-size:11px;
-    gap:10px;
-  }
-}
-  .ongoing-grid{
+}  .ongoing-grid{
     display:grid;
     grid-template-columns:repeat(4, 1fr);
     gap:12px;

@@ -168,7 +168,7 @@
       const API_BASE = String(DEFAULT_API_BASE || '').replace(/\/$/, '');
       const API_URL = `${API_BASE}/api/cases/map`;
       const STREAM_URL = `${API_BASE}/api/team/stream`;
-      const CASE_URL_BASE = `${API_BASE}/case`;
+     const CASE_URL_BASE = `${API_BASE}/team-case-view.html`;
 
       try { localStorage.setItem('foundation_api_base', API_BASE); } catch (e) {}
       console.log("✅ API BASE LOCKED:", API_BASE);
@@ -608,10 +608,10 @@
         };
       }
 
-      function openCase(caseCode) {
-        if (!caseCode) return;
-        window.open(`${CASE_URL_BASE}?id=${encodeURIComponent(caseCode)}`, '_blank');
-      }
+     function openCase(caseCode) {
+  if (!caseCode) return;
+  window.open(`${CASE_URL_BASE}?case_code=${encodeURIComponent(caseCode)}`, '_blank');
+}
 
       function focusCase(code) {
         selectCase(code, true);

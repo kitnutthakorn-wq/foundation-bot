@@ -489,10 +489,13 @@ async function bootstrap() {
   try {
     bindStaticInfo();
     await initLiff();
-  } catch (err) {
-    currentProfile = { displayName: 'Fallback User', userId: '' };
-    document.getElementById('senderText').textContent = currentProfile.displayName;
-    setStatus(`โหมดสำรอง: ${err.message}`, 'warn');
+} catch (err) {
+  currentProfile = {
+    displayName: senderNameFromUrl || 'Fallback User',
+    userId: senderUserIdFromUrl || ''
+  };
+  document.getElementById('senderText').textContent = currentProfile.displayName;
+  setStatus(`โหมดสำรอง: ${err.message}`, 'warn');
   } finally {
     setLoading(false);
   }

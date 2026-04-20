@@ -6989,9 +6989,53 @@ app.get("/api/team/case-detail", async (req, res) => {
       };
     });
 
+    const projectName = await getProjectNameFromProjectDb(caseItem);
+
+    const enrichedCaseItem = {
+      ...caseItem,
+
+      assigned_to:
+        caseItem.assigned_to ||
+        caseItem.assignedTo ||
+        caseItem.assigned_name ||
+        caseItem.assignedName ||
+        caseItem.owner ||
+        caseItem.staff_name ||
+        caseItem.staffName ||
+        "-",
+
+      problem_category:
+        caseItem.problem_category ||
+        caseItem.problemCategory ||
+        caseItem.problem_group ||
+        caseItem.problemGroup ||
+        caseItem.problem_type ||
+        caseItem.problemType ||
+        caseItem.category ||
+        caseItem.case_category ||
+        caseItem.caseCategory ||
+        caseItem.problem_category_name ||
+        caseItem.problem_type_name ||
+        "-",
+
+      project_name:
+        projectName ||
+        caseItem.project_name ||
+        caseItem.projectName ||
+        caseItem.project_title ||
+        caseItem.projectTitle ||
+        caseItem.project_label ||
+        caseItem.projectLabel ||
+        caseItem.project_ref ||
+        caseItem.projectRef ||
+        caseItem.project_code ||
+        caseItem.projectCode ||
+        "-"
+    };
+
     return res.json({
       ok: true,
-      case: caseItem,
+      case: enrichedCaseItem,
       updates: updates,
       info_updates: infoUpdates || []
     });

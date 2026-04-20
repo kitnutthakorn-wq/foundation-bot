@@ -246,8 +246,11 @@ function bindStaticInfo() {
 
 async function initLiff() {
   if (!CONFIG.LIFF_ID || CONFIG.LIFF_ID === 'PUT_YOUR_LIFF_ID_HERE') {
-    currentProfile = { displayName: 'Demo Team Member', userId: 'demo-user' };
-    document.getElementById('senderText').textContent = currentProfile.displayName;
+    currentProfile = {
+  displayName: senderNameFromUrl || 'Demo Team Member',
+  userId: senderUserIdFromUrl || 'demo-user'
+};
+document.getElementById('senderText').textContent = currentProfile.displayName;
     return;
   }
 
